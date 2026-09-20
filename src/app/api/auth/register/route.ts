@@ -4,6 +4,22 @@ import bcrypt from 'bcryptjs';
 import { ensureSignupGrant } from '@/lib/ledger';
 import { getConfig } from '@/lib/config';
 
+const TEMP_EMAIL_DOMAINS = [
+  'tempmail.com', '10minutemail.com', 'guerrillamail.com', 'mailinator.com',
+  'throwaway.email', 'fakeinbox.com', 'temp-mail.org', 'yopmail.com',
+  'trashmail.com', 'getnada.com', 'maildrop.cc', 'dispostable.com',
+  'tempail.com', 'emailondeck.com', 'mintemail.com', 'spamgourmet.com',
+];
+
+function isTempEmail(email: string): boolean {
+  const domain = email.split('@')[1]?.toLowerCase();
+  return TEMP_EMAIL_DOMAINS.includes(domain);
+}
+
+function isGmail(email: string): boolean {
+  return email.toLowerCase().endsWith('@gmail.com');
+}
+
 function randomReferralCode(base: string): string {
   const clean = base.replace(/[^a-zA-Z0-9]/g, '').slice(0, 8) || 'player';
   const suffix = Math.random().toString(36).slice(2, 6);
@@ -12,15 +28,30 @@ function randomReferralCode(base: string): string {
 
 export async function POST(req: Request) {
   try {
-    const { username, password, referralCode } = await req.json();
+    const { username, email, password, referralCode } = await req.json();
 
-    if (!username || !password) {
-      return NextResponse.json({ error: 'Missing username or password' }, { status: 400 });
+    if (!username || !email || !password) {
+      return NextResponse.json({ error: 'Missing username, email, or password' }, { status: 400 });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    if (!isGmail(normalizedEmail)) {
+      return NextResponse.json({ error: 'Gmail فقط مسموح (@gmail.com)' }, { status: 400 });
+    }
+
+    if (isTempEmail(normalizedEmail)) {
+      return NextResponse.json({ error: 'الإيميلات المؤقتة ممنوعة' }, { status: 400 });
     }
 
     const existingUser = await prisma.user.findUnique({ where: { username } });
     if (existingUser) {
       return NextResponse.json({ error: 'Username already taken' }, { status: 400 });
+    }
+
+    const existingEmail = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+    if (existingEmail) {
+      return NextResponse.json({ error: 'Email already registered' }, { status: 400 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -45,6 +76,7 @@ export async function POST(req: Request) {
     const user = await prisma.user.create({
       data: {
         username,
+        email: normalizedEmail,
         password: hashedPassword,
         coins: 0,
         referralCode: ownCode,
@@ -64,7 +96,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(
-      { success: true, user: { id: user.id, username: user.username } },
+      { success: true, user: { id: user.id, username: user.username, email: user.email } },
       { status: 201 }
     );
   } catch (error) {
