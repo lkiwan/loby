@@ -34,6 +34,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           username: user.username,
           coins: user.coins,
+          role: user.role,
         };
       },
     }),
@@ -44,10 +45,11 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user, trigger, session }) {
       if (user) {
-        const ident = user as { username?: string; coins?: number };
+        const ident = user as { username?: string; coins?: number; role?: string };
         token.id = user.id;
         token.username = ident.username;
         token.coins = ident.coins;
+        token.role = ident.role;
       }
       if (trigger === 'update' && session?.coins !== undefined) {
         token.coins = session.coins;
@@ -59,6 +61,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
         session.user.username = token.username as string;
         session.user.coins = token.coins as number;
+        session.user.role = token.role as string;
       }
       return session;
     },

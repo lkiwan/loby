@@ -7,11 +7,375 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  PLAYER
+  MODERATOR
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  FROZEN
+  BANNED
+}
+
+enum Currency {
+  COINS
+  TICKETS
+}
+
+enum LedgerReason {
+  SIGNUP_GRANT
+  DAILY_CHECKIN
+  MISSION_REWARD
+  LEVEL_UP
+  AD_REWARD
+  LEADERBOARD_PAYOUT
+  REFERRAL_BONUS
+  PROMO_CODE
+  GIFT_RECEIVED
+  GIFT_SENT
+  GIFT_FEE_BURN
+  LOOT_BOX_PAYOUT
+  PLAY_COST
+  CONTINUE_COST
+  COSMETIC_PURCHASE
+  TOURNAMENT_ENTRY
+  LOOT_BOX_COST
+  ADMIN_GRANT
+  ADMIN_CLAWBACK
+  REFUND
+}
+
+enum UnlockMethod {
+  COINS
+  AD
+  FREE_DAILY
+  TOURNAMENT
+  GIFTED
+}
+
+enum MissionKind {
+  PLAY_N_GAMES
+  PLAY_SPECIFIC_GAME
+  SCORE_ABOVE
+  WATCH_N_ADS
+  WIN_STREAK
+  INVITE_FRIEND
+  SEND_GIFT
+}
+
+enum Cadence {
+  DAILY
+  WEEKLY
+  SEASONAL
+}
+
+enum Rarity {
+  COMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+enum RewardKind {
+  COINS
+  TICKETS
+  ITEM
+  XP
+  FREE_PLAY
+}
+
+enum ItemKind {
+  AVATAR_FRAME
+  CARD_SKIN
+  NAME_COLOR
+  BADGE
+  BOOSTER
+}
+
+enum GiftStatus {
+  PENDING
+  CLAIMED
+  EXPIRED
+  REVERSED
+  BLOCKED
+}
+
+enum AdStatus {
+  STARTED
+  COMPLETED
+  REJECTED
+  EXPIRED
+}
+
 model User {
+  id       String     @id @default(cuid())
+  username String?    @unique
+  phone    String?    @unique
+  password String?
+  role     Role       @default(PLAYER)
+  status   UserStatus @default(ACTIVE)
+  locale   String     @default("ar-MA")
+  timezone String     @default("Africa/Casablanca")
+
+  coins   Int @default(0)
+  tickets Int @default(0)
+  xp      Int @default(0)
+  level   Int @default(1)
+
+  streakCount   Int       @default(0)
+  longestStreak Int       @default(0)
+  lastCheckinOn DateTime? @db.Date
+  freezesLeft   Int       @default(1)
+
+  referralCode String  @unique
+  referredById String?
+  referredBy   User?   @relation("Ref", fields: [referredById], references: [id])
+  referrals    User[]  @relation("Ref")
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  lastSeenAt DateTime?
+
+  ledger        LedgerEntry[]
+  sessions      PlaySession[]
+  devices       Device[]
+  missions      MissionAssignment[]
+  items         UserItem[]
+  adImpressions AdImpression[]
+
+  @@index([lastSeenAt])
+  @@index([coins])
+}
+
+model Device {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  fingerprint String
+  ipHash      String
+  userAgent   String?
+  firstSeenAt DateTime @default(now())
+  lastSeenAt  DateTime @updatedAt
+
+  @@unique([userId, fingerprint])
+  @@index([fingerprint])
+  @@index([ipHash])
+}
+
+model LedgerEntry {
+  id             String       @id @default(cuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  currency       Currency     @default(COINS)
+  delta          Int
+  balanceAfter   Int
+  reason         LedgerReason
+  refType        String?
+  refId          String?
+  idempotencyKey String       @unique
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([reason, createdAt])
+  @@index([refType, refId])
+}
+
+model Game {
+  id                String  @id
+  slug              String  @unique
+  titleAr           String
+  titleFr           String?
+  embedUrl          String
+  hmacSecret        String
+  playCost          Int     @default(10)
+  continueCost      Int     @default(15)
+  xpDivisor         Int     @default(100)
+  maxPlausibleScore Int     @default(1000000)
+  isActive          Boolean @default(true)
+  sortOrder         Int     @default(0)
+
+  sessions PlaySession[]
+}
+
+model RemoteConfig {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+model PlaySession {
+  id            String       @id @default(cuid())
+  userId        String
+  user          User         @relation(fields: [userId], references: [id])
+  gameId        String
+  game          Game         @relation(fields: [gameId], references: [id])
+  unlockMethod  UnlockMethod
+  coinsSpent    Int          @default(0)
+  score         Int?
+  scoreVerified Boolean      @default(false)
+  xpAwarded     Int          @default(0)
+  startedAt     DateTime     @default(now())
+  endedAt       DateTime?
+  clientNonce   String       @unique
+
+  @@index([userId, startedAt(sort: Desc)])
+  @@index([gameId, score(sort: Desc)])
+}
+
+model MissionTemplate {
+  id          String      @id @default(cuid())
+  kind        MissionKind
+  titleAr     String
+  target      Int
+  rewardCoins Int
+  rewardXp    Int         @default(0)
+  cadence     Cadence     @default(DAILY)
+  gameId      String?
+  weight      Int         @default(100)
+  isActive    Boolean     @default(true)
+
+  assignments MissionAssignment[]
+}
+
+model MissionAssignment {
+  id         String          @id @default(cuid())
+  userId     String
+  user       User            @relation(fields: [userId], references: [id])
+  templateId String
+  template   MissionTemplate @relation(fields: [templateId], references: [id])
+  progress   Int             @default(0)
+  claimedAt  DateTime?
+  periodKey  String
+  expiresAt  DateTime
+
+  @@unique([userId, templateId, periodKey])
+  @@index([userId, expiresAt])
+}
+
+model LootTable {
+  id        String      @id @default(cuid())
+  name      String      @unique
+  costCoins Int
+  pityAt    Int         @default(10)
+  entries   LootEntry[]
+}
+
+model LootEntry {
+  id      String     @id @default(cuid())
+  tableId String
+  table   LootTable  @relation(fields: [tableId], references: [id])
+  weight  Int
+  rarity  Rarity
+  kind    RewardKind
+  payload Json
+}
+
+model Item {
+  id           String     @id
+  kind         ItemKind
+  titleAr      String
+  assetUrl     String?
+  priceCoins   Int?
+  priceTickets Int?
+  isActive     Boolean    @default(true)
+  users        UserItem[]
+}
+
+model UserItem {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id])
+  itemId     String
+  item       Item      @relation(fields: [itemId], references: [id])
+  equipped   Boolean   @default(false)
+  expiresAt  DateTime?
+  acquiredAt DateTime  @default(now())
+
+  @@unique([userId, itemId])
+}
+
+model GiftTransfer {
+  id          String     @id @default(cuid())
+  senderId    String
+  recipientId String?
+  claimCode   String?    @unique
+  amount      Int
+  feeBurned   Int
+  status      GiftStatus @default(PENDING)
+  message     String?
+  createdAt   DateTime   @default(now())
+  claimedAt   DateTime?
+  expiresAt   DateTime
+
+  @@index([senderId, createdAt])
+  @@index([recipientId, createdAt])
+}
+
+model PromoCode {
+  id           String            @id @default(cuid())
+  code         String            @unique
+  rewardKind   RewardKind
+  payload      Json
+  maxUses      Int               @default(1)
+  usedCount    Int               @default(0)
+  perUserLimit Int               @default(1)
+  startsAt     DateTime          @default(now())
+  expiresAt    DateTime
+  redemptions  PromoRedemption[]
+}
+
+model PromoRedemption {
+  id        String    @id @default(cuid())
+  codeId    String
+  code      PromoCode @relation(fields: [codeId], references: [id])
+  userId    String
+  createdAt DateTime  @default(now())
+
+  @@unique([codeId, userId])
+}
+
+model AdImpression {
   id            String    @id @default(cuid())
-  username      String?   @unique
-  password      String?
-  coins         Int       @default(100)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  gameId        String?
+  placement     String
+  network       String
+  nonce         String    @unique
+  status        AdStatus  @default(STARTED)
+  revenueMicros Int?
+  startedAt     DateTime  @default(now())
+  completedAt   DateTime?
+
+  @@index([userId, startedAt])
+  @@index([status, startedAt])
+}
+
+model Event {
+  id        BigInt   @id @default(autoincrement())
+  userId    String?
+  name      String
+  props     Json
+  sessionId String?
+  createdAt DateTime @default(now())
+
+  @@index([name, createdAt])
+  @@index([userId, createdAt])
+}
+
+model LeaderboardSnapshot {
+  id        String   @id @default(cuid())
+  gameId    String
+  periodKey String
+  userId    String
+  rank      Int
+  score     Int
+  payout    Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@unique([gameId, periodKey, userId])
+  @@index([gameId, periodKey, rank])
 }

@@ -6,6 +6,16 @@ declare module 'next-auth' {
       id: string;
       username: string;
       coins: number;
+      role?: string;
     };
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    id?: string;
+    username?: string;
+    coins?: number;
+    role?: string;
   }
 }
