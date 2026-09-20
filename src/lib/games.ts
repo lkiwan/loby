@@ -6,6 +6,7 @@ export type Game = {
   starAccent: string;
   glowAccent: string;
   isMafia: boolean;
+  keyArt?: string;
   players: string;
   tag: string;
   desc: string;
@@ -60,6 +61,7 @@ export const GAMES: Game[] = [
     starAccent: '#C8412B',
     glowAccent: '#E85C2A',
     isMafia: false,
+    keyArt: '/images/bara-salfa.jpeg',
     players: '3–15',
     tag: 'أدوار + خنات عليه',
     desc: 'ديڤلض منها! كلمة كتسبق، صحابها خاصهم يخدعو الطوار ويهربو منها.',

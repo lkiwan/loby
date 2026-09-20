@@ -53,6 +53,40 @@ function GameArt({ game, isFeatured }: { game: Game; isFeatured: boolean }) {
     );
   }
 
+  // custom key-art poster (ported from the game brand), kept on the paper backdrop
+  if (game.keyArt) {
+    return (
+      <div className="paper-card relative h-full w-full">
+        <div
+          className="absolute -right-10 -top-8 h-36 w-36 rounded-full opacity-50 blur-2xl"
+          style={{ background: game.glowAccent }}
+        />
+        <div
+          className="absolute -bottom-12 -left-10 h-32 w-32 rounded-full opacity-40 blur-2xl"
+          style={{ background: game.starAccent }}
+        />
+        <Image
+          src={game.keyArt}
+          alt={game.latinTitle}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          className="object-contain p-3 drop-shadow-[0_10px_18px_rgba(42,33,24,.35)] transition-transform duration-500 group-hover:scale-105"
+        />
+
+        <span
+          className="absolute left-1/2 top-2.5 h-3.5 w-14 -translate-x-1/2 rotate-2 rounded-[3px] border border-[#2a2118]/30"
+          style={{ background: 'rgba(242,178,61,.85)' }}
+        />
+        <span
+          className="absolute right-3 top-3 rounded-full border border-[#2a2118]/25 bg-white/60 px-2 py-0.5 font-lalezar text-[10px] text-[#2A2118] backdrop-blur-sm"
+          style={{ transform: 'rotate(2deg)' }}
+        >
+          {game.darijaTitle}
+        </span>
+      </div>
+    );
+  }
+
   return (
     <div className="paper-card relative h-full w-full">
       {/* tinted glow behind the sticker */}
