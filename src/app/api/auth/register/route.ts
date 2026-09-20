@@ -21,10 +21,6 @@ function isTempEmail(email: string): boolean {
   return TEMP_EMAIL_DOMAINS.includes(domain);
 }
 
-function isGmail(email: string): boolean {
-  return email.toLowerCase().endsWith('@gmail.com');
-}
-
 function randomReferralCode(base: string): string {
   const clean = base.replace(/[^a-zA-Z0-9]/g, '').slice(0, 8) || 'player';
   const suffix = Math.random().toString(36).slice(2, 6);
@@ -65,9 +61,9 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!EMAIL_RE.test(email) || !isGmail(email)) {
+    if (!EMAIL_RE.test(email)) {
       return NextResponse.json(
-        { error: 'Gmail فقط مسموح (@gmail.com).' },
+        { error: 'الإيميل خاصو يكون صحيح (مثلاً name@example.com).' },
         { status: 400 }
       );
     }
