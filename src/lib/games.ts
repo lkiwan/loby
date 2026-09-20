@@ -48,6 +48,7 @@ export const GAMES: Game[] = [
     starAccent: '#F2B23D',
     glowAccent: '#E85C2A',
     isMafia: false,
+    keyArt: '/images/7azr-fazr.jpeg',
     players: '3–15',
     tag: 'جاسوس + سوالي',
     desc: 'جاسوس أو جوج كيتلبطو بين الدراري. خرجوهم قبل ما يكمل الوقت!',
