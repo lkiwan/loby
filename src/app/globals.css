@@ -33,6 +33,12 @@ body {
   color: #fff;
 }
 
+/* While a rewarded ad is fullscreen, our own UI must not intercept the ad's
+   close (✕) area — accidental clicks are the #1 AdSense ban reason. */
+body.ad-playing {
+  pointer-events: none;
+}
+
 /* ──────────────────────────────────────────────
    ARCADE AMBIENCE — shared scene for every page
 ────────────────────────────────────────────── */

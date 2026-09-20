@@ -141,7 +141,8 @@ like a slot machine.
 ### 3.1 Streaks (build this first)
 
 - Check-in is **automatic on first authenticated page load of a new day**, not a button.
-  A button loses 30% of claims.
+  A button loses 30% of claims. ← shipped: the lobby (`src/app/page.tsx`) POSTs
+  `/api/rewards/checkin` once per authenticated load and only surfaces a toast on success.
 - Day boundary = **Africa/Casablanca**, stored as `DATE` in the user's timezone. Never UTC —
   a player at 01:00 must not lose their streak.
 - **Streak freeze**: one auto-freeze per 30 days. Protects the 40-day streaks you cannot
@@ -222,7 +223,7 @@ gifting into acquisition instead of internal coin shuffling.
 | **Direct game URL** (biggest hole today) | External game must call `POST /api/sessions/verify` with a short-lived signed JWT before booting. No valid session → refuse to start. Until this ships, coins are cosmetic. |
 | Fake scores | Game signs `HMAC-SHA256(gameSecret, sessionId + score + nonce)`. Per-game secret, rotatable. Server rejects scores above a per-game plausibility ceiling and flags for review. |
 | Ad postback replay | Postback must carry a `nonce` **issued at ad-start** and stored in Redis with TTL. One nonce = one reward. Verify HMAC of the whole query string, not a static shared secret in a URL. |
-| Multi-accounting | Device fingerprint + hashed IP on every `Device` row. Referral payout requires the friend to reach L3 organically. Cap accounts per device at 3. |
+| Multi-accounting | Device fingerprint + hashed IP on every `Device` row. Referral payout requires the friend to reach L3 organically. Cap accounts per device at 3. ← `Device` rows now written: `POST /api/devices/track` upserts a client fingerprint + salted SHA-256 of the IP; the lobby sends it on first authenticated load. |
 | Double-spend race | `updateMany({ where: { coins: { gte: cost } } })` + check `count === 1`, inside a transaction with the ledger insert. |
 | Retry storms / duplicate rewards | Every mutating endpoint takes an `Idempotency-Key`. `LedgerEntry.idempotencyKey` is `@unique`; on `P2002`, return the original result. |
 | Endpoint hammering | Redis sliding window: unlock 10/min, claim 20/min, gift 5/min, postback 60/min per user. |

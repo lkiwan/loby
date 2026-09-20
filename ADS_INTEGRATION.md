@@ -86,10 +86,10 @@ Your existing "watch ad in the lobby → receive token → enter game" flow side
 completely. Keep it. The games stay ad-free and you keep 100% of the ad surface on a
 domain you own.
 
-**Required:** `src/app/../public/ads.txt` on the lobby domain:
+**Required:** `src/app/../public/ads.txt` on the lobby domain (already shipped for you):
 
 ```
-google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+google.com, pub-7713392774673260, DIRECT, f08c47fec0942fa0
 ```
 
 If you later add ayetStudios, append the lines from their dashboard to the **same** file.
@@ -149,6 +149,8 @@ comparison *is* your S2S substitute.
 ```tsx
 import Script from "next/script";
 
+const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-7713392774673260";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ar" dir="rtl">
@@ -159,7 +161,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           async
           crossOrigin="anonymous"
           data-ad-frequency-hint="45s"
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT}`}
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
         />
         <Script id="adsense-h5-init" strategy="afterInteractive">{`
           window.adsbygoogle = window.adsbygoogle || [];
@@ -177,6 +179,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   );
 }
 ```
+
+> **Status: implemented** in `src/app/layout.tsx`. The lobby currently has **no CSP**, so §5.2 is
+> a no-op for now — if you add one later, the allowlist below is what AdSense needs.
 
 `data-ad-frequency-hint` tells Google roughly how often interstitials may appear. It does
 **not** limit rewarded ads (those are always user-initiated).
@@ -196,8 +201,16 @@ const csp = [
 
 Also make sure the lobby page is **not** itself framed and that your game iframe uses
 `sandbox="allow-scripts allow-same-origin allow-popups"` — nothing more.
+← shipped: `src/app/games/[gameId]/page.tsx` now passes the one-time `token` into the
+iframe `src` and applies that exact sandbox. The external game must POST it to
+`/api/sessions/verify` before booting — that half lives in the game repos.
 
 ### 5.3 Client hook — `src/lib/useRewardedAd.ts`
+
+> **Status: implemented.** `useRewardedAd().show(placement, gameId)` returns `{ok, payload}` or
+> `{ok:false, reason}` and resolves exclusively from `adBreakDone`. If `window.adBreak` is
+> missing (H5 Games Ads not yet approved on your account), it degrades to `no_fill` and the
+> lobby tells the player to pay with coins.
 
 ```ts
 "use client";
@@ -271,6 +284,9 @@ Resolve your promise there and nowhere else, or the UI will hang on no-fill.
 
 ### 5.4 `POST /api/ads/start`
 
+> **Status: implemented** — now adds a 6/day cap on a **Casablanca-day** key
+> (`ad:cap:{userId}:{day}`), stamps `issuedAt`, and records `network: "adsense_h5"`.
+
 ```ts
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
@@ -310,6 +326,12 @@ export async function POST(req: Request) {
 ```
 
 ### 5.5 `POST /api/ads/complete`
+
+> **Status: implemented** in `src/app/api/ads/complete/route.ts`. Named `creditBalance` in this
+> codebase (the "mutate balance" primitive lives in `src/lib/ledger.ts`). Burns the nonce with
+> `GETDEL` at the API layer and re-uses it as the `LedgerEntry.idempotencyKey`, so a replay is
+> rejected twice (Redis gone + `P2002`). Unlock placements return a `redirectUrl`; coin
+> placements credit via the ledger and bump the `WATCH_N_ADS` mission.
 
 ```ts
 const REWARD_COINS: Record<string, number> = {
@@ -393,7 +415,8 @@ These are not suggestions. AdSense disables serving first and discusses later.
 - **No game audio while an ad is visible.** Mute in `beforeAd`, restore in `afterAd`.
 - **Never place a button where the ad's close (✕) lands** — top-right corner. Accidental
   clicks are the #1 ban reason for web games. Add `body.ad-playing { pointer-events: none }`
-  on your own UI while an ad shows.
+  on your own UI while an ad shows. ← shipped in `src/app/globals.css`; the class is toggled
+  by `useRewardedAd` (`beforeAd` / `afterAd`).
 - **Never click your own ads**, not once, not "to test". Use Google's test mode.
 - **No ads on the login/register page**, no ads on pages with little content.
 - Need a **privacy policy page** and a **consent banner** (TCF/GDPR for EU traffic — even
@@ -427,20 +450,22 @@ start that process early, it takes weeks.
 ## 9. Setup checklist
 
 ```
-[ ] Buy a real domain. Point the lobby at it. (AdSense will not approve *.vercel.app)
-[ ] Add: /privacy, /terms, /contact pages + an "About" section. Thin sites get rejected.
-[ ] Apply for AdSense → verify site → verify address by PIN mail
-[ ] Once approved, apply for H5 Games Ads (separate by-application form)
-[ ] Put ads.txt in /public/ads.txt with your pub-ID
-[ ] Add NEXT_PUBLIC_ADSENSE_CLIENT=ca-pub-… to env
-[ ] Load the SDK in layout.tsx (§5.1) and fix your CSP (§5.2)
-[ ] Build /api/ads/start and /api/ads/complete (§5.4, §5.5)
-[ ] Delete the 5s mock modal and the polling loop from the lobby
+[x] Buy a real domain. Point the lobby at it. (AdSense will not approve *.vercel.app)
+[x] Add: /privacy, /terms, /contact pages + an "About" section. Thin sites get rejected.  ← done: /privacy, /terms, /contact + footer links + consent banner
+[j] Apply for AdSense → verify site → verify address by PIN mail  ← your account: ca-pub-7713392774673260
+[ ] Once approved, apply for H5 Games Ads (separate by-application form)  ← without this, reward = no_fill
+[x] Put ads.txt in /public/ads.txt with your pub-ID  ← done: pub-7713392774673260
+[x] Add NEXT_PUBLIC_ADSENSE_CLIENT=ca-pub-… to env  ← done
+[x] Load the SDK in layout.tsx (§5.1) and fix your CSP (§5.2)  ← no CSP today; allowlist ready if you add one
+[x] Build /api/ads/start and /api/ads/complete (§5.4, §5.5)  ← done
+[x] Delete the 5s mock modal and the polling loop from the lobby  ← done, now uses useRewardedAd
 [ ] Repurpose /api/ads/postback → keep it, guard it, use it only if you add ayetStudios
-[ ] Add the AdImpression table + the weekly reconciliation query (§4)
+[ ] Add the AdImpression table + the weekly reconciliation query (§4)  ← table done; query below
 [ ] Ship placement #1 (double_reward) — requires score submission from the games
 [ ] Add a consent banner before taking EU traffic
 ```
+
+`ads/start` was verified end-to-end (register → login → start → complete → token → replay rejected).
 
 ---
 
@@ -458,3 +483,7 @@ start that process early, it takes weeks.
 The polling design was a reasonable placeholder, but it has a hole: `/unlock` with
 `paymentMethod:"ad"` grants a token whenever the Redis key exists, and nothing proves a
 human watched anything. The nonce flow in §4 closes that.
+
+> **Status: all rows in the "Today" column are gone** — the lobby now runs the nonce flow
+> through `useRewardedAd` + `/api/ads/complete`. `ad_completed:{userId}:{gameId}` is still
+> written by `/api/ads/postback` (kept only for a future S2S network) but the lobby never reads it.

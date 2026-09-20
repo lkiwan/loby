@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -22,6 +22,8 @@ import {
 import { StarMark } from '@/components/Star';
 import GameCard from '@/components/GameCard';
 import { GAMES } from '@/lib/games';
+import { useRewardedAd } from '@/lib/useRewardedAd';
+import { trackDevice } from '@/lib/device';
 
 const TICKER_ITEMS = [
   '🕹️ ساحة اللعب 100% بالدارجة',
@@ -41,14 +43,42 @@ export default function LobbyPage() {
   const [busyAction, setBusyAction] = useState<'coins' | 'ad' | null>(null);
   const [adModalOpen, setAdModalOpen] = useState(false);
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
-  const [adNonce, setAdNonce] = useState<string | null>(null);
   const [adStatus, setAdStatus] = useState<'idle' | 'watching' | 'verifying'>('idle');
   const [toast, setToast] = useState<{ kind: 'error' | 'ok'; text: string } | null>(null);
+  const { show: showRewardedAd } = useRewardedAd();
 
   const showToast = (kind: 'error' | 'ok', text: string) => {
     setToast({ kind, text });
     window.setTimeout(() => setToast(null), 3200);
   };
+
+  /* ── first authenticated load of the day: silent check-in + device record ──
+     A button loses ~30% of claims, so the streak claim is automatic. */
+  const autoClaimed = useRef(false);
+  useEffect(() => {
+    if (status !== 'authenticated' || autoClaimed.current) return;
+    autoClaimed.current = true;
+
+    void trackDevice();
+
+    (async () => {
+      try {
+        const res = await fetch('/api/rewards/checkin', { method: 'POST' });
+        if (!res.ok) return;
+        const data = (await res.json()) as {
+          claimed?: boolean;
+          reward?: number;
+          streak?: number;
+        };
+        if (data.claimed && typeof data.reward === 'number') {
+          await update();
+          showToast('ok', `مكافأة اليوم: +${data.reward} 🪙 (اليوم ${data.streak ?? 1})`);
+        }
+      } catch {
+        // check-in is best-effort; never block the lobby
+      }
+    })();
+  }, [status, update]);
 
   const requireAuth = (): boolean => {
     if (status === 'authenticated') return true;
@@ -98,64 +128,44 @@ export default function LobbyPage() {
     }
   };
 
-  const watchAdToPlay = async (gameId: string) => {
+  const watchAdToPlay = (gameId: string) => {
     if (!requireAuth()) return;
-    try {
-      const res = await fetch('/api/ads/start', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ gameId, placement: 'unlock' }),
-      });
-      if (!res.ok) throw new Error('bad status');
-      const { nonce } = await res.json();
-      setAdNonce(nonce);
-      setSelectedGame(gameId);
-      setAdStatus('idle');
-      setAdModalOpen(true);
-    } catch {
-      showToast('error', 'ما توفقش خرج السيرڤر للإعلان — جرب بعد شوية');
-    }
+    setSelectedGame(gameId);
+    setAdStatus('idle');
+    setAdModalOpen(true);
   };
 
-  const simulateAdWatch = () => {
-    setAdStatus('watching');
-    window.setTimeout(() => {
-      setAdStatus('verifying');
-      verifyAdCompletion();
-    }, 5000);
-  };
-
-  const verifyAdCompletion = async () => {
+  const startRewardedAd = async () => {
     if (!selectedGame) return;
-    let attempts = 0;
-    const maxAttempts = 10;
+    setAdStatus('watching');
+    const result = await showRewardedAd('unlock', selectedGame);
+    setAdStatus('idle');
 
-    const poll = window.setInterval(async () => {
-      attempts += 1;
-      try {
-        const res = await fetch('/api/games/unlock', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ gameId: selectedGame, paymentMethod: 'ad', nonce: adNonce }),
-        });
-
-        if (res.status === 200) {
-          window.clearInterval(poll);
-          const { redirectUrl } = await res.json();
-          router.replace(redirectUrl);
-          return;
-        }
-        if (attempts >= maxAttempts) {
-          window.clearInterval(poll);
-          showToast('error', 'ما توفقش التحقق من الإعلان. جرب مرة أخرى.');
-          setAdModalOpen(false);
-        }
-      } catch {
-        window.clearInterval(poll);
-        showToast('error', 'مشكل فالتحقق — جرب مرة أخرى');
-        setAdModalOpen(false);
+    if (result.ok) {
+      if (result.payload.redirectUrl) {
+        setAdStatus('verifying');
+        router.replace(result.payload.redirectUrl);
+        return;
       }
-    }, 2000);
+      const newBalance = result.payload.newBalance;
+      if (typeof newBalance === 'number') {
+        await update({ coins: newBalance });
+      }
+      showToast('ok', `+${result.payload.awarded ?? 0} عملات مكافأة! 🎁`);
+      setAdModalOpen(false);
+      return;
+    }
+
+    setAdModalOpen(false);
+    if (result.reason === 'no_fill') {
+      showToast('error', 'ما كتبانش إعلان في هاد اللحظة — جرب بالعملات');
+    } else if (result.reason === 'capped') {
+      showToast('error', 'وصلتي للحد اليومي ديال الإعلانات (6)');
+    } else if (result.reason === 'dismissed') {
+      showToast('error', 'خليط الإعلان قبل ما يكمل — جرب مرة أخرى');
+    } else {
+      showToast('error', 'مشكل فالإعلان — جرب مرة أخرى');
+    }
   };
 
   const handleLogout = async () => {
@@ -428,6 +438,19 @@ export default function LobbyPage() {
           <p className="font-cairo text-[12px] font-bold text-[#a08a63]">
             DARJA ARCADE — لعبات جماعية بالدارجة، كتحبو على تيليفون واحد.
           </p>
+          <div className="mt-1.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 font-cairo text-[11px] font-bold text-[#7a6a4d]">
+            <Link href="/privacy" className="transition hover:text-amber-300">
+              سياسة الخصوصية
+            </Link>
+            <span aria-hidden>•</span>
+            <Link href="/terms" className="transition hover:text-amber-300">
+              شروط الاستخدام
+            </Link>
+            <span aria-hidden>•</span>
+            <Link href="/contact" className="transition hover:text-amber-300">
+              تواصل معنا
+            </Link>
+          </div>
           <p className="font-cairo text-[10px] font-semibold text-[#7a6a4d]">
             مصنوعة بـ ❤️ وشوية كسكس في المغرب 🇲🇦
           </p>
@@ -464,7 +487,7 @@ export default function LobbyPage() {
                 </p>
 
                 <button
-                  onClick={simulateAdWatch}
+                  onClick={startRewardedAd}
                   className="btn-chunk btn-amber group mt-6 w-full py-4 text-[15px]"
                 >
                   <Play className="h-5 w-5" />

@@ -13,9 +13,17 @@ const EXTERNAL_GAMES: Record<string, string> = {
   'bara-salfa': 'https://bara-salfa-bdarija.vercel.app/',
 };
 
-export default function GamePage({ params }: { params: Promise<{ gameId: string }> }) {
+export default function GamePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ gameId: string }>;
+  searchParams: Promise<{ token?: string }>;
+}) {
   const resolvedParams = use(params);
-  const externalUrl = EXTERNAL_GAMES[resolvedParams.gameId];
+  const { token } = use(searchParams);
+  const baseUrl = EXTERNAL_GAMES[resolvedParams.gameId];
+  const externalUrl = token ? `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}` : baseUrl;
   const [exitConfirm, setExitConfirm] = useState(false);
 
   if (!externalUrl) {
@@ -56,6 +64,7 @@ export default function GamePage({ params }: { params: Promise<{ gameId: string 
         src={externalUrl}
         className="h-full w-full border-0"
         allow="autoplay; fullscreen"
+        sandbox="allow-scripts allow-same-origin allow-popups"
         title={`Game: ${resolvedParams.gameId}`}
       />
 
