@@ -3,13 +3,66 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
-import { ensureSignupGrant } from '@/lib/ledger';
+import { ensureSignupGrant, isDuplicate } from '@/lib/ledger';
 import { getConfig } from '@/lib/config';
 
 function randomReferralCode(base: string): string {
   const clean = base.replace(/[^a-zA-Z0-9]/g, '').slice(0, 8) || 'player';
   const suffix = Math.random().toString(36).slice(2, 6);
   return `${clean}-${suffix}`;
+}
+
+async function getOrCreateGoogleUser(
+  email: string,
+  name?: string | null,
+  image?: string | null,
+) {
+  const existing = await prisma.user.findUnique({ where: { email } });
+  if (existing) return existing;
+
+  let user;
+  try {
+    user = await prisma.user.create({
+      data: {
+        email,
+        username: `${(name || 'player').replace(/[^a-zA-Z0-9]/g, '').slice(0, 14) || 'player'}${Math.random().toString(36).slice(2, 6)}`,
+        image: image || null,
+      },
+    });
+  } catch (e) {
+    if (!isDuplicate(e)) throw e;
+    user = await prisma.user.findUnique({ where: { email } });
+    if (!user) throw e;
+  }
+
+  const cfg = await getConfig();
+  await ensureSignupGrant(user.id, cfg.signupGrant as unknown as number);
+
+  let ownCode = randomReferralCode(name || email || 'player');
+  let codeTaken = true;
+  while (codeTaken) {
+    const clash = await prisma.user.findUnique({ where: { referralCode: ownCode } });
+    if (!clash) {
+      codeTaken = false;
+    } else {
+      ownCode = randomReferralCode(name || email || 'player');
+    }
+  }
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { referralCode: ownCode },
+  });
+
+  await prisma.event.create({
+    data: {
+      name: 'signup',
+      userId: user.id,
+      props: { provider: 'google' },
+    },
+  });
+
+  return user;
 }
 
 export const authOptions: NextAuthOptions = {
@@ -63,22 +116,11 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
   },
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ account, profile }) {
       if (account?.provider === 'google') {
         const email = profile?.email?.toLowerCase();
         if (!email || !email.endsWith('@gmail.com')) {
           return '/login?error=gmail_only';
-        }
-
-        const existingUser = await prisma.user.findUnique({
-          where: { email },
-          select: { id: true, password: true, username: true },
-        });
-
-        if (existingUser) {
-          if (existingUser.password) {
-            return '/login?error=account_exists';
-          }
         }
       }
       return true;
@@ -95,15 +137,38 @@ export const authOptions: NextAuthOptions = {
       if (trigger === 'update' && session?.coins !== undefined) {
         token.coins = session.coins;
       }
-      if (account?.provider === 'google' && token.id) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id },
-          select: { coins: true, role: true, username: true },
-        });
-        if (dbUser) {
-          token.coins = dbUser.coins;
-          token.role = dbUser.role;
-          token.username = dbUser.username ?? undefined;
+      if (account?.provider === 'google') {
+        const email = typeof token.email === 'string' ? token.email.trim().toLowerCase() : undefined;
+        if (email && email.endsWith('@gmail.com')) {
+          const googleUser = user as { name?: string | null; image?: string | null } | undefined;
+          const dbUser = await getOrCreateGoogleUser(email, googleUser?.name, googleUser?.image);
+          if (dbUser) {
+            await prisma.account.upsert({
+              where: {
+                provider_providerAccountId: {
+                  provider: 'google',
+                  providerAccountId: account.providerAccountId,
+                },
+              },
+              create: {
+                userId: dbUser.id,
+                type: 'oauth',
+                provider: 'google',
+                providerAccountId: account.providerAccountId,
+                refresh_token: account.refresh_token,
+                access_token: account.access_token,
+                expires_at: account.expires_at,
+                token_type: account.token_type,
+                scope: account.scope,
+                id_token: account.id_token,
+              },
+              update: {},
+            });
+            token.id = dbUser.id;
+            token.coins = dbUser.coins;
+            token.role = dbUser.role;
+            token.username = dbUser.username ?? undefined;
+          }
         }
       }
       return token;
