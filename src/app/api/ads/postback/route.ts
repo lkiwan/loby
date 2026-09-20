@@ -4,6 +4,7 @@ import { generateGameToken, redis } from '@/lib/redis';
 import { prisma } from '@/lib/prisma';
 import { creditBalance } from '@/lib/ledger';
 import { getConfig } from '@/lib/config';
+import { bumpMission } from '@/lib/missions';
 import { casablancaDay, casablancaDateAt } from '@/lib/time';
 
 function safeEqual(a: string, b: string): boolean {
@@ -98,6 +99,8 @@ export async function POST(req: Request) {
       where: nonceKey ? { nonce } : { userId, gameId, status: 'STARTED' },
       data: { status: 'COMPLETED', completedAt: new Date() },
     });
+
+    await bumpMission(userId, 'WATCH_N_ADS', 1);
 
     await prisma.event.create({
       data: { name: 'ad_completed', userId, props: { placement, gameId, nonce } },

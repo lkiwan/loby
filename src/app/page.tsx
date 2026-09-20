@@ -72,7 +72,10 @@ export default function LobbyPage() {
     try {
       const res = await fetch('/api/games/unlock', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Idempotency-Key': crypto.randomUUID(),
+        },
         body: JSON.stringify({ gameId, paymentMethod: 'coins' }),
       });
 

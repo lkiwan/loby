@@ -16,7 +16,6 @@ export async function GET() {
   const assignments = await prisma.missionAssignment.findMany({
     where: { userId: session.user.id, expiresAt: { gte: new Date() } },
     include: { template: true },
-    orderBy: { createdAt: 'asc' },
   });
 
   return NextResponse.json({

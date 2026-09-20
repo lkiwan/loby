@@ -27,6 +27,21 @@ export function verifySessionToken(
   }
 }
 
+export function decodeSessionToken(
+  jwt: string
+): { sessionId?: string; userId?: string; gameId?: string; exp?: number } {
+  try {
+    const decoded = Buffer.from(jwt, 'base64url').toString('utf8');
+    const parts = decoded.split('.');
+    if (parts.length !== 4) return {};
+    const exp = Number(parts[3]);
+    if (Number.isNaN(exp)) return {};
+    return { sessionId: parts[0], userId: parts[1], gameId: parts[2], exp };
+  } catch {
+    return {};
+  }
+}
+
 export function signScore(sessionId: string, score: number, nonce: string, secret: string): string {
   return crypto.createHmac('sha256', secret).update(`${sessionId}|${score}|${nonce}`).digest('hex');
 }

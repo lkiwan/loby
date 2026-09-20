@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import crypto from 'crypto';
 import { generateGameToken, redis } from '@/lib/redis';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../auth/[...nextauth]/route';
@@ -39,7 +40,8 @@ export async function POST(req: Request) {
     const userId = session.user.id;
 
     if (paymentMethod === 'coins') {
-      const key = makeKey(userId, gameId, 'coins', idempotencyHeader ?? undefined);
+      const nonce = idempotencyHeader ?? crypto.randomUUID();
+      const key = makeKey(userId, gameId, 'coins', nonce);
       try {
         await spendBalance({
           userId,

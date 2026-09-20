@@ -129,7 +129,7 @@ model User {
   lastCheckinOn DateTime? @db.Date
   freezesLeft   Int       @default(1)
 
-  referralCode String  @unique
+  referralCode String? @unique
   referredById String?
   referredBy   User?   @relation("Ref", fields: [referredById], references: [id])
   referrals    User[]  @relation("Ref")
@@ -227,6 +227,7 @@ model PlaySession {
 
 model MissionTemplate {
   id          String      @id @default(cuid())
+  key         String      @unique
   kind        MissionKind
   titleAr     String
   target      Int

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const { PrismaClient } = require('@prisma/client');
 const crypto = require('crypto');
 const prisma = new PrismaClient();
@@ -63,11 +64,11 @@ const CONFIG = {
 };
 
 const MISSIONS = [
-  { kind: 'PLAY_N_GAMES', titleAr: 'العب 3 لوعات اليوم', target: 3, rewardCoins: 20, cadence: 'DAILY', weight: 100 },
-  { kind: 'PLAY_SPECIFIC_GAME', titleAr: 'العب الطاولة اللي ما لعبتيش بزاف', target: 1, rewardCoins: 30, cadence: 'DAILY', weight: 80 },
-  { kind: 'WATCH_N_ADS', titleAr: 'شاهد إعلانين', target: 2, rewardCoins: 20, cadence: 'DAILY', weight: 70 },
-  { kind: 'PLAY_N_GAMES', titleAr: 'العب 10 لوعات فالأسبوع', target: 10, rewardCoins: 200, cadence: 'WEEKLY', weight: 100 },
-  { kind: 'WIN_STREAK', titleAr: 'اربح 3 ديجّات متتاليين', target: 3, rewardCoins: 50, cadence: 'WEEKLY', weight: 60 },
+  { key: 'play_n_games_daily', kind: 'PLAY_N_GAMES', titleAr: 'العب 3 لوعات اليوم', target: 3, rewardCoins: 20, cadence: 'DAILY', weight: 100 },
+  { key: 'play_specific_game_daily', kind: 'PLAY_SPECIFIC_GAME', titleAr: 'العب الطاولة اللي ما لعبتيش بزاف', target: 1, rewardCoins: 30, cadence: 'DAILY', weight: 80 },
+  { key: 'watch_n_ads_daily', kind: 'WATCH_N_ADS', titleAr: 'شاهد إعلانين', target: 2, rewardCoins: 20, cadence: 'DAILY', weight: 70 },
+  { key: 'play_n_games_weekly', kind: 'PLAY_N_GAMES', titleAr: 'العب 10 لوعات فالأسبوع', target: 10, rewardCoins: 200, cadence: 'WEEKLY', weight: 100 },
+  { key: 'win_streak_weekly', kind: 'WIN_STREAK', titleAr: 'اربح 3 ديجّات متتاليين', target: 3, rewardCoins: 50, cadence: 'WEEKLY', weight: 60 },
 ];
 
 async function main() {
@@ -108,7 +109,19 @@ async function main() {
   }
 
   for (const m of MISSIONS) {
-    await prisma.missionTemplate.create({ data: m });
+    await prisma.missionTemplate.upsert({
+      where: { key: m.key },
+      update: {
+        kind: m.kind,
+        titleAr: m.titleAr,
+        target: m.target,
+        rewardCoins: m.rewardCoins,
+        cadence: m.cadence,
+        weight: m.weight,
+        isActive: true,
+      },
+      create: m,
+    });
   }
 
   console.log('Seeded games, config and missions.');
