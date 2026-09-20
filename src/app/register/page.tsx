@@ -19,6 +19,7 @@ import {
   UserPlus,
 } from 'lucide-react';
 import AuthShell, { AuthCardShell } from '@/components/AuthShell';
+import GoogleIcon from '@/components/GoogleIcon';
 
 const TEMP_EMAIL_DOMAINS = [
   'tempmail.com', '10minutemail.com', 'guerrillamail.com', 'mailinator.com',
@@ -106,6 +107,12 @@ export default function RegisterPage() {
     } else {
       window.setTimeout(() => router.push('/login'), 1200);
     }
+  };
+
+  const handleGoogleRegister = () => {
+    if (loading) return;
+    setError(null);
+    signIn('google', { callbackUrl: '/' });
   };
 
   return (
@@ -230,6 +237,24 @@ export default function RegisterPage() {
                 سجيل
               </button>
             </form>
+
+            <div className="mt-5 flex items-center gap-3">
+              <span className="h-px flex-1 bg-white/10" />
+              <span className="font-cairo text-[11px] font-bold uppercase tracking-widest text-neutral-600">
+                أو
+              </span>
+              <span className="h-px flex-1 bg-white/10" />
+            </div>
+
+            <button
+              type="button"
+              onClick={handleGoogleRegister}
+              disabled={loading}
+              className="btn-chunk btn-ghost-hollow mt-1 w-full py-3.5 text-[15px] flex items-center justify-center gap-2.5"
+            >
+              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <GoogleIcon />}
+              <span className="font-cairo font-semibold">سجّل بـ Google (Gmail فقط)</span>
+            </button>
 
             <p className="mt-5 text-center font-cairo text-[12.5px] font-semibold text-neutral-500">
               عندك أصلاً حساب؟{' '}
