@@ -20,7 +20,7 @@ export default function GamePage({ params }: { params: Promise<{ gameId: string 
 
   if (!externalUrl) {
     return (
-      <div className="scene flex min-h-dvh flex-col items-center justify-center gap-4 bg-[#05050d] px-6 text-center">
+      <div className="scene flex min-h-dvh flex-col items-center justify-center gap-4 bg-[#0d0b08] px-6 text-center">
         <StarMark size={48} />
         <h1 className="font-lalezar text-3xl text-neutral-50">الطاولة ما تلقاتهاش 🥲</h1>
         <p className="font-cairo text-sm font-semibold text-neutral-400">
@@ -62,7 +62,7 @@ export default function GamePage({ params }: { params: Promise<{ gameId: string 
       {exitConfirm && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setExitConfirm(false)} />
-          <div className="anim-pop relative w-full max-w-xs rounded-3xl border border-white/10 bg-[#0b0b16] p-6 text-center shadow-2xl">
+          <div className="anim-pop relative w-full max-w-xs rounded-2xl border border-[#6b542e]/50 bg-[#171210] p-6 text-center shadow-2xl">
             <h2 className="font-lalezar text-2xl text-neutral-50">بغيتي تخرج من اللعبة؟</h2>
             <p className="mt-1.5 font-cairo text-[13px] font-semibold text-neutral-400">
               تقدموك فهاد الجولة غادي يتضيع.

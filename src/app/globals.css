@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #05050d;
-  --foreground: #f4efe6;
+  --background: #0d0b08;
+  --foreground: #f1e7d6;
 }
 
 @theme inline {
@@ -305,6 +305,140 @@ body {
 /* thin scrollbar for horizontal strips */
 .scroll-x::-webkit-scrollbar { display: none; }
 .scroll-x { scrollbar-width: none; }
+
+/* ──────────────────────────────────────────────
+   HAND-MADE CORKBOARD STYLE — night café wall
+────────────────────────────────────────────── */
+/* corkboard panel (the wall the posters hang on) */
+.cork {
+  background-color: #5a3c23;
+  background-image:
+    radial-gradient(rgba(0, 0, 0, 0.22) 1px, transparent 1.6px),
+    radial-gradient(rgba(255, 244, 214, 0.06) 1.2px, transparent 1.8px);
+  background-size: 24px 24px, 20px 20px;
+  background-position: 0 0, 12px 12px;
+}
+
+/* cream poster paper — the cards */
+.poster {
+  background-color: #f5eddc;
+  color: #221a10;
+  border: 2px solid rgba(34, 26, 16, 0.88);
+  border-radius: 14px;
+  box-shadow:
+    7px 8px 0 rgba(10, 7, 3, 0.55),
+    0 34px 70px -34px rgba(0, 0, 0, 0.9);
+}
+
+/* sticky washi-tape strip */
+.washi {
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  width: 66px;
+  height: 19px;
+  transform: translateX(-50%) rotate(-2deg);
+  background: rgba(242, 178, 61, 0.92);
+  border-right: 2px dashed rgba(34, 26, 16, 0.22);
+  border-left: 2px dashed rgba(34, 26, 16, 0.22);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* hole-punched index tag chip (like cardboard game tags) */
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #eee2c6;
+  color: #221a10;
+  border: 1.5px solid rgba(34, 26, 16, 0.65);
+  border-radius: 8px;
+  box-shadow: 3px 3px 0 rgba(10, 7, 3, 0.4);
+  padding: 0.45rem 0.7rem;
+}
+.tag-hole {
+  position: relative;
+}
+.tag-hole::before {
+  content: "";
+  position: absolute;
+  top: -5.5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #0d0b08;
+}
+
+/* solid dark knob button (secondary on paper) */
+.btn-ink {
+  background: #241b11;
+  color: #f5eddc;
+  border: 2px solid #221a10;
+  box-shadow: 0 5px 0 #0d0b08, 0 14px 26px rgba(0, 0, 0, 0.55);
+}
+.btn-ink:active { box-shadow: 0 2px 0 #0d0b08, 0 8px 18px rgba(0, 0, 0, 0.4); }
+
+/* hazard warning-tape marquee strip */
+.hazard {
+  position: relative;
+  overflow: hidden;
+  background-color: #f1dcae;
+  color: #221a10;
+}
+.hazard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 13px,
+    rgba(34, 26, 16, 0.55) 13px 26px
+  );
+  opacity: 0.13;
+}
+.hazard::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 4px;
+  background-image: repeating-linear-gradient(
+    45deg,
+    #f1dcae 0 11px,
+    #221a10 11px 22px
+  );
+}
+
+/* sticky reminder note */
+.note {
+  background: #ffe9b8;
+  color: #221a10;
+  border: 1.5px solid rgba(34, 26, 16, 0.75);
+  box-shadow: 6px 6px 0 rgba(10, 7, 3, 0.45);
+}
+
+/* coin badge */
+.coin-disc {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: radial-gradient(circle at 32% 28%, #f7c35c, #e9a23b 60%, #b9791f);
+  color: #221a10;
+  border: 2px solid #221a10;
+  border-radius: 999px;
+  box-shadow: 2px 3px 0 rgba(10, 7, 3, 0.5);
+}
+
+/* warm lamp glows for the café wall */
+.lamp {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  pointer-events: none;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,

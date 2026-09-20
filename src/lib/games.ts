@@ -35,7 +35,7 @@ export const GAMES: Game[] = [
     starAccent: '#1F7A6B',
     glowAccent: '#3FBA9A',
     isMafia: false,
-    keyArt: '/images/paint-followers.jpeg',
+    keyArt: '/images/paint-followers-2.jpeg',
     players: '3–15',
     tag: 'رسم + تخمين',
     desc: 'كل واحد كيرسم، والمحتال كيخمم. واش غادي نجيبدوها؟',

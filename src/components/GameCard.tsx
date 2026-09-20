@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { Coins, Loader2, Play, Sparkles, Video } from 'lucide-react';
+import { Coins, Loader2, Play, Video } from 'lucide-react';
 import { GAMES, MAFIA_ART, type Game } from '@/lib/games';
 import Star from '@/components/Star';
 
@@ -141,7 +141,21 @@ export default function GameCard({
   const canAfford = coins >= game.cost;
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-white/20 hover:bg-white/[0.06] hover:shadow-[0_24px_60px_-20px_rgba(0,0,0,.8)]">
+    <article className="poster group relative flex flex-col overflow-hidden transition-transform duration-300 hover:-translate-y-1.5">
+      {/* washi tape + pushpin that keep the poster on the cork */}
+      <span className="washi" />
+      <svg
+        viewBox="0 0 24 24"
+        className="absolute -top-1.5 left-1/2 z-20 h-8 w-8 -translate-x-1/2 drop-shadow-[0_3px_2px_rgba(0,0,0,.55)]"
+        aria-hidden
+      >
+        <path
+          d="M12 2c-1.9 0-4.1 1-4.1 3.3 0 1 .4 1.9.8 2.9L8 12.2h8l-.7-4c.4-1 .8-1.9.8-2.9C16.1 3 13.9 2 12 2Z"
+          fill="#b3271e"
+        />
+        <rect x="10.4" y="11.6" width="3.2" height="8.6" rx="1.3" fill="#c9a45c" />
+      </svg>
+
       <div className="relative aspect-[16/10] w-full overflow-hidden">
         <GameArt game={game} isFeatured={game.id === 'mafia'} />
       </div>
@@ -149,35 +163,34 @@ export default function GameCard({
       <div className="flex flex-1 flex-col gap-3 p-4 sm:p-5">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div className="min-w-0">
-            <h3 className="font-grit text-[0.95rem] uppercase leading-tight tracking-wide text-neutral-100">
+            <h3 className="font-grit text-[0.95rem] uppercase leading-tight tracking-wide text-[#221a10]">
               {game.latinTitle}
             </h3>
-            <p className="mt-0.5 font-cairo text-[13px] font-bold text-neutral-400">
+            <p className="mt-0.5 font-lalezar text-[15px] text-[#b83a22]">
               {game.darijaTitle}
             </p>
           </div>
-          <span className="shrink-0 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 font-cairo text-[10px] font-black text-neutral-300">
+          <span className="tag-chip shrink-0 px-2 py-1 font-cairo text-[10px] font-black">
             {game.players} 👥
           </span>
         </div>
 
-        <p className="font-cairo text-[12.5px] font-semibold leading-relaxed text-neutral-400">
+        <p className="font-cairo text-[12.5px] font-semibold leading-relaxed text-[#5a4a34]">
           {game.desc}
         </p>
 
         <div className="mt-auto flex flex-col gap-2.5 pt-1">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-black/30 px-2.5 py-1 font-cairo text-[11px] font-black">
-              <Sparkles className="h-3 w-3 text-neutral-400" />
+            <span className="tag-chip px-2.5 py-1 font-cairo text-[11px] font-black text-[#221a10]">
               {game.tag}
             </span>
-            <span className="inline-flex items-center gap-1 text-[13px] font-black text-amber-400">
+            <span className="coin-disc rotate-2 px-2.5 py-1 text-[13px] font-black tabular-nums">
               <Coins className="h-4 w-4" />
               {game.cost}
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2.5">
             <button
               onClick={onPlay}
               disabled={isBusy || !canAfford}
@@ -196,7 +209,7 @@ export default function GameCard({
             <button
               onClick={onWatchAd}
               disabled={isBusy}
-              className="btn-chunk btn-ghost-hollow px-3 py-2.5 text-[13px]"
+              className="btn-chunk btn-ink px-3 py-2.5 text-[13px]"
             >
               {loadingAction === 'ad' && isBusy ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

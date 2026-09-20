@@ -6,12 +6,11 @@ import { StarMark } from '@/components/Star';
 
 export default function AuthShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="scene relative min-h-dvh bg-[#05050d] text-[#f4efe6]">
+    <div className="scene relative min-h-dvh bg-[#0d0b08] text-[#f1e7d6]">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-10%,#141b3a_0%,transparent_55%)]" />
-        <div className="orb orb-1 -left-28 -top-28 h-80 w-80 bg-amber-600/25" />
-        <div className="orb orb-2 -bottom-32 -right-24 h-96 w-96 bg-[#0EA5E9]/15" />
-        <div className="orb orb-3 left-1/3 top-1/2 h-64 w-64 bg-[#10B981]/10" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-6%,rgba(242,178,61,.16),transparent_42%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_88%_14%,rgba(193,74,41,.10),transparent_36%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_115%,rgba(0,0,0,.85),transparent_58%)]" />
       </div>
 
       <div className="relative z-10 flex min-h-dvh flex-col items-center justify-center px-4 py-10">
@@ -41,7 +40,7 @@ export function AuthCardShell({
   accent?: 'amber' | 'teal';
 }) {
   return (
-    <div className="anim-fadeup d1 relative w-full max-w-sm overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_30px_80px_-30px_rgba(0,0,0,.9)] backdrop-blur-xl sm:p-7">
+    <div className="anim-fadeup d1 relative w-full max-w-sm overflow-hidden rounded-2xl border-2 border-[#6b542e]/40 bg-[#1a140e] p-6 shadow-[0_30px_80px_-30px_rgba(0,0,0,.85)] sm:p-7">
       <div
         className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full opacity-30 blur-3xl"
         style={{ background: accent !== 'teal' ? '#f2b23d' : '#3fba9a' }}
