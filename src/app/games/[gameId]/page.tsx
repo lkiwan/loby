@@ -1,28 +1,42 @@
+'use client';
+
+import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
-export default function GamePage({ params }: { params: { gameId: string } }) {
-  // At this point, the middleware has already validated the token and burned it.
-  // The user is authenticated for this game session.
-  
-  return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center font-mono">
-      <h1 className="text-4xl font-bold text-green-500 mb-6 animate-pulse">
-        Game Unlocked: {params.gameId.toUpperCase()}
-      </h1>
-      <p className="text-gray-400 mb-8 max-w-md text-center leading-relaxed">
-        You have successfully bypassed the arcade bouncer! 
-        Your secure, single-use token was validated and destroyed. 
-        If you refresh this page, you will be kicked out.
-      </p>
-      
-      <div className="w-full max-w-2xl aspect-video bg-gray-900 border-2 border-gray-800 rounded-xl flex items-center justify-center mb-8 shadow-2xl relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'linear-gradient(0deg, transparent 24%, rgba(0, 255, 0, 0.3) 25%, rgba(0, 255, 0, 0.3) 26%, transparent 27%, transparent 74%, rgba(0, 255, 0, 0.3) 75%, rgba(0, 255, 0, 0.3) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0, 255, 0, 0.3) 25%, rgba(0, 255, 0, 0.3) 26%, transparent 27%, transparent 74%, rgba(0, 255, 0, 0.3) 75%, rgba(0, 255, 0, 0.3) 76%, transparent 77%, transparent)', backgroundSize: '50px 50px' }}></div>
-        <span className="text-2xl text-gray-700 tracking-widest font-bold z-10">[ GAME CANVAS PLACEHOLDER ]</span>
+const EXTERNAL_GAMES: Record<string, string> = {
+  'paint-followers': 'https://paint-followers.vercel.app/',
+  'mafia': 'https://mafia-dl7oma.vercel.app/',
+  '7azr-fazr': 'https://7azr-fazr-six.vercel.app/',
+  'bara-salfa': 'https://bara-salfa-bdarija.vercel.app/'
+};
+
+export default function GamePage({ params }: { params: Promise<{ gameId: string }> }) {
+  const resolvedParams = use(params);
+  const externalUrl = EXTERNAL_GAMES[resolvedParams.gameId];
+
+  if (!externalUrl) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center">
+        <h1 className="text-3xl font-bold mb-4">Game Not Found</h1>
+        <Link href="/" className="text-blue-500 hover:underline">Return to Lobby</Link>
       </div>
+    );
+  }
 
-      <Link href="/" className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded font-bold transition">
-        EXIT GAME
+  return (
+    <div className="h-screen w-full bg-black flex flex-col relative">
+      {/* Overlay back button to allow user to return to lobby */}
+      <Link href="/" className="absolute top-4 left-4 z-50 bg-gray-900/80 p-2 rounded-full text-white hover:bg-gray-700 transition shadow-lg backdrop-blur-sm">
+        <ArrowLeft className="w-6 h-6" />
       </Link>
+      
+      <iframe 
+        src={externalUrl} 
+        className="w-full h-full border-0"
+        allow="autoplay; fullscreen"
+        title={`Game: ${resolvedParams.gameId}`}
+      />
     </div>
   );
 }

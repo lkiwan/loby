@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { generateGameToken, redis } from '@/lib/redis';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { authOptions } from '../../auth/[...nextauth]/route';
 import { prisma } from '@/lib/prisma';
 
 export async function POST(req: Request) {
@@ -18,12 +18,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing gameId or paymentMethod' }, { status: 400 });
     }
 
-    const gameUrls: Record<string, string> = {
-      'game1': '/games/game1',
-      'game2': '/games/game2',
-    };
-    
-    const gameUrl = gameUrls[gameId] || `/games/${gameId}`;
+    const gameUrl = `/games/${gameId}`;
 
     if (paymentMethod === 'coins') {
       const COST = 10;

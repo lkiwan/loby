@@ -7,8 +7,10 @@ import { Coins, LogOut, Play, Video } from 'lucide-react';
 import Link from 'next/link';
 
 const GAMES = [
-  { id: 'game1', title: 'Space Invaders', cost: 10, img: 'https://via.placeholder.com/300x200.png?text=Space+Invaders' },
-  { id: 'game2', title: 'Pac-Man', cost: 15, img: 'https://via.placeholder.com/300x200.png?text=Pac-Man' },
+  { id: 'paint-followers', title: 'Paint Followers', cost: 10, img: 'https://via.placeholder.com/300x200.png?text=Paint+Followers' },
+  { id: 'mafia', title: 'Mafia', cost: 15, img: 'https://via.placeholder.com/300x200.png?text=Mafia' },
+  { id: '7azr-fazr', title: '7azr Fazr', cost: 10, img: 'https://via.placeholder.com/300x200.png?text=7azr+Fazr' },
+  { id: 'bara-salfa', title: 'Bara Salfa', cost: 20, img: 'https://via.placeholder.com/300x200.png?text=Bara+Salfa' },
 ];
 
 export default function LobbyPage() {
@@ -101,7 +103,7 @@ export default function LobbyPage() {
               <span className="font-bold text-lg">{session.user.coins}</span>
             </div>
             <div className="text-gray-300">
-              Welcome, <span className="font-semibold text-white">{session.user.email}</span>
+              Welcome, <span className="font-semibold text-white">{session.user.username}</span>
             </div>
             <button onClick={handleLogout} className="text-gray-400 hover:text-white transition">
               <LogOut className="w-5 h-5" />
