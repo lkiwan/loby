@@ -13,7 +13,6 @@ import {
   Gift,
   Loader2,
   Lock,
-  Mail,
   Sparkles,
   User,
   UserPlus,
@@ -21,25 +20,8 @@ import {
 import AuthShell, { AuthCardShell } from '@/components/AuthShell';
 import GoogleIcon from '@/components/GoogleIcon';
 
-const TEMP_EMAIL_DOMAINS = [
-  'tempmail.com', '10minutemail.com', 'guerrillamail.com', 'mailinator.com',
-  'throwaway.email', 'fakeinbox.com', 'temp-mail.org', 'yopmail.com',
-  'trashmail.com', 'getnada.com', 'maildrop.cc', 'dispostable.com',
-  'tempail.com', 'emailondeck.com', 'mintemail.com', 'spamgourmet.com',
-];
-
-function isTempEmail(email: string): boolean {
-  const domain = email.split('@')[1]?.toLowerCase();
-  return TEMP_EMAIL_DOMAINS.includes(domain);
-}
-
-function isGmail(email: string): boolean {
-  return email.toLowerCase().endsWith('@gmail.com');
-}
-
 export default function RegisterPage() {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [referralCode, setReferralCode] = useState('');
@@ -58,14 +40,6 @@ export default function RegisterPage() {
       setError('الاسم خاصو يكون 3 حتى 20 حرف: حروف صغيرة، أرقام أو _ فقط.');
       return;
     }
-    if (!isGmail(email)) {
-      setError('Gmail فقط مسموح (@gmail.com).');
-      return;
-    }
-    if (isTempEmail(email)) {
-      setError('الإيميلات المؤقتة ممنوعة.');
-      return;
-    }
     if (password.length < 6) {
       setError('كلمة السر خاصها تكون على الأقل 6 حروف.');
       return;
@@ -81,7 +55,6 @@ export default function RegisterPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         username,
-        email,
         password,
         referralCode: referralCode.trim() || undefined,
       }),
@@ -166,19 +139,6 @@ export default function RegisterPage() {
                   autoComplete="username"
                   minLength={3}
                   maxLength={20}
-                  required
-                />
-              </div>
-
-              <div className="relative">
-                <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-neutral-500" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value.toLowerCase())}
-                  className="field field-teal pl-11"
-                  placeholder="Gmail فقط (example@gmail.com)"
-                  autoComplete="email"
                   required
                 />
               </div>
