@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { AlertTriangle, Eye, EyeOff, Loader2, Lock, LogIn, User, Mail } from 'lucide-react';
+import { AlertTriangle, Eye, EyeOff, Loader2, Lock, LogIn, User } from 'lucide-react';
 import AuthShell, { AuthCardShell } from '@/components/AuthShell';
 
 const googleSvg = (
@@ -28,50 +28,63 @@ const googleSvg = (
   </svg>
 );
 
+function authErrorText(code: string | null): string | null {
+  if (!code) return null;
+  switch (code) {
+    case 'account_exists':
+      return 'هذا الإيميل مسجل بحساب بكلمة سر. دخل بكلمة السر ديالك أو سجّل بحساب آخر.';
+    case 'gmail_only':
+      return 'Gmail فقط مسموح للدخول بـ Google. جرب بحساب Gmail آخر أو دخل بكلمة السر.';
+    case 'CredentialsSignin':
+    case 'invalid_credentials':
+    case 'invalid_password':
+      return 'الاسم أو كلمة السر غلطين 😬';
+    case 'account_banned':
+      return 'هذا الحساب موقوف. تواصل مع الدعم.';
+    case 'account_frozen':
+      return 'هذا الحساب متجمد مؤقتاً. جرب من بعد شوية.';
+    case 'OAuthAccountNotLinked':
+      return 'هذا الإيميل مربوط بحساب آخر. دخل بكلمة السر أو جرب حساب Gmail آخر.';
+    case 'redirect_uri_mismatch':
+      return 'مشكل في إعدادات Google. جرب من بعد شوية.';
+    default:
+      return code;
+  }
+}
+
 function LoginForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [manualError, setManualError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  useEffect(() => {
-    const err = searchParams.get('error');
-    if (err === 'account_exists') {
-      setError('هذا الإيميل مسجل بحساب بكلمة سر. دخل بكلمة السر ديالك أو سجّل بحساب آخر.');
-    } else if (err === 'gmail_only') {
-      setError('Gmail فقط مسموح للدخول بـ Google. جرب بحساب Gmail آخر أو دخل بكلمة السر.');
-    } else if (err === 'CredentialsSignin') {
-      setError('الاسم أو كلمة السر غلطين 😬');
-    } else if (err) {
-      setError(err);
-    }
-  }, [searchParams]);
+  const error = manualError ?? authErrorText(searchParams.get('error'));
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) return;
-    setError(null);
+    setManualError(null);
     setLoading(true);
 
     const res = await signIn('credentials', {
       redirect: false,
-      username,
+      username: username.trim(),
       password,
     });
     setLoading(false);
 
     if (res?.error) {
-      setError(res.error === 'CredentialsSignin' ? 'الاسم أو كلمة السر غلطين 😬' : res.error);
+      setManualError(authErrorText(res.error));
     } else {
       router.push('/');
     }
   };
 
   const handleGoogleLogin = () => {
-    setError(null);
+    setManualError(null);
     signIn('google', { callbackUrl: '/' });
   };
 
@@ -97,9 +110,9 @@ function LoginForm() {
           <input
             type="text"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value.trim())}
             className="field pl-11"
-            placeholder="الاسم ديالك"
+            placeholder="الاسم أو Gmail ديالك"
             autoComplete="username"
             required
           />

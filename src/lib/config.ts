@@ -7,6 +7,7 @@ const DEFAULTS = {
   adRewardCoins: 25,
   adDailyCap: 6,
   giftFeePct: 10,
+  referralBonus: 50,
   freeFirstPlayDaily: true,
   missionDailyCount: 3,
   missionWeeklyCount: 1,

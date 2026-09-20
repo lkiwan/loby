@@ -74,27 +74,42 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.username || !credentials?.password) {
-          throw new Error('Invalid credentials');
+        const login = credentials?.username?.trim().toLowerCase();
+        const password = credentials?.password;
+
+        if (!login || !password) {
+          throw new Error('invalid_credentials');
         }
 
-        const user = await prisma.user.findUnique({
-          where: { username: credentials.username },
+        const user = await prisma.user.findFirst({
+          where: {
+            OR: [
+              { username: { equals: login, mode: 'insensitive' } },
+              { email: { equals: login, mode: 'insensitive' } },
+            ],
+          },
         });
 
         if (!user || !user.password) {
-          throw new Error('User not found');
+          throw new Error('invalid_credentials');
         }
 
-        const isValid = await bcrypt.compare(credentials.password, user.password);
+        if (user.status === 'BANNED') {
+          throw new Error('account_banned');
+        }
+        if (user.status === 'FROZEN') {
+          throw new Error('account_frozen');
+        }
 
+        const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) {
-          throw new Error('Invalid password');
+          throw new Error('invalid_password');
         }
 
         return {
           id: user.id,
           username: user.username ?? undefined,
+          email: user.email ?? undefined,
           coins: user.coins,
           role: user.role,
         };

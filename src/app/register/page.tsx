@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import {
   AlertTriangle,
@@ -9,6 +10,7 @@ import {
   CheckCircle2,
   Eye,
   EyeOff,
+  Gift,
   Loader2,
   Lock,
   Mail,
@@ -39,6 +41,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [referralCode, setReferralCode] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -50,6 +53,10 @@ export default function RegisterPage() {
     if (loading) return;
     setError(null);
 
+    if (!/^[a-z0-9_]{3,20}$/.test(username)) {
+      setError('الاسم خاصو يكون 3 حتى 20 حرف: حروف صغيرة، أرقام أو _ فقط.');
+      return;
+    }
     if (!isGmail(email)) {
       setError('Gmail فقط مسموح (@gmail.com).');
       return;
@@ -71,7 +78,12 @@ export default function RegisterPage() {
     const res = await fetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, email, password }),
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+        referralCode: referralCode.trim() || undefined,
+      }),
     });
 
     if (!res.ok) {
@@ -83,7 +95,17 @@ export default function RegisterPage() {
 
     setSuccess(true);
     setLoading(false);
-    window.setTimeout(() => router.push('/login'), 2200);
+
+    const signInRes = await signIn('credentials', {
+      redirect: false,
+      username,
+      password,
+    });
+    if (!signInRes?.error) {
+      window.setTimeout(() => router.push('/'), 1200);
+    } else {
+      window.setTimeout(() => router.push('/login'), 1200);
+    }
   };
 
   return (
@@ -96,7 +118,7 @@ export default function RegisterPage() {
             </div>
             <h1 className="mt-5 font-lalezar text-3xl text-neutral-50">تم التسجيل! 🎉</h1>
             <p className="mt-2 max-w-[16rem] font-cairo text-[13px] font-semibold leading-relaxed text-neutral-400">
-              تّماشا بون، كنرحّلوكم لصفحة الدخول…
+              كنديرو دخول تلقائي… كنرحّلو للرئيسية.
             </p>
             <div className="mt-5 h-1.5 w-full overflow-hidden rounded-full bg-white/5">
               <div
@@ -131,11 +153,12 @@ export default function RegisterPage() {
                 <input
                   type="text"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => setUsername(e.target.value.toLowerCase())}
                   className="field field-teal pl-11"
-                  placeholder="الاسم ديالك"
+                  placeholder="الاسم ديالك (3-20 حرف)"
                   autoComplete="username"
                   minLength={3}
+                  maxLength={20}
                   required
                 />
               </div>
@@ -186,6 +209,19 @@ export default function RegisterPage() {
                   autoComplete="new-password"
                   minLength={6}
                   required
+                />
+              </div>
+
+              <div className="relative">
+                <Gift className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-neutral-500" />
+                <input
+                  type="text"
+                  value={referralCode}
+                  onChange={(e) => setReferralCode(e.target.value)}
+                  className="field field-teal pl-11"
+                  placeholder="كود الدعوة (اختياري)"
+                  autoComplete="off"
+                  maxLength={32}
                 />
               </div>
 
