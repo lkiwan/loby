@@ -59,7 +59,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid payment method' }, { status: 400 });
     }
 
-  } catch (error: any) {
+  } catch (error) {
     console.error('Unlock error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }

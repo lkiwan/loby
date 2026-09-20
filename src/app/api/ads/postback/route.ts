@@ -24,7 +24,7 @@ export async function POST(req: Request) {
     await redis.set(`ad_completed:${userId}:${gameId}`, token, 'EX', 120);
 
     return NextResponse.json({ status: 'success', message: 'Postback received' }, { status: 200 });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Postback error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }

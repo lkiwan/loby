@@ -17,7 +17,7 @@ export async function generateGameToken(userId: string, gameId: string): Promise
   return tokenId;
 }
 
-export async function verifyAndBurnToken(token: string): Promise<{ valid: boolean; data?: any }> {
+export async function verifyAndBurnToken(token: string): Promise<{ valid: boolean; data?: unknown }> {
   const tokenKey = `game_token:${token}`;
   
   // Fetch the token data

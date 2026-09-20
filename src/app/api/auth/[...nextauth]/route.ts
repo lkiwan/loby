@@ -44,9 +44,10 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user, trigger, session }) {
       if (user) {
+        const ident = user as { username?: string; coins?: number };
         token.id = user.id;
-        token.username = (user as any).username;
-        token.coins = (user as any).coins;
+        token.username = ident.username;
+        token.coins = ident.coins;
       }
       if (trigger === 'update' && session?.coins !== undefined) {
         token.coins = session.coins;

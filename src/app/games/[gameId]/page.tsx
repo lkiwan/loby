@@ -1,42 +1,87 @@
 'use client';
 
-import { use, useEffect, useState } from 'react';
+import { use, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, X } from 'lucide-react';
+import { StarMark } from '@/components/Star';
+import { GAMES } from '@/lib/games';
 
 const EXTERNAL_GAMES: Record<string, string> = {
   'paint-followers': 'https://paint-followers.vercel.app/',
   'mafia': 'https://mafia-dl7oma.vercel.app/',
   '7azr-fazr': 'https://7azr-fazr-six.vercel.app/',
-  'bara-salfa': 'https://bara-salfa-bdarija.vercel.app/'
+  'bara-salfa': 'https://bara-salfa-bdarija.vercel.app/',
 };
 
 export default function GamePage({ params }: { params: Promise<{ gameId: string }> }) {
   const resolvedParams = use(params);
   const externalUrl = EXTERNAL_GAMES[resolvedParams.gameId];
+  const [exitConfirm, setExitConfirm] = useState(false);
 
   if (!externalUrl) {
     return (
-      <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center">
-        <h1 className="text-3xl font-bold mb-4">Game Not Found</h1>
-        <Link href="/" className="text-blue-500 hover:underline">Return to Lobby</Link>
+      <div className="scene flex min-h-dvh flex-col items-center justify-center gap-4 bg-[#05050d] px-6 text-center">
+        <StarMark size={48} />
+        <h1 className="font-lalezar text-3xl text-neutral-50">الطاولة ما تلقاتهاش 🥲</h1>
+        <p className="font-cairo text-sm font-semibold text-neutral-400">
+          هاد اللعبة ماشي موجودة فالمخزن ديالنا.
+        </p>
+        <Link href="/" className="btn-chunk btn-amber mt-2 px-6 py-3 text-sm">
+          رجع للساحة
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="h-screen w-full bg-black flex flex-col relative">
-      {/* Overlay back button to allow user to return to lobby */}
-      <Link href="/" className="absolute top-4 left-4 z-50 bg-gray-900/80 p-2 rounded-full text-white hover:bg-gray-700 transition shadow-lg backdrop-blur-sm">
-        <ArrowLeft className="w-6 h-6" />
-      </Link>
-      
-      <iframe 
-        src={externalUrl} 
-        className="w-full h-full border-0"
+    <div className="relative h-dvh w-full overflow-hidden bg-black">
+      {/* top HUD bar */}
+      <div className="absolute inset-x-0 top-0 z-50 flex items-center justify-between px-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-2">
+        <span className="pointer-events-none flex items-center gap-2 rounded-full border border-white/10 bg-black/60 px-3 py-1.5 backdrop-blur-md">
+          <StarMark size={18} />
+          <span className="font-grit text-[11px] uppercase tracking-wide text-neutral-300">
+            {GAMES.find((g) => g.id === resolvedParams.gameId)?.latinTitle ?? resolvedParams.gameId}
+          </span>
+        </span>
+        <button
+          onClick={() => setExitConfirm(true)}
+          className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-black/60 text-white shadow-lg backdrop-blur-md transition hover:border-red-500/40 hover:text-red-400"
+          aria-label="خروج من اللعبة"
+        >
+          <X className="h-5 w-5" />
+        </button>
+      </div>
+
+      <iframe
+        src={externalUrl}
+        className="h-full w-full border-0"
         allow="autoplay; fullscreen"
         title={`Game: ${resolvedParams.gameId}`}
       />
+
+      {exitConfirm && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setExitConfirm(false)} />
+          <div className="anim-pop relative w-full max-w-xs rounded-3xl border border-white/10 bg-[#0b0b16] p-6 text-center shadow-2xl">
+            <h2 className="font-lalezar text-2xl text-neutral-50">بغيتي تخرج من اللعبة؟</h2>
+            <p className="mt-1.5 font-cairo text-[13px] font-semibold text-neutral-400">
+              تقدموك فهاد الجولة غادي يتضيع.
+            </p>
+            <div className="mt-5 grid grid-cols-2 gap-2.5">
+              <button
+                onClick={() => setExitConfirm(false)}
+                className="btn-chunk btn-ghost-hollow px-3 py-3 text-[13px]"
+              >
+                كمّل اللعب
+              </button>
+              <Link href="/" className="btn-chunk btn-blood px-3 py-3 text-[13px]">
+                <ArrowLeft className="h-4 w-4" />
+                خروج
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
