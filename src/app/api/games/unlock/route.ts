@@ -7,6 +7,7 @@ import { prisma } from '@/lib/prisma';
 import { spendBalance, InsufficientCoinsError } from '@/lib/ledger';
 import { checkRate } from '@/lib/rateLimit';
 import { createPlaySession } from '@/lib/session';
+import { bumpMission } from '@/lib/missions';
 import { casablancaDay, casablancaDateAt } from '@/lib/time';
 
 const makeKey = (userId: string, gameId: string, tag: string, nonce?: string) =>
@@ -24,7 +25,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Too many attempts, slow down' }, { status: 429 });
     }
 
-    const { gameId, paymentMethod } = await req.json();
+    const { gameId, paymentMethod, nonce } = await req.json();
     const idempotencyHeader = req.headers.get('Idempotency-Key');
 
     if (!gameId || !paymentMethod) {
@@ -89,6 +90,31 @@ export async function POST(req: Request) {
     }
 
     if (paymentMethod === 'ad') {
+      if (typeof nonce === 'string') {
+        const adKey = `ad:nonce:${nonce}`;
+        const data = await redis.get(adKey);
+        if (!data) {
+          return NextResponse.json({ error: 'Expired or invalid ad session' }, { status: 400 });
+        }
+        const parsed = JSON.parse(data) as { userId: string; gameId: string; placement: string };
+        if (parsed.userId !== userId || parsed.gameId !== gameId) {
+          return NextResponse.json({ error: 'Ad session mismatch' }, { status: 400 });
+        }
+        await redis.del(adKey);
+        await prisma.adImpression.updateMany({
+          where: { nonce, status: 'STARTED' },
+          data: { status: 'COMPLETED', completedAt: new Date() },
+        });
+        await bumpMission(userId, 'WATCH_N_ADS', 1);
+        await createPlaySession(userId, game, 'AD');
+        const gameToken = await generateGameToken(userId, gameId);
+        const user = await prisma.user.findUnique({ where: { id: userId } });
+        return NextResponse.json(
+          { redirectUrl: `${gameUrl}?token=${gameToken}`, remainingCoins: user?.coins ?? 0 },
+          { status: 200 }
+        );
+      }
+
       const adKey = `ad_completed:${userId}:${gameId}`;
       const completedToken = await redis.get(adKey);
 

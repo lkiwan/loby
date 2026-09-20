@@ -41,6 +41,7 @@ export default function LobbyPage() {
   const [busyAction, setBusyAction] = useState<'coins' | 'ad' | null>(null);
   const [adModalOpen, setAdModalOpen] = useState(false);
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
+  const [adNonce, setAdNonce] = useState<string | null>(null);
   const [adStatus, setAdStatus] = useState<'idle' | 'watching' | 'verifying'>('idle');
   const [toast, setToast] = useState<{ kind: 'error' | 'ok'; text: string } | null>(null);
 
@@ -97,11 +98,23 @@ export default function LobbyPage() {
     }
   };
 
-  const watchAdToPlay = (gameId: string) => {
+  const watchAdToPlay = async (gameId: string) => {
     if (!requireAuth()) return;
-    setSelectedGame(gameId);
-    setAdStatus('idle');
-    setAdModalOpen(true);
+    try {
+      const res = await fetch('/api/ads/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gameId, placement: 'unlock' }),
+      });
+      if (!res.ok) throw new Error('bad status');
+      const { nonce } = await res.json();
+      setAdNonce(nonce);
+      setSelectedGame(gameId);
+      setAdStatus('idle');
+      setAdModalOpen(true);
+    } catch {
+      showToast('error', 'ما توفقش خرج السيرڤر للإعلان — جرب بعد شوية');
+    }
   };
 
   const simulateAdWatch = () => {
@@ -123,7 +136,7 @@ export default function LobbyPage() {
         const res = await fetch('/api/games/unlock', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ gameId: selectedGame, paymentMethod: 'ad' }),
+          body: JSON.stringify({ gameId: selectedGame, paymentMethod: 'ad', nonce: adNonce }),
         });
 
         if (res.status === 200) {
