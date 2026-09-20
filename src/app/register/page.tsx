@@ -28,6 +28,7 @@ const TEMP_EMAIL_DOMAINS = [
   'throwaway.email', 'fakeinbox.com', 'temp-mail.org', 'yopmail.com',
   'trashmail.com', 'getnada.com', 'maildrop.cc', 'dispostable.com',
   'tempail.com', 'emailondeck.com', 'mintemail.com', 'spamgourmet.com',
+  'findize.com',
 ];
 
 function isTempEmail(email: string): boolean {
