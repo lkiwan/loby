@@ -16,6 +16,7 @@ import {
   LogIn,
   LogOut,
   Play,
+  ShieldCheck,
   Users,
   X,
 } from 'lucide-react';
@@ -230,6 +231,15 @@ export default function LobbyPage() {
                 <span className="hidden max-w-[8rem] truncate font-cairo text-sm font-bold text-[#d8c39a] sm:block">
                   {session?.user?.username}
                 </span>
+                {session?.user?.role === 'ADMIN' && (
+                  <Link
+                    href="/admin"
+                    className="btn-chunk btn-ink grid h-10 w-10 place-items-center rounded-full"
+                    title="Admin"
+                  >
+                    <ShieldCheck className="h-4 w-4" />
+                  </Link>
+                )}
                 <button
                   onClick={handleLogout}
                   className="grid h-10 w-10 place-items-center rounded-full border-2 border-[#c9a45c]/40 bg-[#221a10] text-[#f1e7d6] transition hover:border-red-500/50 hover:text-red-400"

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, Suspense } from 'react';
-import { signIn } from 'next-auth/react';
+import { signIn, getSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { AlertTriangle, Eye, EyeOff, Loader2, Lock, LogIn, User } from 'lucide-react';
@@ -59,13 +59,14 @@ function LoginForm() {
     if (res?.error) {
       setManualError(authErrorText(res.error));
     } else {
-      router.push('/');
+      const session = await getSession();
+      router.replace(session?.user?.role === 'ADMIN' ? '/admin' : '/');
     }
   };
 
   const handleGoogleLogin = () => {
     setManualError(null);
-    signIn('google', { callbackUrl: '/' });
+    signIn('google', { callbackUrl: '/auth/callback' });
   };
 
   return (

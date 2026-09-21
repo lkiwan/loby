@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "node prisma/seed.js",
+    "create-admin": "node scripts/create-admin.js",
     "postinstall": "prisma generate"
   },
   "dependencies": {
