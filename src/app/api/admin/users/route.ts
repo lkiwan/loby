@@ -1,7 +1,17 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { Prisma } from '@prisma/client';
 import { getAdminUser } from '@/lib/admin';
 import { prisma } from '@/lib/prisma';
+
+type RawPlayStat = {
+  userId: string;
+  sessions: number;
+  seconds: bigint;
+  games: number;
+  lastStartedAt: Date | null;
+  lastEndedAt: Date | null;
+};
 
 const userSelect = {
   id: true,
@@ -63,5 +73,31 @@ export async function GET(req: NextRequest) {
     select: userSelect,
   });
 
-  return NextResponse.json({ users });
+  const stats: Record<string, { sessions: number; seconds: number; games: number; lastStartedAt: string | null; lastEndedAt: string | null }> = {};
+
+  if (users.length > 0) {
+    const rawStats = await prisma.$queryRaw<RawPlayStat[]>`
+      SELECT "userId",
+             COUNT(*)::int AS sessions,
+             COALESCE(SUM(EXTRACT(EPOCH FROM ("endedAt" - "startedAt"))), 0)::bigint AS seconds,
+             COUNT(DISTINCT "gameId")::int AS games,
+             MAX("startedAt") AS "lastStartedAt",
+             MAX("endedAt") AS "lastEndedAt"
+      FROM "PlaySession"
+      WHERE "userId" IN (${Prisma.join(users.map((u) => u.id))})
+      GROUP BY "userId"
+    `;
+
+    for (const row of rawStats) {
+      stats[row.userId] = {
+        sessions: row.sessions,
+        seconds: Number(row.seconds),
+        games: row.games,
+        lastStartedAt: row.lastStartedAt ? row.lastStartedAt.toISOString() : null,
+        lastEndedAt: row.lastEndedAt ? row.lastEndedAt.toISOString() : null,
+      };
+    }
+  }
+
+  return NextResponse.json({ users, stats });
 }

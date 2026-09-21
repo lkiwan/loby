@@ -42,10 +42,11 @@ export async function PATCH(req: NextRequest, ctx: RouteContext<'/api/admin/user
   const data: Record<string, unknown> = {};
 
   if (body.username !== undefined) {
-    if (typeof body.username !== 'string' || !USERNAME_RE.test(body.username)) {
+    const username = typeof body.username === 'string' ? body.username.trim() : '';
+    if (username !== '' && !USERNAME_RE.test(username)) {
       return NextResponse.json({ error: 'Nom d’utilisateur invalide (3-20: minuscules, chiffres, _).' }, { status: 400 });
     }
-    data.username = body.username;
+    data.username = username || null;
   }
   if (body.email !== undefined) {
     const email = body.email ? body.email.toLowerCase().trim() : null;

@@ -5,6 +5,8 @@ import { getSession } from 'next-auth/react';
 import {
   AlertTriangle,
   Check,
+  Download,
+  Eye,
   Loader2,
   Mail,
   Phone,
@@ -14,6 +16,8 @@ import {
   ShieldCheck,
   Trash2,
 } from 'lucide-react';
+import UserDetailModal from '@/components/admin/UserDetailModal';
+import { downloadCsv, fmtDateTime, fmtDur } from '@/lib/csv';
 
 type UserRow = {
   id: string;
@@ -31,6 +35,14 @@ type UserRow = {
   lastSeenAt: string | null;
   _count: { sessions: number; devices: number; adImpressions: number };
   accounts: { provider: string }[];
+};
+
+type UserStats = {
+  sessions: number;
+  seconds: number;
+  games: number;
+  lastStartedAt: string | null;
+  lastEndedAt: string | null;
 };
 
 type Draft = {
@@ -63,24 +75,16 @@ function fmtDate(d: string | null | undefined): string {
   return new Intl.DateTimeFormat('fr-FR', { dateStyle: 'medium' }).format(new Date(d));
 }
 
-function fmtAgo(d: string | null | undefined): string {
-  if (!d) return '—';
-  const mins = Math.max(0, Math.round((Date.now() - new Date(d).getTime()) / 60000));
-  if (mins < 1) return 'à l’instant';
-  if (mins < 60) return `il y a ${mins} min`;
-  const h = Math.floor(mins / 60);
-  if (h < 24) return `il y a ${h} h`;
-  return `il y a ${Math.floor(h / 24)} j`;
-}
-
 export default function UsersManager() {
   const [users, setUsers] = useState<UserRow[]>([]);
+  const [stats, setStats] = useState<Record<string, UserStats>>({});
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [drafts, setDrafts] = useState<Record<string, Draft>>({});
   const [busyId, setBusyId] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
   const [meId, setMeId] = useState<string | null>(null);
+  const [detailId, setDetailId] = useState<string | null>(null);
 
   useEffect(() => {
     getSession().then((s) => setMeId(s?.user?.id ?? null));
@@ -89,7 +93,10 @@ export default function UsersManager() {
   const fetchUsers = useCallback(async (q: string) => {
     const res = await fetch(`/api/admin/users?q=${encodeURIComponent(q)}`);
     const data = await res.json();
-    if (res.ok) setUsers(data.users);
+    if (res.ok) {
+      setUsers(data.users);
+      setStats(data.stats ?? {});
+    }
   }, []);
 
   useEffect(() => {
@@ -192,6 +199,51 @@ export default function UsersManager() {
     }
   };
 
+  const downloadAll = () => {
+    const header = [
+      'Pseudo',
+      'Email',
+      'Téléphone',
+      'Rôle',
+      'Statut',
+      'Coins',
+      'Tickets',
+      'XP',
+      'Niveau',
+      'Inscrit le',
+      'Dernière activité',
+      'Nombre de parties',
+      'Temps de jeu',
+      'Jeux joués',
+      'Dernière connexion',
+      'Dernière déconnexion',
+    ];
+    const rows = users.map((u) => {
+      const s = stats[u.id];
+      return [
+        u.username ?? '',
+        u.email ?? '',
+        u.phone ?? '',
+        u.role,
+        u.status,
+        u.coins,
+        u.tickets,
+        u.xp,
+        u.level,
+        u.createdAt,
+        u.lastSeenAt ?? '',
+        s?.sessions ?? u._count.sessions,
+        s ? fmtDur(s.seconds) : '0 min',
+        s?.games ?? 0,
+        s?.lastStartedAt ? fmtDateTime(s.lastStartedAt) : '',
+        s?.lastEndedAt ? fmtDateTime(s.lastEndedAt) : '',
+      ];
+    });
+    downloadCsv(`joueurs-${new Date().toISOString().slice(0, 10)}.csv`, header, rows);
+  };
+
+  const detailUser = detailId ? users.find((u) => u.id === detailId) ?? null : null;
+
   return (
     <section className="card">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -203,6 +255,10 @@ export default function UsersManager() {
         </div>
 
         <div className="flex items-center gap-2">
+          <button onClick={downloadAll} disabled={users.length === 0} className="btn-chunk btn-amber px-3 py-2.5 text-[12px]">
+            <Download className="h-4 w-4" />
+            CSV ({users.length})
+          </button>
           <div className="relative">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
             <input
@@ -249,6 +305,7 @@ export default function UsersManager() {
               <th className="px-3 py-2 text-right">🪙 Coins</th>
               <th className="px-3 py-2 text-right">🎟️ Tickets</th>
               <th className="px-3 py-2 text-right">Lvl</th>
+              <th className="px-3 py-2 text-right">⏱️ Temps</th>
               <th className="px-3 py-2">Activité</th>
               <th className="px-3 py-2 text-right">Actions</th>
             </tr>
@@ -256,7 +313,7 @@ export default function UsersManager() {
           <tbody>
             {users.length === 0 ? (
               <tr>
-                <td colSpan={8} className="px-3 py-10 text-center font-cairo text-[13px] font-semibold text-neutral-500">
+                <td colSpan={9} className="px-3 py-10 text-center font-cairo text-[13px] font-semibold text-neutral-500">
                   {loading ? 'Chargement…' : 'Aucun joueur trouvé.'}
                 </td>
               </tr>
@@ -351,12 +408,27 @@ export default function UsersManager() {
                         {u.xp} XP · {u._count.sessions} parties
                       </span>
                     </td>
+                    <td className="px-3 py-2.5 text-right">
+                      <p className="font-bold tabular-nums text-amber-200">{fmtDur(stats[u.id]?.seconds ?? 0)}</p>
+                      <span className="block text-[10px] font-semibold text-neutral-600">
+                        {stats[u.id]?.games ?? 0} jeux · {stats[u.id]?.sessions ?? u._count.sessions} parties
+                      </span>
+                    </td>
                     <td className="px-3 py-2.5">
                       <p className="text-[11px] font-semibold text-neutral-400">Inscrit : {fmtDate(u.createdAt)}</p>
-                      <p className="text-[11px] font-semibold text-neutral-500">Vu : {fmtAgo(u.lastSeenAt)}</p>
+                      <p className="text-[11px] font-semibold text-neutral-500">
+                        🔗 {u.lastSeenAt ? fmtDate(u.lastSeenAt) : '—'} · 👋 {stats[u.id]?.lastEndedAt ? fmtDate(stats[u.id].lastEndedAt) : '—'}
+                      </p>
                     </td>
                     <td className="px-3 py-2.5 text-right">
                       <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => setDetailId(u.id)}
+                          title="Voir toutes les infos"
+                          className="btn-chunk btn-ghost-hollow px-2.5 py-2 text-[11px]"
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                        </button>
                         <button
                           onClick={() => save(u)}
                           disabled={busyId !== null || !dirty}
@@ -387,6 +459,15 @@ export default function UsersManager() {
       <p className="mt-3 font-cairo text-[11px] font-semibold text-neutral-600">
         Les changements de solde sont tracés dans le ledger (ADMIN_GRANT / ADMIN_CLAWBACK). Cliquez sur 💾 pour enregistrer une ligne.
       </p>
+
+      {detailUser && (
+        <UserDetailModal
+          userId={detailUser.id}
+          name={detailUser.username || detailUser.email || detailUser.id}
+          onClose={() => setDetailId(null)}
+          onChanged={(msg) => notify('ok', msg)}
+        />
+      )}
     </section>
   );
 }
