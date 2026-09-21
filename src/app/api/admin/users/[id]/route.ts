@@ -12,7 +12,7 @@ type Role = (typeof ROLES)[number];
 type UserStatus = (typeof STATUSES)[number];
 
 const EMAIL_RE = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
-const USERNAME_RE = /^[a-z0-9_]{3,20}$/;
+const USERNAME_RE = /^[A-Za-z0-9_ ]{3,30}$/;
 
 type UpdateBody = {
   username?: string;

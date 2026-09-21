@@ -139,18 +139,19 @@ export default function UsersManager() {
     setMessage(null);
     const d = draftOf(u);
     try {
+      const patch: Record<string, unknown> = {};
+      if (d.username !== (u.username ?? '')) patch.username = d.username;
+      if (d.email !== (u.email ?? '')) patch.email = d.email;
+      if (d.phone !== (u.phone ?? '')) patch.phone = d.phone;
+      if (d.role !== u.role) patch.role = d.role;
+      if (d.status !== u.status) patch.status = d.status;
+      if (d.coins !== u.coins) patch.coins = d.coins;
+      if (d.tickets !== u.tickets) patch.tickets = d.tickets;
+
       const res = await fetch(`/api/admin/users/${u.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: d.username || null,
-          email: d.email || null,
-          phone: d.phone || null,
-          role: d.role,
-          status: d.status,
-          coins: d.coins,
-          tickets: d.tickets,
-        }),
+        body: JSON.stringify(patch),
       });
       const data = await res.json();
       if (!res.ok) {
