@@ -20,6 +20,48 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Running locally against the server database (no SSH needed)
+
+Postgres and Redis are already published on the server (`docker-compose.server.yml`:
+Postgres on port `5433`, Redis on `6379`). Any teammate can connect directly through
+those ports (`IP_DU_SERVEUR` = your public server IP; the firewall must allow inbound
+`5433`/`6379`).
+
+1. Clone the repo and install:
+   ```bash
+   npm install   # runs `prisma generate`
+   ```
+
+2. Create a local `.env.local` (gitignored, each dev makes their own):
+   ```bash
+   DATABASE_URL=postgresql://postgres:my_super_secret_password@IP_DU_SERVEUR:5433/arcade_db
+   REDIS_URL=redis://IP_DU_SERVEUR:6379
+   NEXTAUTH_SECRET=your_own_random_secret
+   NEXTAUTH_URL=http://localhost:3000
+   GOOGLE_ID=your_google_client_id
+   GOOGLE_SECRET=your_google_client_secret
+   AD_NETWORK_WEBHOOK_SECRET=your_shared_webhook_secret
+   NEXT_PUBLIC_ADSENSE_CLIENT=your_adsense_client
+   ```
+   Ask the repo owner for the real values (never commit them).
+
+3. First time only, sync the schema to the shared DB:
+   ```bash
+   npx prisma db push
+   ```
+
+4. Run:
+   ```bash
+   npm run dev
+   ```
+
+Caveats:
+- Everybody shares the same data — one dev's seed/migrations affect everyone.
+- Google OAuth: `http://localhost:3000` must be in the Google Console authorized
+  redirect URIs, or login via Google fails.
+- Set a strong `POSTGRES_PASSWORD` in `docker-compose.server.yml` before exposing the
+  port to teammates.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
