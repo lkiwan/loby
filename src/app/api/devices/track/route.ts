@@ -47,5 +47,14 @@ export async function POST(req: Request) {
     // device tracking is best-effort; never block the user
   }
 
+  try {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { lastSeenAt: new Date() },
+    });
+  } catch {
+    // best-effort
+  }
+
   return NextResponse.json({ ok: true });
 }
