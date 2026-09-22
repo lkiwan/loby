@@ -38,10 +38,17 @@ export default function GamePage({
   const game = GAMES.find((g) => g.id === resolvedParams.gameId);
   const router = useRouter();
 
-  /* Force-hide the loading screen after 8 seconds even if onLoad never fires */
+  /* Eagerly fetch the game's HTML so the browser starts parsing its
+     sub-resources (JS bundle, CSS) as early as possible. */
+  useEffect(() => {
+    if (!baseUrl) return;
+    fetch(baseUrl, { priority: 'high' } as RequestInit).catch(() => {});
+  }, [baseUrl]);
+
+  /* Force-hide the loading screen after 3 seconds even if onLoad never fires */
   useEffect(() => {
     if (iframeLoaded) return;
-    const t = setTimeout(() => setIframeLoaded(true), 8000);
+    const t = setTimeout(() => setIframeLoaded(true), 3000);
     return () => clearTimeout(t);
   }, [iframeLoaded]);
 

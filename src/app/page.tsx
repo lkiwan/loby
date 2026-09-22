@@ -179,9 +179,15 @@ function LobbyContent() {
   };
   const { show: showRewardedAd } = useRewardedAd();
 
-  /* Prefetch all game routes for instant navigation */
+  /* Prefetch Next.js game routes AND game file bundles in the background.
+     This way the browser has the game assets cached before the user clicks play. */
   useEffect(() => {
-    GAMES.forEach((g) => router.prefetch(`/games/${g.id}`));
+    GAMES.forEach((g) => {
+      router.prefetch(`/games/${g.id}`);
+      /* Low-priority fetch of the game's HTML entry point so the browser
+         discovers and caches its JS/CSS chunks ahead of time. */
+      fetch(`/game-files/${g.id}/index.html`, { priority: 'low' } as RequestInit).catch(() => {});
+    });
   }, [router]);
 
   /* cardsRef kept for future scroll effects */
