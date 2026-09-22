@@ -6,18 +6,19 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   AlertTriangle, Check, ChevronDown, Clock, Coins,
-  Flame, Gamepad2, Loader2, LogIn, LogOut,
-  Play, ShieldCheck, Users, X, Zap,
+  Flame, Gamepad2, Loader2, Lock, LogIn, LogOut,
+  Play, ShieldCheck, Target, Trophy, Users, X, Zap,
 } from 'lucide-react';
 import { StarMark } from '@/components/Star';
 import GameCard from '@/components/GameCard';
-import { GAMES, type Game } from '@/lib/games';
+import { GAMES, COMING_SOON, type Game } from '@/lib/games';
 import { useRewardedAd } from '@/lib/useRewardedAd';
 import { trackDevice } from '@/lib/device';
 import dynamic from 'next/dynamic';
 
 const StarField      = dynamic(() => import('@/components/StarField'),      { ssr: false });
 const GameBackground = dynamic(() => import('@/components/GameBackground'), { ssr: false });
+const MissionsPanel  = dynamic(() => import('@/components/MissionsPanel'),  { ssr: false });
 
 const TICKER_ITEMS = [
   '🔥 الصراع ديال الحومة كاين من بكري',
@@ -31,6 +32,9 @@ const TICKER_ITEMS = [
 
 const TITLE_WORDS_1 = ['فضح', 'صاحبك'];
 const TITLE_WORDS_2 = ['قبل', 'ما', 'يفضحك'];
+
+/* XP formula (mirrors lib/ledger.ts, no prisma import needed client-side) */
+function xpForLvl(n: number) { return Math.floor(100 * Math.pow(n, 1.4)); }
 
 /* ── Coin burst particles on button click ── */
 function spawnCoins(x: number, y: number) {
@@ -160,6 +164,9 @@ function LobbyContent() {
   const [launching, setLaunching] = useState<Game | null>(null);
   const [cardsVisible, setCardsVisible] = useState(true);
   const cardsRef = useRef<HTMLDivElement>(null);
+  const [xpData, setXpData] = useState<{ xp: number; level: number; streak: number; referralCode?: string } | null>(null);
+  const [missionsOpen, setMissionsOpen] = useState(false);
+  const [referralCopied, setReferralCopied] = useState(false);
   const { show: showRewardedAd } = useRewardedAd();
 
   /* Prefetch all game routes for instant navigation */
@@ -168,6 +175,14 @@ function LobbyContent() {
   }, [router]);
 
   /* cardsRef kept for future scroll effects */
+
+  /* Fetch XP / streak / referral data once authenticated */
+  useEffect(() => {
+    if (status !== 'authenticated') return;
+    fetch('/api/economy/balance')
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data) setXpData(data); });
+  }, [status]);
 
   const showToast = (kind: 'error' | 'ok', text: string) => {
     setToast({ kind, text });
@@ -356,6 +371,21 @@ function LobbyContent() {
                   <Coins className="h-3.5 w-3.5 text-amber-400" />
                   <span className="font-cairo text-sm font-black tabular-nums">{coins}</span>
                 </div>
+                {xpData && (() => {
+                  const lvl = xpData.level;
+                  const cur = xpForLvl(lvl);
+                  const nxt = xpForLvl(lvl + 1);
+                  const pct = nxt > cur ? Math.round(((xpData.xp - cur) / (nxt - cur)) * 100) : 100;
+                  return (
+                    <Link href={`/profile/${session?.user?.username}`} className="xp-pill hidden sm:flex group" title={`Level ${lvl} — ${xpData.xp} XP`}>
+                      <Zap className="h-3 w-3 shrink-0 text-purple-400" />
+                      <span className="font-grit text-[10px] text-purple-300">LV.{lvl}</span>
+                      <div className="xp-pill-track">
+                        <div className="xp-pill-fill" style={{ width: `${pct}%` }} />
+                      </div>
+                    </Link>
+                  );
+                })()}
                 <span className="hidden max-w-[7rem] truncate font-cairo text-sm font-bold text-[#d8c39a] sm:block">
                   {session?.user?.username}
                 </span>
@@ -529,9 +559,19 @@ function LobbyContent() {
                 <span className="font-cairo text-[11px] font-black text-amber-300/70"> كولة</span>
               </div>
             </div>
-            <p className="font-cairo text-[13px] font-bold text-neutral-400">
-              عاود جيتي يا <span className="text-amber-300">{session?.user?.username}</span>؟ حق عليك 🤙
-            </p>
+            <div>
+              <p className="font-cairo text-[13px] font-bold text-neutral-400">
+                عاود جيتي يا <span className="text-amber-300">{session?.user?.username}</span>؟ حق عليك 🤙
+              </p>
+              {xpData && xpData.streak >= 2 && (
+                <div className="mt-1.5 inline-flex items-center gap-1.5 rounded-full border border-red-500/25 bg-red-950/20 px-2.5 py-1">
+                  <Flame className="h-3.5 w-3.5 text-red-400" />
+                  <span className="font-cairo text-[11px] font-black text-red-300">
+                    {xpData.streak} يوم متتالي 🔥
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
@@ -615,6 +655,93 @@ function LobbyContent() {
           </div>
         </section>
 
+        {/* ── COMING SOON ── */}
+        <section className="mt-6">
+          <div className="mb-6 flex items-center justify-between">
+            <div className="section-label">قريبا فالحومة</div>
+          </div>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            {COMING_SOON.map((g, i) => (
+              <div
+                key={g.id}
+                className={`card-entrance stagger-${(i % 4) + 1} relative overflow-hidden rounded-2xl border border-white/[0.06] bg-[#060c1a] p-5 opacity-75`}
+              >
+                {/* Coming soon badge */}
+                <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-950/40 px-2.5 py-1">
+                  <Lock className="h-2.5 w-2.5 text-amber-400" />
+                  <span className="font-grit text-[9px] uppercase tracking-wider text-amber-400">قريبا</span>
+                </div>
+                <div className="flex items-start gap-4">
+                  <span className="text-4xl">{g.emoji}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-grit text-[10px] uppercase tracking-wider text-neutral-600">{g.latinTitle}</p>
+                    <h3 className="font-lalezar text-xl text-neutral-300 leading-tight">{g.darijaTitle}</h3>
+                    <span className="mt-1 inline-block rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 font-cairo text-[10px] font-bold text-neutral-500">
+                      {g.tag}
+                    </span>
+                    <p className="mt-2 font-cairo text-[12px] font-semibold leading-relaxed text-neutral-600">{g.desc}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── LEADERBOARD TEASER ── */}
+        <section className="mt-14">
+          <div className="overflow-hidden rounded-2xl border border-amber-400/15 bg-gradient-to-br from-amber-950/15 via-[#060c1a] to-[#060c1a] p-6">
+            <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="text-center sm:text-right">
+                <div className="mb-2 flex items-center justify-center gap-2 sm:justify-start">
+                  <Trophy className="h-5 w-5 text-amber-400 drop-shadow-[0_0_8px_rgba(242,178,61,.5)]" />
+                  <span className="font-lalezar text-xl text-amber-300">ساحة النجوم</span>
+                </div>
+                <p className="font-cairo text-[13px] font-semibold text-neutral-400">
+                  واش نتا فالقايمة؟ شوف مكانك بين أحسن اللاعبين فالمنصة 👑
+                </p>
+              </div>
+              <Link
+                href="/leaderboard"
+                className="btn-chunk btn-amber shrink-0 px-6 py-3 text-[13px]"
+              >
+                <Trophy className="h-4 w-4" />
+                شوف المتصدرين
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ── REFERRAL SECTION (authenticated only) ── */}
+        {isAuthed && xpData?.referralCode && (
+          <section className="mt-10">
+            <div className="overflow-hidden rounded-2xl border border-purple-400/15 bg-gradient-to-br from-purple-950/15 via-[#060c1a] to-[#060c1a] p-6">
+              <div className="mb-4 flex items-center gap-2">
+                <Zap className="h-5 w-5 text-purple-400" />
+                <span className="font-lalezar text-xl text-purple-300">دعو صاحبك</span>
+              </div>
+              <p className="mb-4 font-cairo text-[13px] font-semibold text-neutral-400">
+                شارك الكود مع صاحبك — كلاكم غاديين تربحو عملات زايدة مجانا 🎁
+              </p>
+              <div className="flex items-center gap-3">
+                <code className="flex-1 overflow-hidden rounded-xl border border-purple-400/15 bg-[#030812] px-4 py-3 font-mono text-[15px] tracking-widest text-purple-200">
+                  {xpData.referralCode}
+                </code>
+                <button
+                  onClick={() => {
+                    void navigator.clipboard.writeText(xpData!.referralCode!);
+                    setReferralCopied(true);
+                    setTimeout(() => setReferralCopied(false), 2200);
+                  }}
+                  className="flex shrink-0 items-center gap-1.5 rounded-xl border border-purple-400/30 bg-purple-400/10 px-4 py-3 font-cairo text-[13px] font-black text-purple-300 transition hover:bg-purple-400/20 active:scale-95"
+                >
+                  {referralCopied ? <Check className="h-4 w-4" /> : <Zap className="h-4 w-4" />}
+                  {referralCopied ? 'تم!' : 'نسخ'}
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* ── FOOTER ── */}
         <footer className="mt-24 flex flex-col items-center gap-2 border-t border-white/[0.05] pt-8 text-center">
           <StarMark size={24} />
@@ -622,6 +749,9 @@ function LobbyContent() {
             PLAYM3ANA — لعبات جماعية بالدارجة، على تيليفون واحد، والحومة كاملة تشهد 🔥
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 font-cairo text-[10.5px] font-bold text-[#7a6a4d]">
+            <Link href="/leaderboard" className="transition hover:text-amber-300">المتصدرون</Link>
+            {isAuthed && <><span>•</span><Link href={`/profile/${session?.user?.username}`} className="transition hover:text-amber-300">بروفيلي</Link></>}
+            <span>•</span>
             <Link href="/privacy" className="transition hover:text-amber-300">سياسة الخصوصية</Link>
             <span>•</span>
             <Link href="/terms" className="transition hover:text-amber-300">شروط الاستخدام</Link>
@@ -633,6 +763,30 @@ function LobbyContent() {
           </p>
         </footer>
       </main>
+
+      {/* ═══════════════ MISSIONS FAB ═══════════════ */}
+      {isAuthed && (
+        <button
+          onClick={() => setMissionsOpen(true)}
+          className="missions-fab"
+          aria-label="المهام اليومية"
+        >
+          <Target className="h-5 w-5" />
+          <span className="font-cairo text-[11px] font-bold">مهام</span>
+        </button>
+      )}
+
+      {/* Missions panel */}
+      {missionsOpen && (
+        <MissionsPanel
+          onClose={() => setMissionsOpen(false)}
+          onClaim={(reward) => {
+            void update();
+            setMissionsOpen(false);
+            showToast('ok', `مبروك! ربحتي +${reward} 🪙 على المهمة 🎯`);
+          }}
+        />
+      )}
 
       {/* ═══════════════ AD MODAL ═══════════════ */}
       {adModalOpen && (

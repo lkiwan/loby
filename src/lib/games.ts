@@ -72,3 +72,31 @@ export const GAMES: Game[] = [
 ];
 
 export const MAFIA_ART = '/images/mafia.png';
+
+export type ComingSoonGame = {
+  id: string;
+  latinTitle: string;
+  darijaTitle: string;
+  emoji: string;
+  tag: string;
+  desc: string;
+};
+
+export const COMING_SOON: ComingSoonGame[] = [
+  {
+    id: 'trivia',
+    latinTitle: 'TRIVIA D LHOUMA',
+    darijaTitle: 'ثريفيا الحومة',
+    emoji: '🧠',
+    tag: 'معلومات + فضايح',
+    desc: 'أسئلة عن المغرب، الحومة، والأشياء اللي كنعرفوها كلنا — بلا كذب 😂',
+  },
+  {
+    id: 'karaoke',
+    latinTitle: 'KARAOKE LHOUMA',
+    darijaTitle: 'الكاريوكي',
+    emoji: '🎤',
+    tag: 'غنّاء + خسارة',
+    desc: 'غنّاء بالدارجة — ماشي واحد فيكم صوتو مقبول، والجيران شهادين 🎵',
+  },
+];

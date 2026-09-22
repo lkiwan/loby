@@ -6,6 +6,7 @@ import { creditBalance } from '@/lib/ledger';
 import { getConfig } from '@/lib/config';
 import { checkRate } from '@/lib/rateLimit';
 import { casablancaDay, casablancaDateAt, yesterdayCasablanca, shiftCasablanca } from '@/lib/time';
+import { redis } from '@/lib/redis';
 
 function dayDiffDays(fromDay: string, toDay: string): number {
   const [y1, m1, d1] = fromDay.split('-').map(Number);
@@ -23,9 +24,24 @@ export async function POST() {
     return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
   }
 
-  const cfg = await getConfig();
+  const userId = session.user.id;
   const today = casablancaDay();
-  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
+
+  /* Parallel: config + user (saves ~50ms vs sequential) */
+  const [cfg, user] = await Promise.all([
+    getConfig(),
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        coins: true,
+        streakCount: true,
+        longestStreak: true,
+        lastCheckinOn: true,
+        freezesLeft: true,
+      },
+    }),
+  ]);
 
   if (!user) {
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -54,34 +70,40 @@ export async function POST() {
   const reward = ladder[(streak - 1) % Math.max(1, ladder.length)] ?? ladder[0];
   const longest = Math.max(user.longestStreak, streak);
 
-  await creditBalance({
-    userId: user.id,
-    amount: reward,
-    reason: 'DAILY_CHECKIN',
-    idempotencyKey: `checkin:${user.id}:${today}`,
-  });
+  /* Parallel: credit coins + update user profile */
+  await Promise.all([
+    creditBalance({
+      userId,
+      amount: reward,
+      reason: 'DAILY_CHECKIN',
+      idempotencyKey: `checkin:${userId}:${today}`,
+    }),
+    prisma.user.update({
+      where: { id: userId },
+      data: {
+        streakCount: streak,
+        longestStreak: longest,
+        lastCheckinOn: casablancaDateAt(today, 12, 0, 0),
+        freezesLeft: usedFreeze ? user.freezesLeft - 1 : user.freezesLeft,
+      },
+    }),
+  ]);
 
-  await prisma.user.update({
-    where: { id: user.id },
-    data: {
-      streakCount: streak,
-      longestStreak: longest,
-      lastCheckinOn: casablancaDateAt(today, 12, 0, 0),
-      freezesLeft: usedFreeze ? user.freezesLeft - 1 : user.freezesLeft,
-    },
-  });
-
-  try {
-    const { redis } = await import('@/lib/redis');
-    const midnight = casablancaDateAt(shiftCasablanca(today, 1), 0, 0, 0);
-    await redis.set(`streak:${user.id}`, JSON.stringify({ streak, freezesLeft: usedFreeze ? user.freezesLeft - 1 : user.freezesLeft }), 'EX', Math.max(60, Math.floor((midnight.getTime() - Date.now()) / 1000)));
-  } catch {
-    // cache is optional
-  }
-
-  await prisma.event.create({
-    data: { name: 'checkin', userId: user.id, props: { streak, reward, usedFreeze } },
-  });
+  /* Fire-and-forget: Redis streak cache + event log (non-blocking) */
+  const midnight = casablancaDateAt(shiftCasablanca(today, 1), 0, 0, 0);
+  const ttl = Math.max(60, Math.floor((midnight.getTime() - Date.now()) / 1000));
+  Promise.all([
+    redis.set(
+      `streak:${userId}`,
+      JSON.stringify({ streak, freezesLeft: usedFreeze ? user.freezesLeft - 1 : user.freezesLeft }),
+      'EX', ttl,
+    ).catch(() => {}),
+    /* Invalidate balance cache so next read is fresh */
+    redis.del(`balance:${userId}`).catch(() => {}),
+    prisma.event.create({
+      data: { name: 'checkin', userId, props: { streak, reward, usedFreeze } },
+    }).catch(() => {}),
+  ]);
 
   return NextResponse.json({ claimed: true, streak, reward, longest, usedFreeze });
 }

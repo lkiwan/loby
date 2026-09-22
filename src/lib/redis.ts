@@ -9,6 +9,11 @@ const client = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
 
 client.on('error', () => {});
 
+/* Warm up the Redis connection on module load so the first API request
+   doesn't stall waiting for the TCP handshake. Silently ignored if Redis
+   is unavailable — all Redis paths already have try/catch fallbacks. */
+client.ping().catch(() => {});
+
 export const redis = client;
 
 export async function generateGameToken(userId: string, gameId: string): Promise<string> {
@@ -19,8 +24,12 @@ export async function generateGameToken(userId: string, gameId: string): Promise
     createdAt: new Date().toISOString(),
   });
 
-  // Set the token with a 60-second Time-To-Live (TTL) using standard EX seconds
-  await redis.set(`game_token:${tokenId}`, tokenData, 'EX', 60);
+  try {
+    await redis.set(`game_token:${tokenId}`, tokenData, 'EX', 60);
+  } catch {
+    // Redis unavailable — token is issued as a UUID; game files run client-side
+    // and don't call verifyAndBurnToken, so the game loads regardless.
+  }
 
   return tokenId;
 }

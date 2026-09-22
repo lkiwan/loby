@@ -11,11 +11,18 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  await ensureAssignments(session.user.id);
+  const userId = session.user.id;
+
+  await ensureAssignments(userId);
 
   const assignments = await prisma.missionAssignment.findMany({
-    where: { userId: session.user.id, expiresAt: { gte: new Date() } },
-    include: { template: true },
+    where: { userId, expiresAt: { gte: new Date() } },
+    include: {
+      template: {
+        select: { kind: true, titleAr: true, target: true, rewardCoins: true, rewardXp: true },
+      },
+    },
+    orderBy: [{ claimedAt: 'asc' }, { template: { rewardCoins: 'desc' } }],
   });
 
   return NextResponse.json({
@@ -27,7 +34,7 @@ export async function GET() {
       target: a.template.target,
       progress: a.progress,
       rewardCoins: a.template.rewardCoins,
-      rewardXp: a.template.rewardXp,
+      rewardXp: a.template.rewardXp ?? 0,
       periodKey: a.periodKey,
       claimed: Boolean(a.claimedAt),
       canClaim: a.progress >= a.template.target && !a.claimedAt,

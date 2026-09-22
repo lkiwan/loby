@@ -9,9 +9,46 @@ import { checkRate } from '@/lib/rateLimit';
 import { createPlaySession } from '@/lib/session';
 import { bumpMission } from '@/lib/missions';
 import { casablancaDay, casablancaDateAt } from '@/lib/time';
+import { GAMES as LOCAL_GAMES } from '@/lib/games';
+import type { Game } from '@prisma/client';
 
 const makeKey = (userId: string, gameId: string, tag: string, nonce?: string) =>
   `play:${userId}:${gameId}:${tag}:${nonce ?? 'gen'}`;
+
+/* Auto-seed a game from local config when it's missing from the DB.
+   This lets the app work on first run before `prisma db seed` is executed.
+   Retries once to handle Prisma cold-start connection races. */
+async function resolveGame(gameId: string): Promise<Game | null> {
+  let fromDb: Game | null = null;
+  try {
+    fromDb = await prisma.game.findUnique({ where: { id: gameId } });
+  } catch {
+    /* First query on cold start can fail — retry once after a brief wait */
+    await new Promise((r) => setTimeout(r, 300));
+    fromDb = await prisma.game.findUnique({ where: { id: gameId } });
+  }
+  if (fromDb) return fromDb;
+
+  const local = LOCAL_GAMES.find((g) => g.id === gameId);
+  if (!local) return null;
+
+  const hmacSecret = crypto.randomBytes(32).toString('hex');
+  return prisma.game.upsert({
+    where: { id: gameId },
+    update: {},
+    create: {
+      id: local.id,
+      slug: local.id,
+      titleAr: local.darijaTitle,
+      titleFr: local.latinTitle,
+      embedUrl: '',
+      hmacSecret,
+      playCost: local.cost,
+      continueCost: Math.ceil(local.cost * 1.5),
+      sortOrder: LOCAL_GAMES.indexOf(local),
+    },
+  });
+}
 
 export async function POST(req: Request) {
   try {
@@ -25,7 +62,7 @@ export async function POST(req: Request) {
     // Parallel: session lookup + game lookup (saves ~50ms)
     const [session, game] = await Promise.all([
       getServerSession(authOptions),
-      prisma.game.findUnique({ where: { id: gameId } }),
+      resolveGame(gameId),
     ]);
 
     if (!session?.user) {
@@ -58,7 +95,25 @@ export async function POST(req: Request) {
         if (err instanceof InsufficientCoinsError) {
           return NextResponse.json({ error: 'Insufficient coins' }, { status: 400 });
         }
-        throw err;
+        /* Prisma cold-start error — retry once with the same idempotency key
+           so the ledger deduction can't be applied twice even if the first
+           attempt partially succeeded. */
+        try {
+          await new Promise((r) => setTimeout(r, 400));
+          entry = await spendBalance({
+            userId,
+            amount: game.playCost,
+            reason: 'PLAY_COST',
+            idempotencyKey: key,
+            refType: 'Game',
+            refId: gameId,
+          });
+        } catch (retryErr) {
+          if (retryErr instanceof InsufficientCoinsError) {
+            return NextResponse.json({ error: 'Insufficient coins' }, { status: 400 });
+          }
+          throw retryErr;
+        }
       }
 
       // Parallel: play session + token generation (saves ~50ms)

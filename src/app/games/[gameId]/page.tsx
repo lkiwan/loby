@@ -24,9 +24,11 @@ export default function GamePage({
   const resolvedParams  = use(params);
   const { token }       = use(searchParams);
   const baseUrl         = EXTERNAL_GAMES[resolvedParams.gameId];
-  const externalUrl     = token
-    ? `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}`
-    : baseUrl;
+  const externalUrl     = baseUrl
+    ? token
+      ? `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}`
+      : baseUrl
+    : undefined;
 
   const [exitConfirm, setExitConfirm]   = useState(false);
   const [replaying, setReplaying]       = useState(false);
@@ -35,6 +37,13 @@ export default function GamePage({
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const game = GAMES.find((g) => g.id === resolvedParams.gameId);
   const router = useRouter();
+
+  /* Force-hide the loading screen after 8 seconds even if onLoad never fires */
+  useEffect(() => {
+    if (iframeLoaded) return;
+    const t = setTimeout(() => setIframeLoaded(true), 8000);
+    return () => clearTimeout(t);
+  }, [iframeLoaded]);
 
   const fetchCoins = useCallback(async () => {
     try {

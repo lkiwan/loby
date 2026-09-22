@@ -165,17 +165,19 @@ export async function addXp(userId: string, amount: number, sessionId?: string) 
 
     await tx.user.update({ where: { id: userId }, data: { xp, level } });
 
+    let coins = user.coins;
     if (level > user.level) {
       const grant = 50 * level;
       const key = `levelup:${userId}:${level}`;
       const granted = await tx.ledgerEntry.findUnique({ where: { idempotencyKey: key } });
       if (!granted) {
+        coins = user.coins + grant;
         await tx.ledgerEntry.create({
           data: {
             userId,
             currency: 'COINS',
             delta: grant,
-            balanceAfter: user.coins + grant,
+            balanceAfter: coins,
             reason: 'LEVEL_UP',
             refType: 'PlaySession',
             refId: sessionId,
@@ -186,7 +188,8 @@ export async function addXp(userId: string, amount: number, sessionId?: string) 
       }
     }
 
-    return { xp, level };
+    /* Return coins so callers don't need an extra DB round-trip */
+    return { xp, level, coins };
   });
 }
 

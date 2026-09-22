@@ -5,6 +5,7 @@ import { addXp } from '@/lib/ledger';
 import { signScore } from '@/lib/session';
 import { bumpMission } from '@/lib/missions';
 import { getConfig } from '@/lib/config';
+import { redis } from '@/lib/redis';
 
 function safeEqual(a: string, b: string): boolean {
   const ba = Buffer.from(a);
@@ -20,10 +21,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
   }
 
-  const playSession = await prisma.playSession.findFirst({
-    where: { id: sessionId, gameId, endedAt: null },
-    include: { game: true },
-  });
+  /* Parallel: session lookup + config (saves ~50ms) */
+  const [playSession, cfg] = await Promise.all([
+    prisma.playSession.findFirst({
+      where: { id: sessionId, gameId, endedAt: null },
+      include: { game: { select: { hmacSecret: true, maxPlausibleScore: true, xpDivisor: true } } },
+    }),
+    getConfig(),
+  ]);
 
   if (!playSession) {
     return NextResponse.json({ error: 'Session not found' }, { status: 404 });
@@ -38,32 +43,34 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Score rejected as implausible' }, { status: 400 });
   }
 
-  const cfg = await getConfig();
   const xpBase = cfg.xpBase as unknown as number;
   const xpCap = cfg.xpCap as unknown as number;
   const xp = Math.min(xpCap, xpBase + Math.floor(score / Math.max(1, playSession.game.xpDivisor)));
 
-  await prisma.playSession.update({
-    where: { id: playSession.id },
-    data: { score, scoreVerified: true, endedAt: new Date() },
-  });
+  /* Parallel: end session + award XP (both are independent writes) */
+  const [, xpResult] = await Promise.all([
+    prisma.playSession.update({
+      where: { id: playSession.id },
+      data: { score, scoreVerified: true, endedAt: new Date() },
+    }),
+    xp > 0 ? addXp(playSession.userId, xp, playSession.id) : Promise.resolve(null),
+  ]);
 
-  if (xp > 0) {
-    await addXp(playSession.userId, xp, playSession.id);
-  }
+  /* Fire-and-forget: missions + event + cache invalidation (non-blocking) */
+  Promise.all([
+    bumpMission(playSession.userId, 'PLAY_N_GAMES', 1, gameId).catch(() => {}),
+    bumpMission(playSession.userId, 'PLAY_SPECIFIC_GAME', 1, gameId).catch(() => {}),
+    prisma.event.create({
+      data: { name: 'play_complete', userId: playSession.userId, props: { gameId, score, xp, sessionId } },
+    }).catch(() => {}),
+    /* Invalidate balance cache so next fetch reflects new XP/coins */
+    redis.del(`balance:${playSession.userId}`).catch(() => {}),
+  ]);
 
-  await bumpMission(playSession.userId, 'PLAY_N_GAMES', 1, gameId);
-  await bumpMission(playSession.userId, 'PLAY_SPECIFIC_GAME', 1, gameId);
+  /* Return coins from the XP transaction result to avoid an extra DB round-trip */
+  const coins = (xpResult as { coins?: number } | null)?.coins
+    ?? (await prisma.user.findUnique({ where: { id: playSession.userId }, select: { coins: true } }))?.coins
+    ?? 0;
 
-  await prisma.event.create({
-    data: {
-      name: 'play_complete',
-      userId: playSession.userId,
-      props: { gameId, score, xp, sessionId },
-    },
-  });
-
-  const user = await prisma.user.findUnique({ where: { id: playSession.userId } });
-
-  return NextResponse.json({ ok: true, xp, coins: user?.coins ?? 0 });
+  return NextResponse.json({ ok: true, xp, coins });
 }

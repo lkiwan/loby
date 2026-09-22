@@ -36,25 +36,20 @@ export async function POST(req: Request) {
   const userId = session.user.id;
   const ipHash = hashIp(clientIp(req));
   const userAgent = req.headers.get('user-agent')?.slice(0, 512) ?? null;
+  const now = new Date();
 
-  try {
-    await prisma.device.upsert({
+  /* Parallel: device upsert + lastSeenAt update (both are independent) */
+  await Promise.all([
+    prisma.device.upsert({
       where: { userId_fingerprint: { userId, fingerprint } },
-      update: { ipHash, userAgent },
+      update: { ipHash, userAgent, lastSeenAt: now },
       create: { userId, fingerprint, ipHash, userAgent },
-    });
-  } catch {
-    // device tracking is best-effort; never block the user
-  }
-
-  try {
-    await prisma.user.update({
+    }).catch(() => {}),
+    prisma.user.update({
       where: { id: userId },
-      data: { lastSeenAt: new Date() },
-    });
-  } catch {
-    // best-effort
-  }
+      data: { lastSeenAt: now },
+    }).catch(() => {}),
+  ]);
 
   return NextResponse.json({ ok: true });
 }
