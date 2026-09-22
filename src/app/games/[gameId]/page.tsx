@@ -45,7 +45,18 @@ export default function GamePage({
     fetch(baseUrl, { priority: 'high' } as RequestInit).catch(() => {});
   }, [baseUrl]);
 
-  /* Force-hide the loading screen after 3 seconds even if onLoad never fires */
+  /* Reset all state when the URL changes (new play session via play-again).
+     router.replace with the same pathname keeps the component mounted,
+     so we must reset manually when externalUrl changes. */
+  useEffect(() => {
+    setIframeLoaded(false);
+    setExitConfirm(false);
+    setGameOver(false);
+    setReplaying(false);
+    setCoins(null);
+  }, [externalUrl]);
+
+  /* Force-hide the loading screen after 3 seconds if onLoad never fires */
   useEffect(() => {
     if (iframeLoaded) return;
     const t = setTimeout(() => setIframeLoaded(true), 3000);
