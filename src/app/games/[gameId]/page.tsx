@@ -190,8 +190,7 @@ export default function GamePage({
       <iframe
         src={externalUrl}
         className="h-full w-full border-0"
-        allow="autoplay; fullscreen"
-        sandbox="allow-scripts allow-same-origin allow-popups"
+        allow="autoplay; fullscreen; clipboard-write"
         title={`Game: ${resolvedParams.gameId}`}
         onLoad={() => setIframeLoaded(true)}
       />
