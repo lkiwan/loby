@@ -19,17 +19,17 @@ import dynamic from 'next/dynamic';
 const StarField = dynamic(() => import('@/components/StarField'), { ssr: false });
 
 const TICKER_ITEMS = [
-  '🕹️ ساحة اللعب 100% بالدارجة',
-  '🎲 كتر من لعبة — تيليفون واحد',
-  '💀 الليلة كاين اللي غادي يتصفى',
-  '🕵️ بصح، شكون المحتال؟',
-  '💰 زيد العملات ديالك عن طريق الإعلانات',
-  '🔥 صلاح ديال الحومة كاين من بكري',
-  '🇲🇦 قاومو بيناتكو، بالدارجة',
+  '🕹️ كل شي بالدارجة، حتى الكدب',
+  '💀 صاحبك يعتبرك صاحب — وانتا؟',
+  '🎲 تيليفون واحد = بزاف ديال المشاكل',
+  '🔥 الصراع ديال الحومة كاين من بكري',
+  '🤫 واحد فيكم كيكذب — مرحبا بيكم',
+  '🇲🇦 تحداو بعضياتكم، بالدارجة',
+  '💰 شاهد الإعلان — مش هزيمة، هذا تكتيك',
 ];
 
-const TITLE_CHARS_1 = Array.from('يلا');
-const TITLE_CHARS_2 = Array.from('نلعبو!');
+const TITLE_CHARS_1 = Array.from('فضح صاحبك');
+const TITLE_CHARS_2 = Array.from('قبل ما يفضحك');
 
 function LobbyContent() {
   const { data: session, status, update } = useSession();
@@ -160,7 +160,7 @@ function LobbyContent() {
         <div className="relative z-10 flex flex-col items-center gap-4">
           <StarMark size={60} />
           <Loader2 className="h-7 w-7 animate-spin text-amber-400" />
-          <p className="font-lalezar text-2xl text-[#e8d9c0] text-glow-amber">كنهزرو الطاولا…</p>
+          <p className="font-lalezar text-2xl text-[#e8d9c0] text-glow-amber">كنجيبو الكرسات…</p>
         </div>
       </div>
     );
@@ -242,32 +242,32 @@ function LobbyContent() {
         {/* Badge */}
         <div className="badge-arcade anim-fadeup d1">
           <span className="live-dot" />
-          PARTY GAMES 100% DARJA
+          🃏 جلسة + حومة + فضايح — بالدارجة
         </div>
 
         {/* Animated title */}
         <div className="mt-7 select-none">
           {/* Row 1 */}
-          <p className="font-lalezar leading-none" style={{ fontSize: 'clamp(3rem,13vw,5.5rem)' }}>
+          <p className="font-lalezar leading-none" style={{ fontSize: 'clamp(2.4rem,10vw,4.5rem)' }}>
             {TITLE_CHARS_1.map((c, i) => (
               <span
                 key={i}
                 className="letter-in text-[#ede0c6] text-glow-white"
-                style={{ animationDelay: `${0.1 + i * 0.08}s` }}
+                style={{ animationDelay: `${0.08 + i * 0.07}s` }}
               >
-                {c}
+                {c === ' ' ? ' ' : c}
               </span>
             ))}
           </p>
           {/* Row 2 — neon gold */}
-          <p className="neon-sign font-lalezar leading-none" style={{ fontSize: 'clamp(4.5rem,20vw,9rem)' }}>
+          <p className="neon-sign font-lalezar leading-none" style={{ fontSize: 'clamp(3.2rem,16vw,7.5rem)' }}>
             {TITLE_CHARS_2.map((c, i) => (
               <span
                 key={i}
                 className="letter-in text-gold-sheen"
-                style={{ animationDelay: `${0.35 + i * 0.07}s` }}
+                style={{ animationDelay: `${0.3 + i * 0.06}s` }}
               >
-                {c}
+                {c === ' ' ? ' ' : c}
               </span>
             ))}
           </p>
@@ -282,17 +282,17 @@ function LobbyContent() {
 
         {/* Subtitle */}
         <p className="anim-fadeup d3 mx-auto mt-6 max-w-[420px] font-cairo text-[15.5px] font-semibold leading-relaxed text-[#b8a888]">
-          تيليفون واحد = جولة كاملة.{' '}
-          <span className="font-black text-[#f0deb4]">اختار طاولتك</span> وخلي الحومة تبدا.
+          تيليفون واحد. دراري بزاف.{' '}
+          <span className="font-black text-[#f0deb4]">خسائر معنوية كثيرة</span> 💀
         </p>
 
         {/* Stats */}
         <div className="anim-fadeup d4 mt-8 flex flex-wrap items-center justify-center gap-3">
           {[
-            { ico: <Gamepad2 className="h-5 w-5 text-amber-400" />, val: `${GAMES.length}`, label: 'ألعاب' },
-            { ico: <Users className="h-5 w-5 text-sky-400" />,      val: '15',              label: 'لاعب max' },
-            { ico: <Flame className="h-5 w-5 text-red-400" />,      val: '100%',            label: 'دارجة' },
-            { ico: <Clock className="h-5 w-5 text-emerald-400" />,  val: '0s',              label: 'تحميل' },
+            { ico: <Gamepad2 className="h-5 w-5 text-amber-400" />, val: `${GAMES.length}`,  label: 'ألعاب' },
+            { ico: <Users className="h-5 w-5 text-sky-400" />,      val: '15',               label: 'ضحية ماكس' },
+            { ico: <Flame className="h-5 w-5 text-red-400" />,      val: '100%',             label: 'دارجة خالص' },
+            { ico: <Clock className="h-5 w-5 text-emerald-400" />,  val: '0ث',               label: 'ما تستناش' },
           ].map((s) => (
             <div key={s.label} className="stat-card">
               {s.ico}
@@ -308,11 +308,11 @@ function LobbyContent() {
             <div className="cta-glow">
               <Link href="/register" className="btn-arcade relative z-10 inline-flex items-center gap-2.5 px-9 py-4 text-[16px] font-black">
                 <Zap className="h-5 w-5" />
-                ابدا المتعة مجانا
+                ابدا الفضايح مجانا
               </Link>
             </div>
             <Link href="/login" className="btn-chunk btn-ghost-hollow inline-flex items-center gap-2 px-6 py-4 text-[14px]">
-              <LogIn className="h-4 w-4" /> عندي حساب
+              <LogIn className="h-4 w-4" /> عندي حساب (وخايف)
             </Link>
           </div>
         )}
@@ -330,7 +330,7 @@ function LobbyContent() {
               </div>
             </div>
             <p className="font-cairo text-[13px] font-bold text-neutral-400">
-              مرحبا، <span className="text-amber-300">{session?.user?.username}</span>!
+              عاود جيتي يا <span className="text-amber-300">{session?.user?.username}</span>؟ حق عليك 🤙
             </p>
           </div>
         )}
@@ -368,7 +368,7 @@ function LobbyContent() {
                   <Coins className="h-5 w-5 text-amber-400" />
                 </div>
                 <p className="font-cairo text-[13px] font-bold text-[#e8d5a3]">
-                  سجل باش تجمع العملات وتلعب بالإعلانات مجانا.
+                  سجل باش تكشف الخاين ديال الحومة — وتجمع عملات مجانا طبعا 🕵️
                 </p>
               </div>
               <div className="flex shrink-0 gap-2">
@@ -388,7 +388,7 @@ function LobbyContent() {
               اختار طاولتك
             </h2>
             <p className="font-cairo text-[13.5px] font-semibold text-[#d8c39a]/55">
-              العملات هي الغاز — إعلان واحد = دخول مجاني
+              إعلان = دخول مجاني. عملات = دخول بكرامة. الاختيار عليك 😅
             </p>
           </div>
 
@@ -426,7 +426,7 @@ function LobbyContent() {
             <Link href="/contact" className="transition hover:text-amber-300">تواصل معنا</Link>
           </div>
           <p className="mt-1 font-cairo text-[10px] font-semibold text-[#7a6a4d]">
-            مصنوعة بـ ❤️ وشوية كسكس في المغرب 🇲🇦
+            مصنوعة بـ ❤️ وشوية كسكس في المغرب 🇲🇦 — أي خسارة في الصداقات مش مسؤوليتنا
           </p>
         </footer>
       </main>
@@ -443,20 +443,20 @@ function LobbyContent() {
             </button>
             <div className="flex items-center gap-2">
               <StarMark size={26} />
-              <p className="font-cairo text-[13px] font-black tracking-wide text-neutral-300">AD BREAK — كتر العملات مجانا</p>
+              <p className="font-cairo text-[13px] font-black tracking-wide text-neutral-300">AD BREAK — إعلان مقابل جلسة</p>
             </div>
             {adStatus === 'idle' && (
               <>
-                <h3 className="mt-5 font-lalezar text-2xl text-neutral-100">اعطينا ثواني ديالك</h3>
+                <h3 className="mt-5 font-lalezar text-2xl text-neutral-100">ثواني ديالك مقابل الليلة كلها</h3>
                 <p className="mt-1.5 font-cairo text-[13px] font-semibold leading-relaxed text-neutral-400">
-                  شاهد إعلان قصير وغادي تفتح ليك الطاولة <b className="text-amber-300">مجانا</b> — العملات كيبداو كيتسلكو.
+                  شاهد الإعلان وغادي نفتح ليك الطاولة <b className="text-amber-300">مجانا</b> — ماشي هزيمة، هذا تكتيك 😅
                 </p>
                 <button onClick={startRewardedAd} className="btn-chunk btn-amber group mt-6 w-full py-4 text-[15px]">
-                  <Play className="h-5 w-5" /> باشر الإعلان
+                  <Play className="h-5 w-5" /> باشر — وعيني عيناك
                 </button>
                 <button onClick={() => setAdModalOpen(false)}
                   className="mt-2.5 w-full py-2 text-center font-cairo text-[12.5px] font-bold text-neutral-500 transition hover:text-neutral-300">
-                  لخير، ثمن بالعملات
+                  لا شكرا، غنثمن بالعملات
                 </button>
               </>
             )}
@@ -466,8 +466,8 @@ function LobbyContent() {
                   <span className="glow-pulse absolute inset-0 rounded-full bg-amber-400/30 blur-xl" />
                   <Loader2 className="relative h-9 w-9 animate-spin text-amber-400" />
                 </div>
-                <p className="font-cairo text-[14px] font-black text-amber-200">كيتلعب الإعلان…</p>
-                <p className="font-cairo text-[12px] font-semibold text-neutral-400">لا تقلب الصفحة باش تلقى المكافأة.</p>
+                <p className="font-cairo text-[14px] font-black text-amber-200">صابر، الطاولة كتستناك…</p>
+                <p className="font-cairo text-[12px] font-semibold text-neutral-400">لا تهرب — عارفنا الوقتين 👁️</p>
               </div>
             )}
             {adStatus === 'verifying' && (
@@ -475,8 +475,8 @@ function LobbyContent() {
                 <div className="grid h-14 w-14 place-items-center rounded-full border-2 border-emerald-400/40 bg-emerald-400/10">
                   <Check className="h-7 w-7 text-emerald-400" />
                 </div>
-                <p className="font-cairo text-[14px] font-black text-emerald-300">كنخاصم المكافأة مع السرڤر…</p>
-                <p className="font-cairo text-[12px] font-semibold text-neutral-400">ثواني على ما تتفتح ليك الطاولة.</p>
+                <p className="font-cairo text-[14px] font-black text-emerald-300">كنأكدو ما شفتيش الإعلان بعينيك مسدودين…</p>
+                <p className="font-cairo text-[12px] font-semibold text-neutral-400">تقدر تعيط فالفريق باش تستعدو 🫡</p>
               </div>
             )}
           </div>
