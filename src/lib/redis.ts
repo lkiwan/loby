@@ -1,7 +1,15 @@
 import Redis from 'ioredis';
 
-// Configure the ioredis client
-export const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+const client = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
+  lazyConnect: true,
+  maxRetriesPerRequest: 1,
+  enableOfflineQueue: false,
+  connectTimeout: 3000,
+});
+
+client.on('error', () => {});
+
+export const redis = client;
 
 export async function generateGameToken(userId: string, gameId: string): Promise<string> {
   const tokenId = crypto.randomUUID();
