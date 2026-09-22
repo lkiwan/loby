@@ -10,7 +10,8 @@ export const prisma =
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
-/* Warm up the connection pool on module load so the first API request
-   doesn't pay the TCP + TLS + auth cost and time out. Errors are ignored
-   because the connection will be retried on the actual query. */
-prisma.$connect().catch(() => {});
+/* Warm up the connection pool on module load. Log failures so they are
+   visible in server logs — the app retries at the query level. */
+prisma.$connect().catch((e: unknown) => {
+  console.error('[prisma] warmup connect failed:', e instanceof Error ? e.message : e);
+});
