@@ -18,16 +18,19 @@ export default function StarField() {
     window.addEventListener('resize', resize);
 
     type Star = { x: number; y: number; r: number; vx: number; vy: number; a: number; da: number; color: string };
-    const COLORS = ['rgba(242,178,61,', 'rgba(251,191,36,', 'rgba(239,68,68,', 'rgba(255,255,255,'];
+    const COLORS = [
+      'rgba(242,178,61,', 'rgba(0,217,255,', 'rgba(168,85,247,',
+      'rgba(255,45,85,',  'rgba(0,255,136,', 'rgba(255,255,255,',
+    ];
 
-    const stars: Star[] = Array.from({ length: 110 }, () => ({
+    const stars: Star[] = Array.from({ length: 160 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      r: Math.random() * 1.4 + 0.2,
-      vx: (Math.random() - 0.5) * 0.28,
-      vy: (Math.random() - 0.5) * 0.28,
-      a: Math.random() * 0.55 + 0.05,
-      da: (Math.random() - 0.5) * 0.003,
+      r: Math.random() * 2.0 + 0.3,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
+      a: Math.random() * 0.65 + 0.08,
+      da: (Math.random() - 0.5) * 0.004,
       color: COLORS[Math.floor(Math.random() * COLORS.length)],
     }));
 

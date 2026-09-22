@@ -34,13 +34,13 @@ const archivoBlack = Archivo_Black({
 });
 
 export const metadata: Metadata = {
-  title: "Darja Arcade — ساحة اللعب",
+  title: "PLAYM3ANA — ساحة اللعب",
   description: "Pass & play party games بالدارجة على تيليفون واحد. العب مع الصحاب ديالك!",
-  applicationName: "Darja Arcade",
+  applicationName: "PLAYM3ANA",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#06060f",
+  themeColor: "#0d0a06",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",

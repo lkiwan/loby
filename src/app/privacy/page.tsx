@@ -1,12 +1,12 @@
 import LegalShell from '@/components/LegalShell';
 
-export const metadata = { title: 'سياسة الخصوصية — Darja Arcade' };
+export const metadata = { title: 'سياسة الخصوصية — PLAYM3ANA' };
 
 export default function PrivacyPage() {
   return (
     <LegalShell title="سياسة الخصوصية" subtitle="آخر تحديث: 20 شتنبر 2026">
       <p>
-        DARJA ARCADE منصة لعبات جماعية بالدارجة كتخدم على المتصفح. هاد الوثيقة كتفسر شنو كنجمعو من
+        PLAYM3ANA منصة لعبات جماعية بالدارجة كتخدم على المتصفح. هاد الوثيقة كتفسر شنو كنجمعو من
         المعطيات وعلاش وكفينو بش نخدمو اللعبة بأمان.
       </p>
 
@@ -46,7 +46,7 @@ export default function PrivacyPage() {
           تقدر تطلب الاطلاع على معطياتك، تصحيحها، ولا حذفها. فحالة الحذف، كنبقاو السجل المالي
           (Ledger) لمدة لازمها القانون، ونحيدو كل شي يخصك من اللعب العادي. تواصل معنا عبر صفحة
           <a href="/contact" className="text-amber-300 underline-offset-2 hover:underline"> تواصل </a>
-          ولا على <a href="mailto:support@darja-arcade.ma" className="text-amber-300 underline-offset-2 hover:underline">support@darja-arcade.ma</a>.
+          ولا على <a href="mailto:support@playm3ana.ma" className="text-amber-300 underline-offset-2 hover:underline">support@playm3ana.ma</a>.
         </p>
       </div>
 

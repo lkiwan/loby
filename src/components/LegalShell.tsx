@@ -29,7 +29,8 @@ export default function LegalShell({
           </Link>
           <StarMark size={26} />
           <span className="font-grit text-[0.9rem] uppercase tracking-tight text-[#f1e7d6]">
-            <span className="text-gold-sheen">DARJA</span> ARCADE
+            <span className="text-gold-sheen">PLAY</span>
+            <span className="text-[#7a9bd6]">M3ANA</span>
           </span>
         </div>
       </header>
@@ -46,7 +47,7 @@ export default function LegalShell({
         </div>
 
         <p className="mt-6 text-center font-cairo text-[11px] font-bold text-[#7a6a4d]">
-          DARJA ARCADE — مصنوعة بـ ❤️ فالمغرب 🇲🇦
+          PLAYM3ANA — مصنوعة بـ ❤️ فالمغرب 🇲🇦
         </p>
       </main>
     </div>

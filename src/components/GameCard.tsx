@@ -1,8 +1,8 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useCallback } from 'react';
 import Image from 'next/image';
-import { Coins, Loader2, Play, Video } from 'lucide-react';
+import { Coins, Loader2, Play, Video, Zap } from 'lucide-react';
 import { GAMES, MAFIA_ART, type Game } from '@/lib/games';
 import Star from '@/components/Star';
 
@@ -11,7 +11,7 @@ type GameCardProps = {
   coins: number;
   loadingAction: 'coins' | 'ad' | null;
   isBusy: boolean;
-  onPlay: () => void;
+  onPlay: (e: React.MouseEvent) => void;
   onWatchAd: () => void;
 };
 
@@ -27,9 +27,9 @@ function TiltCard({ children, className, style }: {
     const el = ref.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
-    const x = ((e.clientX - r.left) / r.width  - 0.5) * 12;
-    const y = ((e.clientY - r.top)  / r.height - 0.5) * 10;
-    el.style.transform = `perspective(900px) rotateY(${x}deg) rotateX(${-y}deg) translateY(-8px) scale(1.015)`;
+    const x = ((e.clientX - r.left) / r.width  - 0.5) * 14;
+    const y = ((e.clientY - r.top)  / r.height - 0.5) * 12;
+    el.style.transform = `perspective(900px) rotateY(${x}deg) rotateX(${-y}deg) translateY(-10px) scale(1.02)`;
   };
   const onLeave = () => {
     if (ref.current) ref.current.style.transform = '';
@@ -48,10 +48,24 @@ function TiltCard({ children, className, style }: {
   );
 }
 
+/* Ripple effect spawner */
+function useRipple() {
+  return useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    const btn = e.currentTarget;
+    const rect = btn.getBoundingClientRect();
+    const ripple = document.createElement('span');
+    ripple.className = 'btn-ripple-wave';
+    ripple.style.left = `${e.clientX - rect.left - rect.width / 2}px`;
+    ripple.style.top  = `${e.clientY - rect.top  - rect.height / 2}px`;
+    btn.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 560);
+  }, []);
+}
+
 function GameArt({ game }: { game: Game }) {
   if (game.isMafia) {
     return (
-      <div className="relative h-full w-full overflow-hidden bg-[#130208]">
+      <div className="relative h-full w-full overflow-hidden bg-[#0a0010]">
         <Image
           src={MAFIA_ART}
           alt={game.latinTitle}
@@ -60,7 +74,7 @@ function GameArt({ game }: { game: Game }) {
           className="object-cover transition-transform duration-700 group-hover:scale-110"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0c0208] via-transparent to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0010] via-transparent to-black/30" />
         <div className="glow-pulse absolute -bottom-6 left-1/2 h-24 w-3/4 -translate-x-1/2 rounded-[50%] bg-red-700/55 blur-2xl" />
 
         <span className="drip" style={{ left: '10%',  height: 26 }} />
@@ -85,13 +99,13 @@ function GameArt({ game }: { game: Game }) {
 
   if (game.keyArt) {
     return (
-      <div className="relative h-full w-full overflow-hidden bg-[#080808]">
+      <div className="relative h-full w-full overflow-hidden bg-[#050910]">
         <div
-          className="absolute -right-6 -top-4 h-36 w-36 rounded-full opacity-45 blur-2xl transition-opacity duration-500 group-hover:opacity-70"
+          className="absolute -right-6 -top-4 h-36 w-36 rounded-full opacity-45 blur-2xl transition-opacity duration-500 group-hover:opacity-80"
           style={{ background: game.glowAccent }}
         />
         <div
-          className="absolute -bottom-8 -left-6 h-32 w-32 rounded-full opacity-35 blur-2xl transition-opacity duration-500 group-hover:opacity-60"
+          className="absolute -bottom-8 -left-6 h-32 w-32 rounded-full opacity-35 blur-2xl transition-opacity duration-500 group-hover:opacity-65"
           style={{ background: game.starAccent }}
         />
         <Image
@@ -101,19 +115,19 @@ function GameArt({ game }: { game: Game }) {
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           className="object-cover transition-transform duration-700 group-hover:scale-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0c0a07]/75 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050910]/80 via-transparent to-transparent" />
       </div>
     );
   }
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-[#080808]">
-      <div className="absolute -right-8 -top-6 h-36 w-36 rounded-full opacity-40 blur-2xl transition-opacity duration-500 group-hover:opacity-65"
+    <div className="relative h-full w-full overflow-hidden bg-[#050910]">
+      <div className="absolute -right-8 -top-6 h-36 w-36 rounded-full opacity-40 blur-2xl transition-opacity duration-500 group-hover:opacity-70"
         style={{ background: game.glowAccent }} />
-      <div className="absolute -bottom-10 -left-8 h-32 w-32 rounded-full opacity-35 blur-2xl transition-opacity duration-500 group-hover:opacity-60"
+      <div className="absolute -bottom-10 -left-8 h-32 w-32 rounded-full opacity-35 blur-2xl transition-opacity duration-500 group-hover:opacity-65"
         style={{ background: game.starAccent }} />
       <div className="absolute inset-0 grid place-items-center">
-        <div className="transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6">
+        <div className="transition-transform duration-500 group-hover:scale-115 group-hover:rotate-8">
           <Star emoji={game.emoji} accent={game.starAccent} size={96} spin />
         </div>
       </div>
@@ -131,15 +145,19 @@ export default function GameCard({
   game, coins, loadingAction, isBusy, onPlay, onWatchAd,
 }: GameCardProps) {
   const canAfford = coins >= game.cost;
+  const ripple = useRipple();
 
   return (
-    <TiltCard className={`group game-card-v2 ${game.isMafia ? 'spinning-border' : ''} flex flex-col`}>
+    <TiltCard className={`group game-card-v2 holo-shimmer ${game.isMafia ? 'spinning-border card-mafia' : ''} flex flex-col`}>
 
       {/* Top accent line */}
       {!game.isMafia && (
         <div
           className="absolute inset-x-0 top-0 h-[2px] z-10 rounded-t-[22px]"
-          style={{ background: `linear-gradient(90deg, transparent, ${game.starAccent}90, ${game.starAccent}, ${game.starAccent}90, transparent)` }}
+          style={{
+            background: `linear-gradient(90deg, transparent, ${game.starAccent}90, ${game.starAccent}, ${game.starAccent}90, transparent)`,
+            boxShadow: `0 0 12px ${game.starAccent}60`,
+          }}
         />
       )}
 
@@ -150,14 +168,19 @@ export default function GameCard({
         {/* Hover play overlay */}
         <div className="play-reveal rounded-t-[21px]">
           <button
-            onClick={onPlay}
+            onClick={(e) => { ripple(e); onPlay(e); }}
             disabled={isBusy || !canAfford}
-            className="flex h-14 w-14 items-center justify-center rounded-full border-2 transition"
-            style={{ borderColor: game.starAccent, background: `${game.starAccent}22`, color: game.starAccent }}
+            className="flex h-14 w-14 items-center justify-center rounded-full border-2 transition-all duration-200 hover:scale-110 active:scale-95 overflow-hidden relative"
+            style={{
+              borderColor: game.starAccent,
+              background: `${game.starAccent}28`,
+              color: game.starAccent,
+              boxShadow: `0 0 20px ${game.starAccent}50`,
+            }}
           >
             {isBusy && loadingAction === 'coins'
               ? <Loader2 className="h-6 w-6 animate-spin" />
-              : <Play className="h-6 w-6" />}
+              : <Play className="h-6 w-6 fill-current" />}
           </button>
         </div>
       </div>
@@ -165,7 +188,7 @@ export default function GameCard({
       {/* Bottom glow fade from art to card */}
       <div
         className="pointer-events-none absolute left-0 right-0 h-10 z-[5]"
-        style={{ top: 180, background: `linear-gradient(to bottom, ${game.isMafia ? '#0c0208' : '#0c0a07'}, transparent)` }}
+        style={{ top: 180, background: `linear-gradient(to bottom, ${game.isMafia ? '#0a0010' : '#050910'}, transparent)` }}
       />
 
       {/* Content */}
@@ -173,7 +196,7 @@ export default function GameCard({
         {/* Title */}
         <div>
           <p className="font-lalezar text-[1.3rem] leading-tight"
-            style={{ color: game.starAccent, textShadow: `0 0 16px ${game.starAccent}55` }}>
+            style={{ color: game.starAccent, textShadow: `0 0 18px ${game.starAccent}60` }}>
             {game.darijaTitle}
           </p>
           <p className="font-grit text-[10px] uppercase tracking-[0.18em] text-neutral-600">
@@ -195,36 +218,50 @@ export default function GameCard({
             className="flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-cairo text-[11px] font-black tabular-nums"
             style={{
               borderColor: `${game.starAccent}50`,
-              background: `${game.starAccent}10`,
+              background: `${game.starAccent}12`,
               color: game.starAccent,
-              boxShadow: `0 0 10px ${game.starAccent}18`,
+              boxShadow: `0 0 12px ${game.starAccent}22`,
             }}
           >
             <Coins className="h-3 w-3" />{game.cost} كولة
           </span>
         </div>
 
+        {/* Affordability power bar */}
+        <div className="power-bar">
+          <div
+            className="power-bar-fill"
+            style={{
+              width: `${Math.min(100, (coins / game.cost) * 100)}%`,
+              background: canAfford
+                ? `linear-gradient(90deg, ${game.starAccent}, rgba(0,255,136,.8))`
+                : `linear-gradient(90deg, rgba(239,68,68,.7), rgba(239,68,68,.4))`,
+              boxShadow: canAfford ? `0 0 8px ${game.starAccent}60` : '0 0 8px rgba(239,68,68,.4)',
+            }}
+          />
+        </div>
+
         {/* Separator */}
         <div className="h-px w-full" style={{
-          background: `linear-gradient(90deg, transparent, ${game.starAccent}30, transparent)`,
+          background: `linear-gradient(90deg, transparent, ${game.starAccent}35, transparent)`,
         }} />
 
         {/* Buttons */}
         <div className="grid grid-cols-2 gap-2">
           <button
-            onClick={onPlay}
+            onClick={(e) => { ripple(e); onPlay(e); }}
             disabled={isBusy || !canAfford}
-            className={`btn-chunk py-2.5 text-[12.5px] ${game.isMafia ? 'btn-blood' : 'btn-amber'} ${!canAfford ? 'opacity-40' : ''}`}
+            className={`btn-chunk relative overflow-hidden py-2.5 text-[12.5px] ${game.isMafia ? 'btn-blood' : 'btn-amber'} ${!canAfford ? 'opacity-40' : ''}`}
           >
             {loadingAction === 'coins' && isBusy
               ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              : <Play className="h-3.5 w-3.5" />}
+              : <Zap className="h-3.5 w-3.5" />}
             بالعملات
           </button>
           <button
             onClick={onWatchAd}
             disabled={isBusy}
-            className="btn-chunk btn-ghost-hollow py-2.5 text-[12.5px]"
+            className="btn-chunk btn-ghost-hollow relative overflow-hidden py-2.5 text-[12.5px]"
           >
             {loadingAction === 'ad' && isBusy
               ? <Loader2 className="h-3.5 w-3.5 animate-spin" />

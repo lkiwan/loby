@@ -16,7 +16,7 @@ export default async function AdminUsersPage() {
           <StarMark size={36} />
           <div>
             <h1 className="font-grit text-lg uppercase tracking-wide">
-              <span className="text-gold-sheen">DARJA</span> ARCADE — GESTION JOUEURS
+              <span className="text-gold-sheen">PLAY</span><span className="text-[#7a9bd6]">M3ANA</span> — GESTION JOUEURS
             </h1>
             <p className="font-cairo text-[11px] font-bold uppercase tracking-[0.3em] text-neutral-500">
               Profils · solde · rôles · statuts

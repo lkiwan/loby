@@ -162,7 +162,7 @@ export default async function AdminPage() {
           <StarMark size={36} />
           <div>
             <h1 className="font-grit text-lg uppercase tracking-wide">
-              <span className="text-gold-sheen">DARJA</span> ARCADE — ADMIN
+              <span className="text-gold-sheen">PLAY</span><span className="text-[#7a9bd6]">M3ANA</span> — ADMIN
             </h1>
             <p className="font-cairo text-[11px] font-bold uppercase tracking-[0.3em] text-neutral-500">
               Panneau de supervision
@@ -411,7 +411,7 @@ export default async function AdminPage() {
 
       <footer className="mt-8 border-t-2 border-[#6b542e]/30 pt-4 text-center">
         <p className="font-cairo text-[11px] font-semibold text-neutral-600">
-          Darja Arcade — panneau admin · {data.players.length} joueurs · {fmtHours(data.totalSeconds)} de jeu au total
+          PLAYM3ANA — panneau admin · {data.players.length} joueurs · {fmtHours(data.totalSeconds)} de jeu au total
         </p>
       </footer>
     </main>

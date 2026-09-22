@@ -1,8 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0d0b08;
+  --background: #030812;
   --foreground: #f1e7d6;
+  --neon-gold:   #f2b23d;
+  --neon-cyan:   #00d9ff;
+  --neon-purple: #a855f7;
+  --neon-red:    #ff2d55;
+  --neon-green:  #00ff88;
 }
 
 @theme inline {
@@ -44,7 +49,7 @@ body {
 }
 
 ::selection {
-  background: rgba(242, 178, 61, 0.35);
+  background: rgba(0, 217, 255, 0.28);
   color: #fff;
 }
 
@@ -672,10 +677,10 @@ body.ad-playing {
 
 /* ── LED ticker strip ── */
 .led-strip {
-  background: rgba(5, 4, 3, 0.9);
-  border: 1px solid rgba(242, 178, 61, 0.18);
+  background: rgba(3, 8, 18, 0.95);
+  border: 1px solid rgba(0, 217, 255, 0.14);
   border-radius: 10px;
-  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5), 0 0 16px rgba(242, 178, 61, 0.04);
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 217, 255, 0.06);
   overflow: hidden;
 }
 .led-strip-track {
@@ -819,9 +824,9 @@ body.ad-playing {
 .spinning-border {
   border: 2px solid transparent;
   background:
-    linear-gradient(#0c0a07, #0c0a07) padding-box,
-    conic-gradient(from var(--border-angle), #dc2626 0%, #f2b23d 25%, #dc2626 50%, #f2b23d 75%, #dc2626 100%) border-box;
-  animation: borderSpin 4s linear infinite;
+    linear-gradient(#080d1a, #080d1a) padding-box,
+    conic-gradient(from var(--border-angle), #ff2d55 0%, #f2b23d 20%, #00d9ff 40%, #a855f7 60%, #f2b23d 80%, #ff2d55 100%) border-box;
+  animation: borderSpin 3.5s linear infinite;
 }
 
 /* ── 3D tilt card ── */
@@ -838,11 +843,11 @@ body.ad-playing {
 /* ── Hover glow card ── */
 .game-card-v2 {
   position: relative;
-  background: linear-gradient(160deg, #131007 0%, #0c0a07 60%);
+  background: linear-gradient(160deg, #080d1a 0%, #050910 60%);
   border: 1px solid rgba(255,255,255,0.07);
   border-radius: 22px;
   overflow: hidden;
-  transition: box-shadow 0.3s ease;
+  transition: box-shadow 0.35s ease, border-color 0.35s ease, transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 .game-card-v2::after {
   content: '';
@@ -851,6 +856,22 @@ body.ad-playing {
   border-radius: 22px;
   background: linear-gradient(160deg, rgba(255,255,255,.04) 0%, transparent 60%);
   pointer-events: none;
+  z-index: 1;
+}
+.game-card-v2:hover {
+  transform: translateY(-8px) scale(1.01);
+  border-color: rgba(0,217,255,.25);
+  box-shadow:
+    0 0 0 1px rgba(0,217,255,.1),
+    0 0 30px rgba(0,217,255,.15),
+    0 24px 60px rgba(0,0,0,.6);
+}
+.game-card-v2.card-mafia:hover {
+  border-color: rgba(239,68,68,.35);
+  box-shadow:
+    0 0 0 1px rgba(239,68,68,.12),
+    0 0 30px rgba(239,68,68,.2),
+    0 24px 60px rgba(0,0,0,.6);
 }
 
 /* ── Play button full-reveal ── */
@@ -901,10 +922,12 @@ body.ad-playing {
 /* ── Hero massive background gradient ── */
 .hero-scene {
   background:
-    radial-gradient(ellipse 90% 55% at 50% -5%,  rgba(242,178,61,.13)  0%, transparent 65%),
-    radial-gradient(ellipse 55% 45% at 85%  25%, rgba(220,38,38,.09)   0%, transparent 55%),
-    radial-gradient(ellipse 45% 55% at 15%  75%, rgba(139,92,246,.07)  0%, transparent 55%),
-    radial-gradient(ellipse 70% 50% at 50% 110%, rgba(0,0,0,.9)        0%, transparent 60%);
+    radial-gradient(ellipse 90% 50% at 50% -8%,  rgba(242,178,61,.22)   0%, transparent 55%),
+    radial-gradient(ellipse 55% 40% at 95%  15%, rgba(0,217,255,.18)    0%, transparent 48%),
+    radial-gradient(ellipse 50% 50% at 5%   70%, rgba(168,85,247,.16)   0%, transparent 50%),
+    radial-gradient(ellipse 40% 35% at 80%  72%, rgba(255,45,85,.12)    0%, transparent 44%),
+    radial-gradient(ellipse 35% 30% at 20%  30%, rgba(0,255,136,.08)    0%, transparent 40%),
+    radial-gradient(ellipse 70% 50% at 50% 115%, rgba(0,0,0,.98)        0%, transparent 55%);
 }
 
 /* ── Glow divider ── */
@@ -912,13 +935,13 @@ body.ad-playing {
   height: 1px;
   background: linear-gradient(90deg,
     transparent 0%,
-    rgba(242,178,61,.2)  15%,
-    rgba(242,178,61,.7)  40%,
-    rgba(255,200,80,.9)  50%,
-    rgba(242,178,61,.7)  60%,
-    rgba(242,178,61,.2)  85%,
+    rgba(0,217,255,.2)   15%,
+    rgba(0,217,255,.7)   40%,
+    rgba(120,245,255,.9) 50%,
+    rgba(0,217,255,.7)   60%,
+    rgba(0,217,255,.2)   85%,
     transparent 100%);
-  box-shadow: 0 0 12px rgba(242,178,61,.4), 0 0 30px rgba(242,178,61,.15);
+  box-shadow: 0 0 12px rgba(0,217,255,.4), 0 0 30px rgba(0,217,255,.15);
 }
 
 /* ── Animated badge ── */
@@ -955,17 +978,18 @@ body.ad-playing {
   align-items: center;
   gap: 0.2rem;
   padding: 0.75rem 1.1rem;
-  background: rgba(255,255,255,.035);
-  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(0,217,255,.025);
+  border: 1px solid rgba(0,217,255,.12);
   border-radius: 14px;
   backdrop-filter: blur(8px);
   min-width: 72px;
-  transition: border-color .25s, background .25s, transform .2s;
+  transition: border-color .25s, background .25s, transform .2s, box-shadow .25s;
 }
 .stat-card:hover {
-  border-color: rgba(242,178,61,.35);
-  background: rgba(242,178,61,.06);
-  transform: translateY(-3px);
+  border-color: rgba(0,217,255,.4);
+  background: rgba(0,217,255,.06);
+  transform: translateY(-4px);
+  box-shadow: 0 0 24px rgba(0,217,255,.12), 0 8px 20px rgba(0,0,0,.4);
 }
 
 /* ── Scroll bounce ── */
@@ -977,9 +1001,10 @@ body.ad-playing {
 
 /* ── Glass header ── */
 .glass-header {
-  background: rgba(10, 8, 5, 0.72);
+  background: rgba(3, 8, 18, 0.88);
   backdrop-filter: blur(22px) saturate(180%);
-  border-bottom: 1px solid rgba(242,178,61,.1);
+  border-bottom: 1px solid rgba(0,217,255,.08);
+  box-shadow: 0 1px 0 rgba(0,217,255,.04), 0 4px 24px rgba(0,0,0,.5);
 }
 
 /* ── CTA glow wrapper ── */
@@ -1005,17 +1030,18 @@ body.ad-playing {
   font-size: 0.78rem;
   font-weight: 900;
   letter-spacing: 0.04em;
-  color: rgba(242,178,61,.75);
+  color: rgba(0,217,255,.85);
+  text-shadow: 0 0 12px rgba(0,217,255,.4);
 }
 .section-label::before,
 .section-label::after {
   content: '';
   height: 1px;
-  width: 28px;
-  background: linear-gradient(90deg, transparent, rgba(242,178,61,.4));
+  width: 32px;
+  background: linear-gradient(90deg, transparent, rgba(0,217,255,.5));
 }
 .section-label::after {
-  background: linear-gradient(90deg, rgba(242,178,61,.4), transparent);
+  background: linear-gradient(90deg, rgba(0,217,255,.5), transparent);
 }
 
 /* ── Coin counter premium ── */
@@ -1034,4 +1060,562 @@ body.ad-playing {
 }
 .coin-counter:hover {
   box-shadow: 0 0 28px rgba(242,178,61,.5), inset 0 0 14px rgba(242,178,61,.08);
+}
+
+/* ══════════════════════════════════════════════
+   CYBERPUNK GAMING ADDITIONS
+══════════════════════════════════════════════ */
+
+/* ── Animated cyber grid ── */
+@keyframes cyberGridScroll {
+  from { background-position: center 0; }
+  to   { background-position: center 60px; }
+}
+.cyber-grid {
+  background-image:
+    linear-gradient(rgba(0,217,255,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,217,255,.055) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: cyberGridScroll 4s linear infinite;
+  mask-image: radial-gradient(ellipse 90% 65% at 50% 50%, black 20%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 65% at 50% 50%, black 20%, transparent 78%);
+}
+
+/* ── Floating data lines ── */
+@keyframes dataFloat {
+  0%   { transform: translateY(100vh); opacity: 0; }
+  5%   { opacity: 1; }
+  90%  { opacity: 0.5; }
+  100% { transform: translateY(-200px); opacity: 0; }
+}
+.data-line {
+  position: absolute;
+  width: 1px;
+  background: linear-gradient(to top, transparent, rgba(0,217,255,.8), transparent);
+  pointer-events: none;
+  animation: dataFloat linear infinite;
+  will-change: transform;
+}
+
+/* ── HUD corner decorations ── */
+.hud-corner {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  pointer-events: none;
+}
+.hud-corner-tl {
+  top: 16px;
+  left: 16px;
+  border-top: 2px solid rgba(0,217,255,.45);
+  border-left: 2px solid rgba(0,217,255,.45);
+  border-radius: 4px 0 0 0;
+  box-shadow: -2px -2px 8px rgba(0,217,255,.15);
+}
+.hud-corner-tr {
+  top: 16px;
+  right: 16px;
+  border-top: 2px solid rgba(0,217,255,.45);
+  border-right: 2px solid rgba(0,217,255,.45);
+  border-radius: 0 4px 0 0;
+  box-shadow: 2px -2px 8px rgba(0,217,255,.15);
+}
+.hud-corner-bl {
+  bottom: 56px;
+  left: 16px;
+  border-bottom: 2px solid rgba(0,217,255,.45);
+  border-left: 2px solid rgba(0,217,255,.45);
+  border-radius: 0 0 0 4px;
+  box-shadow: -2px 2px 8px rgba(0,217,255,.15);
+}
+.hud-corner-br {
+  bottom: 56px;
+  right: 16px;
+  border-bottom: 2px solid rgba(0,217,255,.45);
+  border-right: 2px solid rgba(0,217,255,.45);
+  border-radius: 0 0 4px 0;
+  box-shadow: 2px 2px 8px rgba(0,217,255,.15);
+}
+
+/* ── Neon cyan button ── */
+.btn-cyber {
+  background: linear-gradient(135deg, #00e5ff 0%, #00b8d4 55%, #007c9e 130%);
+  color: #001a26;
+  box-shadow: 0 5px 0 #004466, 0 0 32px rgba(0,217,255,.4), 0 14px 30px rgba(0,180,220,.3);
+}
+.btn-cyber:active { box-shadow: 0 2px 0 #004466, 0 0 14px rgba(0,217,255,.25); }
+.btn-cyber:hover  { filter: brightness(1.12); box-shadow: 0 5px 0 #004466, 0 0 55px rgba(0,217,255,.65), 0 14px 30px rgba(0,180,220,.4); }
+
+/* ── Neon violet button ── */
+.btn-violet {
+  background: linear-gradient(135deg, #c084fc 0%, #a855f7 55%, #7c3aed 130%);
+  color: #1a0033;
+  box-shadow: 0 5px 0 #3b0068, 0 0 32px rgba(168,85,247,.4), 0 14px 30px rgba(126,34,206,.3);
+}
+.btn-violet:active { box-shadow: 0 2px 0 #3b0068, 0 0 14px rgba(168,85,247,.25); }
+.btn-violet:hover  { filter: brightness(1.12); box-shadow: 0 5px 0 #3b0068, 0 0 55px rgba(168,85,247,.65); }
+
+/* ── Glow text — cyan ── */
+.text-glow-cyan {
+  text-shadow:
+    0 2px 8px rgba(0,0,0,.9),
+    0 0 14px rgba(0,217,255,.8),
+    0 0 32px rgba(0,217,255,.4);
+}
+
+/* ── Glow text — purple ── */
+.text-glow-purple {
+  text-shadow:
+    0 2px 8px rgba(0,0,0,.9),
+    0 0 14px rgba(168,85,247,.8),
+    0 0 32px rgba(168,85,247,.4);
+}
+
+/* ── Neon cyan color (standalone) ── */
+.text-neon-cyan {
+  color: #00d9ff;
+  text-shadow:
+    0 0 5px rgba(255,255,255,.4),
+    0 0 12px #00d9ff,
+    0 0 28px #00d9ff,
+    0 0 55px rgba(0,217,255,.55);
+}
+
+/* ── Neon purple color (standalone) ── */
+.text-neon-purple {
+  color: #c084fc;
+  text-shadow:
+    0 0 5px rgba(255,255,255,.4),
+    0 0 12px #a855f7,
+    0 0 28px #a855f7,
+    0 0 55px rgba(168,85,247,.55);
+}
+
+/* ── Holographic shimmer on hover ── */
+@keyframes holoShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.holo-shimmer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg,
+    rgba(0,217,255,.04)  0%,
+    rgba(168,85,247,.07) 25%,
+    rgba(242,178,61,.05) 50%,
+    rgba(0,255,136,.04)  75%,
+    rgba(0,217,255,.04)  100%
+  );
+  background-size: 300% 300%;
+  animation: holoShift 6s ease infinite;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.holo-shimmer:hover::before { opacity: 1; }
+
+/* ── Neon pulse border animation ── */
+@keyframes neonPulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(0,217,255,.3), 0 0 15px rgba(0,217,255,.15), inset 0 0 5px rgba(0,217,255,.05); }
+  50%       { box-shadow: 0 0 10px rgba(0,217,255,.6), 0 0 30px rgba(0,217,255,.3), inset 0 0 10px rgba(0,217,255,.1); }
+}
+.neon-pulse { animation: neonPulse 2.5s ease-in-out infinite; }
+
+/* ── Cyber badge (cyan variant of badge-arcade) ── */
+.badge-cyber {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0,217,255,.35);
+  background: linear-gradient(90deg,
+    rgba(0,217,255,.05),
+    rgba(0,217,255,.13) 40%,
+    rgba(100,245,255,.18) 50%,
+    rgba(0,217,255,.13) 60%,
+    rgba(0,217,255,.05));
+  background-size: 200% 100%;
+  animation: badgeShimmer 3s linear infinite;
+  font-family: var(--font-cairo), sans-serif;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  color: rgba(0,240,255,.95);
+  box-shadow: 0 0 22px rgba(0,217,255,.18);
+}
+
+/* ── Vertical scanline sweep ── */
+@keyframes vertScan {
+  0%   { left: -5%; opacity: 0; }
+  5%   { opacity: 0.18; }
+  95%  { opacity: 0.08; }
+  100% { left: 105%; opacity: 0; }
+}
+.vert-scan {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, transparent, rgba(0,217,255,.18) 30%, rgba(0,217,255,.28) 50%, rgba(0,217,255,.18) 70%, transparent);
+  pointer-events: none;
+  animation: vertScan 10s ease-in-out infinite;
+}
+
+/* ── Rainbow conic spin border ── */
+@property --rb-angle {
+  syntax: '<angle>';
+  initial-value: 0turn;
+  inherits: false;
+}
+@keyframes rbSpin {
+  from { --rb-angle: 0turn; }
+  to   { --rb-angle: 1turn; }
+}
+.rainbow-border {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(#080d1a, #080d1a) padding-box,
+    conic-gradient(from var(--rb-angle), #00d9ff 0%, #a855f7 25%, #f2b23d 50%, #00d9ff 75%, #00d9ff 100%) border-box;
+  animation: rbSpin 4s linear infinite;
+}
+
+/* ── Power bar (cost vis) ── */
+.power-bar {
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.06);
+  overflow: hidden;
+}
+.power-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #00d9ff, #f2b23d);
+  box-shadow: 0 0 8px rgba(0,217,255,.5);
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Arcade grid (updated for cyber) ── */
+.arcade-grid {
+  background-image:
+    linear-gradient(rgba(0,217,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,217,255,.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: arcadeGridScroll 22s linear infinite;
+}
+
+/* ══════════════════════════════════════════════
+   GAME LAUNCH & SPEED ANIMATIONS
+══════════════════════════════════════════════ */
+
+/* ── Launch overlay fade ── */
+@keyframes launchFadeIn {
+  from { opacity: 0; transform: scale(1.04); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.launch-overlay {
+  animation: launchFadeIn 0.18s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Launch pulse ring ── */
+@keyframes launchRing {
+  0%   { transform: scale(0.7); opacity: 0.85; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+.launch-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  animation: launchRing 1.6s ease-out infinite;
+}
+
+/* ── Launch progress bar ── */
+@keyframes launchProgress {
+  0%   { width: 0%;   opacity: 1; }
+  70%  { width: 85%;  opacity: 1; }
+  90%  { width: 95%;  opacity: 1; }
+  100% { width: 100%; opacity: 0.6; }
+}
+.launch-progress {
+  animation: launchProgress 1.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Pulsing glow ring (iframe loading) ── */
+@keyframes pulseGlowRing {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,217,255,.5); transform: scale(0.92); }
+  50%       { box-shadow: 0 0 0 18px rgba(0,217,255,0); transform: scale(1); }
+}
+.pulse-glow-ring {
+  animation: pulseGlowRing 1.5s ease-in-out infinite;
+}
+
+/* ── Button ripple ── */
+@keyframes btnRipple {
+  0%   { transform: scale(0); opacity: 0.5; }
+  100% { transform: scale(3.5); opacity: 0; }
+}
+.btn-ripple-wave {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,.25);
+  pointer-events: none;
+  animation: btnRipple 0.55s ease-out forwards;
+  aspect-ratio: 1;
+  width: 100%;
+  left: 0;
+  top: 50%;
+  transform-origin: center;
+  margin-top: -50%;
+}
+
+/* ── Card scroll entrance ── */
+@keyframes cardEntrance {
+  from { opacity: 0; transform: translateY(28px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+.card-entrance {
+  animation: cardEntrance 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Stagger delays for cards ── */
+.stagger-1 { animation-delay: 0.04s; }
+.stagger-2 { animation-delay: 0.1s;  }
+.stagger-3 { animation-delay: 0.16s; }
+.stagger-4 { animation-delay: 0.22s; }
+
+/* ── Floating coin particle ── */
+@keyframes coinFloat {
+  0%   { transform: translate(0,0) scale(1) rotate(0deg); opacity: 1; }
+  100% { transform: translate(var(--tx,0px),var(--ty,-80px)) scale(0.3) rotate(var(--rot,360deg)); opacity: 0; }
+}
+.coin-float {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  animation: coinFloat 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  font-size: 1.4rem;
+  will-change: transform;
+}
+
+/* ── Game page: iframe loading shimmer ── */
+@keyframes iframeShimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+.iframe-loading-shimmer {
+  background: linear-gradient(90deg,
+    rgba(0,217,255,.03) 0%,
+    rgba(0,217,255,.08) 30%,
+    rgba(168,85,247,.06) 50%,
+    rgba(0,217,255,.08) 70%,
+    rgba(0,217,255,.03) 100%);
+  background-size: 200% 100%;
+  animation: iframeShimmer 2s linear infinite;
+}
+
+/* ── Typewriter cursor ── */
+@keyframes cursor {
+  0%, 49% { border-right-color: rgba(0,217,255,.7); }
+  50%, 100% { border-right-color: transparent; }
+}
+.typewriter {
+  border-right: 2px solid transparent;
+  animation: cursor 0.8s step-end infinite;
+}
+
+/* ── Energy charge (button hold) ── */
+@keyframes energyCharge {
+  0%   { box-shadow: 0 0 0 rgba(0,217,255,0); }
+  100% { box-shadow: 0 0 40px rgba(0,217,255,.7), 0 0 80px rgba(0,217,255,.3); }
+}
+
+/* ── Bounce entrance for modals ── */
+@keyframes bounceIn {
+  0%   { opacity: 0; transform: scale(0.75) translateY(20px); }
+  60%  { transform: scale(1.04) translateY(-4px); }
+  80%  { transform: scale(0.98) translateY(2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.bounce-in {
+  animation: bounceIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ── Neon divider pulse ── */
+@keyframes dividerPulse {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
+}
+.neon-divider {
+  height: 1px;
+  border: none;
+  background: linear-gradient(90deg, transparent 0%, rgba(0,217,255,.35) 25%, rgba(0,217,255,.7) 50%, rgba(0,217,255,.35) 75%, transparent 100%);
+  box-shadow: 0 0 8px rgba(0,217,255,.3);
+  animation: dividerPulse 2.5s ease-in-out infinite;
+}
+
+/* ── Extra: faster btn-arcade hover ── */
+.btn-arcade:hover {
+  animation: glowPulse 1s ease-in-out infinite;
+}
+
+/* ── Section entrance ── */
+@keyframes sectionSlideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: none; }
+}
+.section-entrance {
+  animation: sectionSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ══════════════════════════════════════════════
+   GAME BACKGROUND FX
+══════════════════════════════════════════════ */
+
+/* ── Floating emoji ── */
+@keyframes floatEmoji {
+  0%   { transform: translateY(105vh) rotate(-8deg) scale(0.6); opacity: 0; }
+  6%   { opacity: 0.2; }
+  88%  { opacity: 0.13; }
+  100% { transform: translateY(-180px) rotate(12deg) scale(1.1); opacity: 0; }
+}
+.float-emoji {
+  position: absolute;
+  bottom: 0;
+  pointer-events: none;
+  animation: floatEmoji linear infinite;
+  will-change: transform;
+  filter: drop-shadow(0 0 6px rgba(255,255,255,.25));
+  z-index: 0;
+  user-select: none;
+}
+
+/* ── Floating neon shapes ── */
+@keyframes floatShape {
+  0%   { transform: translateY(105vh) rotate(0deg); opacity: 0; }
+  5%   { opacity: 0.25; }
+  90%  { opacity: 0.18; }
+  100% { transform: translateY(-160px) rotate(180deg); opacity: 0; }
+}
+.float-shape {
+  position: absolute;
+  bottom: 0;
+  pointer-events: none;
+  animation: floatShape linear infinite;
+  will-change: transform;
+  z-index: 0;
+}
+.float-shape-diamond {
+  border: 1.5px solid;
+  transform: rotate(45deg);
+  border-radius: 3px;
+}
+.float-shape-circle {
+  border-radius: 50%;
+  border: 1.5px solid;
+}
+
+/* ── Shooting star ── */
+@keyframes shootStar {
+  0%   { transform: translateX(-300px) rotate(-18deg); opacity: 0; width: 0; }
+  4%   { opacity: 1; width: 160px; }
+  75%  { opacity: 0.8; }
+  100% { transform: translateX(115vw) rotate(-18deg); opacity: 0; width: 90px; }
+}
+.shooting-star {
+  position: absolute;
+  right: 100%;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(to right, transparent, rgba(0,217,255,.9), rgba(255,255,255,1), rgba(168,85,247,.6), transparent);
+  pointer-events: none;
+  animation: shootStar linear infinite;
+  z-index: 0;
+  box-shadow: 0 0 6px rgba(0,217,255,.6);
+}
+
+/* ── Perspective neon floor ── */
+@keyframes floorScroll {
+  from { background-position: center 0; }
+  to   { background-position: center 80px; }
+}
+.perspective-floor {
+  position: absolute;
+  bottom: 0;
+  left: -25%;
+  right: -25%;
+  height: 55vh;
+  background-image:
+    linear-gradient(rgba(0,217,255,.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,217,255,.18) 1px, transparent 1px);
+  background-size: 80px 80px;
+  animation: floorScroll 2.5s linear infinite;
+  transform: perspective(500px) rotateX(72deg);
+  transform-origin: bottom center;
+  mask-image: linear-gradient(to top, rgba(0,0,0,.7) 0%, rgba(0,0,0,.2) 40%, transparent 70%);
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,.7) 0%, rgba(0,0,0,.2) 40%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Ambient animated blobs ── */
+@keyframes blobA {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  33%  { transform: translate(70px, -50px) scale(1.18); }
+  66%  { transform: translate(-50px, 35px) scale(0.88); }
+}
+@keyframes blobB {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  40%  { transform: translate(-80px, 60px) scale(1.12); }
+  70%  { transform: translate(50px, -40px) scale(0.94); }
+}
+@keyframes blobC {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  50%  { transform: translate(60px, 70px) scale(1.22); }
+}
+.ambient-blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(90px);
+  will-change: transform;
+  z-index: 0;
+}
+.blob-1 {
+  width: 700px; height: 700px;
+  top: -200px; left: 50%; transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(242,178,61,.25) 0%, transparent 65%);
+  animation: blobA 20s ease-in-out infinite;
+}
+.blob-2 {
+  width: 550px; height: 550px;
+  top: 15%; right: -120px;
+  background: radial-gradient(circle, rgba(0,217,255,.22) 0%, transparent 65%);
+  animation: blobB 25s ease-in-out infinite;
+}
+.blob-3 {
+  width: 600px; height: 600px;
+  bottom: -120px; left: -100px;
+  background: radial-gradient(circle, rgba(168,85,247,.20) 0%, transparent 65%);
+  animation: blobC 28s ease-in-out infinite;
+}
+.blob-4 {
+  width: 400px; height: 400px;
+  top: 55%; left: 20%;
+  background: radial-gradient(circle, rgba(255,45,85,.15) 0%, transparent 65%);
+  animation: blobB 22s ease-in-out infinite reverse;
+}
+.blob-5 {
+  width: 350px; height: 350px;
+  top: 30%; right: 15%;
+  background: radial-gradient(circle, rgba(0,255,136,.12) 0%, transparent 65%);
+  animation: blobA 30s ease-in-out infinite reverse;
+}
+
+/* ── More intense scanlines ── */
+.scanline-pass::before {
+  background: linear-gradient(transparent, rgba(0,217,255,.05) 50%, transparent);
 }

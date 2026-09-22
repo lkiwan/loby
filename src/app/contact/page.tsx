@@ -1,6 +1,6 @@
 import LegalShell from '@/components/LegalShell';
 
-export const metadata = { title: 'تواصل معنا — Darja Arcade' };
+export const metadata = { title: 'تواصل معنا — PLAYM3ANA' };
 
 export default function ContactPage() {
   return (
@@ -12,10 +12,10 @@ export default function ContactPage() {
       <div>
         <h2 className="font-lalezar text-xl text-[#f5eddc]">البريد الإلكتروني</h2>
         <a
-          href="mailto:support@darja-arcade.ma"
+          href="mailto:support@playm3ana.ma"
           className="mt-2 inline-block font-cairo text-amber-300 underline-offset-2 hover:underline"
         >
-          support@darja-arcade.ma
+          support@playm3ana.ma
         </a>
         <p className="mt-1 text-[12px] text-[#7a6a4d]">
           كنجاوبو عادة فظرف 24 ساعة. فمشاكل الحساب، عطينا اسم المستخدم ووصف دقيق للمشكل.
@@ -40,7 +40,7 @@ export default function ContactPage() {
 
       <div className="rounded-lg border border-[#6b542e]/40 bg-[#171210] p-4">
         <p className="text-[12px] text-[#a08a63]">
-          DARJA ARCADE — ساحة اللعب بالدارجة، مصنوعة فالمغرب 🇲🇦
+          PLAYM3ANA — ساحة اللعب بالدارجة، مصنوعة فالمغرب 🇲🇦
         </p>
       </div>
     </LegalShell>

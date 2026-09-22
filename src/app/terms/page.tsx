@@ -1,12 +1,12 @@
 import LegalShell from '@/components/LegalShell';
 
-export const metadata = { title: 'شروط الاستخدام — Darja Arcade' };
+export const metadata = { title: 'شروط الاستخدام — PLAYM3ANA' };
 
 export default function TermsPage() {
   return (
     <LegalShell title="شروط الاستخدام" subtitle="آخر تحديث: 20 شتنبر 2026">
       <p>
-        باستخدامك لـ DARJA ARCADE، كتوافق على هاد الشروط. من غير ما تخلص شي، اللعبة مجانية وتقدر تلعب
+        باستخدامك لـ PLAYM3ANA، كتوافق على هاد الشروط. من غير ما تخلص شي، اللعبة مجانية وتقدر تلعب
         بعملات داخلية (🪙) كتكسبها من الإعلانات والمهام اليومية.
       </p>
 
@@ -40,7 +40,7 @@ export default function TermsPage() {
       <div>
         <h2 className="font-lalezar text-xl text-[#f5eddc]">4. اللعبة الخارجية</h2>
         <p className="mt-2">
-          بعض الألعاب كتخدم على نطاقات شريكة فإطارات (iframes) آمنة. DARJA ARCADE مسؤولة على لوبي
+          بعض الألعاب كتخدم على نطاقات شريكة فإطارات (iframes) آمنة. PLAYM3ANA مسؤولة على لوبي
           والاقتصاد؛ كل لعبة عندها شروطها الخاصة داخل اللعبة.
         </p>
       </div>
