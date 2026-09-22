@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import { X, Target, Check, Loader2, Zap, Coins } from 'lucide-react';
+import { Sounds } from '@/lib/sounds';
 
 type Mission = {
   id: string;
@@ -48,6 +49,7 @@ export default function MissionsPanel({
         body: JSON.stringify({ assignmentId: id }),
       });
       if (res.ok) {
+        Sounds.claim();
         await fetchMissions();
         onClaim?.(coins);
       }

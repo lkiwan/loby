@@ -7,13 +7,14 @@ import Link from 'next/link';
 import {
   AlertTriangle, Check, ChevronDown, Clock, Coins,
   Flame, Gamepad2, Loader2, Lock, LogIn, LogOut,
-  Play, ShieldCheck, Target, Trophy, Users, X, Zap,
+  Play, ShieldCheck, Target, Trophy, Users, Volume2, VolumeX, X, Zap,
 } from 'lucide-react';
 import { StarMark } from '@/components/Star';
 import GameCard from '@/components/GameCard';
 import { GAMES, COMING_SOON, type Game } from '@/lib/games';
 import { useRewardedAd } from '@/lib/useRewardedAd';
 import { trackDevice } from '@/lib/device';
+import { Sounds, isMuted, setMuted } from '@/lib/sounds';
 import dynamic from 'next/dynamic';
 
 const StarField      = dynamic(() => import('@/components/StarField'),      { ssr: false });
@@ -167,6 +168,15 @@ function LobbyContent() {
   const [xpData, setXpData] = useState<{ xp: number; level: number; streak: number; referralCode?: string } | null>(null);
   const [missionsOpen, setMissionsOpen] = useState(false);
   const [referralCopied, setReferralCopied] = useState(false);
+  const [muted, setMutedState] = useState(false);
+  useEffect(() => { setMutedState(isMuted()); }, []);
+
+  const toggleMute = () => {
+    const next = !muted;
+    setMuted(next);
+    setMutedState(next);
+    if (!next) Sounds.click();
+  };
   const { show: showRewardedAd } = useRewardedAd();
 
   /* Prefetch all game routes for instant navigation */
@@ -186,6 +196,7 @@ function LobbyContent() {
 
   const showToast = (kind: 'error' | 'ok', text: string) => {
     setToast({ kind, text });
+    if (kind === 'ok') Sounds.ok(); else Sounds.error();
     window.setTimeout(() => setToast(null), 3200);
   };
 
@@ -202,6 +213,7 @@ function LobbyContent() {
         if (data.claimed && typeof data.reward === 'number') {
           await update();
           setCoinPop(true); setTimeout(() => setCoinPop(false), 600);
+          Sounds.checkin();
           showToast('ok', `مكافأة اليوم: +${data.reward} 🪙 (اليوم ${data.streak ?? 1})`);
         }
       } catch { /* best-effort */ }
@@ -242,6 +254,7 @@ function LobbyContent() {
 
     /* Coin burst at click position */
     if (e) spawnCoins(e.clientX, e.clientY);
+    Sounds.coin();
 
     setBusyId(gameId); setBusyAction('coins');
     setLaunching(game); /* Show launch overlay IMMEDIATELY */
@@ -255,6 +268,7 @@ function LobbyContent() {
       if (res.ok) {
         const { redirectUrl, remainingCoins } = await res.json();
         if (typeof remainingCoins === 'number') await update({ coins: remainingCoins });
+        Sounds.launch();
         router.replace(redirectUrl);
       } else {
         setLaunching(null);
@@ -407,6 +421,13 @@ function LobbyContent() {
                 <LogIn className="h-4 w-4" /> دخول
               </Link>
             )}
+            <button
+              onClick={toggleMute}
+              className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] transition hover:border-cyan-400/40 hover:text-cyan-300"
+              title={muted ? 'تفعيل الأصوات' : 'كتم الأصوات'}
+            >
+              {muted ? <VolumeX className="h-4 w-4 text-neutral-500" /> : <Volume2 className="h-4 w-4" />}
+            </button>
           </div>
         </div>
       </header>
