@@ -39,7 +39,7 @@ export default function ConsentBanner() {
     <div className="fixed inset-x-0 bottom-0 z-[70] border-t-2 border-[#6b542e]/50 bg-[#171210]/98 backdrop-blur-xl">
       <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-center sm:gap-4 sm:px-6">
         <p className="flex-1 font-cairo text-[12.5px] font-semibold leading-relaxed text-[#c9b795]">
-          كنستعملو الكوكيز والإعلانات باش نخدمو اللعبة مجانية ونحسنوها ليك. فاللعب، كتعتبر موافق على
+          كنستعملو الكوكيز والإعلانات باش نخدمو اللعبة مجانا ونحسنوها ليك. فاللعب، كتعتبر أنك وافقت على
           <Link href="/privacy" className="mx-1 text-amber-300 underline-offset-2 hover:underline">
             سياسة الخصوصية
           </Link>

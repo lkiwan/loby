@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useRef, useState, Suspense } from 'react';
 import { useSession, signOut } from 'next-auth/react';
@@ -7,7 +7,7 @@ import Link from 'next/link';
 import {
   AlertTriangle, Check, ChevronDown, Clock, Coins,
   Flame, Gamepad2, Loader2, LogIn, LogOut,
-  Play, ShieldCheck, Users, Video, X, Zap,
+  Play, ShieldCheck, Users, X, Zap,
 } from 'lucide-react';
 import { StarMark } from '@/components/Star';
 import GameCard from '@/components/GameCard';
@@ -19,13 +19,13 @@ import dynamic from 'next/dynamic';
 const StarField = dynamic(() => import('@/components/StarField'), { ssr: false });
 
 const TICKER_ITEMS = [
-  '🕹️ كل شي بالدارجة، حتى الكدب',
-  '💀 صاحبك يعتبرك صاحب — وانتا؟',
-  '🎲 تيليفون واحد = بزاف ديال المشاكل',
   '🔥 الصراع ديال الحومة كاين من بكري',
-  '🤫 واحد فيكم كيكذب — مرحبا بيكم',
   '🇲🇦 تحداو بعضياتكم، بالدارجة',
+  '🕹️ كل شي بالدارجة — حتى الكدب والسوالف',
+  '🎲 تيليفون واحد = بزاف ديال الفضايح',
+  '🤫 واحد فيكم كيكذب — مرحبا بيك فالطوب',
   '💰 شاهد الإعلان — مش هزيمة، هذا تكتيك',
+  '💔 الليلة ولا جريمة فلطاولة، والجيران شهادين',
 ];
 
 const TITLE_CHARS_1 = Array.from('فضح صاحبك');
@@ -242,13 +242,13 @@ function LobbyContent() {
         {/* Badge */}
         <div className="badge-arcade anim-fadeup d1">
           <span className="live-dot" />
-          🃏 جلسة + حومة + فضايح — بالدارجة
+          🃏 قعدة + حومة + فضايح — 100% بالدارجة
         </div>
 
         {/* Animated title */}
         <div className="mt-7 select-none">
           {/* Row 1 */}
-          <p className="font-lalezar leading-none" style={{ fontSize: 'clamp(2.4rem,10vw,4.5rem)' }}>
+          <p className="font-lalezar leading-tight" style={{ fontSize: 'clamp(2.4rem,10vw,4.5rem)' }}>
             {TITLE_CHARS_1.map((c, i) => (
               <span
                 key={i}
@@ -260,11 +260,11 @@ function LobbyContent() {
             ))}
           </p>
           {/* Row 2 — neon gold */}
-          <p className="neon-sign font-lalezar leading-none" style={{ fontSize: 'clamp(3.2rem,16vw,7.5rem)' }}>
+          <p className="font-lalezar leading-tight" style={{ fontSize: 'clamp(3.2rem,16vw,7.5rem)' }}>
             {TITLE_CHARS_2.map((c, i) => (
               <span
                 key={i}
-                className="letter-in text-gold-sheen"
+                className="letter-in text-gold-neon"
                 style={{ animationDelay: `${0.3 + i * 0.06}s` }}
               >
                 {c === ' ' ? ' ' : c}
@@ -281,9 +281,9 @@ function LobbyContent() {
         </svg>
 
         {/* Subtitle */}
-        <p className="anim-fadeup d3 mx-auto mt-6 max-w-[420px] font-cairo text-[15.5px] font-semibold leading-relaxed text-[#b8a888]">
-          تيليفون واحد. دراري بزاف.{' '}
-          <span className="font-black text-[#f0deb4]">خسائر معنوية كثيرة</span> 💀
+        <p className="anim-fadeup d3 mx-auto mt-6 max-w-[460px] font-cairo text-[15.5px] font-semibold leading-relaxed text-[#b8a888]">
+          تيليفون واحد، دراري بزاف، ووحدي فيكم غادي يجيب جائزة{' '}
+          <span className="font-black text-[#f0deb4]">«حديث الحومة»</span> الليلة 💀
         </p>
 
         {/* Stats */}
@@ -291,8 +291,8 @@ function LobbyContent() {
           {[
             { ico: <Gamepad2 className="h-5 w-5 text-amber-400" />, val: `${GAMES.length}`,  label: 'ألعاب' },
             { ico: <Users className="h-5 w-5 text-sky-400" />,      val: '15',               label: 'ضحية ماكس' },
-            { ico: <Flame className="h-5 w-5 text-red-400" />,      val: '100%',             label: 'دارجة خالص' },
-            { ico: <Clock className="h-5 w-5 text-emerald-400" />,  val: '0ث',               label: 'ما تستناش' },
+            { ico: <Flame className="h-5 w-5 text-red-400" />,      val: '100%',             label: 'بالدارجة خالصة' },
+            { ico: <Clock className="h-5 w-5 text-emerald-400" />,  val: '0ث',               label: 'بلا تنزيل' },
           ].map((s) => (
             <div key={s.label} className="stat-card">
               {s.ico}
@@ -308,11 +308,11 @@ function LobbyContent() {
             <div className="cta-glow">
               <Link href="/register" className="btn-arcade relative z-10 inline-flex items-center gap-2.5 px-9 py-4 text-[16px] font-black">
                 <Zap className="h-5 w-5" />
-                ابدا الفضايح مجانا
+                ابدا الفضايح ببلاش
               </Link>
             </div>
             <Link href="/login" className="btn-chunk btn-ghost-hollow inline-flex items-center gap-2 px-6 py-4 text-[14px]">
-              <LogIn className="h-4 w-4" /> عندي حساب (وخايف)
+              <LogIn className="h-4 w-4" /> عندي حساب (بصح نسيت الكلمة)
             </Link>
           </div>
         )}
@@ -368,7 +368,7 @@ function LobbyContent() {
                   <Coins className="h-5 w-5 text-amber-400" />
                 </div>
                 <p className="font-cairo text-[13px] font-bold text-[#e8d5a3]">
-                  سجل باش تكشف الخاين ديال الحومة — وتجمع عملات مجانا طبعا 🕵️
+                  سجل باش تكشف الخاين ديال الحومة قبل ما يخلص الليل — والدخلة مجانية طبعا 🕵️
                 </p>
               </div>
               <div className="flex shrink-0 gap-2">
@@ -383,12 +383,12 @@ function LobbyContent() {
         <section className="mt-14">
           {/* Section header */}
           <div className="mb-10 flex flex-col items-center gap-3 text-center">
-            <div className="section-label">الطاولات الليلة</div>
+            <div className="section-label">الطاولات هاد الليلة</div>
             <h2 className="font-lalezar text-[clamp(2.2rem,8vw,3.5rem)] leading-none text-[#f5eddc] text-glow-amber">
-              اختار طاولتك
+              اختار طاولتك — بصحتك
             </h2>
             <p className="font-cairo text-[13.5px] font-semibold text-[#d8c39a]/55">
-              إعلان = دخول مجاني. عملات = دخول بكرامة. الاختيار عليك 😅
+              إعلان قصير = طاولة ببلاش. عملات = دخول بكرامة. الاختيار عليك 😅
             </p>
           </div>
 
@@ -416,7 +416,7 @@ function LobbyContent() {
         <footer className="mt-24 flex flex-col items-center gap-2 border-t border-white/[0.05] pt-8 text-center">
           <StarMark size={24} />
           <p className="font-cairo text-[11.5px] font-bold text-[#a08a63]">
-            DARJA ARCADE — لعبات جماعية بالدارجة، كتحبو على تيليفون واحد.
+            DARJA ARCADE — لعبات جماعية بالدارجة، على تيليفون واحد، والحومة كاملة تشهد 🔥
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 font-cairo text-[10.5px] font-bold text-[#7a6a4d]">
             <Link href="/privacy" className="transition hover:text-amber-300">سياسة الخصوصية</Link>
@@ -426,7 +426,7 @@ function LobbyContent() {
             <Link href="/contact" className="transition hover:text-amber-300">تواصل معنا</Link>
           </div>
           <p className="mt-1 font-cairo text-[10px] font-semibold text-[#7a6a4d]">
-            مصنوعة بـ ❤️ وشوية كسكس في المغرب 🇲🇦 — أي خسارة في الصداقات مش مسؤوليتنا
+            مصنوعة بـ ❤️ وشوية كسكس فالمغرب 🇲🇦 — أي صداقة خربها اللعب هاد الليلة، الله يرحمها 🙏
           </p>
         </footer>
       </main>

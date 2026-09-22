@@ -124,7 +124,7 @@ export default function RegisterPage() {
             </div>
             <h1 className="mt-5 font-lalezar text-3xl text-neutral-50">تم التسجيل! 🎉</h1>
             <p className="mt-2 max-w-[16rem] font-cairo text-[13px] font-semibold leading-relaxed text-neutral-400">
-              كنديرو دخول تلقائي… كنرحّلو للرئيسية.
+              جاري تسجيل الدخول… كنرحّلوك للصفحة الرئيسية.
             </p>
             <div className="mt-5 h-1.5 w-full overflow-hidden rounded-full bg-white/5">
               <div
@@ -138,7 +138,7 @@ export default function RegisterPage() {
             <div className="text-center">
               <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1 font-cairo text-[11px] font-black text-emerald-300">
                 <Sparkles className="h-3.5 w-3.5" />
-                + عملات هدية على السجيل
+                + عملات هدية عند التسجيل
               </span>
               <h1 className="font-lalezar text-3xl text-neutral-50">أنشئ حسابك</h1>
               <p className="mt-1.5 font-cairo text-[13px] font-semibold text-neutral-400">
@@ -233,7 +233,7 @@ export default function RegisterPage() {
 
               <button type="submit" disabled={loading} className="btn-chunk btn-teal mt-1 w-full py-3.5 text-[15px]">
                 {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <UserPlus className="h-5 w-5" />}
-                سجيل
+                سجّل
               </button>
             </form>
 

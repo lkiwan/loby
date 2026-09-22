@@ -24,8 +24,23 @@ body {
   color: var(--foreground);
   font-family: var(--font-cairo), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   overscroll-behavior-y: none;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Arabic typography — zero letter-spacing preserves character connections */
+:lang(ar),
+.font-cairo,
+.font-lalezar {
+  letter-spacing: 0;
+  word-spacing: 0.05em;
+}
+
+/* Improved line-height for Arabic glyphs */
+.font-lalezar {
+  line-height: 1.15;
 }
 
 ::selection {
@@ -193,7 +208,7 @@ body.ad-playing {
   gap: 0.5rem;
   border-radius: 1rem;
   font-weight: 900;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
   cursor: pointer;
   transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.15s ease;
   user-select: none;
@@ -861,6 +876,16 @@ body.ad-playing {
 }
 .text-glow-white {
   text-shadow: 0 0 10px rgba(255,255,255,.6), 0 0 25px rgba(255,255,255,.25);
+}
+
+/* ── Neon gold per-letter (hero) — solid color + glow, no background-clip ── */
+.text-gold-neon {
+  color: #f5c453;
+  text-shadow:
+    0 0 5px  rgba(255,255,255,.45),
+    0 0 12px #fae08a,
+    0 0 28px #f2b23d,
+    0 0 60px rgba(234,179,8,.75);
 }
 
 /* ── Hero massive background gradient ── */

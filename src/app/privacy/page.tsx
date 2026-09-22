@@ -15,7 +15,7 @@ export default function PrivacyPage() {
         <ul className="mt-2 list-disc space-y-1.5 ps-5">
           <li>معطيات الحساب: اسم المستخدم، رقم الهاتف (اختياري)، وكلمة السر مخزنة مشفرة.</li>
           <li>
-            معطيات اللعب: الألعبة اللي لعبتي، النقاط، العملات، ومستوى التقدم — ضرورية لتعمل الاقتصاد
+            معطيات اللعب: الألعاب اللي لعبتي، النقاط، العملات، ومستوى التقدم — ضرورية لتعمل الاقتصاد
             والمهام ديال كل يوم.
           </li>
           <li>معطيات الجهاز: بصمة الجهاز و عنوان الإنترنت مخزنين بشكل مشفّر (Hash) باش نمنعو الحسابات الوهمية.</li>
@@ -43,7 +43,7 @@ export default function PrivacyPage() {
       <div>
         <h2 className="font-lalezar text-xl text-[#f5eddc]">4. حقوقك</h2>
         <p className="mt-2">
-          تقدر تطلب شفاف المعطيات ديالك، تصحيحهم، ولا حذفهم. فحالة الحذف، كنبقاو السجل المالي
+          تقدر تطلب الاطلاع على معطياتك، تصحيحها، ولا حذفها. فحالة الحذف، كنبقاو السجل المالي
           (Ledger) لمدة لازمها القانون، ونحيدو كل شي يخصك من اللعب العادي. تواصل معنا عبر صفحة
           <a href="/contact" className="text-amber-300 underline-offset-2 hover:underline"> تواصل </a>
           ولا على <a href="mailto:support@darja-arcade.ma" className="text-amber-300 underline-offset-2 hover:underline">support@darja-arcade.ma</a>.

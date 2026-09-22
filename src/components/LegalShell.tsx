@@ -23,7 +23,7 @@ export default function LegalShell({
           <Link
             href="/"
             className="grid h-10 w-10 place-items-center rounded-full border-2 border-[#c9a45c]/40 bg-[#221a10] transition hover:border-amber-400/60"
-            title="رجع للساحة"
+            title="ارجع للساحة"
           >
             <ArrowLeft className="h-4 w-4" />
           </Link>
