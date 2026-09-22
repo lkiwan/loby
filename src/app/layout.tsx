@@ -54,7 +54,7 @@ export default function RootLayout({
   const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-7713392774673260";
 
   return (
-    <html lang="ar">
+    <html lang="ar" dir="rtl">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${lalezar.variable} ${cairo.variable} ${archivoBlack.variable} antialiased`}
       >

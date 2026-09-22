@@ -161,6 +161,6 @@ export async function POST(req: Request) {
     );
   } catch (error) {
     console.error('Registration error:', error);
-    return NextResponse.json({ error: 'Service indisponible. جرب من بعد شوية.' }, { status: 500 });
+    return NextResponse.json({ error: 'الخدمة مش متوفرة دابا. جرب من بعد شوية.' }, { status: 500 });
   }
 }

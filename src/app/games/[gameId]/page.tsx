@@ -3,7 +3,7 @@
 import { use, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Loader2, RefreshCw, X, Coins, Trophy } from 'lucide-react';
+import { ArrowRight, Loader2, RefreshCw, X, Coins, Trophy } from 'lucide-react';
 import { StarMark } from '@/components/Star';
 import { GAMES } from '@/lib/games';
 
@@ -146,7 +146,7 @@ export default function GamePage({
                 ألعب مرة أخرى
               </button>
               <Link href="/?from=game" className="btn-chunk btn-blood w-full py-3 text-[13px]">
-                <ArrowLeft className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4" />
                 رجع للساحة
               </Link>
             </div>
@@ -179,7 +179,7 @@ export default function GamePage({
                   كمّل اللعب
                 </button>
                 <Link href="/?from=game" className="btn-chunk btn-blood px-3 py-3 text-[13px]">
-                  <ArrowLeft className="h-4 w-4" />
+                  <ArrowRight className="h-4 w-4" />
                   خروج
                 </Link>
               </div>

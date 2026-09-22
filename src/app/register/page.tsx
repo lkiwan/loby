@@ -239,7 +239,7 @@ export default function RegisterPage() {
 
             <div className="mt-5 flex items-center gap-3">
               <span className="h-px flex-1 bg-white/10" />
-              <span className="font-cairo text-[11px] font-bold uppercase tracking-widest text-neutral-600">
+              <span className="font-cairo text-[11px] font-black text-neutral-600">
                 أو
               </span>
               <span className="h-px flex-1 bg-white/10" />

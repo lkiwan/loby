@@ -21,7 +21,7 @@ export default function AuthShell({ children }: { children: React.ReactNode }) {
               <span className="text-gold-sheen">DARJA</span>{' '}
               <span className="text-neutral-100">ARCADE</span>
             </span>
-            <span className="mt-0.5 font-cairo text-[9px] font-bold uppercase tracking-[0.35em] text-neutral-500">
+            <span className="mt-0.5 font-cairo text-[9px] font-bold text-neutral-500">
               ساحة اللعب
             </span>
           </span>

@@ -665,6 +665,7 @@ body.ad-playing {
 .neon-title {
   color: #f5eddc;
   text-shadow:
+    0 2px 8px rgba(0, 0, 0, .85),
     0 0 18px rgba(242, 178, 61, 0.35),
     0 0 50px rgba(242, 178, 61, 0.12);
 }
@@ -869,13 +870,22 @@ body.ad-playing {
 
 /* ── Glow text variants ── */
 .text-glow-amber {
-  text-shadow: 0 0 12px rgba(242,178,61,.7), 0 0 30px rgba(242,178,61,.35);
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, .9),
+    0 0 12px rgba(242,178,61,.7),
+    0 0 30px rgba(242,178,61,.35);
 }
 .text-glow-red {
-  text-shadow: 0 0 12px rgba(239,68,68,.7), 0 0 30px rgba(239,68,68,.35);
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, .9),
+    0 0 12px rgba(239,68,68,.7),
+    0 0 30px rgba(239,68,68,.35);
 }
 .text-glow-white {
-  text-shadow: 0 0 10px rgba(255,255,255,.6), 0 0 25px rgba(255,255,255,.25);
+  text-shadow:
+    0 2px 6px rgba(0, 0, 0, .85),
+    0 0 10px rgba(255,255,255,.6),
+    0 0 25px rgba(255,255,255,.25);
 }
 
 /* ── Neon gold per-letter (hero) — solid color + glow, no background-clip ── */
@@ -934,9 +944,8 @@ body.ad-playing {
   font-family: var(--font-cairo), sans-serif;
   font-size: 11px;
   font-weight: 900;
-  letter-spacing: 0.3em;
-  color: rgba(253,230,138,.85);
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: rgba(253,230,138,.9);
 }
 
 /* ── Stats card ── */
@@ -992,11 +1001,11 @@ body.ad-playing {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  font-family: var(--font-grit), sans-serif;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
-  color: rgba(242,178,61,.6);
+  font-family: var(--font-cairo), sans-serif;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  color: rgba(242,178,61,.75);
 }
 .section-label::before,
 .section-label::after {

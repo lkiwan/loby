@@ -12,7 +12,7 @@ function authErrorText(code: string | null): string | null {
   if (!code) return null;
   switch (code) {
     case 'account_exists':
-      return 'هذا الإيميل مسجل بحساب بكلمة سر. دخل بكلمة السر ديالك أو سجّل بحساب آخر.';
+      return 'هذا الإيميل مسجّل من قبل بكلمة سر. دخل بكلمة السر ديالك أو أنشئ حساباً بحساب آخر.';
     case 'gmail_only':
       return 'Gmail فقط مسموح للدخول بـ Google. جرب بحساب Gmail آخر أو دخل بكلمة السر.';
     case 'CredentialsSignin':
@@ -128,7 +128,7 @@ function LoginForm() {
 
       <div className="mt-5 flex items-center gap-3">
         <span className="h-px flex-1 bg-white/10" />
-        <span className="font-cairo text-[11px] font-bold uppercase tracking-widest text-neutral-600">
+        <span className="font-cairo text-[11px] font-black text-neutral-600">
           أو
         </span>
         <span className="h-px flex-1 bg-white/10" />
@@ -146,7 +146,7 @@ function LoginForm() {
 
       <div className="mt-5 flex items-center gap-3">
         <span className="h-px flex-1 bg-white/10" />
-        <span className="font-cairo text-[11px] font-bold uppercase tracking-widest text-neutral-600">
+        <span className="font-cairo text-[11px] font-black text-neutral-600">
           جديد؟
         </span>
         <span className="h-px flex-1 bg-white/10" />

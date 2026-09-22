@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { StarMark } from '@/components/Star';
 
 export default function LegalShell({
@@ -25,7 +25,7 @@ export default function LegalShell({
             className="grid h-10 w-10 place-items-center rounded-full border-2 border-[#c9a45c]/40 bg-[#221a10] transition hover:border-amber-400/60"
             title="ارجع للساحة"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowRight className="h-4 w-4" />
           </Link>
           <StarMark size={26} />
           <span className="font-grit text-[0.9rem] uppercase tracking-tight text-[#f1e7d6]">

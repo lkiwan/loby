@@ -23,13 +23,13 @@ const TICKER_ITEMS = [
   '🇲🇦 تحداو بعضياتكم، بالدارجة',
   '🕹️ كل شي بالدارجة — حتى الكدب والسوالف',
   '🎲 تيليفون واحد = بزاف ديال الفضايح',
-  '🤫 واحد فيكم كيكذب — مرحبا بيك فالطوب',
+  '🤫 واحد فيكم كيكذب — مرحبا بيك فالحومة',
   '💰 شاهد الإعلان — مش هزيمة، هذا تكتيك',
   '💔 الليلة ولا جريمة فلطاولة، والجيران شهادين',
 ];
 
-const TITLE_CHARS_1 = Array.from('فضح صاحبك');
-const TITLE_CHARS_2 = Array.from('قبل ما يفضحك');
+const TITLE_WORDS_1 = ['فضح', 'صاحبك'];
+const TITLE_WORDS_2 = ['قبل', 'ما', 'يفضحك'];
 
 function LobbyContent() {
   const { data: session, status, update } = useSession();
@@ -139,7 +139,7 @@ function LobbyContent() {
     const msgs: Record<string, string> = {
       no_fill: 'ما كتبانش إعلان في هاد اللحظة — جرب بالعملات',
       capped: 'وصلتي للحد اليومي ديال الإعلانات (6)',
-      dismissed: 'خليط الإعلان قبل ما يكمل — جرب مرة أخرى',
+      dismissed: 'الإعلان ما كمّلش — جرب مرة أخرى',
     };
     showToast('error', msgs[result.reason ?? ''] ?? 'مشكل فالإعلان — جرب مرة أخرى');
   };
@@ -197,7 +197,7 @@ function LobbyContent() {
               <span className="font-grit text-[0.95rem] uppercase tracking-tight transition-colors group-hover:text-amber-300">
                 <span className="text-gold-sheen">DARJA</span> ARCADE
               </span>
-              <span className="mt-0.5 flex items-center gap-1.5 font-cairo text-[9px] font-black uppercase tracking-[0.28em] text-[#a08a63]">
+              <span className="mt-0.5 flex items-center gap-1.5 font-cairo text-[9px] font-black text-[#a08a63]">
                 <span className="live-dot" style={{ width: 5, height: 5 }} />
                 ساحة اللعب
               </span>
@@ -245,29 +245,35 @@ function LobbyContent() {
           🃏 قعدة + حومة + فضايح — 100% بالدارجة
         </div>
 
-        {/* Animated title */}
-        <div className="mt-7 select-none">
+{/* Animated title */}
+        <div className="mt-7 select-none" dir="rtl">
           {/* Row 1 */}
-          <p className="font-lalezar leading-tight" style={{ fontSize: 'clamp(2.4rem,10vw,4.5rem)' }}>
-            {TITLE_CHARS_1.map((c, i) => (
+          <p
+            className="flex flex-wrap items-center justify-center gap-x-5 font-lalezar leading-none"
+            style={{ fontSize: 'clamp(2.4rem,10vw,4.5rem)' }}
+          >
+            {TITLE_WORDS_1.map((w, i) => (
               <span
                 key={i}
                 className="letter-in text-[#ede0c6] text-glow-white"
-                style={{ animationDelay: `${0.08 + i * 0.07}s` }}
+                style={{ animationDelay: `${0.08 + i * 0.16}s` }}
               >
-                {c === ' ' ? ' ' : c}
+                {w}
               </span>
             ))}
           </p>
           {/* Row 2 — neon gold */}
-          <p className="font-lalezar leading-tight" style={{ fontSize: 'clamp(3.2rem,16vw,7.5rem)' }}>
-            {TITLE_CHARS_2.map((c, i) => (
+          <p
+            className="flex flex-wrap items-center justify-center gap-x-5 font-lalezar leading-none"
+            style={{ fontSize: 'clamp(3.2rem,16vw,7.5rem)' }}
+          >
+            {TITLE_WORDS_2.map((w, i) => (
               <span
                 key={i}
                 className="letter-in text-gold-neon"
-                style={{ animationDelay: `${0.3 + i * 0.06}s` }}
+                style={{ animationDelay: `${0.3 + i * 0.14}s` }}
               >
-                {c === ' ' ? ' ' : c}
+                {w}
               </span>
             ))}
           </p>
@@ -297,7 +303,7 @@ function LobbyContent() {
             <div key={s.label} className="stat-card">
               {s.ico}
               <span className="font-lalezar text-xl leading-none text-[#f5eddc]">{s.val}</span>
-              <span className="font-cairo text-[10px] font-black uppercase tracking-wider text-neutral-500">{s.label}</span>
+              <span className="font-cairo text-[10px] font-black text-neutral-500">{s.label}</span>
             </div>
           ))}
         </div>
@@ -308,11 +314,11 @@ function LobbyContent() {
             <div className="cta-glow">
               <Link href="/register" className="btn-arcade relative z-10 inline-flex items-center gap-2.5 px-9 py-4 text-[16px] font-black">
                 <Zap className="h-5 w-5" />
-                ابدا الفضايح ببلاش
+                ابدأ الفضايح ببلاش
               </Link>
             </div>
             <Link href="/login" className="btn-chunk btn-ghost-hollow inline-flex items-center gap-2 px-6 py-4 text-[14px]">
-              <LogIn className="h-4 w-4" /> عندي حساب (بصح نسيت الكلمة)
+              <LogIn className="h-4 w-4" /> عندي حساب
             </Link>
           </div>
         )}
@@ -443,7 +449,7 @@ function LobbyContent() {
             </button>
             <div className="flex items-center gap-2">
               <StarMark size={26} />
-              <p className="font-cairo text-[13px] font-black tracking-wide text-neutral-300">AD BREAK — إعلان مقابل جلسة</p>
+              <p className="font-cairo text-[13px] font-black text-neutral-300">AD BREAK — إعلان مقابل جلسة</p>
             </div>
             {adStatus === 'idle' && (
               <>
