@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { redis } from '@/lib/redis';
 
 export async function proxy(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
@@ -9,24 +10,23 @@ export async function proxy(request: NextRequest) {
     const token = searchParams.get('token');
 
     if (!token) {
-      return new NextResponse('403 Access Denied: Ad Verification Required (No Token)', { status: 403 });
+      return new NextResponse('403 Access Denied: No Token', { status: 403 });
     }
 
     try {
-      // Fetch our internal API route which can use standard Node.js ioredis TCP connections
-      const apiUrl = new URL(`/api/games/verify-token?token=${token}`, request.url);
-      const res = await fetch(apiUrl.toString());
-      const getResult = await res.json();
+      const tokenKey = `game_token:${token}`;
+      const data = await redis.get(tokenKey);
 
-      if (!res.ok || !getResult.valid) {
+      if (!data) {
         return new NextResponse('403 Access Denied: Invalid or Expired Token', { status: 403 });
       }
 
-      // Token is valid and was burned by the API route. Let the request proceed.
-      return NextResponse.next();
+      // Burn the token so it can't be reused
+      await redis.del(tokenKey);
 
+      return NextResponse.next();
     } catch (error) {
-      console.error('Middleware Verification Error:', error);
+      console.error('Middleware Redis Error:', error);
       return new NextResponse('500 Internal Server Error', { status: 500 });
     }
   }
@@ -35,5 +35,6 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
+  runtime: 'nodejs',
   matcher: '/games/:path*',
 };

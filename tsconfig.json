@@ -30,5 +30,11 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "7azr-fazr-master",
+    "mafia-dl7oma-main",
+    "paint-followers-master",
+    "bara-salfa-bdarija-master"
+  ]
 }

@@ -1,16 +1,17 @@
 'use client';
 
-import { use, useState } from 'react';
+import { use, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft, Loader2, RefreshCw, X, Coins, Trophy } from 'lucide-react';
 import { StarMark } from '@/components/Star';
 import { GAMES } from '@/lib/games';
 
 const EXTERNAL_GAMES: Record<string, string> = {
-  'paint-followers': 'https://paint-followers.vercel.app/',
-  'mafia': 'https://mafia-dl7oma.vercel.app/',
-  '7azr-fazr': 'https://7azr-fazr-six.vercel.app/',
-  'bara-salfa': 'https://bara-salfa-bdarija.vercel.app/',
+  'paint-followers': '/game-files/paint-followers/index.html',
+  'mafia': '/game-files/mafia/index.html',
+  '7azr-fazr': '/game-files/7azr-fazr/index.html',
+  'bara-salfa': '/game-files/bara-salfa/index.html',
 };
 
 export default function GamePage({
@@ -25,6 +26,52 @@ export default function GamePage({
   const baseUrl = EXTERNAL_GAMES[resolvedParams.gameId];
   const externalUrl = token ? `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}` : baseUrl;
   const [exitConfirm, setExitConfirm] = useState(false);
+  const [replaying, setReplaying] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
+  const [coins, setCoins] = useState<number | null>(null);
+  const router = useRouter();
+
+  const fetchCoins = useCallback(async () => {
+    try {
+      const res = await fetch('/api/economy/balance');
+      if (res.ok) {
+        const data = await res.json();
+        setCoins(data.coins ?? data.balance ?? null);
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  useEffect(() => {
+    const handler = (e: MessageEvent) => {
+      if (e.data?.type === 'game-over') {
+        setGameOver(true);
+        fetchCoins();
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, [fetchCoins]);
+
+  const handlePlayAgain = async () => {
+    setReplaying(true);
+    try {
+      const res = await fetch('/api/games/unlock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Idempotency-Key': crypto.randomUUID() },
+        body: JSON.stringify({ gameId: resolvedParams.gameId, paymentMethod: 'coins' }),
+      });
+      if (res.ok) {
+        const { redirectUrl } = await res.json();
+        router.replace(redirectUrl);
+      } else {
+        router.replace('/?from=game');
+      }
+    } catch {
+      router.replace('/?from=game');
+    }
+  };
 
   if (!externalUrl) {
     return (
@@ -68,6 +115,45 @@ export default function GamePage({
         title={`Game: ${resolvedParams.gameId}`}
       />
 
+      {gameOver && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" />
+          <div className="anim-pop relative w-full max-w-xs rounded-2xl border border-[#6b542e]/50 bg-[#171210] p-6 text-center shadow-2xl">
+            <div className="mb-3 flex justify-center">
+              <Trophy className="h-12 w-12 text-amber-400 drop-shadow-[0_0_18px_rgba(251,191,36,.6)]" />
+            </div>
+            <h2 className="font-lalezar text-2xl text-neutral-50">اللعبة خلصات!</h2>
+            <p className="mt-1 font-cairo text-[13px] font-semibold text-neutral-400">
+              شكراً على اللعب
+            </p>
+            {coins !== null && (
+              <div className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-white/5 px-4 py-3 ring-1 ring-white/10">
+                <Coins className="h-5 w-5 text-amber-400" />
+                <span className="font-lalezar text-xl text-amber-300">{coins}</span>
+                <span className="font-cairo text-sm font-semibold text-neutral-400">كولة باقية</span>
+              </div>
+            )}
+            <div className="mt-5 flex flex-col gap-2">
+              <button
+                onClick={async () => {
+                  setGameOver(false);
+                  await handlePlayAgain();
+                }}
+                disabled={replaying}
+                className="btn-chunk btn-amber w-full py-3 text-[13px]"
+              >
+                {replaying ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                ألعب مرة أخرى
+              </button>
+              <Link href="/?from=game" className="btn-chunk btn-blood w-full py-3 text-[13px]">
+                <ArrowLeft className="h-4 w-4" />
+                رجع للساحة
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
       {exitConfirm && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setExitConfirm(false)} />
@@ -76,17 +162,27 @@ export default function GamePage({
             <p className="mt-1.5 font-cairo text-[13px] font-semibold text-neutral-400">
               تقدموك فهاد الجولة غادي يتضيع.
             </p>
-            <div className="mt-5 grid grid-cols-2 gap-2.5">
+            <div className="mt-5 flex flex-col gap-2">
               <button
-                onClick={() => setExitConfirm(false)}
-                className="btn-chunk btn-ghost-hollow px-3 py-3 text-[13px]"
+                onClick={handlePlayAgain}
+                disabled={replaying}
+                className="btn-chunk btn-amber w-full py-3 text-[13px]"
               >
-                كمّل اللعب
+                {replaying ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                ألعب مرة أخرى
               </button>
-              <Link href="/" className="btn-chunk btn-blood px-3 py-3 text-[13px]">
-                <ArrowLeft className="h-4 w-4" />
-                خروج
-              </Link>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => setExitConfirm(false)}
+                  className="btn-chunk btn-ghost-hollow px-3 py-3 text-[13px]"
+                >
+                  كمّل اللعب
+                </button>
+                <Link href="/?from=game" className="btn-chunk btn-blood px-3 py-3 text-[13px]">
+                  <ArrowLeft className="h-4 w-4" />
+                  خروج
+                </Link>
+              </div>
             </div>
           </div>
         </div>

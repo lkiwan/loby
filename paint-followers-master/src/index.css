@@ -1,0 +1,430 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════ TOKENS ═══════════════════════════════════════════
+   bara-salfa design system — warm paper, terra, saffron, tea, mint    */
+:root {
+  --paper: #f6efe2;
+  --paper2: #ede2c9;
+  --card: #fff9ec;
+  --card2: #fbf1df;
+  --ink: #2a2118;
+  --ink50: rgba(42, 33, 24, 0.55);
+  --ink35: rgba(42, 33, 24, 0.3);
+  --ink15: rgba(42, 33, 24, 0.15);
+  --terra: #c8412b;
+  --terra2: #e85c2a;
+  --saffron: #f2b23d;
+  --tea: #1f7a6b;
+  --mint: #3fba9a;
+  --chalk: #3a2e22;
+  --dim: #8a7a63;
+  --r: 18px;
+  --shadow: 0 4px 0 var(--ink);
+  --shadow-sm: 0 3px 0 var(--ink);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Lalezar', 'Cairo', system-ui, sans-serif;
+  background: var(--paper);
+  background-image: radial-gradient(rgba(42, 33, 24, 0.045) 1.2px, transparent 1.2px),
+    radial-gradient(rgba(42, 33, 24, 0.035) 1.2px, transparent 1.2px);
+  background-size: 100px 26px, 71px 71px;
+  background-position: 0 0, 99px 48px;
+  color: var(--ink);
+  overscroll-behavior: none;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+  color-scheme: light;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: 0;
+  background: none;
+  touch-action: manipulation;
+}
+
+input {
+  font-family: 'Cairo', system-ui, sans-serif;
+}
+
+/* ═══════════════ WARM SCREEN TINT = override Tailwind's slate bg ═════ */
+html,
+body > #root,
+#root > * {
+  background: transparent;
+}
+
+/* Every full-height page shell picks up the paper sidebars + orbs */
+.bg-slate-950,
+.bg-slate-900,
+.bg-slate-900\/60,
+.bg-slate-900\/40,
+.bg-slate-800 {
+  background: transparent !important;
+}
+
+/* ─────────────────────────── LAYOUT SHELL ─────────────────────────── */
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+.max-w-md {
+  max-width: 460px;
+}
+.p-4,
+.p-6 {
+  padding: 20px 20px calc(24px + env(safe-area-inset-bottom));
+}
+.h-full {
+  height: 100%;
+}
+.w-full {
+  width: 100%;
+}
+.h-screen {
+  height: 100dvh;
+}
+
+/* ─────────────────────────── FLOATING ORBS ───────────────────────── */
+/* attach to page shells that set `relative` */
+div[class~="relative"] {
+  position: relative;
+}
+.relative {
+  position: relative;
+}
+
+/* ─────────────────────────── CARD SHELLS ──────────────────────────── */
+/* any element using the slate card slots becomes a warm paper card */
+[class*='border-slate-700'] {
+  background: var(--card);
+  border: 3px solid var(--ink) !important;
+  border-radius: var(--r) !important;
+  box-shadow: var(--shadow) !important;
+  color: var(--ink) !important;
+}
+
+[class*='border-slate-600'] {
+  border-color: var(--ink50) !important;
+}
+
+button[class*='border-slate-700'] {
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s, background 0.15s;
+}
+button[class*='border-slate-700']:hover {
+  transform: translateY(-2px);
+}
+button[class*='border-slate-700']:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+
+[class*='bg-slate-900'] {
+  background: var(--card) !important;
+}
+
+/* ─────────────────────────── TEXT COLORS ──────────────────────────── */
+.text-white,
+.text-slate-100,
+.text-slate-200,
+.text-slate-300,
+.text-slate-400,
+.text-slate-500 {
+  color: var(--ink) !important;
+}
+.text-slate-600,
+.text-slate-700,
+.text-slate-800,
+.text-slate-900 {
+  color: var(--chalk) !important;
+}
+.text-slate-400 code {
+  color: var(--dim);
+}
+
+/* secondary / hinted text */
+.text-slate-400 {
+  color: var(--dim) !important;
+}
+.text-slate-500 {
+  color: var(--dim) !important;
+}
+.text-slate-300 {
+  color: var(--chalk) !important;
+}
+
+/* ─────────────────────────── ACCENT (fuchsia → terra) ─────────────── */
+.text-fuchsia-400,
+.text-fuchsia-300 {
+  color: var(--terra) !important;
+}
+.bg-fuchsia-500,
+.bg-fuchsia-400,
+.hover\:bg-fuchsia-400:hover,
+.hover\:bg-fuchsia-500:hover {
+  background: var(--terra) !important;
+  background: linear-gradient(135deg, var(--terra2) 0%, var(--terra) 55%, #b33a25 100%) !important;
+}
+.border-fuchsia-400,
+.border-fuchsia-500,
+.bg-fuchsia-500\/20,
+.bg-fuchsia-400\/20 {
+  border-color: var(--terra) !important;
+  background: rgba(200, 65, 43, 0.12) !important;
+}
+.hover\:border-fuchsia-400:hover,
+.hover\:border-fuchsia-300:hover {
+  border-color: var(--terra2) !important;
+}
+.hover\:bg-fuchsia-500\/20:hover {
+  background: rgba(200, 65, 43, 0.2) !important;
+}
+.bg-slate-900\/60 {
+  background: var(--card2) !important;
+}
+.hover\:bg-fuchsia-400:hover {
+  background: var(--terra2) !important;
+}
+
+.gradient-fuchsia,
+.bg-gradient-to-l,
+.bg-gradient-to-r {
+  background: linear-gradient(135deg, var(--saffron) 0%, var(--terra) 65%, var(--terra2) 135%) !important;
+  color: var(--paper) !important;
+  border: 3px solid var(--ink) !important;
+  border-radius: var(--r) !important;
+  box-shadow: var(--shadow) !important;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+[class*='gradient-to'] {
+  background: linear-gradient(135deg, var(--saffron) 0%, var(--terra) 70%) !important;
+  color: var(--paper) !important;
+}
+
+/* buttons with gradient bg */
+[class*='bg-fuchsia'] {
+  color: #fff !important;
+  border: 3px solid var(--ink) !important;
+  border-radius: var(--r) !important;
+  box-shadow: var(--shadow-sm) !important;
+  font-weight: 800;
+  transition: transform 0.12s, box-shadow 0.12s, background 0.15s;
+  position: relative;
+}
+button[class*='bg-fuchsia']:hover {
+  transform: translateY(-2px);
+}
+button[class*='bg-fuchsia']:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+button[disabled],
+[disabled] {
+  opacity: 0.4;
+  filter: grayscale(0.6);
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: 0 2px 0 var(--ink) !important;
+}
+
+/* ─────────────────────────── CHIPS / PICKS ────────────────────────── */
+[class*='border-fuchsia'] {
+  border-color: var(--saffron) !important;
+}
+[class*='text-fuchsia'] {
+  color: var(--terra) !important;
+}
+[class*='bg-red'] {
+  background: #f6d0c0 !important;
+}
+
+/* category / option chips get a playful sticker look */
+[class*='rounded-xl'][class*='border'] {
+  cursor: pointer;
+}
+
+/* ─────────────────────────── BUTTONS (CTA + ghost) ───────────────── */
+[class*='rounded-xl'],
+[class*='rounded-lg'] {
+  border-radius: 16px;
+}
+[class*='font-bold'] {
+  font-family: 'Lalezar', 'Cairo', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+[class*='rounded-xl'][class*='py-'],
+[class*='rounded-lg'][class*='py-'] {
+  font-weight: 600;
+}
+
+[class*='bg-fuchsia-500'] {
+  background: linear-gradient(135deg, var(--terra2), var(--terra)) !important;
+  border: 3px solid var(--ink) !important;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  color: var(--paper) !important;
+}
+
+/* ─────────────────────────── INPUTS ───────────────────────────────── */
+input,
+[class*='bg-slate-800'] input {
+  background: var(--card);
+  border: 2.5px dashed var(--ink50) !important;
+  border-radius: 14px;
+  color: var(--ink);
+  padding: 12px 15px;
+  font-weight: 700;
+  width: 100%;
+}
+input:focus {
+  outline: none;
+  border-style: solid;
+  border-color: var(--terra) !important;
+  box-shadow: 0 3px 0 var(--ink);
+}
+input::placeholder {
+  color: var(--dim);
+}
+
+/* ─────────────────────────── SETUP LISTS ──────────────────────────── */
+[class*='bg-slate-900\/60'] {
+  background: var(--card) !important;
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ─────────────────────────── HOLD RING ───────────────────────────── */
+.hold {
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+/* ─────────────────────────── SCROLLBAR ───────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--ink35);
+  border-radius: 9999px;
+}
+
+/* ─────────────────────────── ANIMATIONS ──────────────────────────── */
+@keyframes popIntro {
+  from {
+    opacity: 0;
+    transform: scale(0.86) rotate(-2deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes riseFade {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes shakeX {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+@keyframes confettiFall {
+  0% {
+    transform: translateY(-10px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+@keyframes orbFloatA {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(-24px, 26px) rotate(6deg);
+  }
+}
+@keyframes orbFloatB {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(22px, -18px) rotate(-7deg);
+  }
+}
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(-1.5deg);
+  }
+  50% {
+    transform: rotate(1.5deg);
+  }
+}
+
+/* utility animation helper applied by screens' tailwind `anim-*` if any */
+.anim-pop {
+  animation: popIntro 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.anim-fadeup {
+  animation: riseFade 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.anim-shake {
+  animation: shakeX 0.5s ease both;
+}

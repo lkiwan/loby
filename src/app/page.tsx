@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   AlertTriangle,
@@ -39,6 +39,7 @@ const TICKER_ITEMS = [
 export default function LobbyPage() {
   const { data: session, status, update } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [busyId, setBusyId] = useState<string | null>(null);
   const [busyAction, setBusyAction] = useState<'coins' | 'ad' | null>(null);
@@ -80,6 +81,25 @@ export default function LobbyPage() {
       }
     })();
   }, [status, update]);
+
+  /* ── retour depuis un jeu : rafraîchir le solde ── */
+  useEffect(() => {
+    if (status !== 'authenticated' || searchParams.get('from') !== 'game') return;
+    router.replace('/');
+    (async () => {
+      try {
+        const res = await fetch('/api/economy/balance');
+        if (!res.ok) return;
+        const data = (await res.json()) as { coins?: number };
+        if (typeof data.coins === 'number') {
+          await update({ coins: data.coins });
+          showToast('ok', `مرحبا بيك! عندك ${data.coins} 🪙`);
+        }
+      } catch {
+        await update();
+      }
+    })();
+  }, [status, searchParams, router, update]);
 
   const requireAuth = (): boolean => {
     if (status === 'authenticated') return true;
