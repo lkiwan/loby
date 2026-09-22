@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, Suspense } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -31,7 +31,7 @@ const TICKER_ITEMS = [
 const TITLE_CHARS_1 = Array.from('يلا');
 const TITLE_CHARS_2 = Array.from('نلعبو!');
 
-export default function LobbyPage() {
+function LobbyContent() {
   const { data: session, status, update } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -499,5 +499,13 @@ export default function LobbyPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function LobbyPage() {
+  return (
+    <Suspense>
+      <LobbyContent />
+    </Suspense>
   );
 }
