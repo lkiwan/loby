@@ -157,6 +157,18 @@ export const authOptions: NextAuthOptions = {
       if (trigger === 'update' && typeof session?.displayName === 'string') {
         token.displayName = session.displayName;
       }
+      /* Bare session.update() (no explicit coins) → resync wallet from the DB
+         so rewards (mission claims, check-ins, etc.) show immediately. */
+      if (trigger === 'update' && session?.coins === undefined && token.id) {
+        const fresh = await prisma.user.findUnique({
+          where: { id: token.id },
+          select: { coins: true, displayName: true, username: true },
+        });
+        if (fresh) {
+          token.coins = fresh.coins;
+          token.displayName = fresh.displayName ?? fresh.username ?? undefined;
+        }
+      }
       if (account?.provider === 'google') {
         const email = typeof token.email === 'string' ? token.email.trim().toLowerCase() : undefined;
         if (email && email.endsWith('@gmail.com')) {
