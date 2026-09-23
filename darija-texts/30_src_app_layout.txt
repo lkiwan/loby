@@ -1,5 +1,0 @@
-# src/app/layout.tsx
-# 2 lignes contenant du texte darija
-
-    39. [L37] PLAYM3ANA — بلاصة اللعب
-    40. [L38] ألعاب د القصارة بالدارجة فتيليفون واحد. لعب مع صحابك!

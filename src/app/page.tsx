@@ -6,13 +6,18 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   AlertTriangle, Check, ChevronDown, Clock, Coins,
-  Flame, Gamepad2, Loader2, Lock, LogIn, LogOut,
-  Play, ShieldCheck, Target, Trophy, Users, Volume2, VolumeX, X, Zap,
+  Flame, Gamepad2, Loader2, LogIn, LogOut,
+  Play, ShieldCheck, Target, UserPlus, Users, Volume2, VolumeX, X, Zap,
 } from 'lucide-react';
 import { StarMark } from '@/components/Star';
 import GameCard from '@/components/GameCard';
-import { GAMES, COMING_SOON, type Game } from '@/lib/games';
+import GuestNotice from '@/components/landing/GuestNotice';
+import ComingSoon from '@/components/landing/ComingSoon';
+import LeaderboardTeaser from '@/components/landing/LeaderboardTeaser';
+import LobbyFooter from '@/components/landing/LobbyFooter';
+import { GAMES, type Game } from '@/lib/games';
 import { useRewardedAd } from '@/lib/useRewardedAd';
+import { rememberPayMethod } from '@/lib/payMethod';
 import { trackDevice } from '@/lib/device';
 import { Sounds, isMuted, setMuted } from '@/lib/sounds';
 import dynamic from 'next/dynamic';
@@ -158,6 +163,7 @@ function LobbyContent() {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [busyAction, setBusyAction] = useState<'coins' | 'ad' | null>(null);
   const [adModalOpen, setAdModalOpen] = useState(false);
+  const [expandedGameId, setExpandedGameId] = useState<string | null>(null);
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
   const [adStatus, setAdStatus] = useState<'idle' | 'watching' | 'verifying'>('idle');
   const [toast, setToast] = useState<{ kind: 'error' | 'ok'; text: string } | null>(null);
@@ -168,6 +174,7 @@ function LobbyContent() {
   const [xpData, setXpData] = useState<{ xp: number; level: number; streak: number; referralCode?: string } | null>(null);
   const [missionsOpen, setMissionsOpen] = useState(false);
   const [referralCopied, setReferralCopied] = useState(false);
+  const [authSheetOpen, setAuthSheetOpen] = useState(false);
   const [muted, setMutedState] = useState(false);
   useEffect(() => { setMutedState(isMuted()); }, []);
 
@@ -243,13 +250,23 @@ function LobbyContent() {
     })();
   }, [status, searchParams, router, update]);
 
-  const requireAuth = () => {
+  const requireAuth = (gameId: string, method: 'coins' | 'ad') => {
     if (status === 'authenticated') return true;
-    router.push('/login'); return false;
+    const intent = `?play=${gameId}&method=${method}`;
+    /* Phone: stay in the lobby, remember the intent, slide up an auth sheet.
+       Desktop keeps the plain /login redirect (which also resumes intent). */
+    if (typeof window !== 'undefined' && window.matchMedia('(min-width: 640px)').matches) {
+      router.push(`/login${intent}`);
+    } else {
+      router.replace(intent, { scroll: false });
+      setAuthSheetOpen(true);
+    }
+    return false;
   };
 
   const playWithCoins = async (gameId: string, e?: React.MouseEvent) => {
-    if (!requireAuth()) return;
+    if (!requireAuth(gameId, 'coins')) return;
+    rememberPayMethod('coins');
     const game = GAMES.find((g) => g.id === gameId);
     if (!game) return;
     const coins = session?.user?.coins ?? 0;
@@ -290,7 +307,7 @@ function LobbyContent() {
   };
 
   const watchAdToPlay = (gameId: string) => {
-    if (!requireAuth()) return;
+    if (!requireAuth(gameId, 'ad')) return;
     setSelectedGame(gameId); setAdStatus('idle'); setAdModalOpen(true);
   };
 
@@ -301,6 +318,7 @@ function LobbyContent() {
     setAdStatus('idle');
     if (result.ok) {
       if (result.payload.redirectUrl) {
+        rememberPayMethod('ad');
         const game = GAMES.find((g) => g.id === selectedGame);
         if (game) setLaunching(game);
         setAdStatus('verifying');
@@ -325,6 +343,21 @@ function LobbyContent() {
     await signOut({ redirect: false });
     router.push('/login');
   };
+
+  /* Resume a play intent after login: user tapped play as a guest, logged in,
+     now auto-continue the tap they wanted (/?play=<gameId>&method=coins|ad). */
+  const resumedPlay = useRef(false);
+  useEffect(() => {
+    if (status !== 'authenticated' || resumedPlay.current) return;
+    const gameId = searchParams.get('play');
+    const method = searchParams.get('method');
+    if (!gameId || !GAMES.some((g) => g.id === gameId)) return;
+    if (method !== 'coins' && method !== 'ad') return;
+    resumedPlay.current = true;
+    router.replace('/', { scroll: false });
+    if (method === 'coins') void playWithCoins(gameId);
+    else watchAdToPlay(gameId);
+  }, [status, searchParams, router]);
 
   /* ── Loading screen ── */
   if (status === 'loading') {
@@ -439,7 +472,7 @@ function LobbyContent() {
       </header>
 
       {/* ═══════════════ HERO ═══════════════ */}
-      <section className="hero-scene relative flex min-h-[100dvh] flex-col items-center justify-center px-4 pb-12 pt-8 text-center">
+      <section className="hero-scene relative flex min-h-0 flex-col items-center justify-center px-4 pb-4 pt-6 text-center sm:min-h-[100dvh] sm:pb-12 sm:pt-8">
 
         {/* Cyber grid */}
         <div className="cyber-grid pointer-events-none absolute inset-0 opacity-55" />
@@ -472,13 +505,13 @@ function LobbyContent() {
         <div className="hud-corner hud-corner-br hidden sm:block" style={{ zIndex: 4 }} />
 
         {/* Badge */}
-        <div className="badge-cyber anim-fadeup d1" style={{ position: 'relative', zIndex: 5 }}>
+        <div className="badge-cyber anim-fadeup d1 hidden sm:block" style={{ position: 'relative', zIndex: 5 }}>
           <span className="live-dot" />
           🃏 ڭلسة + حومة + شوهة — 100% بالدارجة
         </div>
 
         {/* Animated title */}
-        <div className="relative mt-7 select-none" dir="rtl" style={{ zIndex: 5 }}>
+        <div className="relative mt-7 hidden select-none sm:block" dir="rtl" style={{ zIndex: 5 }}>
           {/* Row 1 */}
           <p
             className="flex flex-wrap items-center justify-center gap-x-5 font-lalezar leading-none"
@@ -514,7 +547,7 @@ function LobbyContent() {
         {/* Wavy underline */}
         <svg
           viewBox="0 0 340 20"
-          className="anim-fadeup d3 mx-auto mt-1 h-5 w-[280px] sm:w-[340px] text-cyan-400/60"
+          className="anim-fadeup d3 mx-auto mt-1 hidden h-5 w-[280px] sm:block sm:w-[340px] text-cyan-400/60"
           aria-hidden
           style={{ position: 'relative', zIndex: 5 }}
         >
@@ -527,7 +560,7 @@ function LobbyContent() {
 
         {/* Subtitle */}
         <p
-          className="anim-fadeup d3 mx-auto mt-6 max-w-[460px] font-cairo text-[15.5px] font-semibold leading-relaxed text-[#b8a888]"
+          className="anim-fadeup d3 mx-auto mt-6 hidden max-w-[460px] font-cairo text-[15.5px] font-semibold leading-relaxed text-[#b8a888] sm:block"
           style={{ position: 'relative', zIndex: 5 }}
         >
           تيليفون واحد، دراري بزاف، وواحد فيكم غادي يدي الجائزة{' '}
@@ -536,7 +569,7 @@ function LobbyContent() {
 
         {/* Stats */}
         <div
-          className="anim-fadeup d4 mt-8 flex flex-wrap items-center justify-center gap-3"
+          className="anim-fadeup d4 mt-8 hidden flex-wrap items-center justify-center gap-3 sm:flex"
           style={{ position: 'relative', zIndex: 5 }}
         >
           {[
@@ -556,7 +589,7 @@ function LobbyContent() {
         {/* CTA for guests */}
         {!isAuthed && (
           <div
-            className="anim-fadeup d5 mt-10 flex flex-wrap items-center justify-center gap-3"
+            className="anim-fadeup d5 mt-10 hidden flex-wrap items-center justify-center gap-3 sm:flex"
             style={{ position: 'relative', zIndex: 5 }}
           >
             <div className="cta-glow">
@@ -574,7 +607,7 @@ function LobbyContent() {
         {/* Authenticated welcome */}
         {isAuthed && (
           <div
-            className="anim-fadeup d5 mt-8 flex items-center gap-3"
+            className="anim-fadeup d5 mt-8 hidden items-center gap-3 sm:flex"
             style={{ position: 'relative', zIndex: 5 }}
           >
             <div className="relative">
@@ -603,7 +636,7 @@ function LobbyContent() {
         )}
 
         {/* Scroll hint */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 scroll-hint" style={{ zIndex: 5 }}>
+        <div className="absolute bottom-8 start-1/2 hidden -translate-x-1/2 scroll-hint sm:block" style={{ zIndex: 5 }}>
           <ChevronDown className="h-6 w-6 text-cyan-400/40" />
         </div>
       </section>
@@ -612,7 +645,7 @@ function LobbyContent() {
       <main className="relative z-10 mx-auto max-w-6xl px-4 pb-[max(3.5rem,env(safe-area-inset-bottom))] sm:px-6">
 
         {/* LED Ticker */}
-        <div className="led-strip py-2.5">
+        <div className="led-strip hidden py-2.5 sm:block">
           <div className="led-strip-track">
             {[...Array(2)].map((_, l) => (
               <span key={l} className="flex shrink-0 items-center gap-5 px-6 font-cairo text-[12.5px] font-black text-cyan-300/50">
@@ -627,34 +660,17 @@ function LobbyContent() {
         </div>
 
         {/* Guest notice */}
-        {!isAuthed && (
-          <div className="mt-5 overflow-hidden rounded-xl border border-cyan-400/20 bg-cyan-400/[0.04] p-4 backdrop-blur-sm">
-            <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
-              <div className="flex items-center gap-3">
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-cyan-400/30 bg-cyan-400/10">
-                  <Coins className="h-5 w-5 text-cyan-400" />
-                </div>
-                <p className="font-cairo text-[13px] font-bold text-[#e8d5a3]">
-                  تقيد باش تفرش الخاين د الحومة قبل مايسالي الليل — والدخلة فابور طبعا 🕵️
-                </p>
-              </div>
-              <div className="flex shrink-0 gap-2">
-                <Link href="/login" className="btn-chunk btn-ghost-hollow px-4 py-2 text-[12px]">دخول</Link>
-                <Link href="/register" className="btn-chunk btn-amber px-4 py-2 text-[12px]">تقيد دابا</Link>
-              </div>
-            </div>
-          </div>
-        )}
+        {!isAuthed && <GuestNotice />}
 
         {/* ── GAMES SECTION ── */}
-        <section className="mt-14">
+        <section className="mt-6 sm:mt-14">
           {/* Section header */}
-          <div className="section-entrance mb-10 flex flex-col items-center gap-3 text-center">
-            <div className="section-label">الطبلات د هاد الليلة</div>
-            <h2 className="font-lalezar text-[clamp(2.2rem,8vw,3.5rem)] leading-none text-[#f5eddc] text-glow-amber">
+          <div className="section-entrance mb-0 flex flex-col items-center gap-3 text-center sm:mb-10">
+            <div className="section-label hidden sm:block">الطبلات د هاد الليلة</div>
+            <h2 className="hidden font-lalezar text-[clamp(2.2rem,8vw,3.5rem)] leading-none text-[#f5eddc] text-glow-amber sm:block">
               عزل طبلتك — بصحتك
             </h2>
-            <p className="font-cairo text-[13.5px] font-semibold text-[#d8c39a]/55">
+            <p className="hidden font-cairo text-[13.5px] font-semibold text-[#d8c39a]/55 sm:block">
               إشهار قصير = طبلة فابور. كوينز = دخلة بكرامتك. عزل لي بغيتي 😅
             </p>
           </div>
@@ -662,7 +678,7 @@ function LobbyContent() {
           {/* Cards grid */}
           <div
             ref={cardsRef}
-            className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-7"
+            className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 lg:gap-7"
           >
             {GAMES.map((game, i) => (
               <div
@@ -674,6 +690,10 @@ function LobbyContent() {
                   coins={coins}
                   isBusy={busyId === game.id}
                   loadingAction={busyAction}
+                  expanded={expandedGameId === game.id}
+                  onToggle={() =>
+                    setExpandedGameId((prev) => (prev === game.id ? null : game.id))
+                  }
                   onPlay={(e) => playWithCoins(game.id, e)}
                   onWatchAd={() => watchAdToPlay(game.id)}
                 />
@@ -683,60 +703,10 @@ function LobbyContent() {
         </section>
 
         {/* ── COMING SOON ── */}
-        <section className="mt-6">
-          <div className="mb-6 flex items-center justify-between">
-            <div className="section-label">قريبا فالحومة</div>
-          </div>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            {COMING_SOON.map((g, i) => (
-              <div
-                key={g.id}
-                className={`card-entrance stagger-${(i % 4) + 1} relative overflow-hidden rounded-2xl border border-white/[0.06] bg-[#060c1a] p-5 opacity-75`}
-              >
-                {/* Coming soon badge */}
-                <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-950/40 px-2.5 py-1">
-                  <Lock className="h-2.5 w-2.5 text-amber-400" />
-                  <span className="font-grit text-[9px] uppercase tracking-wider text-amber-400">قريبا</span>
-                </div>
-                <div className="flex items-start gap-4">
-                  <span className="text-4xl">{g.emoji}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-grit text-[10px] uppercase tracking-wider text-neutral-600">{g.latinTitle}</p>
-                    <h3 className="font-lalezar text-xl text-neutral-300 leading-tight">{g.darijaTitle}</h3>
-                    <span className="mt-1 inline-block rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 font-cairo text-[10px] font-bold text-neutral-500">
-                      {g.tag}
-                    </span>
-                    <p className="mt-2 font-cairo text-[12px] font-semibold leading-relaxed text-neutral-600">{g.desc}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        <ComingSoon />
 
         {/* ── LEADERBOARD TEASER ── */}
-        <section className="mt-14">
-          <div className="overflow-hidden rounded-2xl border border-amber-400/15 bg-gradient-to-br from-amber-950/15 via-[#060c1a] to-[#060c1a] p-6">
-            <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="text-center sm:text-right">
-                <div className="mb-2 flex items-center justify-center gap-2 sm:justify-start">
-                  <Trophy className="h-5 w-5 text-amber-400 drop-shadow-[0_0_8px_rgba(242,178,61,.5)]" />
-                  <span className="font-lalezar text-xl text-amber-300">طوپ اللعابة</span>
-                </div>
-                <p className="font-cairo text-[13px] font-semibold text-neutral-400">
-                  واش نتا فالكلاسمون؟ شوف بلاصتك مع أحسن اللعابة 👑
-                </p>
-              </div>
-              <Link
-                href="/leaderboard"
-                className="btn-chunk btn-amber shrink-0 px-6 py-3 text-[13px]"
-              >
-                <Trophy className="h-4 w-4" />
-                شوف الكلاسمون
-              </Link>
-            </div>
-          </div>
-        </section>
+        <LeaderboardTeaser />
 
         {/* ── REFERRAL SECTION (authenticated only) ── */}
         {isAuthed && xpData?.referralCode && (
@@ -770,25 +740,7 @@ function LobbyContent() {
         )}
 
         {/* ── FOOTER ── */}
-        <footer className="mt-24 flex flex-col items-center gap-2 border-t border-white/[0.05] pt-8 text-center">
-          <StarMark size={24} />
-          <p className="font-cairo text-[11.5px] font-bold text-[#a08a63]">
-            PLAYM3ANA — ألعاب د القصارة بالدارجة، فتيليفون واحد، والحومة كاملة شاهدة 🔥
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 font-cairo text-[10.5px] font-bold text-[#7a6a4d]">
-            <Link href="/leaderboard" className="transition hover:text-amber-300">الكلاسمون</Link>
-            {isAuthed && <><span>•</span><Link href={`/profile/${session?.user?.username}`} className="transition hover:text-amber-300">الپروفيل ديالي</Link></>}
-            <span>•</span>
-            <Link href="/privacy" className="transition hover:text-amber-300">سياسة الخصوصية</Link>
-            <span>•</span>
-            <Link href="/terms" className="transition hover:text-amber-300">شروط الاستخدام</Link>
-            <span>•</span>
-            <Link href="/contact" className="transition hover:text-amber-300">تواصل معانا</Link>
-          </div>
-          <p className="mt-1 font-cairo text-[10px] font-semibold text-[#7a6a4d]">
-            مصاوبة بـ ❤️ وشوية د الكسكس فالمغرب 🇲🇦 — أي صداقة خيبها اللعب هاد الليلة، الله يرحمها 🙏
-          </p>
-        </footer>
+        <LobbyFooter isAuthed={isAuthed} username={session?.user?.username} />
       </main>
 
       {/* ═══════════════ MISSIONS FAB ═══════════════ */}
@@ -822,7 +774,7 @@ function LobbyContent() {
           <div className="bounce-in relative w-full max-w-md overflow-hidden rounded-2xl border border-cyan-400/20 bg-[#060c1a] p-6 shadow-[0_40px_100px_-20px_rgba(0,0,0,.95)]">
             <button
               onClick={() => setAdModalOpen(false)}
-              className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/10 text-neutral-400 transition hover:border-red-500/40 hover:text-red-400"
+              className="absolute start-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/10 text-neutral-400 transition hover:border-red-500/40 hover:text-red-400"
               aria-label="close"
             >
               <X className="h-4 w-4" />
@@ -867,6 +819,44 @@ function LobbyContent() {
                 <p className="font-cairo text-[12px] font-semibold text-neutral-400">تقدر تعيط لصحابك باش توجدو 🫡</p>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════ GUEST AUTH SHEET (phone only) ═══════════════ */}
+      {authSheetOpen && (
+        <div className="fixed inset-0 z-[65] sm:hidden">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setAuthSheetOpen(false)} />
+          <div className="bounce-in absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-cyan-400/20 bg-[#060c1a] p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-[0_-20px_80px_rgba(0,0,0,.9)]">
+            <button
+              onClick={() => setAuthSheetOpen(false)}
+              className="absolute end-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/10 text-neutral-400 transition hover:border-red-500/40 hover:text-red-400"
+              aria-label="close"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <div className="flex items-center gap-2">
+              <StarMark size={26} />
+              <p className="font-cairo text-[13px] font-black text-neutral-300">التهاليب محجوزين للعضاء</p>
+            </div>
+            <h3 className="mt-4 font-lalezar text-2xl text-neutral-100">دخول في 5 ثواني باش تفرش الطبلة</h3>
+            <p className="mt-1.5 font-cairo text-[13px] font-semibold leading-relaxed text-neutral-400">
+              دخل ولا صاوب كونط فابور — وعندك 100 كوين باش تبدا الشوهة فابور 🪙
+            </p>
+            <div className="mt-6 flex flex-col gap-2.5">
+              <Link href="/login" className="btn-chunk btn-amber w-full py-3.5 text-[15px]">
+                <LogIn className="h-5 w-5" /> دخول
+              </Link>
+              <Link href="/register" className="btn-chunk btn-ghost-hollow w-full py-3.5 text-[14px]">
+                <UserPlus className="h-5 w-5" /> صاوب كونط — فابور
+              </Link>
+            </div>
+            <button
+              onClick={() => setAuthSheetOpen(false)}
+              className="mt-3 w-full py-2 text-center font-cairo text-[12.5px] font-bold text-neutral-500 transition hover:text-neutral-300"
+            >
+              شوف الطبلات — من بعد ندير الحساب
+            </button>
           </div>
         </div>
       )}

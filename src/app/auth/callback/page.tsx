@@ -8,8 +8,12 @@ export default function AuthCallbackPage() {
   const router = useRouter();
 
   useEffect(() => {
+    const qs = new URLSearchParams(window.location.search);
     getSession().then((session) => {
-      router.replace(session?.user?.role === 'ADMIN' ? '/admin' : '/');
+      const play = qs.get('play');
+      router.replace(play
+        ? `/?play=${play}&method=${qs.get('method') === 'ad' ? 'ad' : 'coins'}`
+        : session?.user?.role === 'ADMIN' ? '/admin' : '/');
     });
   }, [router]);
 

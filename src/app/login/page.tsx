@@ -60,13 +60,22 @@ function LoginForm() {
       setManualError(authErrorText(res.error));
     } else {
       const session = await getSession();
-      router.replace(session?.user?.role === 'ADMIN' ? '/admin' : '/');
+      const play = searchParams.get('play');
+      const method = searchParams.get('method');
+      router.replace(play
+        ? `/?play=${play}&method=${method === 'ad' ? 'ad' : 'coins'}`
+        : session?.user?.role === 'ADMIN' ? '/admin' : '/');
     }
   };
 
   const handleGoogleLogin = () => {
     setManualError(null);
-    signIn('google', { callbackUrl: '/auth/callback' });
+    const play = searchParams.get('play');
+    signIn('google', {
+      callbackUrl: play
+        ? `/auth/callback?play=${play}&method=${searchParams.get('method') === 'ad' ? 'ad' : 'coins'}`
+        : '/auth/callback',
+    });
   };
 
   return (

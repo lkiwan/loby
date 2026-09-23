@@ -1663,7 +1663,7 @@ body.ad-playing {
 .missions-fab {
   position: fixed;
   bottom: max(5rem, calc(env(safe-area-inset-bottom) + 4.5rem));
-  left: 1rem;
+  inset-inline-end: 1rem;
   z-index: 40;
   display: flex;
   flex-direction: column;

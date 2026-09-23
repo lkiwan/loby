@@ -1,5 +1,0 @@
-# src/components/LegalShell.tsx
-# 2 lignes contenant du texte darija
-
-   241. [L26] ارجع للساحة
-   242. [L50] PLAYM3ANA — مصنوعة بـ ❤️ فالمغرب 🇲🇦

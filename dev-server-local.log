@@ -582,3 +582,4 @@ https://react.dev/link/hydration-mismatch
  GET / 200 in 482ms (next.js: 364ms, application-code: 118ms)
  GET /profile/omararhounewg90 200 in 155ms (next.js: 70ms, application-code: 85ms)
  GET /api/auth/session 200 in 64ms (next.js: 46ms, application-code: 19ms)
+ GET /api/auth/session 200 in 93ms (next.js: 56ms, application-code: 37ms)

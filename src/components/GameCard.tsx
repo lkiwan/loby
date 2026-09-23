@@ -2,7 +2,7 @@
 
 import { useRef, useCallback } from "react";
 import Image from "next/image";
-import { Coins, Loader2, Play, Video, Zap } from "lucide-react";
+import { ChevronDown, Coins, Loader2, Play, Video, Zap } from "lucide-react";
 import { GAMES, MAFIA_ART, type Game } from "@/lib/games";
 import Star from "@/components/Star";
 
@@ -11,6 +11,8 @@ type GameCardProps = {
   coins: number;
   loadingAction: "coins" | "ad" | null;
   isBusy: boolean;
+  expanded: boolean;
+  onToggle: () => void;
   onPlay: (e: React.MouseEvent) => void;
   onWatchAd: () => void;
 };
@@ -83,7 +85,7 @@ function GameArt({ game }: { game: Game }) {
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0a0010] via-transparent to-black/30" />
-        <div className="glow-pulse absolute -bottom-6 left-1/2 h-24 w-3/4 -translate-x-1/2 rounded-[50%] bg-red-700/55 blur-2xl" />
+        <div className="glow-pulse absolute -bottom-6 start-1/2 h-24 w-3/4 -translate-x-1/2 rounded-[50%] bg-red-700/55 blur-2xl" />
 
         <span className="drip" style={{ left: "10%", height: 26 }} />
         <span
@@ -104,7 +106,7 @@ function GameArt({ game }: { game: Game }) {
           </p>
         </div>
 
-        <span className="absolute left-3 top-3 rounded-full border border-red-500/45 bg-black/60 px-2.5 py-1 font-cairo text-[9.5px] font-black tracking-wide text-red-400 backdrop-blur-sm">
+        <span className="absolute start-3 top-3 rounded-full border border-red-500/45 bg-black/60 px-2.5 py-1 font-cairo text-[9.5px] font-black tracking-wide text-red-400 backdrop-blur-sm">
           ★ FEATURED
         </span>
       </div>
@@ -115,11 +117,11 @@ function GameArt({ game }: { game: Game }) {
     return (
       <div className="relative h-full w-full overflow-hidden bg-[#050910]">
         <div
-          className="absolute -right-6 -top-4 h-36 w-36 rounded-full opacity-45 blur-2xl transition-opacity duration-500 group-hover:opacity-80"
+          className="absolute -end-6 -top-4 h-36 w-36 rounded-full opacity-45 blur-2xl transition-opacity duration-500 group-hover:opacity-80"
           style={{ background: game.glowAccent }}
         />
         <div
-          className="absolute -bottom-8 -left-6 h-32 w-32 rounded-full opacity-35 blur-2xl transition-opacity duration-500 group-hover:opacity-65"
+          className="absolute -bottom-8 -start-6 h-32 w-32 rounded-full opacity-35 blur-2xl transition-opacity duration-500 group-hover:opacity-65"
           style={{ background: game.starAccent }}
         />
         <Image
@@ -137,11 +139,11 @@ function GameArt({ game }: { game: Game }) {
   return (
     <div className="relative h-full w-full overflow-hidden bg-[#050910]">
       <div
-        className="absolute -right-8 -top-6 h-36 w-36 rounded-full opacity-40 blur-2xl transition-opacity duration-500 group-hover:opacity-70"
+        className="absolute -end-8 -top-6 h-36 w-36 rounded-full opacity-40 blur-2xl transition-opacity duration-500 group-hover:opacity-70"
         style={{ background: game.glowAccent }}
       />
       <div
-        className="absolute -bottom-10 -left-8 h-32 w-32 rounded-full opacity-35 blur-2xl transition-opacity duration-500 group-hover:opacity-65"
+        className="absolute -bottom-10 -start-8 h-32 w-32 rounded-full opacity-35 blur-2xl transition-opacity duration-500 group-hover:opacity-65"
         style={{ background: game.starAccent }}
       />
       <div className="absolute inset-0 grid place-items-center">
@@ -169,6 +171,8 @@ export default function GameCard({
   coins,
   loadingAction,
   isBusy,
+  expanded,
+  onToggle,
   onPlay,
   onWatchAd,
 }: GameCardProps) {
@@ -190,8 +194,8 @@ export default function GameCard({
         />
       )}
 
-      {/* Art */}
-      <div className="relative h-[190px] w-full overflow-hidden rounded-t-[21px]">
+      {/* Art (desktop) */}
+      <div className="relative hidden aspect-[4/5] w-full overflow-hidden rounded-t-[21px] sm:block sm:aspect-auto sm:h-[190px]">
         <GameArt game={game} />
 
         {/* Hover play overlay */}
@@ -219,21 +223,112 @@ export default function GameCard({
         </div>
       </div>
 
-      {/* Bottom glow fade from art to card */}
+      {/* Bottom glow fade from art to card (desktop) */}
       <div
-        className="pointer-events-none absolute left-0 right-0 h-10 z-[5]"
+        className="pointer-events-none absolute inset-x-0 hidden h-10 z-[5] sm:block"
         style={{
           top: 180,
           background: `linear-gradient(to bottom, ${game.isMafia ? "#0a0010" : "#050910"}, transparent)`,
         }}
       />
 
-      {/* Content */}
-      <div className="relative z-10 flex flex-1 flex-col gap-2.5 p-4 pt-3">
+      {/* ── Mobile compact card (tap to reveal options) ── */}
+      <div className="relative z-10 sm:hidden">
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={expanded}
+          className="block w-full text-start"
+        >
+          {/* Full artwork */}
+          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-t-[21px]">
+            <GameArt game={game} />
+            <span className="absolute bottom-2 end-2 grid h-7 w-7 place-items-center rounded-full border border-white/15 bg-black/50 backdrop-blur-sm">
+              <ChevronDown
+                className={`h-4 w-4 text-white transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}
+              />
+            </span>
+          </div>
+
+          <div className="px-3 pt-2.5">
+            {/* Name */}
+            <span className="block truncate font-lalezar text-[1.25rem] leading-tight" style={{ color: game.starAccent, textShadow: `0 0 18px ${game.starAccent}60` }}>
+              {game.darijaTitle}
+            </span>
+            <span className="block truncate font-grit text-[8.5px] uppercase tracking-[0.16em] text-neutral-600">
+              {game.latinTitle}
+            </span>
+
+            {/* Players + cost meta row */}
+            <span className="mt-2 flex w-full items-center gap-1.5">
+              <span className="flex items-center justify-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 font-cairo text-[10px] font-black text-neutral-400">
+                👥 {game.players}
+              </span>
+              <span
+                className="flex items-center justify-center gap-1 rounded-full border px-2.5 py-1 font-cairo text-[10px] font-black tabular-nums"
+                style={{
+                  borderColor: `${game.starAccent}50`,
+                  background: `${game.starAccent}12`,
+                  color: game.starAccent,
+                  boxShadow: `0 0 12px ${game.starAccent}22`,
+                }}
+              >
+                <Coins className="h-3 w-3 shrink-0" />
+                {game.cost} كوين
+              </span>
+            </span>
+          </div>
+        </button>
+
+        {/* Expandable: description + play options */}
+        <div
+          className={`grid transition-[grid-template-rows] duration-300 ease-out ${expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+        >
+          <div className="overflow-hidden">
+            <div className="px-3 pb-3">
+              <p className="pt-2.5 font-cairo text-[11.5px] font-semibold leading-relaxed text-neutral-500">
+                {game.desc}
+              </p>
+              <div className="mt-2.5 grid grid-cols-2 gap-1.5">
+                <button
+                  onClick={(e) => {
+                    ripple(e);
+                    onPlay(e);
+                  }}
+                  disabled={isBusy || !canAfford}
+                  className={`btn-chunk relative overflow-hidden py-2.5 text-[12.5px] ${game.isMafia ? "btn-blood" : "btn-amber"} ${!canAfford ? "opacity-40" : ""}`}
+                >
+                  {loadingAction === "coins" && isBusy ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Zap className="h-3.5 w-3.5" />
+                  )}
+                  بالعملات
+                </button>
+                <button
+                  onClick={onWatchAd}
+                  disabled={isBusy}
+                  className="btn-chunk btn-ghost-hollow relative overflow-hidden py-2.5 text-[12.5px]"
+                >
+                  {loadingAction === "ad" && isBusy ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Video className="h-3.5 w-3.5" />
+                  )}
+                  إعلان
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Desktop content (unchanged) ── */}
+      <div className="relative z-10 hidden flex-1 flex-col gap-2.5 p-4 pt-3 sm:flex">
         {/* Title */}
         <div>
           <p
-            className="font-lalezar text-[1.3rem] leading-tight"
+            className="font-lalezar text-[1.05rem] leading-tight sm:text-[1.3rem]"
             style={{
               color: game.starAccent,
               textShadow: `0 0 18px ${game.starAccent}60`,
@@ -241,23 +336,22 @@ export default function GameCard({
           >
             {game.darijaTitle}
           </p>
-          <p className="font-grit text-[10px] uppercase tracking-[0.18em] text-neutral-600">
+          <p className="font-grit text-[8px] uppercase tracking-[0.16em] text-neutral-600 sm:text-[10px] sm:tracking-[0.18em]">
             {game.latinTitle}
           </p>
         </div>
 
         {/* Description */}
-        <p className="font-cairo text-[11.5px] font-semibold leading-relaxed text-neutral-500">
+        <p className="font-cairo text-[11.5px] font-semibold leading-relaxed text-neutral-500 line-clamp-2 sm:line-clamp-none">
           {game.desc}
         </p>
 
         {/* Cost + players */}
         <div className="mt-auto flex items-center justify-between pt-1">
-          <span className="flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 font-cairo text-[10px] font-black text-neutral-400">
+          <span className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 font-cairo text-[10px] font-black text-neutral-400 sm:flex">
             {game.players} 👥
           </span>
-          <span
-            className="flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-cairo text-[11px] font-black tabular-nums"
+          <span className="flex items-center gap-1 rounded-full border px-2 py-0.5 font-cairo text-[10px] font-black tabular-nums sm:gap-1.5 sm:px-2.5 sm:py-1 sm:text-[11px]"
             style={{
               borderColor: `${game.starAccent}50`,
               background: `${game.starAccent}12`,
@@ -286,16 +380,16 @@ export default function GameCard({
           />
         </div>
 
-        {/* Separator */}
+        {/* Separator (desktop only) */}
         <div
-          className="h-px w-full"
+          className="hidden h-px w-full sm:block"
           style={{
             background: `linear-gradient(90deg, transparent, ${game.starAccent}35, transparent)`,
           }}
         />
 
         {/* Buttons */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2 sm:gap-2">
           <button
             onClick={(e) => {
               ripple(e);

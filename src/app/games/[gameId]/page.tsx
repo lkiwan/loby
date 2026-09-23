@@ -4,6 +4,8 @@ import { use, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, Loader2, RefreshCw, X, Coins, Trophy, Zap } from 'lucide-react';
+import { useRewardedAd } from '@/lib/useRewardedAd';
+import { rememberPayMethod, getRememberedPayMethod } from '@/lib/payMethod';
 import { StarMark } from '@/components/Star';
 import { GAMES } from '@/lib/games';
 
@@ -37,6 +39,7 @@ export default function GamePage({
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const game = GAMES.find((g) => g.id === resolvedParams.gameId);
   const router = useRouter();
+  const { show: showRewardedAd } = useRewardedAd();
 
   /* Eagerly fetch the game's HTML so the browser starts parsing its
      sub-resources (JS bundle, CSS) as early as possible. */
@@ -84,12 +87,24 @@ export default function GamePage({
   const handlePlayAgain = async () => {
     setReplaying(true);
     try {
+      /* Reuse the last payment method so replay is one tap — ad path falls
+         back to coins when the ad can't fill. */
+      if (getRememberedPayMethod() === 'ad') {
+        const result = await showRewardedAd('continue', resolvedParams.gameId);
+        if (result.ok && result.payload.redirectUrl) {
+          rememberPayMethod('ad');
+          router.replace(result.payload.redirectUrl);
+          return;
+        }
+        rememberPayMethod('coins');
+      }
       const res = await fetch('/api/games/unlock', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Idempotency-Key': crypto.randomUUID() },
         body: JSON.stringify({ gameId: resolvedParams.gameId, paymentMethod: 'coins' }),
       });
       if (res.ok) {
+        rememberPayMethod('coins');
         const { redirectUrl } = await res.json();
         router.replace(redirectUrl);
       } else {
@@ -97,6 +112,8 @@ export default function GamePage({
       }
     } catch {
       router.replace('/?from=game');
+    } finally {
+      setReplaying(false);
     }
   };
 
@@ -235,7 +252,7 @@ export default function GamePage({
                 عاود لعب
               </button>
               <Link href="/?from=game" className="btn-chunk btn-blood w-full py-3 text-[13px]">
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4 rtl:rotate-180" />
                 رجع للساحة
               </Link>
             </div>
@@ -266,7 +283,7 @@ export default function GamePage({
                   كمل اللعب
                 </button>
                 <Link href="/?from=game" className="btn-chunk btn-blood px-3 py-3 text-[13px]">
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-4 w-4 rtl:rotate-180" />
                   خروج
                 </Link>
               </div>

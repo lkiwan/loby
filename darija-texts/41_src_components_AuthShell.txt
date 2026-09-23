@@ -1,4 +1,0 @@
-# src/components/AuthShell.tsx
-# 1 lignes contenant du texte darija
-
-   233. [L26] ساحة اللعب
