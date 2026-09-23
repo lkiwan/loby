@@ -39,9 +39,6 @@ const TICKER_ITEMS = [
 const TITLE_WORDS_1 = ['فضح', 'صاحبك'];
 const TITLE_WORDS_2 = ['قبل', 'ما', 'يفضحك'];
 
-/* XP formula (mirrors lib/ledger.ts, no prisma import needed client-side) */
-function xpForLvl(n: number) { return Math.floor(100 * Math.pow(n, 1.4)); }
-
 /* ── Coin burst particles on button click ── */
 function spawnCoins(x: number, y: number) {
   const container = document.body;
@@ -171,7 +168,7 @@ function LobbyContent() {
   const [launching, setLaunching] = useState<Game | null>(null);
   const [cardsVisible, setCardsVisible] = useState(true);
   const cardsRef = useRef<HTMLDivElement>(null);
-  const [xpData, setXpData] = useState<{ xp: number; level: number; streak: number; referralCode?: string } | null>(null);
+  const [xpData, setXpData] = useState<{ xp: number; level: number; gamesPlayed: number; streak: number; referralCode?: string } | null>(null);
   const [missionsOpen, setMissionsOpen] = useState(false);
   const [referralCopied, setReferralCopied] = useState(false);
   const [authSheetOpen, setAuthSheetOpen] = useState(false);
@@ -532,11 +529,11 @@ function LobbyContent() {
               <>
                 {xpData && (() => {
                   const lvl = xpData.level;
-                  const cur = xpForLvl(lvl);
-                  const nxt = xpForLvl(lvl + 1);
-                  const pct = nxt > cur ? Math.round(((xpData.xp - cur) / (nxt - cur)) * 100) : 100;
+                  const games = xpData.gamesPlayed ?? 0;
+                  const inLvl = games % 10;
+                  const pct = Math.round((inLvl / 10) * 100);
                   return (
-                    <Link href={`/profile/${session?.user?.username}`} className="xp-pill group" title={`Level ${lvl} — ${xpData.xp} XP`}>
+                    <Link href={`/profile/${session?.user?.username}`} className="xp-pill group" title={`Level ${lvl} — ${games} games`}>
                       <Zap className="h-3 w-3 shrink-0 text-purple-400" />
                       <span className="font-grit text-[10px] text-purple-300">LV.{lvl}</span>
                       <div className="xp-pill-track">

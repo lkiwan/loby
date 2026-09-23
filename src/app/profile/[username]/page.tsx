@@ -18,13 +18,12 @@ type ProfileData = {
   coins: number;
   xp: number;
   level: number;
-  xpProgress: number;
-  xpForNext: number;
+  levelProgress: number;
+  gamesPlayed: number;
   streakCount: number;
   longestStreak: number;
   referralCode: string | null;
   createdAt: string;
-  gamesPlayed: number;
   recentSessions: Array<{
     gameId: string;
     startedAt: string;
@@ -124,22 +123,22 @@ export default function ProfilePage({
 
               {/* XP progress bar */}
               <div className="mb-1 flex justify-between">
-                <span className="font-grit text-[10px] text-neutral-600">LV.{profile.level}</span>
-                <span className="font-grit text-[10px] text-neutral-600">LV.{profile.level + 1}</span>
-              </div>
-              <div className="h-2 overflow-hidden rounded-full bg-white/[0.06]">
-                <div
-                  className="h-full rounded-full transition-all duration-1000"
-                  style={{
-                    width: `${profile.xpProgress}%`,
-                    background: 'linear-gradient(90deg, #a855f7, #00d9ff)',
-                    boxShadow: '0 0 10px rgba(168,85,247,.5)',
-                  }}
-                />
-              </div>
-              <p className="mt-1 text-left font-cairo text-[10px] text-neutral-600" dir="ltr">
-                {profile.xpProgress}% to next level
-              </p>
+                    <span className="font-grit text-[10px] text-neutral-600">LV.{profile.level} 🎮</span>
+                    <span className="font-grit text-[10px] text-neutral-600">LV.{profile.level + 1}</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-white/[0.06]">
+                    <div
+                      className="h-full rounded-full transition-all duration-1000"
+                      style={{
+                        width: `${profile.levelProgress}%`,
+                        background: 'linear-gradient(90deg, #a855f7, #00d9ff)',
+                        boxShadow: '0 0 10px rgba(168,85,247,.5)',
+                      }}
+                    />
+                  </div>
+                  <p className="mt-1 text-left font-cairo text-[10px] text-neutral-600" dir="ltr">
+                    {profile.levelProgress}% to next level
+                  </p>
             </div>
           </div>
 

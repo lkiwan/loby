@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { getConfig } from '@/lib/config';
 import { casablancaDay, casablancaWeek, casablancaDateAt, shiftCasablanca } from '@/lib/time';
+import { updateGamesLevel } from '@/lib/ledger';
 import type { MissionKind, Prisma } from '@prisma/client';
 
 async function weightedPick<T extends { id: string; weight: number }>(items: T[]): Promise<T | null> {
@@ -102,5 +103,6 @@ export async function bumpGamesPlayed(userId: string, gameId: string): Promise<v
   await Promise.all([
     bumpMission(userId, 'PLAY_N_GAMES', 1, gameId).catch(() => {}),
     bumpMission(userId, 'PLAY_SPECIFIC_GAME', 1, gameId).catch(() => {}),
+    updateGamesLevel(userId).catch(() => {}),
   ]);
 }

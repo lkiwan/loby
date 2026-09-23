@@ -154,51 +154,30 @@ export async function creditBalance(params: BalanceParams) {
   });
 }
 
-export async function addXp(userId: string, amount: number, sessionId?: string) {
+export async function addXp(userId: string, amount: number, _sessionId?: string) {
   return prisma.$transaction(async (tx) => {
     const user = await tx.user.findUnique({ where: { id: userId } });
     if (!user) return null;
 
+    /* Level comes from games played (gamesLevelForPlays), not XP. */
     const xp = user.xp + amount;
-    let level = 1;
-    while (xpForLevel(level + 1) <= xp) level += 1;
+    await tx.user.update({ where: { id: userId }, data: { xp } });
 
-    await tx.user.update({ where: { id: userId }, data: { xp, level } });
-
-    let coins = user.coins;
-    if (level > user.level) {
-      const grant = 50 * level;
-      const key = `levelup:${userId}:${level}`;
-      const granted = await tx.ledgerEntry.findUnique({ where: { idempotencyKey: key } });
-      if (!granted) {
-        coins = user.coins + grant;
-        await tx.ledgerEntry.create({
-          data: {
-            userId,
-            currency: 'COINS',
-            delta: grant,
-            balanceAfter: coins,
-            reason: 'LEVEL_UP',
-            refType: 'PlaySession',
-            refId: sessionId,
-            idempotencyKey: key,
-          },
-        });
-        await tx.user.update({ where: { id: userId }, data: { coins: { increment: grant } } });
-      }
-    }
-
-    /* Return coins so callers don't need an extra DB round-trip */
-    return { xp, level, coins };
+    return { xp, level: user.level, coins: user.coins };
   });
 }
 
-export function xpForLevel(n: number): number {
-  return Math.floor(100 * Math.pow(n, 1.4));
+/* Leveling is driven by games played: every 10 games -> +1 level, starting at 1. */
+export function gamesLevelForPlays(plays: number): number {
+  return Math.floor(plays / 10) + 1;
 }
 
-export const levelFromXp = (xp: number): number => {
-  let level = 1;
-  while (xpForLevel(level + 1) <= xp) level += 1;
+/* Recomputes User.level from the number of play sessions and persists it,
+   so read paths (leaderboard, admin, profile) see the games level without
+   extra work. */
+export async function updateGamesLevel(userId: string): Promise<number> {
+  const plays = await prisma.playSession.count({ where: { userId } });
+  const level = gamesLevelForPlays(plays);
+  await prisma.user.update({ where: { id: userId }, data: { level } });
   return level;
-};
+}

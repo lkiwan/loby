@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import { prisma } from '@/lib/prisma';
 import { redis } from '@/lib/redis';
-import { levelFromXp } from '@/lib/ledger';
+import { gamesLevelForPlays } from '@/lib/ledger';
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -13,8 +13,8 @@ export async function GET() {
 
   const userId = session.user.id;
 
-  /* 3-second server-side cache — avoids hitting the DB on rapid reloads
-     (lobby page fetches balance on mount + after every checkin/game return). */
+  /* 3-second server-side cache — avoids DB hits on rapid reloads
+     (the lobby fetches balance on mount + after every checkin/game return). */
   try {
     const cached = await redis.get(`balance:${userId}`);
     if (cached) return NextResponse.json(JSON.parse(cached));
@@ -28,10 +28,10 @@ export async function GET() {
       coins: true,
       tickets: true,
       xp: true,
-      level: true,
       streakCount: true,
       longestStreak: true,
       referralCode: true,
+      _count: { select: { sessions: true } },
     },
   });
 
@@ -39,12 +39,18 @@ export async function GET() {
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
 
-  const level = user.xp > 0 ? levelFromXp(user.xp) : user.level;
+  const gamesPlayed = user._count.sessions;
+  const level = gamesLevelForPlays(gamesPlayed);
+  /* Progress within the current level step: games % 10 -> 0..100% */
+  const levelProgress = Math.round(((gamesPlayed % 10) / 10) * 100);
+
   const data = {
     coins: user.coins,
     tickets: user.tickets,
     xp: user.xp,
     level,
+    levelProgress,
+    gamesPlayed,
     streak: user.streakCount,
     longestStreak: user.longestStreak,
     referralCode: user.referralCode,

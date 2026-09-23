@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { prisma } from '@/lib/prisma';
-import { xpForLevel } from '@/lib/ledger';
+import { gamesLevelForPlays } from '@/lib/ledger';
 
 export async function GET(
   _req: Request,
@@ -38,27 +38,23 @@ export async function GET(
   }
 
   const isOwn = session?.user?.id === user.id;
-  const lvl = user.level;
-  const xpCurrent = xpForLevel(lvl);
-  const xpNext = xpForLevel(lvl + 1);
-  const xpProgress =
-    xpNext > xpCurrent
-      ? Math.round(((user.xp - xpCurrent) / (xpNext - xpCurrent)) * 100)
-      : 100;
+  const gamesPlayed = user._count.sessions;
+  /* Level is game-driven: every 10 games -> +1 level. Progress = games into the current step. */
+  const level = gamesLevelForPlays(gamesPlayed);
+  const levelProgress = Math.round(((gamesPlayed % 10) / 10) * 100);
 
   return NextResponse.json({
     username: user.username,
     image: user.image,
     coins: user.coins,
     xp: user.xp,
-    level: user.level,
-    xpProgress: Math.max(0, Math.min(100, xpProgress)),
-    xpForNext: xpNext,
+    level,
+    levelProgress,
     streakCount: user.streakCount,
     longestStreak: user.longestStreak,
     referralCode: isOwn ? user.referralCode : null,
     createdAt: user.createdAt,
-    gamesPlayed: user._count.sessions,
+    gamesPlayed,
     recentSessions: user.sessions,
   });
 }
