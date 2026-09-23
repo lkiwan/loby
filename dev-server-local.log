@@ -460,3 +460,125 @@ Foreign key constraint violated: `MissionAssignment_userId_fkey (index)`
   }
 }
  GET /api/rewards/missions 500 in 48ms (next.js: 3ms, application-code: 45ms)
+ GET /api/auth/session 200 in 85ms (next.js: 46ms, application-code: 40ms)
+ GET /api/auth/session 200 in 23ms (next.js: 3ms, application-code: 20ms)
+ GET /api/auth/session 200 in 41ms (next.js: 26ms, application-code: 15ms)
+ GET /api/auth/session 200 in 55ms (next.js: 37ms, application-code: 17ms)
+ GET / 200 in 235ms (next.js: 37ms, application-code: 197ms)
+ GET /api/auth/session 200 in 57ms (next.js: 32ms, application-code: 25ms)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="ar" dir="rtl">
+                          <body
+                            className="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__var..."
+-                           data-new-gr-c-s-check-loaded="14.1331.0"
+-                           data-gr-ext-installed=""
+                          >
+                  ...
+ 
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+ GET /api/auth/session 200 in 41ms (next.js: 17ms, application-code: 24ms)
+ GET / 200 in 86ms (next.js: 8ms, application-code: 78ms)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+ GET /api/auth/session 200 in 68ms (next.js: 47ms, application-code: 21ms)
+ GET /api/auth/session 200 in 22ms (next.js: 7ms, application-code: 15ms)
+ GET /login 200 in 227ms (next.js: 168ms, application-code: 60ms)
+ GET /api/auth/providers 200 in 40ms (next.js: 27ms, application-code: 13ms)
+ GET /api/auth/csrf 200 in 24ms (next.js: 5ms, application-code: 19ms)
+ POST /api/auth/callback/credentials 401 in 59ms (next.js: 4ms, application-code: 55ms)
+ GET /api/auth/providers 200 in 43ms (next.js: 29ms, application-code: 13ms)
+ GET /api/auth/csrf 200 in 30ms (next.js: 4ms, application-code: 27ms)
+ POST /api/auth/callback/credentials 401 in 148ms (next.js: 6ms, application-code: 143ms)
+ GET /api/auth/providers 200 in 45ms (next.js: 31ms, application-code: 14ms)
+ GET /api/auth/csrf 200 in 44ms (next.js: 8ms, application-code: 36ms)
+ POST /api/auth/callback/credentials 401 in 163ms (next.js: 5ms, application-code: 159ms)
+ GET /api/auth/providers 200 in 46ms (next.js: 30ms, application-code: 16ms)
+ GET /api/auth/csrf 200 in 24ms (next.js: 3ms, application-code: 21ms)
+ POST /api/auth/signin/google 200 in 301ms (next.js: 6ms, application-code: 295ms)
+ GET /api/auth/callback/google?state=a5Okaon0iUtSTFJIPZRF5Z4khmdgi30Vsh0dXzWlYn4&iss=https%3A%2F%2Faccounts.google.com&code=4%2F0AXlqoi4Xvb6TH95xymnJVyrN5bDDv0FIr1KYpkfVhstaOrAZ5K87p0FIVwBd6Ac_POVO0g&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=consent 302 in 865ms (next.js: 29ms, application-code: 836ms)
+ GET /auth/callback 200 in 1328ms (next.js: 1229ms, application-code: 99ms)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+ GET /api/auth/session 200 in 121ms (next.js: 67ms, application-code: 54ms)
+ GET /api/auth/session 200 in 28ms (next.js: 9ms, application-code: 19ms)
+ GET /api/auth/session 200 in 73ms (next.js: 54ms, application-code: 20ms)
+ GET / 200 in 185ms (next.js: 117ms, application-code: 69ms)
+ GET /api/auth/session 200 in 148ms (next.js: 7ms, application-code: 141ms)
+ GET / 200 in 44ms (next.js: 11ms, application-code: 33ms)
+ GET /api/economy/balance 200 in 64ms (next.js: 6ms, application-code: 58ms)
+ GET /api/economy/balance 200 in 50ms (next.js: 6ms, application-code: 44ms)
+ POST /api/devices/track 200 in 132ms (next.js: 9ms, application-code: 123ms)
+ POST /api/rewards/checkin 200 in 193ms (next.js: 7ms, application-code: 186ms)
+ GET /api/auth/csrf 200 in 20ms (next.js: 5ms, application-code: 15ms)
+ POST /api/auth/session 200 in 41ms (next.js: 6ms, application-code: 35ms)
+ GET /api/economy/balance 200 in 32ms (next.js: 5ms, application-code: 27ms)
+ GET /api/auth/session 200 in 111ms (next.js: 88ms, application-code: 23ms)
+ GET /api/auth/csrf 200 in 60ms (next.js: 38ms, application-code: 22ms)
+ POST /api/auth/signout 200 in 31ms (next.js: 6ms, application-code: 25ms)
+ GET /api/auth/session 200 in 39ms (next.js: 15ms, application-code: 24ms)
+ GET /login 200 in 99ms (next.js: 41ms, application-code: 58ms)
+ GET /api/auth/providers 200 in 23ms (next.js: 6ms, application-code: 17ms)
+ GET /api/auth/csrf 200 in 36ms (next.js: 7ms, application-code: 29ms)
+ POST /api/auth/signin/google 200 in 185ms (next.js: 3ms, application-code: 182ms)
+ GET /api/auth/callback/google?state=f5P6GK1X9ktOeiFJOw3hda6cAeacV6pEgvcJWLTcenk&iss=https%3A%2F%2Faccounts.google.com&code=4%2F0AXlqoi61MYDmilW3fmnI6rCDaPWkN7LW0MkQGEjup74Sb5QtYfS59UBR0N6mFKI-sz1RYQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=consent 302 in 560ms (next.js: 30ms, application-code: 531ms)
+ GET /auth/callback 200 in 110ms (next.js: 15ms, application-code: 94ms)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+ GET /api/auth/session 200 in 34ms (next.js: 15ms, application-code: 19ms)
+ GET /api/auth/session 200 in 33ms (next.js: 7ms, application-code: 26ms)
+ GET / 200 in 94ms (next.js: 13ms, application-code: 80ms)
+ GET /api/auth/session 200 in 40ms (next.js: 17ms, application-code: 23ms)
+ GET /api/auth/session 200 in 83ms (next.js: 15ms, application-code: 68ms)
+ GET / 200 in 174ms (next.js: 29ms, application-code: 145ms)
+ POST /api/rewards/checkin 200 in 79ms (next.js: 13ms, application-code: 66ms)
+ GET /api/economy/balance 200 in 89ms (next.js: 31ms, application-code: 58ms)
+ POST /api/devices/track 200 in 110ms (next.js: 42ms, application-code: 68ms)
+ GET /api/economy/balance 200 in 33ms (next.js: 5ms, application-code: 28ms)
+ GET /api/auth/session 200 in 192ms (next.js: 108ms, application-code: 84ms)
+ GET / 200 in 217ms (next.js: 11ms, application-code: 206ms)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+ GET /api/auth/session 200 in 130ms (next.js: 21ms, application-code: 109ms)
+ GET /api/auth/session 200 in 92ms (next.js: 42ms, application-code: 51ms)
+ POST /api/devices/track 200 in 272ms (next.js: 61ms, application-code: 211ms)
+ POST /api/rewards/checkin 200 in 291ms (next.js: 24ms, application-code: 267ms)
+ GET /api/economy/balance 200 in 207ms (next.js: 28ms, application-code: 180ms)
+ GET /profile/omararhounewg90 200 in 5.9s (next.js: 5.6s, application-code: 244ms)
+ GET /profile/omararhounewg90 200 in 365ms (next.js: 117ms, application-code: 248ms)
+ GET /profile/omararhounewg90 200 in 146ms (next.js: 25ms, application-code: 121ms)
+ GET /profile/omararhounewg90 200 in 146ms (next.js: 12ms, application-code: 134ms)
+ GET /profile/omararhounewg90 200 in 156ms (next.js: 26ms, application-code: 130ms)
+ GET /api/profile/omararhounewg90 200 in 10.5s (next.js: 10.3s, application-code: 191ms)
+ GET /api/profile/omararhounewg90 200 in 91ms (next.js: 53ms, application-code: 39ms)
+✓ Finished filesystem cache database compaction in 14.3s
+ GET /api/auth/session 200 in 86ms (next.js: 60ms, application-code: 26ms)
+ GET /api/auth/session 200 in 50ms (next.js: 37ms, application-code: 13ms)
+ GET /api/auth/session 200 in 50ms (next.js: 34ms, application-code: 16ms)
+✓ Compiled in 2.8s
+ GET / 200 in 482ms (next.js: 364ms, application-code: 118ms)
+ GET /profile/omararhounewg90 200 in 155ms (next.js: 70ms, application-code: 85ms)
+ GET /api/auth/session 200 in 64ms (next.js: 46ms, application-code: 19ms)

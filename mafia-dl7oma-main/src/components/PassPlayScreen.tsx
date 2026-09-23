@@ -1,37 +1,37 @@
-import { useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
-import { Lock, Hand, EyeOff } from 'lucide-react'
-import { useMafiaGame, selectRevealPlayer } from '../game/useMafiaGame'
-import { FlipCardView } from './PlayerCard'
-import { buzz } from '../lib/utils'
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Lock, Hand, EyeOff } from "lucide-react";
+import { useMafiaGame, selectRevealPlayer } from "../game/useMafiaGame";
+import { FlipCardView } from "./PlayerCard";
+import { buzz } from "../lib/utils";
 
 export default function PassPlayScreen() {
-  const players = useMafiaGame((s) => s.players)
-  const revealIndex = useMafiaGame((s) => s.revealIndex)
-  const cardFaceUp = useMafiaGame((s) => s.cardFaceUp)
-  const flipUp = useMafiaGame((s) => s.flipUp)
-  const flipBack = useMafiaGame((s) => s.flipBack)
-  const hideAndNext = useMafiaGame((s) => s.hideAndNext)
-  const unlockDashboard = useMafiaGame((s) => s.unlockDashboard)
+  const players = useMafiaGame((s) => s.players);
+  const revealIndex = useMafiaGame((s) => s.revealIndex);
+  const cardFaceUp = useMafiaGame((s) => s.cardFaceUp);
+  const flipUp = useMafiaGame((s) => s.flipUp);
+  const flipBack = useMafiaGame((s) => s.flipBack);
+  const hideAndNext = useMafiaGame((s) => s.hideAndNext);
+  const unlockDashboard = useMafiaGame((s) => s.unlockDashboard);
 
-  const [showLock, setShowLock] = useState(false)
+  const [showLock, setShowLock] = useState(false);
 
-  const deck = players.filter((p) => !p.isTeller)
-  const current = selectRevealPlayer(useMafiaGame.getState())
-  const teller = players.find((p) => p.isTeller)
+  const deck = players.filter((p) => !p.isTeller);
+  const current = selectRevealPlayer(useMafiaGame.getState());
+  const teller = players.find((p) => p.isTeller);
 
-  const wasLast = () => useMafiaGame.getState().cardsLocked
+  const wasLast = () => useMafiaGame.getState().cardsLocked;
 
   const onHide = () => {
-    buzz([15, 30])
+    buzz([15, 30]);
     // flip back first (role stays on the CURRENT player during the rotation)…
-    flipBack()
+    flipBack();
     // …then hand off to the next player only when face-down again
     setTimeout(() => {
-      hideAndNext()
-      if (wasLast()) setTimeout(() => setShowLock(true), 600)
-    }, 680)
-  }
+      hideAndNext();
+      if (wasLast()) setTimeout(() => setShowLock(true), 600);
+    }, 680);
+  };
 
   const lockScreen = (
     <motion.div
@@ -47,37 +47,46 @@ export default function PassPlayScreen() {
         draggable={false}
         className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover"
       />
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-night/55" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-night/55"
+      />
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            'radial-gradient(circle at 50% 40%, rgba(234,179,8,.10), rgba(0,0,0,0) 55%), radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,.8))',
+            "radial-gradient(circle at 50% 40%, rgba(234,179,8,.10), rgba(0,0,0,0) 55%), radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,.8))",
         }}
       />
 
       <motion.div
         className="relative z-10 flex h-24 w-24 items-center justify-center rounded-3xl bg-gold/10 ring-2 ring-gold/60 shadow-glowGold"
         animate={{ scale: [1, 1.05, 1] }}
-        transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
       >
         <Lock className="h-12 w-12 text-gold" />
         <span className="absolute inset-0 animate-pulseRing rounded-3xl ring-2 ring-gold/40" />
       </motion.div>
 
       <div className="relative z-10 text-center">
-        <h2 className="font-darija font-black text-2xl tracking-wider text-zinc-100">تيلي عند الحاكم</h2>
-        <p className="mt-2 font-darija text-base font-bold text-zinc-500">دابا كلشي را كناوين الأدوار.</p>
+        <h2 className="font-darija font-black text-2xl tracking-wider text-zinc-100">
+          تيلي عند الحاكم
+        </h2>
+        <p className="mt-2 font-darija text-base font-bold text-zinc-500">
+          دابا كلشي را كناوين الأدوار.
+        </p>
       </div>
 
-      <p className="relative z-10 font-darija text-2xl font-black text-gold">{teller?.name ?? 'الحاكم'}</p>
+      <p className="relative z-10 font-darija text-2xl font-black text-gold">
+        {teller?.name ?? "الحاكم"}
+      </p>
 
       <button
         type="button"
         onClick={() => {
-          buzz([40, 40, 60])
-          unlockDashboard()
+          buzz([40, 40, 60]);
+          unlockDashboard();
         }}
         className="relative z-10 btn-horror group w-full max-w-[280px] overflow-hidden px-5 py-3 text-center"
       >
@@ -94,10 +103,10 @@ export default function PassPlayScreen() {
         />
       </button>
       <p className="relative z-10 text-center font-darija text-xs font-semibold text-zinc-600">
-        بيتا ف الكولة، تيلي ليّا. ما تيشريش.
+        بيتا ف الكوين، تيلي ليّا. ما تيشريش.
       </p>
     </motion.div>
-  )
+  );
 
   return (
     <div className="relative flex h-full flex-col overflow-hidden bg-night px-5">
@@ -107,7 +116,7 @@ export default function PassPlayScreen() {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            'radial-gradient(circle at 50% 30%, rgba(234,179,8,.10), transparent 48%), radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,.7) 100%)',
+            "radial-gradient(circle at 50% 30%, rgba(234,179,8,.10), transparent 48%), radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,.7) 100%)",
         }}
       />
 
@@ -122,9 +131,11 @@ export default function PassPlayScreen() {
             transition={{ duration: 0.32 }}
             className="w-full rounded-2xl border border-gold/25 bg-night-panel/90 px-4 py-3 text-center shadow-card"
           >
-            <p className="font-darija text-xs font-bold tracking-[0.35em] text-yellow-500 uppercase">عطيو تيلي لـ</p>
+            <p className="font-darija text-xs font-bold tracking-[0.35em] text-yellow-500 uppercase">
+              عطيو تيلي لـ
+            </p>
             <motion.p
-              key={'name' + revealIndex}
+              key={"name" + revealIndex}
               initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
               className="font-grit text-3xl text-zinc-50"
@@ -143,7 +154,11 @@ export default function PassPlayScreen() {
             <motion.span
               className="pointer-events-none absolute -inset-3 rounded-3xl border-2 border-gold/60"
               animate={{ opacity: [0.9, 0.15, 0.9], scale: [1, 1.05, 1] }}
-              transition={{ duration: 1.7, repeat: Infinity, ease: 'easeInOut' }}
+              transition={{
+                duration: 1.7,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
             />
           )}
 
@@ -151,28 +166,28 @@ export default function PassPlayScreen() {
             key={revealIndex}
             initial={{ opacity: 0, scale: 0.88, rotate: -2 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ type: 'spring', stiffness: 240, damping: 20 }}
+            transition={{ type: "spring", stiffness: 240, damping: 20 }}
             className="h-full w-full"
           >
             <FlipCardView
               role={current?.role ?? null}
-              playerName={current?.name ?? ''}
+              playerName={current?.name ?? ""}
               faceUp={cardFaceUp}
               pulse={
                 cardFaceUp
-                  ? current?.role === 'EISSABA'
-                    ? 'red'
-                    : current?.role === 'TBIB'
-                      ? 'green'
-                      : current?.role === 'BOULIS'
-                        ? 'gold'
-                        : 'none'
-                  : 'none'
+                  ? current?.role === "EISSABA"
+                    ? "red"
+                    : current?.role === "TBIB"
+                      ? "green"
+                      : current?.role === "BOULIS"
+                        ? "gold"
+                        : "none"
+                  : "none"
               }
               onTap={() => {
                 if (!cardFaceUp) {
-                  buzz(25)
-                  flipUp()
+                  buzz(25);
+                  flipUp();
                 }
               }}
             />
@@ -212,20 +227,24 @@ export default function PassPlayScreen() {
       {/* progress */}
       <div className="relative z-10 mb-5 mt-1 flex items-center justify-center gap-1.5">
         {deck.map((p, i) => {
-          const done = i < revealIndex
-          const now = i === revealIndex
+          const done = i < revealIndex;
+          const now = i === revealIndex;
           return (
             <span
               key={p.id}
               className={`h-2 w-2 rounded-full transition-all duration-300 ${
-                now ? 'w-6 bg-gold shadow-glowGold' : done ? 'bg-heal/70' : 'bg-white/15'
+                now
+                  ? "w-6 bg-gold shadow-glowGold"
+                  : done
+                    ? "bg-heal/70"
+                    : "bg-white/15"
               }`}
             />
-          )
+          );
         })}
       </div>
 
       {showLock && lockScreen}
     </div>
-  )
+  );
 }

@@ -1,6 +1,6 @@
 # src/components/GameCard.tsx
 # 3 lignes contenant du texte darija
 
-   238. [L226] <Coins className="h-3 w-3" />{game.cost} كولة
+   238. [L226] <Coins className="h-3 w-3" />{game.cost} كوين
    239. [L259] بالعملات
    240. [L269] إعلان

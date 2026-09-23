@@ -1,22 +1,26 @@
-'use client';
+"use client";
 
-import { useRef, useCallback } from 'react';
-import Image from 'next/image';
-import { Coins, Loader2, Play, Video, Zap } from 'lucide-react';
-import { GAMES, MAFIA_ART, type Game } from '@/lib/games';
-import Star from '@/components/Star';
+import { useRef, useCallback } from "react";
+import Image from "next/image";
+import { Coins, Loader2, Play, Video, Zap } from "lucide-react";
+import { GAMES, MAFIA_ART, type Game } from "@/lib/games";
+import Star from "@/components/Star";
 
 type GameCardProps = {
   game: Game;
   coins: number;
-  loadingAction: 'coins' | 'ad' | null;
+  loadingAction: "coins" | "ad" | null;
   isBusy: boolean;
   onPlay: (e: React.MouseEvent) => void;
   onWatchAd: () => void;
 };
 
 /* 3D tilt on mouse move */
-function TiltCard({ children, className, style }: {
+function TiltCard({
+  children,
+  className,
+  style,
+}: {
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
@@ -27,19 +31,23 @@ function TiltCard({ children, className, style }: {
     const el = ref.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
-    const x = ((e.clientX - r.left) / r.width  - 0.5) * 14;
-    const y = ((e.clientY - r.top)  / r.height - 0.5) * 12;
+    const x = ((e.clientX - r.left) / r.width - 0.5) * 14;
+    const y = ((e.clientY - r.top) / r.height - 0.5) * 12;
     el.style.transform = `perspective(900px) rotateY(${x}deg) rotateX(${-y}deg) translateY(-10px) scale(1.02)`;
   };
   const onLeave = () => {
-    if (ref.current) ref.current.style.transform = '';
+    if (ref.current) ref.current.style.transform = "";
   };
 
   return (
     <div
       ref={ref}
       className={className}
-      style={{ ...style, transition: 'transform 0.12s ease', willChange: 'transform' }}
+      style={{
+        ...style,
+        transition: "transform 0.12s ease",
+        willChange: "transform",
+      }}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
     >
@@ -53,10 +61,10 @@ function useRipple() {
   return useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
     const btn = e.currentTarget;
     const rect = btn.getBoundingClientRect();
-    const ripple = document.createElement('span');
-    ripple.className = 'btn-ripple-wave';
+    const ripple = document.createElement("span");
+    ripple.className = "btn-ripple-wave";
     ripple.style.left = `${e.clientX - rect.left - rect.width / 2}px`;
-    ripple.style.top  = `${e.clientY - rect.top  - rect.height / 2}px`;
+    ripple.style.top = `${e.clientY - rect.top - rect.height / 2}px`;
     btn.appendChild(ripple);
     setTimeout(() => ripple.remove(), 560);
   }, []);
@@ -77,9 +85,15 @@ function GameArt({ game }: { game: Game }) {
         <div className="absolute inset-0 bg-gradient-to-t from-[#0a0010] via-transparent to-black/30" />
         <div className="glow-pulse absolute -bottom-6 left-1/2 h-24 w-3/4 -translate-x-1/2 rounded-[50%] bg-red-700/55 blur-2xl" />
 
-        <span className="drip" style={{ left: '10%',  height: 26 }} />
-        <span className="drip" style={{ left: '47%',  height: 38, animationDelay: '1.3s' }} />
-        <span className="drip" style={{ right: '12%', height: 22, animationDelay: '2.4s' }} />
+        <span className="drip" style={{ left: "10%", height: 26 }} />
+        <span
+          className="drip"
+          style={{ left: "47%", height: 38, animationDelay: "1.3s" }}
+        />
+        <span
+          className="drip"
+          style={{ right: "12%", height: 22, animationDelay: "2.4s" }}
+        />
 
         <div className="absolute inset-x-0 bottom-0 p-3 pb-2">
           <p className="horror-flicker font-grit text-[clamp(1.3rem,5vw,1.75rem)] uppercase leading-none tracking-tight text-horror">
@@ -122,18 +136,27 @@ function GameArt({ game }: { game: Game }) {
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-[#050910]">
-      <div className="absolute -right-8 -top-6 h-36 w-36 rounded-full opacity-40 blur-2xl transition-opacity duration-500 group-hover:opacity-70"
-        style={{ background: game.glowAccent }} />
-      <div className="absolute -bottom-10 -left-8 h-32 w-32 rounded-full opacity-35 blur-2xl transition-opacity duration-500 group-hover:opacity-65"
-        style={{ background: game.starAccent }} />
+      <div
+        className="absolute -right-8 -top-6 h-36 w-36 rounded-full opacity-40 blur-2xl transition-opacity duration-500 group-hover:opacity-70"
+        style={{ background: game.glowAccent }}
+      />
+      <div
+        className="absolute -bottom-10 -left-8 h-32 w-32 rounded-full opacity-35 blur-2xl transition-opacity duration-500 group-hover:opacity-65"
+        style={{ background: game.starAccent }}
+      />
       <div className="absolute inset-0 grid place-items-center">
         <div className="transition-transform duration-500 group-hover:scale-115 group-hover:rotate-8">
           <Star emoji={game.emoji} accent={game.starAccent} size={96} spin />
         </div>
       </div>
       <div className="absolute inset-x-0 bottom-2 pb-1 text-center">
-        <p className="font-lalezar text-[clamp(1.6rem,7.5vw,2.4rem)] leading-none drop-shadow-[0_2px_12px_rgba(0,0,0,.9)]"
-          style={{ color: game.starAccent, textShadow: `0 0 22px ${game.starAccent}70` }}>
+        <p
+          className="font-lalezar text-[clamp(1.6rem,7.5vw,2.4rem)] leading-none drop-shadow-[0_2px_12px_rgba(0,0,0,.9)]"
+          style={{
+            color: game.starAccent,
+            textShadow: `0 0 22px ${game.starAccent}70`,
+          }}
+        >
           {game.darijaTitle}
         </p>
       </div>
@@ -142,14 +165,20 @@ function GameArt({ game }: { game: Game }) {
 }
 
 export default function GameCard({
-  game, coins, loadingAction, isBusy, onPlay, onWatchAd,
+  game,
+  coins,
+  loadingAction,
+  isBusy,
+  onPlay,
+  onWatchAd,
 }: GameCardProps) {
   const canAfford = coins >= game.cost;
   const ripple = useRipple();
 
   return (
-    <TiltCard className={`group game-card-v2 holo-shimmer ${game.isMafia ? 'spinning-border card-mafia' : ''} flex flex-col`}>
-
+    <TiltCard
+      className={`group game-card-v2 holo-shimmer ${game.isMafia ? "spinning-border card-mafia" : ""} flex flex-col`}
+    >
       {/* Top accent line */}
       {!game.isMafia && (
         <div
@@ -168,7 +197,10 @@ export default function GameCard({
         {/* Hover play overlay */}
         <div className="play-reveal rounded-t-[21px]">
           <button
-            onClick={(e) => { ripple(e); onPlay(e); }}
+            onClick={(e) => {
+              ripple(e);
+              onPlay(e);
+            }}
             disabled={isBusy || !canAfford}
             className="flex h-14 w-14 items-center justify-center rounded-full border-2 transition-all duration-200 hover:scale-110 active:scale-95 overflow-hidden relative"
             style={{
@@ -178,9 +210,11 @@ export default function GameCard({
               boxShadow: `0 0 20px ${game.starAccent}50`,
             }}
           >
-            {isBusy && loadingAction === 'coins'
-              ? <Loader2 className="h-6 w-6 animate-spin" />
-              : <Play className="h-6 w-6 fill-current" />}
+            {isBusy && loadingAction === "coins" ? (
+              <Loader2 className="h-6 w-6 animate-spin" />
+            ) : (
+              <Play className="h-6 w-6 fill-current" />
+            )}
           </button>
         </div>
       </div>
@@ -188,15 +222,23 @@ export default function GameCard({
       {/* Bottom glow fade from art to card */}
       <div
         className="pointer-events-none absolute left-0 right-0 h-10 z-[5]"
-        style={{ top: 180, background: `linear-gradient(to bottom, ${game.isMafia ? '#0a0010' : '#050910'}, transparent)` }}
+        style={{
+          top: 180,
+          background: `linear-gradient(to bottom, ${game.isMafia ? "#0a0010" : "#050910"}, transparent)`,
+        }}
       />
 
       {/* Content */}
       <div className="relative z-10 flex flex-1 flex-col gap-2.5 p-4 pt-3">
         {/* Title */}
         <div>
-          <p className="font-lalezar text-[1.3rem] leading-tight"
-            style={{ color: game.starAccent, textShadow: `0 0 18px ${game.starAccent}60` }}>
+          <p
+            className="font-lalezar text-[1.3rem] leading-tight"
+            style={{
+              color: game.starAccent,
+              textShadow: `0 0 18px ${game.starAccent}60`,
+            }}
+          >
             {game.darijaTitle}
           </p>
           <p className="font-grit text-[10px] uppercase tracking-[0.18em] text-neutral-600">
@@ -223,7 +265,8 @@ export default function GameCard({
               boxShadow: `0 0 12px ${game.starAccent}22`,
             }}
           >
-            <Coins className="h-3 w-3" />{game.cost} كولة
+            <Coins className="h-3 w-3" />
+            {game.cost} كوين
           </span>
         </div>
 
@@ -236,26 +279,36 @@ export default function GameCard({
               background: canAfford
                 ? `linear-gradient(90deg, ${game.starAccent}, rgba(0,255,136,.8))`
                 : `linear-gradient(90deg, rgba(239,68,68,.7), rgba(239,68,68,.4))`,
-              boxShadow: canAfford ? `0 0 8px ${game.starAccent}60` : '0 0 8px rgba(239,68,68,.4)',
+              boxShadow: canAfford
+                ? `0 0 8px ${game.starAccent}60`
+                : "0 0 8px rgba(239,68,68,.4)",
             }}
           />
         </div>
 
         {/* Separator */}
-        <div className="h-px w-full" style={{
-          background: `linear-gradient(90deg, transparent, ${game.starAccent}35, transparent)`,
-        }} />
+        <div
+          className="h-px w-full"
+          style={{
+            background: `linear-gradient(90deg, transparent, ${game.starAccent}35, transparent)`,
+          }}
+        />
 
         {/* Buttons */}
         <div className="grid grid-cols-2 gap-2">
           <button
-            onClick={(e) => { ripple(e); onPlay(e); }}
+            onClick={(e) => {
+              ripple(e);
+              onPlay(e);
+            }}
             disabled={isBusy || !canAfford}
-            className={`btn-chunk relative overflow-hidden py-2.5 text-[12.5px] ${game.isMafia ? 'btn-blood' : 'btn-amber'} ${!canAfford ? 'opacity-40' : ''}`}
+            className={`btn-chunk relative overflow-hidden py-2.5 text-[12.5px] ${game.isMafia ? "btn-blood" : "btn-amber"} ${!canAfford ? "opacity-40" : ""}`}
           >
-            {loadingAction === 'coins' && isBusy
-              ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              : <Zap className="h-3.5 w-3.5" />}
+            {loadingAction === "coins" && isBusy ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Zap className="h-3.5 w-3.5" />
+            )}
             بالعملات
           </button>
           <button
@@ -263,9 +316,11 @@ export default function GameCard({
             disabled={isBusy}
             className="btn-chunk btn-ghost-hollow relative overflow-hidden py-2.5 text-[12.5px]"
           >
-            {loadingAction === 'ad' && isBusy
-              ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              : <Video className="h-3.5 w-3.5" />}
+            {loadingAction === "ad" && isBusy ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Video className="h-3.5 w-3.5" />
+            )}
             إعلان
           </button>
         </div>
