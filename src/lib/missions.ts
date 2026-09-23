@@ -94,3 +94,13 @@ export async function bumpMission(userId: string, kind: MissionKind, step = 1, g
     });
   }
 }
+
+/* Counts a played game against both generic and per-game missions.
+   Called whenever a play session is created (unlock), so progress is
+   written to the DB on every game the player actually opens. */
+export async function bumpGamesPlayed(userId: string, gameId: string): Promise<void> {
+  await Promise.all([
+    bumpMission(userId, 'PLAY_N_GAMES', 1, gameId).catch(() => {}),
+    bumpMission(userId, 'PLAY_SPECIFIC_GAME', 1, gameId).catch(() => {}),
+  ]);
+}

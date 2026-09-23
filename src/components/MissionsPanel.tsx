@@ -40,6 +40,18 @@ export default function MissionsPanel({
 
   useEffect(() => { void fetchMissions(); }, [fetchMissions]);
 
+  /* Keep progress in sync with the DB: refetch on window focus and while the
+     panel is open, so a mission like "play 2 games" updates right after a game. */
+  useEffect(() => {
+    const onFocus = () => void fetchMissions();
+    window.addEventListener('focus', onFocus);
+    const t = setInterval(() => void fetchMissions(), 8000);
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      clearInterval(t);
+    };
+  }, [fetchMissions]);
+
   const claimMission = async (id: string, coins: number) => {
     setClaiming(id);
     try {
@@ -133,9 +145,16 @@ export default function MissionsPanel({
                   >
                     <div className="flex items-start gap-3">
                       <div className="flex-1 min-w-0">
-                        <p className="font-cairo text-[13px] font-bold text-neutral-200">
+                      <div className="flex items-center gap-2">
+                        <p className="flex-1 min-w-0 truncate font-cairo text-[13px] font-bold text-neutral-200">
                           {m.titleAr}
                         </p>
+                        {!m.claimed && !m.canClaim && m.target - m.progress > 0 && (
+                          <span className="shrink-0 rounded-full border border-cyan-400/25 bg-cyan-950/30 px-2 py-0.5 font-cairo text-[10px] font-black tabular-nums text-cyan-300">
+                            باقي {m.target - m.progress}
+                          </span>
+                        )}
+                      </div>
                         <div className="mt-2 flex items-center gap-2">
                           <div className="flex-1 h-1.5 rounded-full bg-white/[0.07] overflow-hidden">
                             <div

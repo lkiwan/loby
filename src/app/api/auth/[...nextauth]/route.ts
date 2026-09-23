@@ -109,6 +109,7 @@ export const authOptions: NextAuthOptions = {
         return {
           id: user.id,
           username: user.username ?? undefined,
+          displayName: user.displayName ?? user.username ?? undefined,
           email: user.email ?? undefined,
           coins: user.coins,
           role: user.role,
@@ -142,15 +143,19 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user, trigger, session, account }) {
       if (user) {
-        const ident = user as { username?: string; coins?: number; role?: string; email?: string };
+        const ident = user as { username?: string; displayName?: string; coins?: number; role?: string; email?: string };
         token.id = user.id;
         token.username = ident.username;
+        token.displayName = ident.displayName;
         token.coins = ident.coins;
         token.role = ident.role;
         token.email = ident.email;
       }
       if (trigger === 'update' && session?.coins !== undefined) {
         token.coins = session.coins;
+      }
+      if (trigger === 'update' && typeof session?.displayName === 'string') {
+        token.displayName = session.displayName;
       }
       if (account?.provider === 'google') {
         const email = typeof token.email === 'string' ? token.email.trim().toLowerCase() : undefined;
@@ -183,6 +188,7 @@ export const authOptions: NextAuthOptions = {
             token.coins = dbUser.coins;
             token.role = dbUser.role;
             token.username = dbUser.username ?? undefined;
+            token.displayName = dbUser.displayName ?? dbUser.username ?? undefined;
           }
         }
       }
@@ -192,6 +198,7 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user.id = token.id as string;
         session.user.username = token.username as string;
+        session.user.displayName = token.displayName as string | undefined;
         session.user.coins = token.coins as number;
         session.user.role = token.role as string;
       }

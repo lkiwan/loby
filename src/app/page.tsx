@@ -176,6 +176,113 @@ function LobbyContent() {
   const [referralCopied, setReferralCopied] = useState(false);
   const [authSheetOpen, setAuthSheetOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  /* ── Settings: name + password ── */
+  const [me, setMe] = useState<{
+    username?: string | null;
+    displayName?: string | null;
+    email?: string | null;
+    hasPassword?: boolean;
+    nextNameChangeAt?: string | null;
+    canChangeName?: boolean;
+  } | null>(null);
+  const [nameDraft, setNameDraft] = useState('');
+  const [nameBusy, setNameBusy] = useState(false);
+  const [nameMsg, setNameMsg] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
+  const [pwDraft, setPwDraft] = useState({ cur: '', n1: '', n2: '' });
+  const [pwBusy, setPwBusy] = useState(false);
+  const [pwMsg, setPwMsg] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
+
+  const fetchMe = useCallback(async () => {
+    try {
+      const res = await fetch('/api/me');
+      if (res.ok) {
+        const data = (await res.json()) as {
+          username?: string | null;
+          displayName?: string | null;
+          email?: string | null;
+          hasPassword?: boolean;
+          nextNameChangeAt?: string | null;
+          canChangeName?: boolean;
+        };
+        setMe(data);
+        setNameDraft(data.displayName ?? '');
+      }
+    } catch {
+      /* settings sheet still works without profile info */
+    }
+  }, []);
+
+  const openSettings = () => {
+    setSettingsOpen(true);
+    if (isAuthed) void fetchMe();
+  };
+
+  const saveName = async () => {
+    const v = nameDraft.trim().replace(/\s+/g, ' ');
+    if (v.length < 2 || v.length > 30) {
+      setNameMsg({ kind: 'err', text: 'السمية خاص تكون بين 2 و 30 حرف.' });
+      return;
+    }
+    setNameBusy(true);
+    setNameMsg(null);
+    try {
+      const res = await fetch('/api/me/name', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ displayName: v }),
+      });
+      const data = (await res.json()) as { displayName?: string; nextNameChangeAt?: string; error?: string };
+      if (res.ok && data.displayName) {
+        await update({ displayName: data.displayName });
+        setMe((prev) =>
+          prev
+            ? { ...prev, displayName: data.displayName, nextNameChangeAt: data.nextNameChangeAt ?? null, canChangeName: false }
+            : prev
+        );
+        setNameMsg({ kind: 'ok', text: 'تبدلات السمية بنجاح. غادي تبدل مرة أخرى من بعد 7 أيام.' });
+      } else {
+        setNameMsg({ kind: 'err', text: data.error || 'صاب مشكل. عاود جرب.' });
+      }
+    } catch {
+      setNameMsg({ kind: 'err', text: 'صاب مشكل فالخادم. عاود جرب.' });
+    }
+    setNameBusy(false);
+  };
+
+  const savePassword = async () => {
+    if (pwDraft.n1.length < 6) {
+      setPwMsg({ kind: 'err', text: 'الباسورد الجديد خاص يكون فيه 6 حروف على الأقل.' });
+      return;
+    }
+    if (pwDraft.n1 !== pwDraft.n2) {
+      setPwMsg({ kind: 'err', text: 'الباسورد الجديد ماشي كيف كيف فالتأكيد.' });
+      return;
+    }
+    setPwBusy(true);
+    setPwMsg(null);
+    try {
+      const res = await fetch('/api/me/password', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currentPassword: pwDraft.cur,
+          newPassword: pwDraft.n1,
+          confirmPassword: pwDraft.n2,
+        }),
+      });
+      const data = (await res.json()) as { success?: boolean; error?: string };
+      if (res.ok && data.success) {
+        setPwDraft({ cur: '', n1: '', n2: '' });
+        setPwMsg({ kind: 'ok', text: 'تبدل الباسورد بنجاح.' });
+      } else {
+        setPwMsg({ kind: 'err', text: data.error || 'صاب مشكل. عاود جرب.' });
+      }
+    } catch {
+      setPwMsg({ kind: 'err', text: 'صاب مشكل فالخادم. عاود جرب.' });
+    }
+    setPwBusy(false);
+  };
   const [muted, setMutedState] = useState(false);
   useEffect(() => { setMutedState(isMuted()); }, []);
 
@@ -418,25 +525,11 @@ function LobbyContent() {
                 </span>
               </span>
             </Link>
-
-            {/* Coins badge — hangs top-right below the logo (phone only) */}
-            {isAuthed && (
-              <div
-                className={`absolute -bottom-4 start-0 z-10 flex items-center gap-1 rounded-full border border-amber-400/40 bg-[#0a0f1c]/95 px-2 py-0.5 font-cairo text-[10.5px] font-black tabular-nums text-amber-300 shadow-[0_0_10px_rgba(242,178,61,.35)] sm:hidden ${coinPop ? 'coin-pop' : ''}`}
-              >
-                <Coins className="h-3 w-3" />
-                {coins}
-              </div>
-            )}
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
             {isAuthed ? (
               <>
-                <div className={`coin-counter hidden! sm:inline-flex ${coinPop ? 'coin-pop' : ''}`}>
-                  <Coins className="h-3.5 w-3.5 text-amber-400" />
-                  <span className="font-cairo text-sm font-black tabular-nums">{coins}</span>
-                </div>
                 {xpData && (() => {
                   const lvl = xpData.level;
                   const cur = xpForLvl(lvl);
@@ -453,7 +546,7 @@ function LobbyContent() {
                   );
                 })()}
                 <span className="hidden max-w-[7rem] truncate font-cairo text-sm font-bold text-[#d8c39a] sm:block">
-                  {session?.user?.username}
+                  {session?.user?.displayName || session?.user?.username}
                 </span>
                 {session?.user?.role === 'ADMIN' && (
                   <Link href="/admin" className="btn-chunk btn-ink hidden h-9 w-9 place-items-center rounded-full sm:grid" title="Admin">
@@ -474,7 +567,7 @@ function LobbyContent() {
               </Link>
             )}
             <button
-              onClick={() => setSettingsOpen(true)}
+              onClick={openSettings}
               className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] transition hover:border-cyan-400/40 hover:text-cyan-300 sm:hidden"
               title="الإعدادات"
               aria-label="الإعدادات"
@@ -491,6 +584,16 @@ function LobbyContent() {
           </div>
         </div>
       </header>
+
+      {/* Coins pill — floats top-right just below the header (all screens) */}
+      {isAuthed && (
+        <div
+          className={`fixed start-4 top-[68px] z-[55] flex select-none items-center gap-1.5 rounded-full border border-amber-400/40 bg-[#0a0f1c]/95 px-3 py-1 font-cairo text-[13px] font-black tabular-nums text-amber-300 shadow-[0_0_14px_rgba(242,178,61,.35)] pointer-events-none ${coinPop ? 'coin-pop' : ''}`}
+        >
+          <Coins className="h-3.5 w-3.5" />
+          {coins}
+        </div>
+      )}
 
       {/* ═══════════════ HERO ═══════════════ */}
       <section className="hero-scene relative flex min-h-0 flex-col items-center justify-center px-4 pb-4 pt-6 text-center sm:min-h-[100dvh] sm:pb-12 sm:pt-8">
@@ -886,7 +989,7 @@ function LobbyContent() {
       {settingsOpen && (
         <div className="fixed inset-0 z-[66] sm:hidden">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setSettingsOpen(false)} />
-          <div className="bounce-in absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-cyan-400/20 bg-[#060c1a] p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-[0_-20px_80px_rgba(0,0,0,.9)]">
+          <div className="bounce-in absolute inset-x-0 bottom-0 max-h-[88dvh] overflow-y-auto rounded-t-3xl border-t border-cyan-400/20 bg-[#060c1a] p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-[0_-20px_80px_rgba(0,0,0,.9)]">
             <button
               onClick={() => setSettingsOpen(false)}
               className="absolute end-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/10 text-neutral-400 transition hover:border-red-500/40 hover:text-red-400"
@@ -927,24 +1030,101 @@ function LobbyContent() {
               </button>
 
               {/* Change name */}
-              {isAuthed && session?.user?.username && (
-                <Link
-                  href={`/profile/${session.user.username}`}
-                  className="flex w-full items-center gap-2.5 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5 font-cairo text-[13px] font-bold text-neutral-300"
-                >
-                  <UserPlus className="h-4 w-4 text-purple-300" />
-                  تبديل الاسم — {session.user.username}
-                </Link>
+              {isAuthed && (
+                <div className="rounded-2xl border border-purple-400/20 bg-purple-950/10 px-4 py-3.5">
+                  <div className="flex items-center gap-2.5">
+                    <UserPlus className="h-4 w-4 shrink-0 text-purple-300" />
+                    <span className="font-cairo text-[13px] font-bold text-neutral-300">تبديل السمية</span>
+                  </div>
+                  {me?.username && (
+                    <p className="mt-1.5 font-cairo text-[11px] text-neutral-500">
+                      اسم الكونط الأصلي: <span className="font-bold text-neutral-400">{me.username}</span>
+                      {me.email ? ` (${me.email})` : ''}
+                    </p>
+                  )}
+                  <div className="mt-2.5 flex items-center gap-2">
+                    <input
+                      value={nameDraft}
+                      onChange={(e) => { setNameDraft(e.target.value); setNameMsg(null); }}
+                      maxLength={30}
+                      disabled={nameBusy || (me?.canChangeName === false)}
+                      placeholder="السمية الجديدة…"
+                      className="w-full min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-neutral-200 placeholder:text-neutral-600 outline-none transition focus:border-purple-400/50 disabled:opacity-40"
+                    />
+                    <button
+                      onClick={() => void saveName()}
+                      disabled={nameBusy || (me?.canChangeName === false)}
+                      className="btn-chunk btn-amber shrink-0 px-4 py-2.5 text-[12px] disabled:opacity-40"
+                    >
+                      {nameBusy ? '…' : 'حفظ'}
+                    </button>
+                  </div>
+                  {me?.canChangeName === false && me?.nextNameChangeAt && (
+                    <p className="mt-2 flex items-center gap-1.5 font-cairo text-[11px] font-bold text-purple-300/80">
+                      <Clock className="h-3.5 w-3.5" />
+                      تقدر تبدل من بعد {new Date(me.nextNameChangeAt).toLocaleDateString('ar-MA')}
+                    </p>
+                  )}
+                  {nameMsg && (
+                    <p className={`mt-2 font-cairo text-[11px] font-bold ${nameMsg.kind === 'ok' ? 'text-emerald-300' : 'text-red-300'}`}>
+                      {nameMsg.text}
+                    </p>
+                  )}
+                </div>
               )}
 
               {/* Change password */}
-              <Link
-                href="/login"
-                className="flex w-full items-center gap-2.5 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5 font-cairo text-[13px] font-bold text-neutral-300"
-              >
-                <ShieldCheck className="h-4 w-4 text-emerald-300" />
-                تبديل الباسورد
-              </Link>
+              {isAuthed && (
+                <div className="rounded-2xl border border-emerald-400/15 bg-emerald-950/10 px-4 py-3.5">
+                  <div className="flex items-center gap-2.5">
+                    <ShieldCheck className="h-4 w-4 shrink-0 text-emerald-300" />
+                    <span className="font-cairo text-[13px] font-bold text-neutral-300">تبديل الباسورد</span>
+                  </div>
+                  {me?.hasPassword === false && (
+                    <p className="mt-1.5 font-cairo text-[11px] text-neutral-500">
+                      هاد الحساب تسجل بجوجل — الباسورد ماشي مربوط بيه.
+                    </p>
+                  )}
+                  <div className="mt-2.5 flex flex-col gap-2">
+                    <input
+                      type="password"
+                      value={pwDraft.cur}
+                      onChange={(e) => { setPwDraft((p) => ({ ...p, cur: e.target.value })); setPwMsg(null); }}
+                      disabled={pwBusy || me?.hasPassword === false}
+                      placeholder="الباسورد الحالي"
+                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-neutral-200 placeholder:text-neutral-600 outline-none transition focus:border-emerald-400/50 disabled:opacity-40"
+                    />
+                    <input
+                      type="password"
+                      value={pwDraft.n1}
+                      onChange={(e) => { setPwDraft((p) => ({ ...p, n1: e.target.value })); setPwMsg(null); }}
+                      disabled={pwBusy || me?.hasPassword === false}
+                      placeholder="الباسورد الجديد"
+                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-neutral-200 placeholder:text-neutral-600 outline-none transition focus:border-emerald-400/50 disabled:opacity-40"
+                    />
+                    <input
+                      type="password"
+                      value={pwDraft.n2}
+                      onChange={(e) => { setPwDraft((p) => ({ ...p, n2: e.target.value })); setPwMsg(null); }}
+                      disabled={pwBusy || me?.hasPassword === false}
+                      placeholder="عاود اكتب الباسورد الجديد"
+                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-neutral-200 placeholder:text-neutral-600 outline-none transition focus:border-emerald-400/50 disabled:opacity-40"
+                    />
+                    <button
+                      onClick={() => void savePassword()}
+                      disabled={pwBusy || me?.hasPassword === false}
+                      className="btn-chunk btn-amber py-2.5 text-[12px] disabled:opacity-40"
+                    >
+                      {pwBusy ? '…' : 'بدل الباسورد'}
+                    </button>
+                  </div>
+                  {pwMsg && (
+                    <p className={`mt-2 font-cairo text-[11px] font-bold ${pwMsg.kind === 'ok' ? 'text-emerald-300' : 'text-red-300'}`}>
+                      {pwMsg.text}
+                    </p>
+                  )}
+                </div>
+              )}
 
               {/* Guest CTA */}
               {!isAuthed && (

@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import { spendBalance, InsufficientCoinsError } from '@/lib/ledger';
 import { checkRate } from '@/lib/rateLimit';
 import { createPlaySession, signSessionToken } from '@/lib/session';
+import { bumpGamesPlayed } from '@/lib/missions';
 import { generateGameToken } from '@/lib/redis';
 import { casablancaDateAt, casablancaDay } from '@/lib/time';
 
@@ -61,6 +62,7 @@ export async function POST(req: Request) {
   const exp = Math.floor(Date.now() / 1000) + 90;
   const jwt = signSessionToken(sessionId, userId, game.id, exp, game.hmacSecret);
   const gameToken = await generateGameToken(userId, gameId);
+  void bumpGamesPlayed(userId, gameId);
 
   return NextResponse.json(
     { token: gameToken, sessionId, jwt, expiresAt: exp, gameId: game.id },

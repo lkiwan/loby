@@ -3,7 +3,6 @@ import crypto from 'crypto';
 import { prisma } from '@/lib/prisma';
 import { addXp } from '@/lib/ledger';
 import { signScore } from '@/lib/session';
-import { bumpMission } from '@/lib/missions';
 import { getConfig } from '@/lib/config';
 import { redis } from '@/lib/redis';
 
@@ -56,10 +55,11 @@ export async function POST(req: Request) {
     xp > 0 ? addXp(playSession.userId, xp, playSession.id) : Promise.resolve(null),
   ]);
 
-  /* Fire-and-forget: missions + event + cache invalidation (non-blocking) */
+  /* Fire-and-forget: event + cache invalidation (non-blocking).
+   Mission progress (PLAY_N_GAMES / PLAY_SPECIFIC_GAME) is counted when the
+   play session is created in /api/games/unlock, so it is not bumped again
+   here — one game played = one increment. */
   Promise.all([
-    bumpMission(playSession.userId, 'PLAY_N_GAMES', 1, gameId).catch(() => {}),
-    bumpMission(playSession.userId, 'PLAY_SPECIFIC_GAME', 1, gameId).catch(() => {}),
     prisma.event.create({
       data: { name: 'play_complete', userId: playSession.userId, props: { gameId, score, xp, sessionId } },
     }).catch(() => {}),

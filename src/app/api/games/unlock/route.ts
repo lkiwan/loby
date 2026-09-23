@@ -7,7 +7,7 @@ import { prisma } from '@/lib/prisma';
 import { spendBalance, InsufficientCoinsError } from '@/lib/ledger';
 import { checkRate } from '@/lib/rateLimit';
 import { createPlaySession } from '@/lib/session';
-import { bumpMission } from '@/lib/missions';
+import { bumpGamesPlayed, bumpMission } from '@/lib/missions';
 import { casablancaDay, casablancaDateAt } from '@/lib/time';
 import { GAMES as LOCAL_GAMES } from '@/lib/games';
 import type { Game } from '@prisma/client';
@@ -115,10 +115,11 @@ export async function POST(req: Request) {
         throw err;
       }
 
-      // Parallel: play session + token generation
+      // Parallel: play session + token generation + mission progress
       const [, gameToken] = await Promise.all([
         prismaRetry(() => createPlaySession(userId, game, 'COINS', game.playCost)),
         generateGameToken(userId, gameId),
+        bumpGamesPlayed(userId, gameId),
       ]);
 
       // Use balanceAfter from ledger entry instead of an extra DB round-trip
@@ -142,6 +143,7 @@ export async function POST(req: Request) {
       const [, gameToken] = await Promise.all([
         prismaRetry(() => createPlaySession(userId, game, 'FREE_DAILY')),
         generateGameToken(userId, gameId),
+        bumpGamesPlayed(userId, gameId),
       ]);
       return NextResponse.json({ redirectUrl: `${gameUrl}?token=${gameToken}` }, { status: 200 });
     }
@@ -158,14 +160,15 @@ export async function POST(req: Request) {
           return NextResponse.json({ error: 'Ad session mismatch' }, { status: 400 });
         }
 
-        // Parallel: delete key + update impression + bump mission + create session + token
-        const [, , , , gameToken] = await Promise.all([
+        // Parallel: delete key + update impression + bump missions + create session + token
+        const [, , , , , gameToken] = await Promise.all([
           redis.del(adKey),
           prisma.adImpression.updateMany({
             where: { nonce, status: 'STARTED' },
             data: { status: 'COMPLETED', completedAt: new Date() },
           }),
           bumpMission(userId, 'WATCH_N_ADS', 1),
+          bumpGamesPlayed(userId, gameId),
           createPlaySession(userId, game, 'AD'),
           generateGameToken(userId, gameId),
         ]);
@@ -182,6 +185,7 @@ export async function POST(req: Request) {
       if (completedToken) {
         await redis.del(adKey);
         await createPlaySession(userId, game, 'AD');
+        await bumpGamesPlayed(userId, gameId);
         return NextResponse.json({ redirectUrl: `${gameUrl}?token=${completedToken}` }, { status: 200 });
       }
 
