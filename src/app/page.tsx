@@ -7,7 +7,7 @@ import Link from 'next/link';
 import {
   AlertTriangle, Check, ChevronDown, Clock, Coins,
   Flame, Gamepad2, Loader2, LogIn, LogOut,
-  Play, ShieldCheck, Target, UserPlus, Users, Volume2, VolumeX, X, Zap,
+  Play, Settings, ShieldCheck, Target, UserPlus, Users, Volume2, VolumeX, X, Zap,
 } from 'lucide-react';
 import { StarMark } from '@/components/Star';
 import GameCard from '@/components/GameCard';
@@ -175,6 +175,7 @@ function LobbyContent() {
   const [missionsOpen, setMissionsOpen] = useState(false);
   const [referralCopied, setReferralCopied] = useState(false);
   const [authSheetOpen, setAuthSheetOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [muted, setMutedState] = useState(false);
   useEffect(() => { setMutedState(isMuted()); }, []);
 
@@ -404,23 +405,35 @@ function LobbyContent() {
       {/* ═══════════════ HEADER ═══════════════ */}
       <header className="glass-header sticky top-0 z-30">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
-          <Link href="/" className="group flex items-center gap-3">
-            <StarMark size={32} />
-            <span className="flex flex-col leading-none">
-              <span className="font-grit text-[0.95rem] uppercase tracking-tight transition-colors group-hover:text-cyan-300">
-                <span className="text-gold-sheen">PLAY</span><span className="text-[#7a9bd6]">M3ANA</span>
+          <div className="relative flex items-center">
+            <Link href="/" className="group flex items-center gap-3">
+              <StarMark size={32} />
+              <span className="flex flex-col leading-none">
+                <span className="font-grit text-[0.95rem] uppercase tracking-tight transition-colors group-hover:text-cyan-300">
+                  <span className="text-gold-sheen">PLAY</span><span className="text-[#7a9bd6]">M3ANA</span>
+                </span>
+                <span className="mt-0.5 hidden items-center gap-1.5 font-cairo text-[9px] font-black text-[#a08a63] sm:flex">
+                  <span className="live-dot" style={{ width: 5, height: 5 }} />
+                  بلاصة اللعب
+                </span>
               </span>
-              <span className="mt-0.5 flex items-center gap-1.5 font-cairo text-[9px] font-black text-[#a08a63]">
-                <span className="live-dot" style={{ width: 5, height: 5 }} />
-                بلاصة اللعب
-              </span>
-            </span>
-          </Link>
+            </Link>
+
+            {/* Coins badge — hangs top-right below the logo (phone only) */}
+            {isAuthed && (
+              <div
+                className={`absolute -bottom-4 start-0 z-10 flex items-center gap-1 rounded-full border border-amber-400/40 bg-[#0a0f1c]/95 px-2 py-0.5 font-cairo text-[10.5px] font-black tabular-nums text-amber-300 shadow-[0_0_10px_rgba(242,178,61,.35)] sm:hidden ${coinPop ? 'coin-pop' : ''}`}
+              >
+                <Coins className="h-3 w-3" />
+                {coins}
+              </div>
+            )}
+          </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
             {isAuthed ? (
               <>
-                <div className={`coin-counter ${coinPop ? 'coin-pop' : ''}`}>
+                <div className={`coin-counter hidden! sm:inline-flex ${coinPop ? 'coin-pop' : ''}`}>
                   <Coins className="h-3.5 w-3.5 text-amber-400" />
                   <span className="font-cairo text-sm font-black tabular-nums">{coins}</span>
                 </div>
@@ -430,7 +443,7 @@ function LobbyContent() {
                   const nxt = xpForLvl(lvl + 1);
                   const pct = nxt > cur ? Math.round(((xpData.xp - cur) / (nxt - cur)) * 100) : 100;
                   return (
-                    <Link href={`/profile/${session?.user?.username}`} className="xp-pill hidden sm:flex group" title={`Level ${lvl} — ${xpData.xp} XP`}>
+                    <Link href={`/profile/${session?.user?.username}`} className="xp-pill group" title={`Level ${lvl} — ${xpData.xp} XP`}>
                       <Zap className="h-3 w-3 shrink-0 text-purple-400" />
                       <span className="font-grit text-[10px] text-purple-300">LV.{lvl}</span>
                       <div className="xp-pill-track">
@@ -443,13 +456,13 @@ function LobbyContent() {
                   {session?.user?.username}
                 </span>
                 {session?.user?.role === 'ADMIN' && (
-                  <Link href="/admin" className="btn-chunk btn-ink grid h-9 w-9 place-items-center rounded-full" title="Admin">
+                  <Link href="/admin" className="btn-chunk btn-ink hidden h-9 w-9 place-items-center rounded-full sm:grid" title="Admin">
                     <ShieldCheck className="h-3.5 w-3.5" />
                   </Link>
                 )}
                 <button
                   onClick={handleLogout}
-                  className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] transition hover:border-red-500/50 hover:bg-red-500/10 hover:text-red-400"
+                  className="hidden h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] transition hover:border-red-500/50 hover:bg-red-500/10 hover:text-red-400 sm:grid"
                   title="خروج"
                 >
                   <LogOut className="h-4 w-4" />
@@ -461,8 +474,16 @@ function LobbyContent() {
               </Link>
             )}
             <button
+              onClick={() => setSettingsOpen(true)}
+              className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] transition hover:border-cyan-400/40 hover:text-cyan-300 sm:hidden"
+              title="الإعدادات"
+              aria-label="الإعدادات"
+            >
+              <Settings className="h-4 w-4" />
+            </button>
+            <button
               onClick={toggleMute}
-              className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] transition hover:border-cyan-400/40 hover:text-cyan-300"
+              className="hidden h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] transition hover:border-cyan-400/40 hover:text-cyan-300 sm:grid"
               title={muted ? 'شعل الصوت' : 'طفي الصوت'}
             >
               {muted ? <VolumeX className="h-4 w-4 text-neutral-500" /> : <Volume2 className="h-4 w-4" />}
@@ -505,7 +526,7 @@ function LobbyContent() {
         <div className="hud-corner hud-corner-br hidden sm:block" style={{ zIndex: 4 }} />
 
         {/* Badge */}
-        <div className="badge-cyber anim-fadeup d1 hidden sm:block" style={{ position: 'relative', zIndex: 5 }}>
+        <div className="badge-cyber anim-fadeup d1 hidden! sm:inline-flex" style={{ position: 'relative', zIndex: 5 }}>
           <span className="live-dot" />
           🃏 ڭلسة + حومة + شوهة — 100% بالدارجة
         </div>
@@ -666,7 +687,7 @@ function LobbyContent() {
         <section className="mt-6 sm:mt-14">
           {/* Section header */}
           <div className="section-entrance mb-0 flex flex-col items-center gap-3 text-center sm:mb-10">
-            <div className="section-label hidden sm:block">الطبلات د هاد الليلة</div>
+            <div className="section-label hidden! sm:inline-flex">الطبلات د هاد الليلة</div>
             <h2 className="hidden font-lalezar text-[clamp(2.2rem,8vw,3.5rem)] leading-none text-[#f5eddc] text-glow-amber sm:block">
               عزل طبلتك — بصحتك
             </h2>
@@ -857,6 +878,96 @@ function LobbyContent() {
             >
               شوف الطبلات — من بعد ندير الحساب
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════ SETTINGS SHEET (phone only) ═══════════════ */}
+      {settingsOpen && (
+        <div className="fixed inset-0 z-[66] sm:hidden">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setSettingsOpen(false)} />
+          <div className="bounce-in absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-cyan-400/20 bg-[#060c1a] p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-[0_-20px_80px_rgba(0,0,0,.9)]">
+            <button
+              onClick={() => setSettingsOpen(false)}
+              className="absolute end-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/10 text-neutral-400 transition hover:border-red-500/40 hover:text-red-400"
+              aria-label="close"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <div className="flex items-center gap-2">
+              <Settings className="h-5 w-5 text-cyan-300" />
+              <p className="font-cairo text-[14px] font-black text-neutral-200">الإعدادات</p>
+            </div>
+
+            <div className="mt-5 flex flex-col gap-2.5">
+              {/* Coins */}
+              {isAuthed && (
+                <div className="flex items-center justify-between rounded-2xl border border-amber-400/15 bg-amber-950/10 px-4 py-3">
+                  <span className="font-cairo text-[13px] font-bold text-neutral-300">الكوينز ديالك</span>
+                  <span className="flex items-center gap-1.5 font-cairo text-[15px] font-black tabular-nums text-amber-300">
+                    <Coins className="h-4 w-4" /> {coins}
+                  </span>
+                </div>
+              )}
+
+              {/* Sound toggle */}
+              <button
+                onClick={toggleMute}
+                className="flex w-full items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5"
+              >
+                <span className="flex items-center gap-2.5 font-cairo text-[13px] font-bold text-neutral-300">
+                  {muted
+                    ? <VolumeX className="h-4 w-4 text-neutral-500" />
+                    : <Volume2 className="h-4 w-4 text-cyan-300" />}
+                  الصوت
+                </span>
+                <span className={`relative h-6 w-11 rounded-full transition-colors ${muted ? 'bg-white/10' : 'bg-cyan-500/40'}`}>
+                  <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${muted ? 'start-0.5' : 'start-[1.375rem]'}`} />
+                </span>
+              </button>
+
+              {/* Change name */}
+              {isAuthed && session?.user?.username && (
+                <Link
+                  href={`/profile/${session.user.username}`}
+                  className="flex w-full items-center gap-2.5 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5 font-cairo text-[13px] font-bold text-neutral-300"
+                >
+                  <UserPlus className="h-4 w-4 text-purple-300" />
+                  تبديل الاسم — {session.user.username}
+                </Link>
+              )}
+
+              {/* Change password */}
+              <Link
+                href="/login"
+                className="flex w-full items-center gap-2.5 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5 font-cairo text-[13px] font-bold text-neutral-300"
+              >
+                <ShieldCheck className="h-4 w-4 text-emerald-300" />
+                تبديل الباسورد
+              </Link>
+
+              {/* Guest CTA */}
+              {!isAuthed && (
+                <>
+                  <Link href="/login" className="btn-chunk btn-amber mt-1 w-full py-3.5 text-[15px]">
+                    <LogIn className="h-5 w-5" /> دخول
+                  </Link>
+                  <Link href="/register" className="btn-chunk btn-ghost-hollow w-full py-3.5 text-[14px]">
+                    <UserPlus className="h-5 w-5" /> صاوب كونط — فابور
+                  </Link>
+                </>
+              )}
+
+              {/* Logout */}
+              {isAuthed && (
+                <button
+                  onClick={() => { void handleLogout(); }}
+                  className="mt-1 flex w-full items-center justify-center gap-2 rounded-2xl border border-red-500/20 bg-red-950/20 py-3.5 font-cairo text-[13px] font-black text-red-300"
+                >
+                  <LogOut className="h-4 w-4" /> خروج
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
