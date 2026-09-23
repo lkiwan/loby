@@ -18,7 +18,7 @@ const GAMES = [
   {
     id: 'paint-followers',
     slug: 'paint-followers',
-    titleAr: 'ارسم كلمة',
+    titleAr: 'رسم كلمة',
     titleFr: 'Paint Followers',
     embedUrl: 'https://paint-followers.vercel.app/',
     playCost: 10,
@@ -65,11 +65,11 @@ const CONFIG = {
 };
 
 const MISSIONS = [
-  { key: 'play_n_games_daily', kind: 'PLAY_N_GAMES', titleAr: 'العب 3 لوعات اليوم', target: 3, rewardCoins: 20, cadence: 'DAILY', weight: 100 },
-  { key: 'play_specific_game_daily', kind: 'PLAY_SPECIFIC_GAME', titleAr: 'العب الطاولة اللي ما لعبتيش بزاف', target: 1, rewardCoins: 30, cadence: 'DAILY', weight: 80 },
-  { key: 'watch_n_ads_daily', kind: 'WATCH_N_ADS', titleAr: 'شاهد إعلانين', target: 2, rewardCoins: 20, cadence: 'DAILY', weight: 70 },
-  { key: 'play_n_games_weekly', kind: 'PLAY_N_GAMES', titleAr: 'العب 10 لوعات فالأسبوع', target: 10, rewardCoins: 200, cadence: 'WEEKLY', weight: 100 },
-  { key: 'win_streak_weekly', kind: 'WIN_STREAK', titleAr: 'اربح 3 ديجّات متتاليين', target: 3, rewardCoins: 50, cadence: 'WEEKLY', weight: 60 },
+  { key: 'play_n_games_daily', kind: 'PLAY_N_GAMES', titleAr: 'لعب 3 د اللعبات اليوم', target: 3, rewardCoins: 20, cadence: 'DAILY', weight: 100 },
+  { key: 'play_specific_game_daily', kind: 'PLAY_SPECIFIC_GAME', titleAr: 'لعب فالطبلة لي مالعبتيش فيها بزاف', target: 1, rewardCoins: 30, cadence: 'DAILY', weight: 80 },
+  { key: 'watch_n_ads_daily', kind: 'WATCH_N_ADS', titleAr: 'تفرج ف جوج إشهارات', target: 2, rewardCoins: 20, cadence: 'DAILY', weight: 70 },
+  { key: 'play_n_games_weekly', kind: 'PLAY_N_GAMES', titleAr: 'لعب 10 د اللعبات فالسيمانة', target: 10, rewardCoins: 200, cadence: 'WEEKLY', weight: 100 },
+  { key: 'win_streak_weekly', kind: 'WIN_STREAK', titleAr: 'ربح 3 د الطرحات متابعين', target: 3, rewardCoins: 50, cadence: 'WEEKLY', weight: 60 },
 ];
 
 async function main() {

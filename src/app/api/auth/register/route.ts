@@ -38,7 +38,7 @@ export async function POST(req: Request) {
     const allowed = await checkRate('register', ip, 5, 3600);
     if (!allowed) {
       return NextResponse.json(
-        { error: 'بزاف ديال التسجيلات من نفس الجهاز. جرب من بعد شوية.' },
+        { error: 'قويتي التسجيلات من هاد الجهاز. تسنى شوية وعاود.' },
         { status: 429 }
       );
     }
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
     try {
       body = await req.json();
     } catch {
-      return NextResponse.json({ error: 'طلب غير صالح.' }, { status: 400 });
+      return NextResponse.json({ error: 'طلب ماشي هو هداك.' }, { status: 400 });
     }
 
     const username = body.username?.trim().toLowerCase() ?? '';
@@ -57,37 +57,37 @@ export async function POST(req: Request) {
 
     if (!USERNAME_RE.test(username)) {
       return NextResponse.json(
-        { error: 'الاسم خاصو يكون 3 حتى 20 حرف: حروف صغيرة، أرقام أو _ فقط.' },
+        { error: 'السمية خاص يكون فيها بين 3 و 20 حرف: غير حروف صغيرة، أرقام، ولا _.' },
         { status: 400 }
       );
     }
 
     if (!EMAIL_RE.test(email)) {
       return NextResponse.json(
-        { error: 'الإيميل خاصو يكون صحيح (مثلاً name@example.com).' },
+        { error: 'الإيميل خاصو يكون مكتوب مزيان (بحال name@example.com).' },
         { status: 400 }
       );
     }
 
     if (isTempEmail(email)) {
-      return NextResponse.json({ error: 'الإيميلات المؤقتة ممنوعة.' }, { status: 400 });
+      return NextResponse.json({ error: 'الإيميلات المؤقتة ما خداماش معانا.' }, { status: 400 });
     }
 
     if (password.length < PASSWORD_MIN) {
       return NextResponse.json(
-        { error: 'كلمة السر خاصها تكون على الأقل 6 حروف.' },
+        { error: 'المودپاس خاص يكون فيه 6 حروف على الأقل.' },
         { status: 400 }
       );
     }
 
     const existingUser = await prisma.user.findUnique({ where: { username } });
     if (existingUser) {
-      return NextResponse.json({ error: 'هذا الاسم مستعمل. جرب وحدة أخرى.' }, { status: 409 });
+      return NextResponse.json({ error: 'هاد السمية ديجا مديورة. جرب شي وحدة خرى.' }, { status: 409 });
     }
 
     const existingEmail = await prisma.user.findUnique({ where: { email } });
     if (existingEmail) {
-      return NextResponse.json({ error: 'هذا الإيميل مسجل من قبل. دخل من هنا.' }, { status: 409 });
+      return NextResponse.json({ error: 'هاد الإيميل ديجا مقيد. دخل للكونط ديالك من هنا.' }, { status: 409 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -122,7 +122,7 @@ export async function POST(req: Request) {
       });
     } catch (e) {
       if (isDuplicate(e)) {
-        return NextResponse.json({ error: 'هذا الاسم أو الإيميل مستعمل.' }, { status: 409 });
+        return NextResponse.json({ error: 'هاد السمية ولا الإيميل ديجا مستعملين.' }, { status: 409 });
       }
       throw e;
     }
@@ -161,6 +161,6 @@ export async function POST(req: Request) {
     );
   } catch (error) {
     console.error('Registration error:', error);
-    return NextResponse.json({ error: 'الخدمة مش متوفرة دابا. جرب من بعد شوية.' }, { status: 500 });
+    return NextResponse.json({ error: 'السيرفور طايح دابا. عاود جرب من بعد شوية.' }, { status: 500 });
   }
 }

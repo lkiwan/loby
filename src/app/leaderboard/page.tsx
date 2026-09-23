@@ -18,9 +18,9 @@ type Player = {
 };
 
 const TABS = [
-  { id: 'coins', label: 'عملات', icon: '🪙' },
+  { id: 'coins', label: 'كوينز', icon: '🪙' },
   { id: 'xp',    label: 'XP',    icon: '⚡' },
-  { id: 'streak', label: 'سلسلة', icon: '🔥' },
+  { id: 'streak', label: 'ستريك', icon: '🔥' },
 ] as const;
 
 type Tab = typeof TABS[number]['id'];
@@ -69,7 +69,7 @@ export default function LeaderboardPage() {
           </Link>
           <div className="flex items-center gap-2">
             <Trophy className="h-5 w-5 text-amber-400 drop-shadow-[0_0_8px_rgba(242,178,61,.5)]" />
-            <span className="font-lalezar text-xl text-neutral-100">المتصدرون</span>
+            <span className="font-lalezar text-xl text-neutral-100">الكلاسمون</span>
           </div>
           <StarMark size={28} />
         </div>
@@ -78,12 +78,12 @@ export default function LeaderboardPage() {
       <main className="relative z-10 mx-auto max-w-2xl px-4 pb-16 pt-8 sm:px-6">
         {/* Title */}
         <div className="mb-8 text-center">
-          <div className="section-label mb-3">🏆 ساحة النجوم</div>
+          <div className="section-label mb-3">🏆 طوپ اللعابة</div>
           <h1 className="font-lalezar text-[clamp(2rem,8vw,3.2rem)] leading-none text-[#f5eddc] text-glow-amber">
-            من هو ملك الحومة؟
+            شكون ملك الحومة؟
           </h1>
           <p className="mt-2 font-cairo text-[13px] font-semibold text-neutral-500">
-            أكبر 50 لاعب في المنصة 👑
+            أحسن 50 لعّاب فالبلاطفورم 👑
           </p>
         </div>
 
@@ -173,7 +173,7 @@ export default function LeaderboardPage() {
 
             {players.length === 0 && (
               <p className="py-16 text-center font-cairo text-sm text-neutral-600">
-                ما كاين حتى لاعب دابا 🏜️
+                ماكاين حتى لعّاب دابا 🏜️
               </p>
             )}
           </div>

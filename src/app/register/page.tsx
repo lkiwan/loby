@@ -54,23 +54,23 @@ export default function RegisterPage() {
     setError(null);
 
     if (!/^[a-z0-9_]{3,20}$/.test(username)) {
-      setError('الاسم خاصو يكون 3 حتى 20 حرف: حروف صغيرة، أرقام أو _ فقط.');
+      setError('السمية خاص يكون فيها بين 3 و 20 حرف: غير حروف صغيرة، أرقام ولا _.');
       return;
     }
     if (!EMAIL_RE.test(email)) {
-      setError('الإيميل إجباري وخاصو يكون صحيح (مثلاً name@example.com).');
+      setError('الإيميل ضروري وخاصو يكون مكتوب مزيان (بحال name@example.com).');
       return;
     }
     if (isTempEmail(email)) {
-      setError('الإيميلات المؤقتة ممنوعة. استعمل إيميل حقيقي.');
+      setError('الإيميلات المؤقتة ماخداماش. دير إيميل حقيقي.');
       return;
     }
     if (password.length < 6) {
-      setError('كلمة السر خاصها تكون على الأقل 6 حروف.');
+      setError('المودپاس خاص يكون فيه 6 حروف على الأقل.');
       return;
     }
     if (password !== confirm) {
-      setError('كلمة السر والتأكيد ما تساواش.');
+      setError('المودپاس والتأكيد ديالو ماشي بحال بحال.');
       return;
     }
 
@@ -88,7 +88,7 @@ export default function RegisterPage() {
 
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      setError(data.error || 'ما نجحش التسجيل، جرب مرة أخرى.');
+      setError(data.error || 'التسجيل ما دازش، عاود جرب.');
       setLoading(false);
       return;
     }
@@ -122,9 +122,9 @@ export default function RegisterPage() {
             <div className="anim-pop grid h-16 w-16 place-items-center rounded-full border-2 border-emerald-400/40 bg-emerald-400/10">
               <CheckCircle2 className="h-9 w-9 text-emerald-400" />
             </div>
-            <h1 className="mt-5 font-lalezar text-3xl text-neutral-50">تم التسجيل! 🎉</h1>
+            <h1 className="mt-5 font-lalezar text-3xl text-neutral-50">تقيدتي بنجاح! 🎉</h1>
             <p className="mt-2 max-w-[16rem] font-cairo text-[13px] font-semibold leading-relaxed text-neutral-400">
-              جاري تسجيل الدخول… كنرحّلوك للصفحة الرئيسية.
+              كندخلوك... غادي نحولوك للصفحة الرئيسية.
             </p>
             <div className="mt-5 h-1.5 w-full overflow-hidden rounded-full bg-white/5">
               <div
@@ -138,11 +138,11 @@ export default function RegisterPage() {
             <div className="text-center">
               <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1 font-cairo text-[11px] font-black text-emerald-300">
                 <Sparkles className="h-3.5 w-3.5" />
-                + عملات هدية عند التسجيل
+                + كوينز كادو مع التسجيل
               </span>
-              <h1 className="font-lalezar text-3xl text-neutral-50">أنشئ حسابك</h1>
+              <h1 className="font-lalezar text-3xl text-neutral-50">صاوب كونط</h1>
               <p className="mt-1.5 font-cairo text-[13px] font-semibold text-neutral-400">
-                ثانية وحدة … وغادي نبداو الحومة.
+                ثانية وحدة... وغنبداو الحومة.
               </p>
             </div>
 
@@ -161,7 +161,7 @@ export default function RegisterPage() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value.toLowerCase())}
                   className="field field-teal pl-11"
-                  placeholder="الاسم ديالك (3-20 حرف)"
+                  placeholder="السمية ديالك (3-20 حرف)"
                   autoComplete="username"
                   minLength={3}
                   maxLength={20}
@@ -176,7 +176,7 @@ export default function RegisterPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value.toLowerCase())}
                   className="field field-teal pl-11"
-                  placeholder="الإيميل ديالك (إجباري)"
+                  placeholder="الإيميل ديالك (ضروري)"
                   autoComplete="email"
                   required
                 />
@@ -189,7 +189,7 @@ export default function RegisterPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="field field-teal pl-11 pr-12"
-                  placeholder="كلمة السر (6+ حروف)"
+                  placeholder="المودپاس (6+ حروف)"
                   autoComplete="new-password"
                   minLength={6}
                   required
@@ -198,7 +198,7 @@ export default function RegisterPage() {
                   type="button"
                   onClick={() => setShowPw((v) => !v)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 transition hover:text-neutral-200"
-                  aria-label={showPw ? 'خفي كلمة السر' : 'وري كلمة السر'}
+                  aria-label={showPw ? 'خبي المودپاس' : 'بيّن المودپاس'}
                 >
                   {showPw ? <EyeOff className="h-[18px] w-[18px]" /> : <Eye className="h-[18px] w-[18px]" />}
                 </button>
@@ -211,7 +211,7 @@ export default function RegisterPage() {
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
                   className="field field-teal pl-11"
-                  placeholder="أكد كلمة السر"
+                  placeholder="عاود المودپاس"
                   autoComplete="new-password"
                   minLength={6}
                   required
@@ -225,7 +225,7 @@ export default function RegisterPage() {
                   value={referralCode}
                   onChange={(e) => setReferralCode(e.target.value)}
                   className="field field-teal pl-11"
-                  placeholder="كود الدعوة (اختياري)"
+                  placeholder="كود الدعوة (إيلا عندك)"
                   autoComplete="off"
                   maxLength={32}
                 />
@@ -233,14 +233,14 @@ export default function RegisterPage() {
 
               <button type="submit" disabled={loading} className="btn-chunk btn-teal mt-1 w-full py-3.5 text-[15px]">
                 {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <UserPlus className="h-5 w-5" />}
-                سجّل
+تقيد
               </button>
             </form>
 
             <div className="mt-5 flex items-center gap-3">
               <span className="h-px flex-1 bg-white/10" />
               <span className="font-cairo text-[11px] font-black text-neutral-600">
-                أو
+                ولا
               </span>
               <span className="h-px flex-1 bg-white/10" />
             </div>
@@ -252,11 +252,11 @@ export default function RegisterPage() {
               className="btn-chunk btn-ghost-hollow mt-1 w-full py-3.5 text-[15px] flex items-center justify-center gap-2.5"
             >
               {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <GoogleIcon />}
-              <span className="font-cairo font-semibold">سجّل بـ Google (Gmail فقط)</span>
+              <span className="font-cairo font-semibold">تقيد بـ Google (غير Gmail)</span>
             </button>
 
             <p className="mt-5 text-center font-cairo text-[12.5px] font-semibold text-neutral-500">
-              عندك أصلاً حساب؟{' '}
+              ديجا عندك كونط؟{' '}
               <Link href="/login" className="text-emerald-300 hover:underline">
                 دخل من هنا
               </Link>

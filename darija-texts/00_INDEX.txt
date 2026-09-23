@@ -1,0 +1,25 @@
+# INDEX — TEXTE DARIJA DANS « LOBBY »
+# Total: 276 extraits dans 18 fichiers
+# Format de chaque ligne:  NUMERO. [LnumeroDeLigne] texte
+
+11_src_app_api_auth_register_route.txt  (10)  src/app/api/auth/register/route.ts
+27_src_app_contact_page.txt  (13)  src/app/contact/page.tsx
+28_src_app_games_gameId_page.txt  (15)  src/app/games/[gameId]/page.tsx
+30_src_app_layout.txt  (2)  src/app/layout.tsx
+31_src_app_leaderboard_page.txt  (9)  src/app/leaderboard/page.tsx
+32_src_app_login_page.txt  (19)  src/app/login/page.tsx
+33_src_app_page.txt  (76)  src/app/page.tsx
+34_src_app_privacy_page.txt  (26)  src/app/privacy/page.tsx
+35_src_app_profile_username_page.txt  (16)  src/app/profile/[username]/page.tsx
+36_src_app_register_page.txt  (23)  src/app/register/page.tsx
+37_src_app_terms_page.txt  (23)  src/app/terms/page.tsx
+41_src_components_AuthShell.txt  (1)  src/components/AuthShell.tsx
+42_src_components_ConsentBanner.txt  (4)  src/components/ConsentBanner.tsx
+44_src_components_GameCard.txt  (3)  src/components/GameCard.tsx
+46_src_components_LegalShell.txt  (2)  src/components/LegalShell.tsx
+47_src_components_MissionsPanel.txt  (7)  src/components/MissionsPanel.tsx
+55_src_lib_games.txt  (18)  src/lib/games.ts
+67_prisma_seed.txt  (9)  prisma/seed.js
+
+# Remarque: seul le texte en alphabet arabe (darija) est extrait.
+# Les titres de jeux écrits en lettres latines (7AZR FAZR, L'MAFIA D'LHOUMA, Bara Salfa...) ne sont pas inclus.

@@ -12,21 +12,21 @@ function authErrorText(code: string | null): string | null {
   if (!code) return null;
   switch (code) {
     case 'account_exists':
-      return 'هذا الإيميل مسجّل من قبل بكلمة سر. دخل بكلمة السر ديالك أو أنشئ حساباً بحساب آخر.';
+      return 'هاد الإيميل ديجا مقيد بمودپاس. دخل بالمودپاس ديالك ولا صاوب كونط ب إيميل آخر.';
     case 'gmail_only':
-      return 'Gmail فقط مسموح للدخول بـ Google. جرب بحساب Gmail آخر أو دخل بكلمة السر.';
+      return 'غير Gmail لي خدام باش تدخل بـ Google. جرب شي Gmail آخر ولا دخل بالمودپاس.';
     case 'CredentialsSignin':
     case 'invalid_credentials':
     case 'invalid_password':
-      return 'الاسم أو كلمة السر غلطين 😬';
+      return 'السمية ولا المودپاس غالطين 😬';
     case 'account_banned':
-      return 'هذا الحساب موقوف. تواصل مع الدعم.';
+      return 'هاد الكونط مبلوكي. هضر مع الدعم.';
     case 'account_frozen':
-      return 'هذا الحساب متجمد مؤقتاً. جرب من بعد شوية.';
+      return 'هاد الكونط مسدود دابا. عاود جرب من بعد.';
     case 'OAuthAccountNotLinked':
-      return 'هذا الإيميل مربوط بحساب آخر. دخل بكلمة السر أو جرب حساب Gmail آخر.';
+      return 'هاد الإيميل مربوط بكونط آخر. دخل بالمودپاس ولا جرب شي Gmail آخر.';
     case 'redirect_uri_mismatch':
-      return 'مشكل في إعدادات Google. جرب من بعد شوية.';
+      return 'مشكل فإعدادات Google. عاود جرب من بعد.';
     default:
       return code;
   }
@@ -72,9 +72,9 @@ function LoginForm() {
   return (
     <AuthCardShell>
       <div className="text-center">
-        <h1 className="font-lalezar text-3xl text-neutral-50">مرحبا بعودتك 👋</h1>
+        <h1 className="font-lalezar text-3xl text-neutral-50">مرحبا بك عاوتاني 👋</h1>
         <p className="mt-1.5 font-cairo text-[13px] font-semibold text-neutral-400">
-          دخل باش تلقى عملاتك وتهز الطاولة منين حسبتي.
+          دخل باش تلقى الكوينز ديالك وتكمل منين حبستي.
         </p>
       </div>
 
@@ -93,7 +93,7 @@ function LoginForm() {
             value={username}
             onChange={(e) => setUsername(e.target.value.trim())}
             className="field pl-11"
-            placeholder="الاسم أو Gmail ديالك"
+            placeholder="السمية ولا Gmail ديالك"
             autoComplete="username"
             required
           />
@@ -106,7 +106,7 @@ function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="field pl-11 pr-12"
-            placeholder="كلمة السر"
+            placeholder="المودپاس"
             autoComplete="current-password"
             required
           />
@@ -114,7 +114,7 @@ function LoginForm() {
             type="button"
             onClick={() => setShowPw((v) => !v)}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 transition hover:text-neutral-200"
-            aria-label={showPw ? 'خفي كلمة السر' : 'وري كلمة السر'}
+            aria-label={showPw ? 'خبي المودپاس' : 'بيّن المودپاس'}
           >
             {showPw ? <EyeOff className="h-[18px] w-[18px]" /> : <Eye className="h-[18px] w-[18px]" />}
           </button>
@@ -122,14 +122,14 @@ function LoginForm() {
 
         <button type="submit" disabled={loading} className="btn-chunk btn-amber mt-1 w-full py-3.5 text-[15px]">
           {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <LogIn className="h-5 w-5" />}
-          دخول
+          دخل
         </button>
       </form>
 
       <div className="mt-5 flex items-center gap-3">
         <span className="h-px flex-1 bg-white/10" />
         <span className="font-cairo text-[11px] font-black text-neutral-600">
-          أو
+          ولا
         </span>
         <span className="h-px flex-1 bg-white/10" />
       </div>
@@ -141,13 +141,13 @@ function LoginForm() {
         className="btn-chunk btn-ghost-hollow mt-1 w-full py-3.5 text-[15px] flex items-center justify-center gap-2.5"
       >
         {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <GoogleIcon />}
-        <span className="font-cairo font-semibold">تابع بـ Google (Gmail فقط)</span>
+        <span className="font-cairo font-semibold">كمّل بـ Google (غير Gmail)</span>
       </button>
 
       <div className="mt-5 flex items-center gap-3">
         <span className="h-px flex-1 bg-white/10" />
         <span className="font-cairo text-[11px] font-black text-neutral-600">
-          جديد؟
+          جديد معانا؟
         </span>
         <span className="h-px flex-1 bg-white/10" />
       </div>
@@ -156,11 +156,11 @@ function LoginForm() {
         href="/register"
         className="btn-chunk btn-ghost-hollow mt-4 w-full py-3 text-[14px]"
       >
-        أنشئ حسابك — مجاني
+        صاوب كونط — فابور
       </Link>
 
       <p className="mt-4 text-center font-cairo text-[12px] font-semibold text-neutral-500">
-        بلا حساب؟ <Link href="/" className="text-amber-400 hover:underline">شوف الطاولات أولاً</Link>
+        بلا حساب؟ <Link href="/" className="text-amber-400 hover:underline">شوف الطبلات هوما اللولين</Link>
       </p>
     </AuthCardShell>
   );

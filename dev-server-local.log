@@ -1,0 +1,462 @@
+
+> loby@0.1.0 dev
+> next dev
+
+▲ Next.js 16.3.5 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.25:3000
+- Environments: .env.local, .env
+✓ Ready in 1774ms
+⚠ Warning: Next.js ignored package-lock.json in C:\Users\arhou because it is outside the current Git repository (C:\Users\arhou\OneDrive\Bureau\projet omar\colab\loby).
+ To use this directory, set `turbopack.root` in your Next.js config.
+
+✓ Running next.config.ts took 283ms
+
+ GET / 200 in 1186ms (next.js: 555ms, application-code: 631ms)
+ GET / 200 in 74ms (next.js: 14ms, application-code: 61ms)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+ GET /api/auth/session 200 in 2.3s (next.js: 2.1s, application-code: 198ms)
+ GET /api/auth/session 200 in 99ms (next.js: 22ms, application-code: 77ms)
+prisma:query SELECT "public"."RemoteConfig"."key", "public"."RemoteConfig"."value", "public"."RemoteConfig"."updatedAt" FROM "public"."RemoteConfig" WHERE 1=1 OFFSET $1
+prisma:query INSERT INTO "public"."Device" ("id","userId","fingerprint","ipHash","userAgent","firstSeenAt","lastSeenAt") VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT ("userId","fingerprint") DO UPDATE SET "ipHash" = $8, "userAgent" = $9, "lastSeenAt" = $10 WHERE (("public"."Device"."userId" = $11 AND "public"."Device"."fingerprint" = $12) AND 1=1) RETURNING "public"."Device"."id", "public"."Device"."userId", "public"."Device"."fingerprint", "public"."Device"."ipHash", "public"."Device"."userAgent", "public"."Device"."firstSeenAt", "public"."Device"."lastSeenAt"
+prisma:query SELECT "public"."User"."id", "public"."User"."username", "public"."User"."email", "public"."User"."emailVerified", "public"."User"."image", "public"."User"."phone", "public"."User"."password", "public"."User"."role"::text, "public"."User"."status"::text, "public"."User"."locale", "public"."User"."timezone", "public"."User"."coins", "public"."User"."tickets", "public"."User"."xp", "public"."User"."level", "public"."User"."streakCount", "public"."User"."longestStreak", "public"."User"."lastCheckinOn", "public"."User"."freezesLeft", "public"."User"."referralCode", "public"."User"."referredById", "public"."User"."createdAt", "public"."User"."updatedAt", "public"."User"."lastSeenAt" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+ POST /api/rewards/checkin 404 in 383ms (next.js: 80ms, application-code: 303ms)
+prisma:query UPDATE "public"."User" SET "lastSeenAt" = $1, "updatedAt" = $2 WHERE ("public"."User"."id" = $3 AND 1=1) RETURNING "public"."User"."id", "public"."User"."username", "public"."User"."email", "public"."User"."emailVerified", "public"."User"."image", "public"."User"."phone", "public"."User"."password", "public"."User"."role"::text, "public"."User"."status"::text, "public"."User"."locale", "public"."User"."timezone", "public"."User"."coins", "public"."User"."tickets", "public"."User"."xp", "public"."User"."level", "public"."User"."streakCount", "public"."User"."longestStreak", "public"."User"."lastCheckinOn", "public"."User"."freezesLeft", "public"."User"."referralCode", "public"."User"."referredById", "public"."User"."createdAt", "public"."User"."updatedAt", "public"."User"."lastSeenAt"
+ POST /api/devices/track 200 in 386ms (next.js: 152ms, application-code: 235ms)
+ GET /api/auth/session 200 in 68ms (next.js: 40ms, application-code: 29ms)
+⚠ Found a change in next.config.ts. Restarting the server to apply the changes...
+▲ Next.js 16.3.5 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.25:3000
+- Environments: .env.local, .env
+✓ Ready in 1779ms
+⚠ Warning: Next.js ignored package-lock.json in C:\Users\arhou because it is outside the current Git repository (C:\Users\arhou\OneDrive\Bureau\projet omar\colab\loby).
+ To use this directory, set `turbopack.root` in your Next.js config.
+
+✓ Running next.config.ts took 172ms
+Warning: Custom Cache-Control headers detected for the following routes:
+  - /_next/static/:path*
+
+Setting a custom Cache-Control header can break Next.js development behavior.
+- Experiments (use with caution):
+  · optimizePackageImports
+
+ GET / 200 in 3.6s (next.js: 3.1s, application-code: 467ms)
+ GET / 200 in 138ms (next.js: 38ms, application-code: 100ms)
+ GET /api/auth/session 200 in 392ms
+ GET / 200 in 500ms (next.js: 12ms, application-code: 488ms)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+ POST /api/auth/_log 200 in 2.1s (next.js: 1879ms, application-code: 233ms)
+ GET /api/auth/session 200 in 1875ms (next.js: 1625ms, application-code: 250ms)
+ GET /api/auth/session 200 in 142ms (next.js: 31ms, application-code: 110ms)
+ GET /api/economy/balance 404 in 424ms (next.js: 227ms, application-code: 197ms)
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.update()` invocation in
+C:\Users\arhou\OneDrive\Bureau\projet omar\colab\loby\.next\dev\server\chunks\[root-of-the-server]__18gr_so._.js:521:143
+
+  518         userAgent
+  519     }
+  520 }).catch(()=>{}),
+→ 521 __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.update(
+An operation failed because it depends on one or more records that were required but not found. Record to update not found.
+ POST /api/rewards/checkin 404 in 441ms (next.js: 69ms, application-code: 373ms)
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].device.upsert()` invocation in
+C:\Users\arhou\OneDrive\Bureau\projet omar\colab\loby\.next\dev\server\chunks\[root-of-the-server]__18gr_so._.js:502:145
+
+  499 const userAgent = req.headers.get('user-agent')?.slice(0, 512) ?? null;
+  500 const now = new Date();
+  501 /* Parallel: device upsert + lastSeenAt update (both are independent) */ await Promise.all([
+→ 502     __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].device.upsert(
+Foreign key constraint violated: `Device_userId_fkey (index)`
+ POST /api/devices/track 200 in 442ms (next.js: 149ms, application-code: 293ms)
+ GET / 200 in 258ms (next.js: 165ms, application-code: 94ms)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+ GET /api/auth/session 200 in 87ms (next.js: 67ms, application-code: 20ms)
+ GET /api/auth/session 200 in 40ms (next.js: 4ms, application-code: 36ms)
+ POST /api/rewards/checkin 404 in 84ms (next.js: 14ms, application-code: 70ms)
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.update()` invocation in
+C:\Users\arhou\OneDrive\Bureau\projet omar\colab\loby\.next\dev\server\chunks\[root-of-the-server]__18gr_so._.js:521:143
+
+  518         userAgent
+  519     }
+  520 }).catch(()=>{}),
+→ 521 __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.update(
+An operation failed because it depends on one or more records that were required but not found. Record to update not found.
+ GET /api/economy/balance 404 in 88ms (next.js: 29ms, application-code: 59ms)
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].device.upsert()` invocation in
+C:\Users\arhou\OneDrive\Bureau\projet omar\colab\loby\.next\dev\server\chunks\[root-of-the-server]__18gr_so._.js:502:145
+
+  499 const userAgent = req.headers.get('user-agent')?.slice(0, 512) ?? null;
+  500 const now = new Date();
+  501 /* Parallel: device upsert + lastSeenAt update (both are independent) */ await Promise.all([
+→ 502     __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].device.upsert(
+Foreign key constraint violated: `Device_userId_fkey (index)`
+ POST /api/devices/track 200 in 92ms (next.js: 18ms, application-code: 74ms)
+ GET /api/auth/session 200 in 57ms (next.js: 32ms, application-code: 24ms)
+ GET /api/auth/session 200 in 27ms (next.js: 5ms, application-code: 22ms)
+ GET /api/auth/session 200 in 32ms (next.js: 4ms, application-code: 28ms)
+ GET / 200 in 41ms (next.js: 9ms, application-code: 32ms)
+ GET / 200 in 28ms (next.js: 5ms, application-code: 23ms)
+ GET / 200 in 25ms (next.js: 4ms, application-code: 21ms)
+ GET / 200 in 32ms (next.js: 6ms, application-code: 26ms)
+ GET / 200 in 29ms (next.js: 5ms, application-code: 24ms)
+ GET / 200 in 44ms (next.js: 5ms, application-code: 39ms)
+ GET / 200 in 29ms (next.js: 3ms, application-code: 26ms)
+ GET / 200 in 28ms (next.js: 3ms, application-code: 25ms)
+ GET / 200 in 39ms (next.js: 4ms, application-code: 35ms)
+ GET / 200 in 38ms (next.js: 6ms, application-code: 32ms)
+ GET / 200 in 33ms (next.js: 6ms, application-code: 27ms)
+ GET / 200 in 25ms (next.js: 3ms, application-code: 22ms)
+ GET / 200 in 26ms (next.js: 3ms, application-code: 23ms)
+ GET / 200 in 23ms (next.js: 3ms, application-code: 20ms)
+ GET / 200 in 22ms (next.js: 4ms, application-code: 18ms)
+ GET / 200 in 24ms (next.js: 4ms, application-code: 19ms)
+ GET / 200 in 31ms (next.js: 4ms, application-code: 27ms)
+ GET / 200 in 30ms (next.js: 5ms, application-code: 25ms)
+ GET / 200 in 29ms (next.js: 5ms, application-code: 24ms)
+ GET / 200 in 45ms (next.js: 20ms, application-code: 25ms)
+ GET / 200 in 25ms (next.js: 5ms, application-code: 20ms)
+ GET / 200 in 26ms (next.js: 4ms, application-code: 22ms)
+ GET / 200 in 26ms (next.js: 5ms, application-code: 21ms)
+ GET / 200 in 40ms (next.js: 5ms, application-code: 35ms)
+ GET / 200 in 29ms (next.js: 4ms, application-code: 25ms)
+ GET / 200 in 32ms (next.js: 5ms, application-code: 27ms)
+ GET / 200 in 28ms (next.js: 4ms, application-code: 24ms)
+ GET / 200 in 39ms (next.js: 3ms, application-code: 36ms)
+ GET / 200 in 32ms (next.js: 5ms, application-code: 27ms)
+ GET / 200 in 38ms (next.js: 3ms, application-code: 35ms)
+ GET / 200 in 31ms (next.js: 4ms, application-code: 28ms)
+ GET / 200 in 25ms (next.js: 4ms, application-code: 21ms)
+ GET / 200 in 37ms (next.js: 5ms, application-code: 32ms)
+ GET / 200 in 37ms (next.js: 5ms, application-code: 32ms)
+ GET / 200 in 27ms (next.js: 6ms, application-code: 21ms)
+ GET / 200 in 26ms (next.js: 5ms, application-code: 21ms)
+ GET / 200 in 29ms (next.js: 4ms, application-code: 26ms)
+✓ Compiled in 1194ms
+ GET / 200 in 642ms (next.js: 591ms, application-code: 51ms)
+ GET / 200 in 25ms (next.js: 4ms, application-code: 21ms)
+ GET / 200 in 36ms (next.js: 15ms, application-code: 21ms)
+✓ Compiled in 481ms
+ GET / 200 in 32ms (next.js: 13ms, application-code: 18ms)
+✓ Compiled in 517ms
+ GET / 200 in 43ms (next.js: 16ms, application-code: 26ms)
+✓ Compiled in 484ms
+✓ Compiled in 512ms
+ GET / 200 in 48ms (next.js: 24ms, application-code: 24ms)
+✓ Compiled in 578ms
+ GET / 200 in 55ms (next.js: 18ms, application-code: 37ms)
+ GET / 200 in 31ms (next.js: 12ms, application-code: 18ms)
+✓ Compiled in 477ms
+ GET / 200 in 32ms (next.js: 14ms, application-code: 19ms)
+✓ Compiled in 589ms
+✓ Compiled in 601ms
+ GET / 200 in 53ms (next.js: 20ms, application-code: 33ms)
+ GET / 200 in 27ms (next.js: 11ms, application-code: 16ms)
+✓ Compiled in 603ms
+ GET / 200 in 31ms (next.js: 13ms, application-code: 18ms)
+✓ Compiled in 491ms
+✓ Compiled in 569ms
+ GET / 200 in 81ms (next.js: 39ms, application-code: 43ms)
+ GET / 200 in 30ms (next.js: 13ms, application-code: 17ms)
+✓ Compiled in 611ms
+✓ Compiled in 526ms
+ GET / 200 in 53ms (next.js: 15ms, application-code: 38ms)
+✓ Compiled in 609ms
+✓ Compiled in 610ms
+ GET / 200 in 681ms (next.js: 616ms, application-code: 65ms)
+ GET / 200 in 41ms (next.js: 4ms, application-code: 37ms)
+ GET / 200 in 35ms (next.js: 14ms, application-code: 22ms)
+✓ Compiled in 750ms
+ GET / 200 in 39ms (next.js: 14ms, application-code: 25ms)
+✓ Compiled in 491ms
+✓ Compiled in 607ms
+ GET / 200 in 77ms (next.js: 18ms, application-code: 59ms)
+✓ Compiled in 580ms
+ GET / 200 in 38ms (next.js: 14ms, application-code: 24ms)
+✓ Compiled in 591ms
+ GET / 200 in 37ms (next.js: 16ms, application-code: 22ms)
+ GET / 200 in 34ms (next.js: 14ms, application-code: 20ms)
+✓ Compiled in 482ms
+ GET / 200 in 38ms (next.js: 16ms, application-code: 22ms)
+✓ Compiled in 594ms
+✓ Compiled in 559ms
+ GET / 200 in 52ms (next.js: 15ms, application-code: 36ms)
+✓ Compiled in 634ms
+ GET / 200 in 38ms (next.js: 16ms, application-code: 22ms)
+ GET / 200 in 37ms (next.js: 15ms, application-code: 22ms)
+✓ Compiled in 504ms
+ GET / 200 in 32ms (next.js: 12ms, application-code: 20ms)
+✓ Compiled in 530ms
+ GET / 200 in 32ms (next.js: 15ms, application-code: 17ms)
+✓ Compiled in 581ms
+ GET / 200 in 30ms (next.js: 13ms, application-code: 17ms)
+✓ Compiled in 557ms
+✓ Compiled in 529ms
+ GET / 200 in 58ms (next.js: 30ms, application-code: 28ms)
+ GET / 200 in 37ms (next.js: 14ms, application-code: 23ms)
+✓ Compiled in 501ms
+✓ Compiled in 498ms
+ GET / 200 in 58ms (next.js: 21ms, application-code: 36ms)
+ GET / 200 in 37ms (next.js: 15ms, application-code: 22ms)
+✓ Compiled in 514ms
+ GET / 200 in 33ms (next.js: 14ms, application-code: 19ms)
+✓ Compiled in 597ms
+ GET / 200 in 37ms (next.js: 15ms, application-code: 21ms)
+✓ Compiled in 571ms
+✓ Compiled in 490ms
+ GET / 200 in 40ms (next.js: 16ms, application-code: 24ms)
+ GET / 200 in 33ms (next.js: 12ms, application-code: 21ms)
+✓ Compiled in 536ms
+ GET / 200 in 31ms (next.js: 7ms, application-code: 24ms)
+ GET / 200 in 21ms (next.js: 3ms, application-code: 18ms)
+ GET / 200 in 29ms (next.js: 4ms, application-code: 25ms)
+ GET / 200 in 228ms (next.js: 206ms, application-code: 22ms)
+ GET / 200 in 30ms (next.js: 3ms, application-code: 27ms)
+ GET / 200 in 27ms (next.js: 3ms, application-code: 24ms)
+ GET / 200 in 19ms (next.js: 4ms, application-code: 16ms)
+ GET / 200 in 69ms (next.js: 44ms, application-code: 25ms)
+ GET / 200 in 65ms (next.js: 40ms, application-code: 25ms)
+ GET / 200 in 97ms (next.js: 76ms, application-code: 21ms)
+ GET / 200 in 21ms (next.js: 3ms, application-code: 17ms)
+ GET / 200 in 22ms (next.js: 3ms, application-code: 19ms)
+ GET / 200 in 23ms (next.js: 3ms, application-code: 19ms)
+ GET / 200 in 22ms (next.js: 3ms, application-code: 19ms)
+ GET / 200 in 22ms (next.js: 3ms, application-code: 18ms)
+ GET / 200 in 28ms (next.js: 4ms, application-code: 24ms)
+ GET / 200 in 22ms (next.js: 4ms, application-code: 18ms)
+ GET / 200 in 26ms (next.js: 4ms, application-code: 22ms)
+ GET / 200 in 25ms (next.js: 3ms, application-code: 22ms)
+ GET / 200 in 19ms (next.js: 3ms, application-code: 17ms)
+✓ Compiled in 683ms
+ GET / 200 in 47ms (next.js: 21ms, application-code: 26ms)
+ GET / 200 in 42ms (next.js: 21ms, application-code: 22ms)
+✓ Compiled in 601ms
+ GET / 200 in 35ms (next.js: 17ms, application-code: 18ms)
+✓ Compiled in 588ms
+✓ Compiled in 561ms
+ GET / 200 in 51ms (next.js: 18ms, application-code: 33ms)
+ GET / 200 in 42ms (next.js: 18ms, application-code: 24ms)
+✓ Compiled in 590ms
+ GET / 200 in 39ms (next.js: 19ms, application-code: 20ms)
+✓ Compiled in 663ms
+✓ Compiled in 734ms
+ GET / 200 in 45ms (next.js: 20ms, application-code: 25ms)
+ GET /api/auth/session 200 in 115ms (next.js: 64ms, application-code: 51ms)
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].missionAssignment.createMany()` invocation in
+C:\Users\arhou\OneDrive\Bureau\projet omar\colab\loby\.next\dev\server\chunks\[root-of-the-server]__1uz-q9i._.js:945:166
+
+  942         expiresAt: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$time$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["casablancaDateAt"])(dailyKey, 23, 59, 59)
+  943     }));
+  944 if (data.length > 0) {
+→ 945     await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].missionAssignment.createMany(
+Foreign key constraint violated: `MissionAssignment_userId_fkey (index)`
+⨯ Error [PrismaClientKnownRequestError]: 
+Invalid `{imported module ./src/lib/prisma.ts}["prisma"].missionAssignment.createMany()` invocation in
+C:\Users\arhou\OneDrive\Bureau\projet omar\colab\loby\.next\dev\server\chunks\[root-of-the-server]__1uz-q9i._.js:945:166
+
+  942         expiresAt: (0, {imported module ./src/lib/time.ts}["casablancaDateAt"])(dailyKey, 23, 59, 59)
+  943     }));
+  944 if (data.length > 0) {
+→ 945     await {imported module ./src/lib/prisma.ts}["prisma"].missionAssignment.createMany(
+Foreign key constraint violated: `MissionAssignment_userId_fkey (index)`
+    at <unknown> (src\lib\missions.ts:48:38)
+    at async ensureAssignments (src\lib\missions.ts:48:7)
+    at async GET (src\app\api\rewards\missions\route.ts:16:3)
+  46 |     }));
+  47 |     if (data.length > 0) {
+> 48 |       await prisma.missionAssignment.createMany({ data, skipDuplicates: true });
+     |                                      ^
+  49 |       created += data.length;
+  50 |     }
+  51 |   } {
+  code: 'P2003',
+  clientVersion: '5.22.0',
+  meta: {
+    modelName: 'MissionAssignment',
+    field_name: 'MissionAssignment_userId_fkey (index)'
+  }
+}
+ GET /api/rewards/missions 500 in 1539ms (next.js: 913ms, application-code: 626ms)
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].missionAssignment.createMany()` invocation in
+C:\Users\arhou\OneDrive\Bureau\projet omar\colab\loby\.next\dev\server\chunks\[root-of-the-server]__1uz-q9i._.js:945:166
+
+  942         expiresAt: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$time$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["casablancaDateAt"])(dailyKey, 23, 59, 59)
+  943     }));
+  944 if (data.length > 0) {
+→ 945     await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].missionAssignment.createMany(
+Foreign key constraint violated: `MissionAssignment_userId_fkey (index)`
+⨯ Error [PrismaClientKnownRequestError]: 
+Invalid `{imported module ./src/lib/prisma.ts}["prisma"].missionAssignment.createMany()` invocation in
+C:\Users\arhou\OneDrive\Bureau\projet omar\colab\loby\.next\dev\server\chunks\[root-of-the-server]__1uz-q9i._.js:945:166
+
+  942         expiresAt: (0, {imported module ./src/lib/time.ts}["casablancaDateAt"])(dailyKey, 23, 59, 59)
+  943     }));
+  944 if (data.length > 0) {
+→ 945     await {imported module ./src/lib/prisma.ts}["prisma"].missionAssignment.createMany(
+Foreign key constraint violated: `MissionAssignment_userId_fkey (index)`
+    at <unknown> (src\lib\missions.ts:48:38)
+    at async ensureAssignments (src\lib\missions.ts:48:7)
+    at async GET (src\app\api\rewards\missions\route.ts:16:3)
+  46 |     }));
+  47 |     if (data.length > 0) {
+> 48 |       await prisma.missionAssignment.createMany({ data, skipDuplicates: true });
+     |                                      ^
+  49 |       created += data.length;
+  50 |     }
+  51 |   } {
+  code: 'P2003',
+  clientVersion: '5.22.0',
+  meta: {
+    modelName: 'MissionAssignment',
+    field_name: 'MissionAssignment_userId_fkey (index)'
+  }
+}
+ GET /api/rewards/missions 500 in 40ms (next.js: 3ms, application-code: 37ms)
+ GET / 200 in 136ms (next.js: 10ms, application-code: 126ms)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+ GET /api/auth/session 200 in 46ms (next.js: 31ms, application-code: 15ms)
+ GET /api/auth/session 200 in 55ms (next.js: 3ms, application-code: 52ms)
+[browser] Uncaught Error: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HTTPAccessFallbackBoundary notFound={{...}} forbidden={undefined} unauthorized={undefined}>
+      <HTTPAccessFallbackErrorBoundary pathname="/" notFound={{...}} forbidden={undefined} unauthorized={undefined} ...>
+        <RedirectBoundary>
+          <RedirectErrorBoundary router={{...}}>
+            <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} segmentPath={[...]} ...>
+              <SegmentViewNode type="page" pagePath="page.tsx">
+                <SegmentTrieNode>
+                <ClientPageRoot Component={function LobbyPage} serverProvidedParams={{...}}>
+                  <LobbyPage params={Promise} searchParams={Promise}>
+                    <Suspense>
+                      <LobbyContent>
+                        <div className="relative f...">
+                          <div>
+                          <div className="relative z...">
+                            <StarMark>
+                            <div>
+                            <p className="font-lalezar text-2xl text-[#e8d9c0] text-glow-cyan">
++                             كنجيبو الكرسات…
+-                             كنوجدو الكراسا…
+              ...
+            ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at p (<anonymous>)
+    at LobbyContent (src/app/page.tsx:343:11)
+    at LobbyPage (src/app/page.tsx:896:7)
+  341 |             <Loader2 className="h-5 w-5 animate-spin text-cyan-400" />
+  342 |           </div>
+> 343 |           <p className="font-lalezar text-2xl text-[#e8d9c0] text-glow-cyan">كنوجدو الكراسا…</p>
+      |           ^
+  344 |         </div>
+  345 |       </div>
+  346 |     );
+ GET /api/economy/balance 404 in 68ms (next.js: 7ms, application-code: 61ms)
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].device.upsert()` invocation in
+C:\Users\arhou\OneDrive\Bureau\projet omar\colab\loby\.next\dev\server\chunks\[root-of-the-server]__18gr_so._.js:502:145
+
+  499 const userAgent = req.headers.get('user-agent')?.slice(0, 512) ?? null;
+  500 const now = new Date();
+  501 /* Parallel: device upsert + lastSeenAt update (both are independent) */ await Promise.all([
+→ 502     __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].device.upsert(
+Foreign key constraint violated: `Device_userId_fkey (index)`
+ POST /api/rewards/checkin 404 in 95ms (next.js: 14ms, application-code: 81ms)
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.update()` invocation in
+C:\Users\arhou\OneDrive\Bureau\projet omar\colab\loby\.next\dev\server\chunks\[root-of-the-server]__18gr_so._.js:521:143
+
+  518         userAgent
+  519     }
+  520 }).catch(()=>{}),
+→ 521 __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.update(
+An operation failed because it depends on one or more records that were required but not found. Record to update not found.
+ POST /api/devices/track 200 in 79ms (next.js: 7ms, application-code: 73ms)
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].missionAssignment.createMany()` invocation in
+C:\Users\arhou\OneDrive\Bureau\projet omar\colab\loby\.next\dev\server\chunks\[root-of-the-server]__1uz-q9i._.js:945:166
+
+  942         expiresAt: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$time$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["casablancaDateAt"])(dailyKey, 23, 59, 59)
+  943     }));
+  944 if (data.length > 0) {
+→ 945     await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].missionAssignment.createMany(
+Foreign key constraint violated: `MissionAssignment_userId_fkey (index)`
+⨯ Error [PrismaClientKnownRequestError]: 
+Invalid `{imported module ./src/lib/prisma.ts}["prisma"].missionAssignment.createMany()` invocation in
+C:\Users\arhou\OneDrive\Bureau\projet omar\colab\loby\.next\dev\server\chunks\[root-of-the-server]__1uz-q9i._.js:945:166
+
+  942         expiresAt: (0, {imported module ./src/lib/time.ts}["casablancaDateAt"])(dailyKey, 23, 59, 59)
+  943     }));
+  944 if (data.length > 0) {
+→ 945     await {imported module ./src/lib/prisma.ts}["prisma"].missionAssignment.createMany(
+Foreign key constraint violated: `MissionAssignment_userId_fkey (index)`
+    at <unknown> (src\lib\missions.ts:48:38)
+    at async ensureAssignments (src\lib\missions.ts:48:7)
+    at async GET (src\app\api\rewards\missions\route.ts:16:3)
+  46 |     }));
+  47 |     if (data.length > 0) {
+> 48 |       await prisma.missionAssignment.createMany({ data, skipDuplicates: true });
+     |                                      ^
+  49 |       created += data.length;
+  50 |     }
+  51 |   } {
+  code: 'P2003',
+  clientVersion: '5.22.0',
+  meta: {
+    modelName: 'MissionAssignment',
+    field_name: 'MissionAssignment_userId_fkey (index)'
+  }
+}
+ GET /api/rewards/missions 500 in 63ms (next.js: 8ms, application-code: 56ms)
+prisma:error 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].missionAssignment.createMany()` invocation in
+C:\Users\arhou\OneDrive\Bureau\projet omar\colab\loby\.next\dev\server\chunks\[root-of-the-server]__1uz-q9i._.js:945:166
+
+  942         expiresAt: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$time$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["casablancaDateAt"])(dailyKey, 23, 59, 59)
+  943     }));
+  944 if (data.length > 0) {
+→ 945     await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].missionAssignment.createMany(
+Foreign key constraint violated: `MissionAssignment_userId_fkey (index)`
+⨯ Error [PrismaClientKnownRequestError]: 
+Invalid `{imported module ./src/lib/prisma.ts}["prisma"].missionAssignment.createMany()` invocation in
+C:\Users\arhou\OneDrive\Bureau\projet omar\colab\loby\.next\dev\server\chunks\[root-of-the-server]__1uz-q9i._.js:945:166
+
+  942         expiresAt: (0, {imported module ./src/lib/time.ts}["casablancaDateAt"])(dailyKey, 23, 59, 59)
+  943     }));
+  944 if (data.length > 0) {
+→ 945     await {imported module ./src/lib/prisma.ts}["prisma"].missionAssignment.createMany(
+Foreign key constraint violated: `MissionAssignment_userId_fkey (index)`
+    at <unknown> (src\lib\missions.ts:48:38)
+    at async ensureAssignments (src\lib\missions.ts:48:7)
+    at async GET (src\app\api\rewards\missions\route.ts:16:3)
+  46 |     }));
+  47 |     if (data.length > 0) {
+> 48 |       await prisma.missionAssignment.createMany({ data, skipDuplicates: true });
+     |                                      ^
+  49 |       created += data.length;
+  50 |     }
+  51 |   } {
+  code: 'P2003',
+  clientVersion: '5.22.0',
+  meta: {
+    modelName: 'MissionAssignment',
+    field_name: 'MissionAssignment_userId_fkey (index)'
+  }
+}
+ GET /api/rewards/missions 500 in 48ms (next.js: 3ms, application-code: 45ms)

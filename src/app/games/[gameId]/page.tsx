@@ -106,9 +106,9 @@ export default function GamePage({
         <div className="mb-2">
           <StarMark size={48} />
         </div>
-        <h1 className="font-lalezar text-3xl text-neutral-50 text-glow-cyan">الطاولة ما تلقاتهاش 🥲</h1>
+        <h1 className="font-lalezar text-3xl text-neutral-50 text-glow-cyan">مالقيناش هاد الطبلة 🥲</h1>
         <p className="font-cairo text-sm font-semibold text-neutral-400">
-          هاد اللعبة ماشي موجودة فالمخزن ديالنا.
+          هاد اللعبة ماكايناش عندنا.
         </p>
         <Link href="/" className="btn-chunk btn-cyber mt-2 px-6 py-3 text-sm">
           رجع للساحة
@@ -175,7 +175,7 @@ export default function GamePage({
             </div>
 
             <p className="text-blink font-cairo text-xs font-bold text-neutral-500">
-              كنحمل اللعبة…
+              اللعبة كتشارجا...
             </p>
           </div>
         </div>
@@ -192,7 +192,7 @@ export default function GamePage({
         <button
           onClick={() => setExitConfirm(true)}
           className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-[#030812]/70 text-white shadow-lg backdrop-blur-md transition hover:border-red-500/40 hover:text-red-400 active:scale-90"
-          aria-label="خروج من اللعبة"
+          aria-label="خرج من اللعبة"
         >
           <X className="h-5 w-5" />
         </button>
@@ -214,15 +214,15 @@ export default function GamePage({
             <div className="mb-3 flex justify-center">
               <Trophy className="h-12 w-12 text-amber-400 drop-shadow-[0_0_18px_rgba(251,191,36,.6)]" />
             </div>
-            <h2 className="font-lalezar text-2xl text-neutral-50">اللعبة خلصات!</h2>
+            <h2 className="font-lalezar text-2xl text-neutral-50">اللعبة سالات!</h2>
             <p className="mt-1 font-cairo text-[13px] font-semibold text-neutral-400">
-              شكراً على اللعب
+              شكرا حيت لعبتي معانا
             </p>
             {coins !== null && (
               <div className="mt-4 flex items-center justify-center gap-2 rounded-xl border border-cyan-400/12 bg-cyan-400/[0.05] px-4 py-3">
                 <Coins className="h-5 w-5 text-amber-400" />
                 <span className="font-lalezar text-xl text-amber-300">{coins}</span>
-                <span className="font-cairo text-sm font-semibold text-neutral-400">كولة باقية</span>
+                <span className="font-cairo text-sm font-semibold text-neutral-400">مازالا جولة</span>
               </div>
             )}
             <div className="mt-5 flex flex-col gap-2">
@@ -232,7 +232,7 @@ export default function GamePage({
                 className="btn-chunk btn-amber w-full py-3 text-[13px]"
               >
                 {replaying ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
-                ألعب مرة أخرى
+                عاود لعب
               </button>
               <Link href="/?from=game" className="btn-chunk btn-blood w-full py-3 text-[13px]">
                 <ArrowRight className="h-4 w-4" />
@@ -248,9 +248,9 @@ export default function GamePage({
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setExitConfirm(false)} />
           <div className="bounce-in relative w-full max-w-xs rounded-2xl border border-cyan-400/15 bg-[#060c1a] p-6 text-center shadow-2xl">
-            <h2 className="font-lalezar text-2xl text-neutral-50">بغيتي تخرج من اللعبة؟</h2>
+            <h2 className="font-lalezar text-2xl text-neutral-50">واش بغيتي تخرج من اللعبة؟</h2>
             <p className="mt-1.5 font-cairo text-[13px] font-semibold text-neutral-400">
-              تقدموك فهاد الجولة غادي يتضيع.
+              التقدم ديالك فهاد الجولة غادي يضيع.
             </p>
             <div className="mt-5 flex flex-col gap-2">
               <button
@@ -259,11 +259,11 @@ export default function GamePage({
                 className="btn-chunk btn-amber w-full py-3 text-[13px]"
               >
                 {replaying ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
-                ألعب مرة أخرى
+                عاود لعب
               </button>
               <div className="grid grid-cols-2 gap-2">
                 <button onClick={() => setExitConfirm(false)} className="btn-chunk btn-ghost-hollow px-3 py-3 text-[13px]">
-                  كمّل اللعب
+                  كمل اللعب
                 </button>
                 <Link href="/?from=game" className="btn-chunk btn-blood px-3 py-3 text-[13px]">
                   <ArrowRight className="h-4 w-4" />

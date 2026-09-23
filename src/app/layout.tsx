@@ -34,8 +34,8 @@ const archivoBlack = Archivo_Black({
 });
 
 export const metadata: Metadata = {
-  title: "PLAYM3ANA — ساحة اللعب",
-  description: "Pass & play party games بالدارجة على تيليفون واحد. العب مع الصحاب ديالك!",
+  title: "PLAYM3ANA — بلاصة اللعب",
+  description: "ألعاب د القصارة بالدارجة فتيليفون واحد. لعب مع صحابك!",
   applicationName: "PLAYM3ANA",
 };
 

@@ -63,9 +63,9 @@ export default function ProfilePage({
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-[#030812] px-6 text-center">
         <StarMark size={48} />
-        <h1 className="font-lalezar text-3xl text-neutral-50">هاد اللاعب ما تلقيناهش 🥲</h1>
+        <h1 className="font-lalezar text-3xl text-neutral-50">مالقيناش هاد اللعّاب 🥲</h1>
         <p className="font-cairo text-sm font-semibold text-neutral-400">
-          ربما غير الاسم أو حدف الحساب.
+          يمكن بدل السمية ولا مسح الكونط.
         </p>
         <Link href="/" className="btn-chunk btn-cyber mt-2 px-6 py-3 text-sm">
           رجع للساحة
@@ -146,10 +146,10 @@ export default function ProfilePage({
           {/* Stats grid */}
           <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
-              { label: 'عملات',       val: profile.coins.toLocaleString(),   color: 'text-amber-400',  icon: '🪙' },
-              { label: 'جلسات',       val: profile.gamesPlayed,               color: 'text-cyan-400',   icon: '🎮' },
-              { label: 'سلسلة حالية', val: `${profile.streakCount} 🔥`,       color: 'text-red-400',    icon: '' },
-              { label: 'أطول سلسلة',  val: `${profile.longestStreak} يوم`,    color: 'text-orange-400', icon: '' },
+              { label: 'كوينز',       val: profile.coins.toLocaleString(),   color: 'text-amber-400',  icon: '🪙' },
+              { label: 'ڭلسات',       val: profile.gamesPlayed,               color: 'text-cyan-400',   icon: '🎮' },
+              { label: 'الستريك ديال دابا', val: `${profile.streakCount} 🔥`,       color: 'text-red-400',    icon: '' },
+              { label: 'أطول ستريك',  val: `${profile.longestStreak} يوم`,    color: 'text-orange-400', icon: '' },
             ].map((s) => (
               <div
                 key={s.label}
@@ -166,7 +166,7 @@ export default function ProfilePage({
             <div className="mb-4 rounded-2xl border border-purple-400/20 bg-purple-950/10 p-5">
               <div className="mb-3 flex items-center gap-2">
                 <Zap className="h-4 w-4 text-purple-400" />
-                <span className="font-cairo text-[13px] font-black text-purple-300">كود الدعوة ديالك</span>
+                <span className="font-cairo text-[13px] font-black text-purple-300">الكود د الدعوة ديالك</span>
               </div>
               <div className="flex items-center gap-2">
                 <code className="flex-1 overflow-hidden rounded-lg border border-purple-400/15 bg-[#030812] px-4 py-2.5 font-mono text-[15px] tracking-widest text-purple-200">
@@ -177,11 +177,11 @@ export default function ProfilePage({
                   className="flex shrink-0 items-center gap-1.5 rounded-lg border border-purple-400/30 bg-purple-400/10 px-4 py-2.5 font-cairo text-[12px] font-black text-purple-300 transition hover:bg-purple-400/20 active:scale-95"
                 >
                   {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-                  {copied ? 'تم!' : 'نسخ'}
+                  {copied ? 'تم!' : 'كوپي'}
                 </button>
               </div>
               <p className="mt-2 font-cairo text-[11px] text-neutral-600">
-                شارك الكود مع صاحبك — كلاكم غاديين تربحو عملات 🎁
+                بارطاجي الكود مع صاحبك — بجوج غاتربحو كوينز 🎁
               </p>
             </div>
           )}
@@ -189,7 +189,7 @@ export default function ProfilePage({
           {/* Recent sessions */}
           {profile.recentSessions.length > 0 && (
             <div>
-              <h2 className="mb-3 font-lalezar text-xl text-neutral-300">آخر الجلسات</h2>
+              <h2 className="mb-3 font-lalezar text-xl text-neutral-300">آخر الڭلسات</h2>
               <div className="flex flex-col gap-2">
                 {profile.recentSessions.map((s, i) => {
                   const game = GAMES.find((g) => g.id === s.gameId);
@@ -228,7 +228,7 @@ export default function ProfilePage({
 
           {/* Member since */}
           <p className="mt-8 text-center font-cairo text-[11px] text-neutral-700">
-            عضو منذ {new Date(profile.createdAt).toLocaleDateString('ar-MA')} 🇲🇦
+            مقيد معانا من {new Date(profile.createdAt).toLocaleDateString('ar-MA')} 🇲🇦
           </p>
         </main>
       ) : (
