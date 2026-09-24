@@ -18566,17 +18566,12 @@ function CS() {
   var i;
   const e = b((s) => s.phase),
     t = (i = PS[e]) != null ? i : u0,
-    [n, r] = C.useState(() =>
-      typeof window != "undefined"
-        ? window.matchMedia("(orientation: landscape)").matches &&
-          window.innerHeight < 560
-        : !1,
-    );
+    [n, r] = C.useState(!1);
   return (
     C.useEffect(() => {
       var a;
       const s = window.matchMedia("(orientation: landscape)"),
-        o = () => r(s.matches && window.innerHeight < 560);
+        o = () => r(!1);
       return (
         (a = s.addEventListener) == null || a.call(s, "change", o),
         () => {

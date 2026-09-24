@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { StarMark } from '@/components/Star';
 import GameCard from '@/components/GameCard';
+import GameIcon from '@/components/GameIcon';
 import GuestNotice from '@/components/landing/GuestNotice';
 import ComingSoon from '@/components/landing/ComingSoon';
 import LeaderboardTeaser from '@/components/landing/LeaderboardTeaser';
@@ -102,9 +103,7 @@ function LaunchOverlay({ game }: { game: Game }) {
               }}
             />
           ))}
-          <span className="relative z-10 text-6xl drop-shadow-[0_0_28px_rgba(0,217,255,.6)]">
-            {game.emoji}
-          </span>
+          <GameIcon game={game} size={116} />
         </div>
 
         {/* Labels */}
@@ -160,7 +159,6 @@ function LobbyContent() {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [busyAction, setBusyAction] = useState<'coins' | 'ad' | null>(null);
   const [adModalOpen, setAdModalOpen] = useState(false);
-  const [expandedGameId, setExpandedGameId] = useState<string | null>(null);
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
   const [adStatus, setAdStatus] = useState<'idle' | 'watching' | 'verifying'>('idle');
   const [toast, setToast] = useState<{ kind: 'error' | 'ok'; text: string } | null>(null);
@@ -784,11 +782,11 @@ function LobbyContent() {
         {!isAuthed && <GuestNotice />}
 
         {/* ── GAMES SECTION ── */}
-        <section className="mt-6 sm:mt-14">
+        <section className="mt-4 sm:mt-14">
           {/* Section header */}
-          <div className="section-entrance mb-0 flex flex-col items-center gap-3 text-center sm:mb-10">
-            <div className="section-label hidden! sm:inline-flex">الطبلات د هاد الليلة</div>
-            <h2 className="hidden font-lalezar text-[clamp(2.2rem,8vw,3.5rem)] leading-none text-[#f5eddc] text-glow-amber sm:block">
+          <div className="section-entrance mb-5 flex flex-col items-center gap-2.5 text-center sm:mb-10">
+            <div className="section-label inline-flex">الطبلات د هاد الليلة</div>
+            <h2 className="font-lalezar text-[clamp(1.9rem,8vw,3.5rem)] leading-none text-[#f5eddc] text-glow-amber">
               عزل طبلتك — بصحتك
             </h2>
             <p className="hidden font-cairo text-[13.5px] font-semibold text-[#d8c39a]/55 sm:block">
@@ -796,25 +794,28 @@ function LobbyContent() {
             </p>
           </div>
 
-          {/* Cards grid */}
+          {/* ONE map — all games, no duplicates.
+              Mafia spans the full row width on tablet/desktop via col-span.
+              The GameCard component handles both vertical (default) and
+              horizontal (Mafia on lg+) layouts with responsive CSS.          */}
           <div
             ref={cardsRef}
-            className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 lg:gap-7"
+            className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 lg:gap-6"
           >
             {GAMES.map((game, i) => (
               <div
                 key={game.id}
-                className={`card-entrance stagger-${Math.min(i + 1, 4)} ${i % 2 ? 'lg:mt-6' : ''}`}
+                className={
+                  game.isMafia
+                    ? "sm:col-span-2 lg:col-span-4"
+                    : `card-entrance stagger-${Math.min(i, 3) + 1}`
+                }
               >
                 <GameCard
                   game={game}
                   coins={coins}
                   isBusy={busyId === game.id}
                   loadingAction={busyAction}
-                  expanded={expandedGameId === game.id}
-                  onToggle={() =>
-                    setExpandedGameId((prev) => (prev === game.id ? null : game.id))
-                  }
                   onPlay={(e) => playWithCoins(game.id, e)}
                   onWatchAd={() => watchAdToPlay(game.id)}
                 />
@@ -1170,7 +1171,7 @@ function LobbyContent() {
 
 export default function LobbyPage() {
   return (
-    <Suspense>
+    <Suspense fallback={null}>
       <LobbyContent />
     </Suspense>
   );

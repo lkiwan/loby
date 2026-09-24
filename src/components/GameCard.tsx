@@ -1,425 +1,237 @@
 "use client";
 
-import { useRef, useCallback } from "react";
+import { useCallback } from "react";
 import Image from "next/image";
-import { ChevronDown, Coins, Loader2, Play, Video, Zap } from "lucide-react";
-import { GAMES, MAFIA_ART, type Game } from "@/lib/games";
+import { Coins, Loader2, Play, Video } from "lucide-react";
+import { MAFIA_ART, type Game, GAMES } from "@/lib/games";
+import { GameMetaRow } from "@/components/GameMeta";
+import { GameTags } from "@/components/GameTag";
 import Star from "@/components/Star";
 
-type GameCardProps = {
+/* ─────────────────────────────────────────────────────────────
+   Props — no expanded/onToggle: content is always fully visible.
+   The old mobile-accordion has been removed.
+───────────────────────────────────────────────────────────── */
+export type GameCardProps = {
   game: Game;
   coins: number;
   loadingAction: "coins" | "ad" | null;
   isBusy: boolean;
-  expanded: boolean;
-  onToggle: () => void;
   onPlay: (e: React.MouseEvent) => void;
   onWatchAd: () => void;
 };
 
-/* 3D tilt on mouse move */
-function TiltCard({
-  children,
-  className,
-  style,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  style?: React.CSSProperties;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = ref.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const x = ((e.clientX - r.left) / r.width - 0.5) * 14;
-    const y = ((e.clientY - r.top) / r.height - 0.5) * 12;
-    el.style.transform = `perspective(900px) rotateY(${x}deg) rotateX(${-y}deg) translateY(-10px) scale(1.02)`;
-  };
-  const onLeave = () => {
-    if (ref.current) ref.current.style.transform = "";
-  };
-
-  return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        ...style,
-        transition: "transform 0.12s ease",
-        willChange: "transform",
-      }}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-    >
-      {children}
-    </div>
-  );
-}
-
-/* Ripple effect spawner */
+/* ── Ripple effect on button press ── */
 function useRipple() {
   return useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-    const btn = e.currentTarget;
+    const btn  = e.currentTarget;
     const rect = btn.getBoundingClientRect();
-    const ripple = document.createElement("span");
-    ripple.className = "btn-ripple-wave";
-    ripple.style.left = `${e.clientX - rect.left - rect.width / 2}px`;
-    ripple.style.top = `${e.clientY - rect.top - rect.height / 2}px`;
-    btn.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 560);
+    const r    = document.createElement("span");
+    r.className  = "btn-ripple-wave";
+    r.style.left = `${e.clientX - rect.left - rect.width / 2}px`;
+    r.style.top  = `${e.clientY - rect.top  - rect.height / 2}px`;
+    btn.appendChild(r);
+    setTimeout(() => r.remove(), 560);
   }, []);
 }
 
-function GameArt({ game }: { game: Game }) {
-  if (game.isMafia) {
-    return (
-      <div className="relative h-full w-full overflow-hidden bg-[#0a0010]">
-        <Image
-          src={MAFIA_ART}
-          alt={game.latinTitle}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-110"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0010] via-transparent to-black/30" />
-        <div className="glow-pulse absolute -bottom-6 start-1/2 h-24 w-3/4 -translate-x-1/2 rounded-[50%] bg-red-700/55 blur-2xl" />
+/* ─────────────────────────────────────────────────────────────
+   Thumbnail — renders once, handles all game art variants.
+   Mafia: full horror treatment (drips, glow, "FEATURED" badge).
+   keyArt games: photo with accent colour glows.
+   Fallback: animated star emoji.
+───────────────────────────────────────────────────────────── */
+function GameThumbnail({ game }: { game: Game }) {
+  const src = game.isMafia ? MAFIA_ART : game.keyArt;
 
-        <span className="drip" style={{ left: "10%", height: 26 }} />
-        <span
-          className="drip"
-          style={{ left: "47%", height: 38, animationDelay: "1.3s" }}
-        />
-        <span
-          className="drip"
-          style={{ right: "12%", height: 22, animationDelay: "2.4s" }}
-        />
-
-        <div className="absolute inset-x-0 bottom-0 p-3 pb-2">
-          <p className="horror-flicker font-grit text-[clamp(1.3rem,5vw,1.75rem)] uppercase leading-none tracking-tight text-horror">
-            L&apos;MAFIA
-          </p>
-          <p className="text-gold-sheen font-grit text-[clamp(0.75rem,2.8vw,1rem)] uppercase tracking-[0.32em]">
-            D&apos;LHOUMA
-          </p>
-        </div>
-
-        <span className="absolute start-3 top-3 rounded-full border border-red-500/45 bg-black/60 px-2.5 py-1 font-cairo text-[9.5px] font-black tracking-wide text-red-400 backdrop-blur-sm">
-          ★ FEATURED
-        </span>
-      </div>
-    );
-  }
-
-  if (game.keyArt) {
+  if (!src) {
     return (
       <div className="relative h-full w-full overflow-hidden bg-[#050910]">
-        <div
-          className="absolute -end-6 -top-4 h-36 w-36 rounded-full opacity-45 blur-2xl transition-opacity duration-500 group-hover:opacity-80"
-          style={{ background: game.glowAccent }}
-        />
-        <div
-          className="absolute -bottom-8 -start-6 h-32 w-32 rounded-full opacity-35 blur-2xl transition-opacity duration-500 group-hover:opacity-65"
-          style={{ background: game.starAccent }}
-        />
-        <Image
-          src={game.keyArt}
-          alt={game.latinTitle}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-110"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#050910]/80 via-transparent to-transparent" />
+        <div className="absolute -end-8 -top-6 h-36 w-36 rounded-full opacity-50 blur-2xl"
+          style={{ background: game.glowAccent }} />
+        <div className="absolute -bottom-10 -start-8 h-32 w-32 rounded-full opacity-45 blur-2xl"
+          style={{ background: game.starAccent }} />
+        <div className="absolute inset-0 grid place-items-center">
+          <Star emoji={game.emoji} accent={game.starAccent} size={88} spin />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-[#050910]">
-      <div
-        className="absolute -end-8 -top-6 h-36 w-36 rounded-full opacity-40 blur-2xl transition-opacity duration-500 group-hover:opacity-70"
-        style={{ background: game.glowAccent }}
+    <div className={`relative h-full w-full overflow-hidden ${game.isMafia ? "bg-[#0a0010]" : "bg-[#050910]"}`}>
+      {/* accent glows behind the photo (non-Mafia only) */}
+      {!game.isMafia && (
+        <>
+          <div className="absolute -end-6 -top-4 h-40 w-40 rounded-full opacity-60 blur-2xl transition-opacity duration-500 group-hover:opacity-90"
+            style={{ background: game.glowAccent }} />
+          <div className="absolute -bottom-8 -start-6 h-36 w-36 rounded-full opacity-50 blur-2xl transition-opacity duration-500 group-hover:opacity-85"
+            style={{ background: game.starAccent }} />
+        </>
+      )}
+
+      {/* Mafia horror effects */}
+      {game.isMafia && (
+        <>
+          <div className="glow-pulse absolute -bottom-6 start-1/2 h-24 w-3/4 -translate-x-1/2 rounded-[50%] bg-red-700/55 blur-2xl" />
+          <span className="drip" style={{ left: "10%",  height: 26 }} />
+          <span className="drip" style={{ left: "47%",  height: 38, animationDelay: "1.3s" }} />
+          <span className="drip" style={{ right: "12%", height: 22, animationDelay: "2.4s" }} />
+          <span className="absolute start-4 top-4 z-10 rounded-full border border-red-500/45 bg-black/60 px-3 py-1 font-cairo text-[10px] font-black tracking-wide text-red-400 backdrop-blur-sm">
+            ★ FEATURED
+          </span>
+        </>
+      )}
+
+      <Image
+        src={src}
+        alt={game.darijaTitle}
+        fill
+        priority={game.isMafia}
+        sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 25vw"
+        className="object-cover transition-transform duration-700 group-hover:scale-110"
       />
-      <div
-        className="absolute -bottom-10 -start-8 h-32 w-32 rounded-full opacity-35 blur-2xl transition-opacity duration-500 group-hover:opacity-65"
-        style={{ background: game.starAccent }}
-      />
-      <div className="absolute inset-0 grid place-items-center">
-        <div className="transition-transform duration-500 group-hover:scale-115 group-hover:rotate-8">
-          <Star emoji={game.emoji} accent={game.starAccent} size={96} spin />
-        </div>
-      </div>
-      <div className="absolute inset-x-0 bottom-2 pb-1 text-center">
-        <p
-          className="font-lalezar text-[clamp(1.6rem,7.5vw,2.4rem)] leading-none drop-shadow-[0_2px_12px_rgba(0,0,0,.9)]"
-          style={{
-            color: game.starAccent,
-            textShadow: `0 0 22px ${game.starAccent}70`,
-          }}
-        >
-          {game.darijaTitle}
-        </p>
-      </div>
+
+      {/* bottom fade so the card border shows cleanly */}
+      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#080d1a] to-transparent" />
     </div>
   );
 }
 
+/* ─────────────────────────────────────────────────────────────
+   GameCard — ONE component for ALL games.
+
+   Layout rules (via Tailwind responsive classes, no JS):
+     • Regular games  → always flex-col (vertical card)
+     • Mafia          → flex-col on mobile, flex-row on lg+
+       (handled by the wrapper col-span in page.tsx + game.isMafia
+        flag below)
+
+   Content renders ONCE — no hidden duplicates, no accordion.
+───────────────────────────────────────────────────────────── */
 export default function GameCard({
-  game,
-  coins,
-  loadingAction,
-  isBusy,
-  expanded,
-  onToggle,
-  onPlay,
-  onWatchAd,
+  game, coins, loadingAction, isBusy, onPlay, onWatchAd,
 }: GameCardProps) {
   const canAfford = coins >= game.cost;
-  const ripple = useRipple();
+  const ripple    = useRipple();
+  const accent    = game.starAccent;
+
+  /* Primary button gradient derived from the game's own palette */
+  const btnBg = game.isMafia
+    ? "linear-gradient(180deg,#ef4444 0%,#dc2626 55%,#991b1b 130%)"
+    : `linear-gradient(135deg,${game.glowAccent} 0%,${accent} 100%)`;
+  const btnShadow = canAfford
+    ? game.isMafia
+      ? "0 5px 0 #450a0a, 0 14px 28px rgba(220,38,38,.4)"
+      : `0 5px 0 ${accent}88, 0 12px 24px ${accent}28`
+    : "none";
 
   return (
-    <TiltCard
-      className={`group game-card-v2 holo-shimmer ${game.isMafia ? "spinning-border card-mafia" : ""} flex flex-col`}
-    >
-      {/* Top accent line */}
-      {!game.isMafia && (
-        <div
-          className="absolute inset-x-0 top-0 h-[2px] z-10 rounded-t-[22px]"
-          style={{
-            background: `linear-gradient(90deg, transparent, ${game.starAccent}90, ${game.starAccent}, ${game.starAccent}90, transparent)`,
-            boxShadow: `0 0 12px ${game.starAccent}60`,
-          }}
-        />
-      )}
+    <div className={[
+      "group game-card-v2 holo-shimmer flex overflow-hidden",
+      /* Mafia: side-by-side on large screens */
+      game.isMafia
+        ? "card-mafia spinning-border flex-col lg:flex-row"
+        : "flex-col",
+    ].join(" ")}>
 
-      {/* Art (desktop) */}
-      <div className="relative hidden aspect-[4/5] w-full overflow-hidden rounded-t-[21px] sm:block sm:aspect-auto sm:h-[190px]">
-        <GameArt game={game} />
-
-        {/* Hover play overlay */}
-        <div className="play-reveal rounded-t-[21px]">
-          <button
-            onClick={(e) => {
-              ripple(e);
-              onPlay(e);
-            }}
-            disabled={isBusy || !canAfford}
-            className="flex h-14 w-14 items-center justify-center rounded-full border-2 transition-all duration-200 hover:scale-110 active:scale-95 overflow-hidden relative"
-            style={{
-              borderColor: game.starAccent,
-              background: `${game.starAccent}28`,
-              color: game.starAccent,
-              boxShadow: `0 0 20px ${game.starAccent}50`,
-            }}
-          >
-            {isBusy && loadingAction === "coins" ? (
-              <Loader2 className="h-6 w-6 animate-spin" />
-            ) : (
-              <Play className="h-6 w-6 fill-current" />
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Bottom glow fade from art to card (desktop) */}
-      <div
-        className="pointer-events-none absolute inset-x-0 hidden h-10 z-[5] sm:block"
+      {/* ── per-game accent top border ── */}
+      <div className="absolute inset-x-0 top-0 z-10 h-[2px]"
         style={{
-          top: 180,
-          background: `linear-gradient(to bottom, ${game.isMafia ? "#0a0010" : "#050910"}, transparent)`,
-        }}
-      />
+          background: `linear-gradient(90deg,transparent,${accent}90,${accent},${accent}90,transparent)`,
+          boxShadow:  `0 0 14px ${accent}65`,
+        }} />
 
-      {/* ── Mobile compact card (tap to reveal options) ── */}
-      <div className="relative z-10 sm:hidden">
-        <button
-          type="button"
-          onClick={onToggle}
-          aria-expanded={expanded}
-          className="block w-full text-start"
-        >
-          {/* Full artwork */}
-          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-t-[21px]">
-            <GameArt game={game} />
-            <span className="absolute bottom-2 end-2 grid h-7 w-7 place-items-center rounded-full border border-white/15 bg-black/50 backdrop-blur-sm">
-              <ChevronDown
-                className={`h-4 w-4 text-white transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}
-              />
-            </span>
-          </div>
-
-          <div className="px-3 pt-2.5">
-            {/* Name */}
-            <span className="block truncate font-lalezar text-[1.25rem] leading-tight" style={{ color: game.starAccent, textShadow: `0 0 18px ${game.starAccent}60` }}>
-              {game.darijaTitle}
-            </span>
-            <span className="block truncate font-grit text-[8.5px] uppercase tracking-[0.16em] text-neutral-600">
-              {game.latinTitle}
-            </span>
-
-            {/* Players + cost meta row */}
-            <span className="mt-2 flex w-full items-center gap-1.5">
-              <span className="flex items-center justify-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 font-cairo text-[10px] font-black text-neutral-400">
-                👥 {game.players}
-              </span>
-              <span
-                className="flex items-center justify-center gap-1 rounded-full border px-2.5 py-1 font-cairo text-[10px] font-black tabular-nums"
-                style={{
-                  borderColor: `${game.starAccent}50`,
-                  background: `${game.starAccent}12`,
-                  color: game.starAccent,
-                  boxShadow: `0 0 12px ${game.starAccent}22`,
-                }}
-              >
-                <Coins className="h-3 w-3 shrink-0" />
-                {game.cost} كوين
-              </span>
-            </span>
-          </div>
-        </button>
-
-        {/* Expandable: description + play options */}
-        <div
-          className={`grid transition-[grid-template-rows] duration-300 ease-out ${expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
-        >
-          <div className="overflow-hidden">
-            <div className="px-3 pb-3">
-              <p className="pt-2.5 font-cairo text-[11.5px] font-semibold leading-relaxed text-neutral-500">
-                {game.desc}
-              </p>
-              <div className="mt-2.5 grid grid-cols-2 gap-1.5">
-                <button
-                  onClick={(e) => {
-                    ripple(e);
-                    onPlay(e);
-                  }}
-                  disabled={isBusy || !canAfford}
-                  className={`btn-chunk relative overflow-hidden py-2.5 text-[12.5px] ${game.isMafia ? "btn-blood" : "btn-amber"} ${!canAfford ? "opacity-40" : ""}`}
-                >
-                  {loadingAction === "coins" && isBusy ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  ) : (
-                    <Zap className="h-3.5 w-3.5" />
-                  )}
-                  بالعملات
-                </button>
-                <button
-                  onClick={onWatchAd}
-                  disabled={isBusy}
-                  className="btn-chunk btn-ghost-hollow relative overflow-hidden py-2.5 text-[12.5px]"
-                >
-                  {loadingAction === "ad" && isBusy ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  ) : (
-                    <Video className="h-3.5 w-3.5" />
-                  )}
-                  إعلان
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* ══════════════════════
+          THUMBNAIL (once)
+      ══════════════════════ */}
+      <div className={[
+        "relative flex-shrink-0 overflow-hidden",
+        game.isMafia
+          /* mobile: wide banner; desktop: auto height filling the row */
+          ? "aspect-[16/9] sm:aspect-[21/9] lg:aspect-auto lg:w-[52%]"
+          : "aspect-[16/10]",
+      ].join(" ")}>
+        <GameThumbnail game={game} />
       </div>
 
-      {/* ── Desktop content (unchanged) ── */}
-      <div className="relative z-10 hidden flex-1 flex-col gap-2.5 p-4 pt-3 sm:flex">
+      {/* ══════════════════════
+          CONTENT (once)
+      ══════════════════════ */}
+      <div className="flex flex-1 flex-col gap-2.5 p-4 pt-3.5">
+
         {/* Title */}
         <div>
-          <p
-            className="font-lalezar text-[1.05rem] leading-tight sm:text-[1.3rem]"
-            style={{
-              color: game.starAccent,
-              textShadow: `0 0 18px ${game.starAccent}60`,
-            }}
-          >
+          <h3 className={[
+            "font-lalezar leading-tight",
+            game.isMafia ? "text-[1.65rem]" : "text-[1.35rem]",
+          ].join(" ")}
+            style={{ color: accent, textShadow: `0 0 20px ${accent}60` }}>
             {game.darijaTitle}
-          </p>
-          <p className="font-grit text-[8px] uppercase tracking-[0.16em] text-neutral-600 sm:text-[10px] sm:tracking-[0.18em]">
+          </h3>
+          <p className="mt-0.5 font-grit text-[8px] uppercase tracking-[0.18em] text-neutral-600">
             {game.latinTitle}
           </p>
         </div>
 
+        {/* Metadata: players · duration · difficulty */}
+        <GameMetaRow game={game} />
+
         {/* Description */}
-        <p className="font-cairo text-[11.5px] font-semibold leading-relaxed text-neutral-500 line-clamp-2 sm:line-clamp-none">
+        <p className="font-cairo text-[11.5px] font-semibold leading-relaxed text-neutral-500 line-clamp-2">
           {game.desc}
         </p>
 
-        {/* Cost + players */}
-        <div className="mt-auto flex items-center justify-between pt-1">
-          <span className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 font-cairo text-[10px] font-black text-neutral-400 sm:flex">
-            {game.players} 👥
-          </span>
-          <span className="flex items-center gap-1 rounded-full border px-2 py-0.5 font-cairo text-[10px] font-black tabular-nums sm:gap-1.5 sm:px-2.5 sm:py-1 sm:text-[11px]"
-            style={{
-              borderColor: `${game.starAccent}50`,
-              background: `${game.starAccent}12`,
-              color: game.starAccent,
-              boxShadow: `0 0 12px ${game.starAccent}22`,
-            }}
-          >
-            <Coins className="h-3 w-3" />
-            {game.cost} كوين
-          </span>
-        </div>
+        {/* Category tags */}
+        <GameTags game={game} />
 
-        {/* Affordability power bar */}
-        <div className="power-bar">
-          <div
-            className="power-bar-fill"
-            style={{
-              width: `${Math.min(100, (coins / game.cost) * 100)}%`,
-              background: canAfford
-                ? `linear-gradient(90deg, ${game.starAccent}, rgba(0,255,136,.8))`
-                : `linear-gradient(90deg, rgba(239,68,68,.7), rgba(239,68,68,.4))`,
-              boxShadow: canAfford
-                ? `0 0 8px ${game.starAccent}60`
-                : "0 0 8px rgba(239,68,68,.4)",
-            }}
-          />
-        </div>
+        {/* Thin accent divider */}
+        <div className="h-px w-full"
+          style={{ background: `linear-gradient(90deg,transparent,${accent}30,transparent)` }} />
 
-        {/* Separator (desktop only) */}
-        <div
-          className="hidden h-px w-full sm:block"
-          style={{
-            background: `linear-gradient(90deg, transparent, ${game.starAccent}35, transparent)`,
-          }}
-        />
+        {/* ── CTAs (each renders exactly ONCE) ── */}
+        <div className="mt-auto flex flex-col gap-1.5">
 
-        {/* Buttons */}
-        <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2 sm:gap-2">
+          {/* PRIMARY — لعب دابا */}
           <button
-            onClick={(e) => {
-              ripple(e);
-              onPlay(e);
-            }}
+            onClick={(e) => { ripple(e); onPlay(e); }}
             disabled={isBusy || !canAfford}
-            className={`btn-chunk relative overflow-hidden py-2.5 text-[12.5px] ${game.isMafia ? "btn-blood" : "btn-amber"} ${!canAfford ? "opacity-40" : ""}`}
+            className="btn-chunk relative w-full overflow-hidden py-[11px] text-[14px]"
+            style={{
+              background:  btnBg,
+              color:       "#fff",
+              textShadow:  "0 1px 3px rgba(0,0,0,.4)",
+              boxShadow:   btnShadow,
+              opacity:     !canAfford ? 0.42 : 1,
+            }}
           >
-            {loadingAction === "coins" && isBusy ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <Zap className="h-3.5 w-3.5" />
-            )}
-            بالعملات
+            {isBusy && loadingAction === "coins"
+              ? <Loader2 className="h-[17px] w-[17px] animate-spin" />
+              : <Play className="h-[17px] w-[17px] fill-current" />}
+            لعب دابا
+            {/* coin cost badge */}
+            <span className="ms-auto flex items-center gap-0.5 rounded-full bg-black/25 px-2 py-[3px] font-cairo text-[9.5px] font-black leading-none">
+              <Coins className="h-2.5 w-2.5" /> {game.cost}
+            </span>
           </button>
+
+          {/* SECONDARY — شاهد إعلان ثم العب */}
           <button
             onClick={onWatchAd}
             disabled={isBusy}
-            className="btn-chunk btn-ghost-hollow relative overflow-hidden py-2.5 text-[12.5px]"
+            className="btn-chunk btn-ghost-hollow relative w-full gap-1.5 overflow-hidden py-[9px] text-[11.5px] text-neutral-300"
           >
-            {loadingAction === "ad" && isBusy ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <Video className="h-3.5 w-3.5" />
-            )}
-            إعلان
+            {isBusy && loadingAction === "ad"
+              ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              : <Video className="h-3.5 w-3.5 shrink-0 text-fuchsia-300" />}
+            شاهد إعلان ثم العب
+            <span className="ms-auto rounded-full border border-white/10 bg-white/[0.05] px-2 py-0.5 font-cairo text-[9px] font-black leading-none text-neutral-500">
+              بدون كوين
+            </span>
           </button>
         </div>
       </div>
-    </TiltCard>
+    </div>
   );
 }
 

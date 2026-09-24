@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>سول ولا دير؟ | Nerase</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230E0A1E'/><text y='68' font-size='62' text-anchor='middle' x='50'>❓</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ─── TOKENS ──────────────────────────────────────────────── */
+:root{
+  --bg:#0E0A1E;
+  --bg2:#150E2A;
+  --card:#1C1538;
+  --card2:#221B44;
+  --border:rgba(168,85,247,.22);
+  --border2:rgba(244,114,182,.22);
+  --ink:#EDE0FF;
+  --ink70:rgba(237,224,255,.7);
+  --ink50:rgba(237,224,255,.5);
+  --ink30:rgba(237,224,255,.3);
+  --ink15:rgba(237,224,255,.15);
+  --pink:#F472B6;
+  --pink2:#EC4899;
+  --violet:#A855F7;
+  --violet2:#7C3AED;
+  --blue:#60A5FA;
+  --blue2:#2563EB;
+  --green:#34D399;
+  --green2:#059669;
+  --gold:#FBBF24;
+  --red:#F43F5E;
+  --r:20px;
+  --r-sm:14px;
+  --shadow:0 4px 0 rgba(0,0,0,.7);
+  --shadow-sm:0 3px 0 rgba(0,0,0,.55);
+  --glow-v:0 0 20px rgba(168,85,247,.35);
+  --glow-p:0 0 20px rgba(244,114,182,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow-x:hidden}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Cairo',system-ui,sans-serif;
+  display:flex;justify-content:center;
+  -webkit-user-select:none;user-select:none;
+  -webkit-touch-callout:none;
+  overscroll-behavior:none;
+}
+input,textarea{-webkit-user-select:text;user-select:text}
+
+/* star field bg */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    radial-gradient(1px 1px at 15% 12%,rgba(168,85,247,.6) 0,transparent 0),
+    radial-gradient(1px 1px at 73% 8%,rgba(244,114,182,.5) 0,transparent 0),
+    radial-gradient(1px 1px at 42% 28%,rgba(237,224,255,.4) 0,transparent 0),
+    radial-gradient(1px 1px at 88% 35%,rgba(168,85,247,.5) 0,transparent 0),
+    radial-gradient(1px 1px at 6% 55%,rgba(244,114,182,.4) 0,transparent 0),
+    radial-gradient(1px 1px at 62% 62%,rgba(237,224,255,.3) 0,transparent 0),
+    radial-gradient(1px 1px at 31% 78%,rgba(168,85,247,.5) 0,transparent 0),
+    radial-gradient(1px 1px at 92% 82%,rgba(244,114,182,.4) 0,transparent 0),
+    radial-gradient(1.5px 1.5px at 54% 90%,rgba(237,224,255,.5) 0,transparent 0),
+    radial-gradient(1px 1px at 22% 93%,rgba(168,85,247,.4) 0,transparent 0);
+}
+
+#app{
+  width:100%;max-width:460px;min-height:100dvh;
+  display:flex;flex-direction:column;
+  padding:20px 18px calc(28px + env(safe-area-inset-bottom));
+  position:relative;z-index:1;
+}
+
+.screen{flex:1;display:flex;flex-direction:column;gap:14px;animation:screenIn .45s cubic-bezier(.22,1,.36,1) both}
+.screen.same{animation:softIn .2s ease both}
+.spacer{flex:1}
+
+/* ─── TYPOGRAPHY ──────────────────────────────────────────── */
+h1{font-family:'Lalezar','Cairo',sans-serif;font-size:clamp(42px,12vw,60px);font-weight:400;line-height:1}
+h2{font-family:'Lalezar','Cairo',sans-serif;font-size:clamp(26px,7vw,34px);font-weight:400;line-height:1.1}
+h3{font-size:17px;font-weight:800}
+p{font-size:15px;line-height:1.65;color:var(--ink70)}
+
+/* ─── BUTTONS ─────────────────────────────────────────────── */
+button{
+  font-family:'Cairo',system-ui,sans-serif;
+  font-size:17px;font-weight:800;
+  border:none;border-radius:16px;padding:15px 20px;
+  cursor:pointer;width:100%;
+  background:var(--card2);color:var(--ink);
+  box-shadow:var(--shadow-sm);
+  transition:transform .12s,box-shadow .12s,opacity .15s;
+  position:relative;overflow:hidden;
+  min-height:52px;
+}
+button:hover{transform:translateY(-2px)}
+button:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.7)}
+button:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
+button[disabled]{opacity:.35;cursor:not-allowed;transform:none !important}
+.btn-primary{
+  background:linear-gradient(135deg,var(--violet2),var(--pink));
+  color:#fff;box-shadow:0 4px 0 rgba(124,58,237,.5),var(--glow-v);
+}
+.btn-primary:active{box-shadow:0 1px 0 rgba(124,58,237,.5)}
+.btn-q{
+  background:linear-gradient(135deg,var(--blue2),var(--blue));
+  color:#fff;box-shadow:0 4px 0 rgba(37,99,235,.5);
+  font-size:20px;font-weight:900;padding:20px;
+}
+.btn-a{
+  background:linear-gradient(135deg,var(--green2),var(--green));
+  color:#fff;box-shadow:0 4px 0 rgba(5,150,105,.5);
+  font-size:20px;font-weight:900;padding:20px;
+}
+.btn-ghost{background:var(--card);border:2px solid var(--border);color:var(--ink70)}
+.btn-ghost:hover{border-color:var(--violet);color:var(--ink)}
+.btn-danger{background:linear-gradient(135deg,#991B1B,var(--red));color:#fff;box-shadow:0 4px 0 rgba(220,38,38,.4)}
+.btn-skip{background:var(--card);border:2px solid rgba(243,68,94,.3);color:var(--red);font-size:14px;padding:11px 14px}
+.btn-sm{font-size:14px;padding:11px 14px;min-height:44px}
+.row{display:flex;gap:10px}
+.row button{flex:1}
+
+/* ─── INPUTS ──────────────────────────────────────────────── */
+input{
+  width:100%;font-family:'Cairo',system-ui,sans-serif;
+  font-size:17px;font-weight:700;
+  padding:14px 16px;border-radius:14px;
+  border:2px solid var(--border);
+  background:var(--card);color:var(--ink);
+  transition:border-color .15s,box-shadow .15s;
+  min-height:52px;
+}
+input:focus{outline:0;border-color:var(--violet);box-shadow:0 0 0 3px rgba(168,85,247,.2)}
+input::placeholder{color:var(--ink30);font-weight:600}
+
+/* ─── CARDS ───────────────────────────────────────────────── */
+.card{
+  background:var(--card);border:2px solid var(--border);
+  border-radius:var(--r);padding:18px;
+}
+.card-glow{
+  background:var(--card);
+  border:2px solid var(--border2);
+  border-radius:var(--r);padding:20px;
+  box-shadow:var(--glow-p);
+}
+
+/* ─── PLAYER CHIP ─────────────────────────────────────────── */
+.player-chip{
+  display:flex;align-items:center;gap:10px;
+  background:var(--card2);border:2px solid var(--border);
+  border-radius:12px;padding:10px 14px;
+  animation:fadeUp .3s cubic-bezier(.22,1,.36,1) both;
+}
+.player-chip .avatar{
+  width:36px;height:36px;border-radius:50%;
+  display:grid;place-items:center;
+  font-size:15px;font-weight:900;
+  flex-shrink:0;
+  border:2px solid rgba(0,0,0,.3);
+}
+.player-chip .name{flex:1;font-size:15px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.player-chip .rm{
+  width:30px;height:30px;padding:0;border-radius:50%;
+  background:rgba(243,68,94,.15);border:1.5px solid rgba(243,68,94,.3);
+  color:var(--red);font-size:16px;font-weight:700;
+  display:grid;place-items:center;flex-shrink:0;min-height:30px;
+}
+.player-chip .rm:hover{background:rgba(243,68,94,.25)}
+.player-chip .rm:active{transform:scale(.9)}
+
+/* ─── HOME SCREEN ─────────────────────────────────────────── */
+.home-orb{
+  position:fixed;pointer-events:none;border-radius:50%;
+  filter:blur(60px);opacity:.35;
+  animation:orbFloat 12s ease-in-out infinite;
+}
+.home-orb-1{width:300px;height:300px;background:var(--violet);top:-80px;right:-80px}
+.home-orb-2{width:260px;height:260px;background:var(--pink);bottom:0;left:-80px;animation-direction:reverse;animation-duration:15s}
+.hero{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
+.game-emoji{
+  font-size:72px;line-height:1;
+  display:block;
+  filter:drop-shadow(0 0 20px rgba(244,114,182,.5));
+  animation:float 3.5s ease-in-out infinite;
+}
+.home-title{
+  font-family:'Lalezar','Cairo',sans-serif;
+  font-size:clamp(48px,14vw,68px);
+  line-height:1;
+  background:linear-gradient(135deg,var(--pink),var(--violet));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 20px rgba(168,85,247,.5));
+  animation:titlePulse 3s ease-in-out infinite;
+}
+.home-sub{
+  font-size:clamp(13px,3.5vw,16px);color:var(--ink50);
+  font-weight:700;letter-spacing:.3px;
+}
+.home-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:900;
+  padding:7px 18px;border-radius:99px;
+  background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(244,114,182,.2));
+  border:2px solid var(--border2);
+  color:var(--pink);
+  animation:pop .5s cubic-bezier(.34,1.56,.64,1) .2s both;
+}
+.home-feats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px}
+.home-feat{
+  background:var(--card);border:2px solid var(--border);
+  border-radius:14px;padding:12px 6px;
+  text-align:center;
+  transition:transform .12s;
+}
+.home-feat:nth-child(2){transform:rotate(1deg)}
+.home-feat:nth-child(3){transform:rotate(-1.2deg)}
+.home-feat-ico{font-size:22px;display:block;margin-bottom:4px}
+.home-feat-lbl{font-size:11px;font-weight:800;color:var(--ink50);line-height:1.4;display:block}
+
+/* ─── ROUND BAR ───────────────────────────────────────────── */
+.round-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:13px;color:var(--ink50);font-weight:800;padding:2px 4px;
+}
+.round-bar b{color:var(--pink)}
+.round-progress{
+  height:6px;border-radius:3px;background:var(--ink15);overflow:hidden;
+}
+.round-fill{
+  height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--violet),var(--pink));
+  transition:width .4s cubic-bezier(.22,1,.36,1);
+}
+
+/* ─── ROULETTE ────────────────────────────────────────────── */
+.roul-wrap{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:20px;text-align:center;
+}
+.roul-ring{
+  position:relative;width:220px;height:220px;
+  display:grid;place-items:center;
+}
+.roul-ring-pulse{
+  position:absolute;inset:0;border-radius:50%;
+  border:3px solid var(--violet);
+  animation:ringPulse 1.2s ease-out infinite;
+}
+.roul-ring-pulse-2{animation-delay:.6s}
+.roul-name{
+  font-family:'Lalezar','Cairo',sans-serif;
+  font-size:clamp(32px,9vw,48px);
+  text-align:center;
+  background:linear-gradient(135deg,var(--pink),var(--violet));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.roul-name.tick{animation:roulTick .12s cubic-bezier(.22,1,.36,1) both}
+.roul-label{font-size:14px;color:var(--ink50);font-weight:700}
+.roul-dots{display:flex;gap:8px;justify-content:center}
+.roul-dot{width:8px;height:8px;border-radius:50%;background:var(--ink15);animation:dotBlink 1.2s ease-in-out infinite}
+.roul-dot:nth-child(2){animation-delay:.4s}
+.roul-dot:nth-child(3){animation-delay:.8s}
+
+/* ─── CHOSEN ──────────────────────────────────────────────── */
+.chosen-wrap{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:18px;text-align:center;
+}
+.chosen-avatar{
+  width:100px;height:100px;border-radius:50%;
+  display:grid;place-items:center;
+  font-size:38px;font-weight:900;
+  border:4px solid rgba(255,255,255,.2);
+  box-shadow:var(--glow-p);
+  animation:pop .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+.chosen-label{font-size:14px;color:var(--ink50);font-weight:700;letter-spacing:.5px}
+.chosen-name{
+  font-family:'Lalezar','Cairo',sans-serif;
+  font-size:clamp(34px,10vw,48px);
+  animation:pop .45s cubic-bezier(.34,1.56,.64,1) .1s both;
+}
+.choice-label{
+  font-size:15px;color:var(--ink70);font-weight:700;
+  background:var(--card);border:2px solid var(--border);
+  border-radius:12px;padding:10px 20px;
+}
+
+/* ─── CHALLENGE ───────────────────────────────────────────── */
+.challenge-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.challenge-player{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:800;color:var(--ink70);
+}
+.challenge-player .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.challenge-type{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:12px;font-weight:900;letter-spacing:.5px;
+  padding:5px 14px;border-radius:99px;
+  text-transform:uppercase;
+}
+.challenge-type.q{background:rgba(96,165,250,.15);border:2px solid rgba(96,165,250,.3);color:var(--blue)}
+.challenge-type.a{background:rgba(52,211,153,.15);border:2px solid rgba(52,211,153,.3);color:var(--green)}
+.cat-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:900;letter-spacing:.3px;
+  padding:4px 12px;border-radius:99px;
+  background:rgba(244,114,182,.1);border:1.5px solid rgba(244,114,182,.25);
+  color:var(--pink);
+}
+.challenge-card{
+  flex:1;
+  background:linear-gradient(135deg,var(--card),var(--card2));
+  border:2px solid var(--border2);
+  border-radius:var(--r);padding:24px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:14px;
+  box-shadow:var(--glow-p);
+  animation:pop .4s cubic-bezier(.34,1.56,.64,1) both;
+  min-height:180px;
+}
+.challenge-text{
+  font-family:'Cairo',sans-serif;
+  font-size:clamp(18px,5.5vw,24px);
+  font-weight:800;line-height:1.5;
+  color:var(--ink);
+}
+.points-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:12px;font-weight:900;
+  padding:4px 12px;border-radius:99px;
+  background:rgba(251,191,36,.1);border:1.5px solid rgba(251,191,36,.3);
+  color:var(--gold);
+}
+
+/* ─── END SCREEN ──────────────────────────────────────────── */
+.podium{
+  background:linear-gradient(135deg,var(--card),var(--card2));
+  border:2px solid var(--border2);border-radius:var(--r);padding:20px;
+  box-shadow:var(--glow-p);
+}
+.score-row{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 4px;
+  border-bottom:1.5px solid var(--ink15);
+  animation:fadeUp .35s cubic-bezier(.22,1,.36,1) both;
+}
+.score-row:last-child{border-bottom:none}
+.score-rank{
+  width:26px;font-size:16px;text-align:center;flex-shrink:0;font-weight:900;
+}
+.score-avatar{
+  width:36px;height:36px;border-radius:50%;
+  display:grid;place-items:center;
+  font-size:14px;font-weight:900;
+  flex-shrink:0;border:2px solid rgba(0,0,0,.3);
+}
+.score-name{flex:1;font-size:16px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.score-pts{
+  font-size:20px;font-weight:900;color:var(--gold);
+  font-variant-numeric:tabular-nums;flex-shrink:0;
+  text-shadow:0 0 12px rgba(251,191,36,.4);
+}
+.score-row.winner .score-name{color:var(--gold)}
+
+/* ─── SCORE POP ───────────────────────────────────────────── */
+.score-toast{
+  position:fixed;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-family:'Lalezar','Cairo',sans-serif;
+  font-size:56px;
+  pointer-events:none;z-index:999;
+  animation:scorePop .8s cubic-bezier(.34,1.56,.64,1) both;
+  text-shadow:0 0 24px var(--gold);
+  color:var(--gold);
+}
+
+/* ─── ERROR ───────────────────────────────────────────────── */
+.error-msg{
+  font-size:13px;font-weight:800;color:var(--red);
+  background:rgba(244,63,94,.1);border:1.5px solid rgba(244,63,94,.25);
+  border-radius:10px;padding:10px 14px;text-align:center;
+  animation:shake .4s ease;
+}
+
+/* ─── MODAL ───────────────────────────────────────────────── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(14,10,30,.85);
+  z-index:200;display:flex;align-items:center;justify-content:center;
+  padding:24px;backdrop-filter:blur(4px);
+  animation:fadeIn .2s ease both;
+}
+.modal-overlay[hidden]{display:none}
+.modal-box{
+  background:var(--card2);border:2px solid var(--border2);
+  border-radius:var(--r);padding:26px 22px;
+  width:100%;max-width:360px;text-align:center;
+  box-shadow:0 24px 80px rgba(0,0,0,.8),var(--glow-v);
+  animation:pop .35s cubic-bezier(.34,1.56,.64,1) both;
+}
+.modal-box h2{font-family:'Lalezar','Cairo',sans-serif;font-size:26px;font-weight:400;margin-bottom:8px}
+.modal-box p{font-size:14px;margin-bottom:20px;color:var(--ink50);line-height:1.6}
+
+/* ─── QUIT BUTTON ─────────────────────────────────────────── */
+.quit-btn{
+  position:fixed;top:14px;right:14px;
+  width:38px;height:38px;padding:0;border-radius:50%;
+  background:rgba(237,224,255,.06);
+  border:1.5px solid var(--border);color:var(--ink50);
+  display:grid;place-items:center;font-size:18px;
+  z-index:100;cursor:pointer;min-height:38px;
+  box-shadow:var(--shadow-sm);
+  transition:transform .12s,background .15s;
+  font-family:'Cairo',sans-serif;
+}
+.quit-btn:hover{background:rgba(244,63,94,.15);color:var(--red);border-color:rgba(244,63,94,.3)}
+.quit-btn:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
+
+/* ─── CONFETTI ────────────────────────────────────────────── */
+.confetti-piece{
+  position:fixed;top:-16px;pointer-events:none;z-index:9999;
+  animation:confettiFall linear both;
+}
+
+/* ─── ANIMATIONS ──────────────────────────────────────────── */
+@keyframes screenIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes softIn{from{opacity:.4}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pop{0%{opacity:0;transform:scale(.82)}65%{transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-24px,18px) scale(1.05)}66%{transform:translate(16px,-12px) scale(.95)}}
+@keyframes roulTick{from{opacity:.3;transform:scale(.88) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes ringPulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.5);opacity:0}}
+@keyframes dotBlink{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+@keyframes titlePulse{0%,100%{filter:drop-shadow(0 0 20px rgba(168,85,247,.5))}50%{filter:drop-shadow(0 0 32px rgba(244,114,182,.7))}}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(540deg);opacity:0}}
+@keyframes scorePop{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}60%{transform:translate(-50%,-50%) scale(1.2)}100%{opacity:0;transform:translate(-50%,-50%) scale(.9) translateY(-40px)}}
+
+.anim-fadeup{animation:fadeUp .4s cubic-bezier(.22,1,.36,1) both}
+.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.18s}.d4{animation-delay:.24s}.d5{animation-delay:.3s}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+}
+</style>
+</head>
+<body>
+<div id="homeBg" style="position:fixed;inset:0;z-index:0;pointer-events:none"></div>
+<div id="app"></div>
+<button id="quit-btn" class="quit-btn" onclick="act.showQuit()" aria-label="خروج من اللعبة" hidden>✕</button>
+<div id="quit-modal" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="quit-title">
+  <div class="modal-box">
+    <h2 id="quit-title">بغيتي تخرج؟</h2>
+    <p>غادي يضيع التقدم ديال الجولة الحالية.</p>
+    <div class="row">
+      <button class="btn-ghost" onclick="act.hideQuit()">لا، كمّل</button>
+      <button class="btn-danger" onclick="act.confirmQuit()">إيه، خرج</button>
+    </div>
+  </div>
+</div>
+<script>
+"use strict";
+
+/* ══════════════════════════════════════════════════════════
+   DATA — 100 QUESTIONS
+══════════════════════════════════════════════════════════ */
+const QUESTIONS = [
+/* ── ضحك (25) ─────────────────────────────────────── */
+{id:'q001',type:'question',cat:'ضحك',diff:'easy',text:'شنو أكثر حاجة كتخليك تضحك بلا سبب واضح؟'},
+{id:'q002',type:'question',cat:'ضحك',diff:'easy',text:'شنو آخر تفاهة بكيتي عليها؟'},
+{id:'q003',type:'question',cat:'ضحك',diff:'easy',text:'شنو الأكلة اللي ما تقدرش تاكلها حتى كون جاعان بزاف؟'},
+{id:'q004',type:'question',cat:'ضحك',diff:'easy',text:'واش ديمًا كتكدب فالسن ديالك عند الداكتور؟'},
+{id:'q005',type:'question',cat:'ضحك',diff:'easy',text:'شنو الأغنية اللي كتغنيها فالحمام؟'},
+{id:'q006',type:'question',cat:'ضحك',diff:'easy',text:'واش عندك عادة تسرق فيها الأكل من صحن حد آخر؟'},
+{id:'q007',type:'question',cat:'ضحك',diff:'easy',text:'شنو الإيموجي اللي بزاف كتستعملو في اليوم؟'},
+{id:'q008',type:'question',cat:'ضحك',diff:'easy',text:'شنو الحيوان اللي كيشبهك في رأيك؟'},
+{id:'q009',type:'question',cat:'ضحك',diff:'easy',text:'واش سبق ليك تضحك فوقت ما خصك تضحك؟ فأشنو كان؟'},
+{id:'q010',type:'question',cat:'ضحك',diff:'easy',text:'شنو الحاجة اللي تشريها كل مرة تدخل للجوطية وأنت قلتي «غانمشي غير نشوف»؟'},
+{id:'q011',type:'question',cat:'ضحك',diff:'easy',text:'شنو أكثر عادة كيخجلك من نفسك؟'},
+{id:'q012',type:'question',cat:'ضحك',diff:'easy',text:'واش بغيتي تعيش بلا ويفي أو بلا فلوس؟'},
+{id:'q013',type:'question',cat:'ضحك',diff:'easy',text:'شنو لحن أو أغنية عالق فراسك دابا هاد اللحظة؟'},
+{id:'q014',type:'question',cat:'ضحك',diff:'easy',text:'شنو الحاجة اللي كتقولها دايمًا «غدا نبدلها» وما بدلتيهاش حتى الآن؟'},
+{id:'q015',type:'question',cat:'ضحك',diff:'easy',text:'واش سبق ليك تنسى اسم شخص كنتي معاه مدة طويلة؟'},
+{id:'q016',type:'question',cat:'ضحك',diff:'easy',text:'شنو الشي اللي بغيتي تبدله فشكلك بصح كاملتي ما بدلتيه؟'},
+{id:'q017',type:'question',cat:'ضحك',diff:'easy',text:'واش سبق ليك تقلد شخص من وراه وهو يشوفك؟'},
+{id:'q018',type:'question',cat:'ضحك',diff:'easy',text:'شنو آخر كدبة بيضاء قلتيها؟'},
+{id:'q019',type:'question',cat:'ضحك',diff:'easy',text:'شنو أصعب كلمة قلتيها بصوت عالي لحدو في حياتك؟'},
+{id:'q020',type:'question',cat:'ضحك',diff:'medium',text:'شنو أكثر سؤال كيزعجك الناس يسولوك إياه؟'},
+{id:'q021',type:'question',cat:'ضحك',diff:'medium',text:'واش سبق ليك تزيد تضحك على حاجة مؤلمة باش ما تبكيش؟'},
+{id:'q022',type:'question',cat:'ضحك',diff:'medium',text:'شنو الشي اللي تعتقد أنك خير فيه بصح ما حد صدقك؟'},
+{id:'q023',type:'question',cat:'ضحك',diff:'medium',text:'شنو أكثر تبرير مضحك استعملتيه باش ما تخرجش؟'},
+{id:'q024',type:'question',cat:'ضحك',diff:'medium',text:'واش سبق ليك تتحاشى تلقى ناس تعرفهم فالزنقة؟ كيفاش دبرتي؟'},
+{id:'q025',type:'question',cat:'ضحك',diff:'medium',text:'شنو آخر حاجة فعلتيها وقلتي لنفسك «مشيتي عليها»؟'},
+/* ── محرج (20) ─────────────────────────────────────── */
+{id:'q026',type:'question',cat:'محرج',diff:'medium',text:'أشنو أكثر موقف حشمتي فيه مع شخص مهم ليك؟'},
+{id:'q027',type:'question',cat:'محرج',diff:'medium',text:'واش سبق ليك تسرق أكل صاحبك وتقول «ماشي أنا»؟'},
+{id:'q028',type:'question',cat:'محرج',diff:'medium',text:'أشنو أكثر كدبة قلتيها باش تتفادى الخروج مع الناس؟'},
+{id:'q029',type:'question',cat:'محرج',diff:'medium',text:'شنو الفضيحة الصغيرة اللي ما تبغيش حتى واحد يعرفها عليك؟'},
+{id:'q030',type:'question',cat:'محرج',diff:'medium',text:'واش سبق ليك تتجاهل مكالمة ديال شخص قريب منك وبعدها تكدب عليه؟'},
+{id:'q031',type:'question',cat:'محرج',diff:'medium',text:'أشنو آخر مرة احمرت فيها من الحشمة؟ فأشنو كانت؟'},
+{id:'q032',type:'question',cat:'محرج',diff:'medium',text:'واش سبق ليك تحكي على الناس وتلقاهم واقفين وراك يسمعوك؟'},
+{id:'q033',type:'question',cat:'محرج',diff:'medium',text:'شنو الموضوع اللي كتتجنب دايمًا في النقاشات بسبب الحشمة؟'},
+{id:'q034',type:'question',cat:'محرج',diff:'medium',text:'واش سبق ليك تنبلع لغريب وتندم عليها بعد؟'},
+{id:'q035',type:'question',cat:'محرج',diff:'medium',text:'شنو الكلمة اللي كتقولها وأنت عارف أنها مش في محلها بصح كتزيد تقولها؟'},
+{id:'q036',type:'question',cat:'محرج',diff:'medium',text:'واش سبق ليك تنسى حاجة مهمة ووصلتي متأخر بسببها؟'},
+{id:'q037',type:'question',cat:'محرج',diff:'hard',text:'أشنو اليوم اللي ما نسيتيه حتى الآن بسبب موقف محرج وقع فيه؟'},
+{id:'q038',type:'question',cat:'محرج',diff:'hard',text:'واش سبق ليك تكدب على الداكتور على سؤال ما بغيتيش تجاوب عليه؟'},
+{id:'q039',type:'question',cat:'محرج',diff:'hard',text:'أشنو الشي اللي لو علم بيه شخص معين في حياتك كيبقى محرج بزاف؟'},
+{id:'q040',type:'question',cat:'محرج',diff:'hard',text:'شنو أكثر شي في نفسك تتحاشى تتكلم عليه في العلني؟'},
+{id:'q041',type:'question',cat:'محرج',diff:'hard',text:'واش سبق ليك تحرض شخصين على بعضياتهم وكشفوك في الأخير؟'},
+{id:'q042',type:'question',cat:'محرج',diff:'hard',text:'شنو الخطأ اللي لازلتي كتندم عليه في قلبك حتى دابا؟'},
+{id:'q043',type:'question',cat:'محرج',diff:'hard',text:'واش سبق ليك تغيب عن حدث مهم باش تتجنب شخص معين؟'},
+{id:'q044',type:'question',cat:'محرج',diff:'hard',text:'أشنو الشي اللي قلتيه لشخص في لحظة غضب وما تسامحتيش نفسك عليه؟'},
+{id:'q045',type:'question',cat:'محرج',diff:'hard',text:'واش عندك سر تخبيه على العيلة والصحاب فبالجوج؟ بلا تقول الشي نفسه، غير نعم أو لا.'},
+/* ── صراحة (20) ─────────────────────────────────────── */
+{id:'q046',type:'question',cat:'صراحة',diff:'medium',text:'أشنو الشي اللي تخبا من عيلتك بصح مبخبيش على صحابك؟'},
+{id:'q047',type:'question',cat:'صراحة',diff:'medium',text:'واش كنتي راضي على كيفاش كبرتي؟'},
+{id:'q048',type:'question',cat:'صراحة',diff:'medium',text:'أشنو الشي اللي تمنيتي عمرك ما قلتيه لشخص رحل من حياتك؟'},
+{id:'q049',type:'question',cat:'صراحة',diff:'medium',text:'شنو أكثر قرار صعب خديتيه في حياتك حتى الآن؟'},
+{id:'q050',type:'question',cat:'صراحة',diff:'medium',text:'أشنو الشي اللي كيخليك تحس بلا قيمة أحيانًا؟'},
+{id:'q051',type:'question',cat:'صراحة',diff:'medium',text:'أشنو الحاجة اللي ما كملتيهاش وتمنيتي كملتيها؟'},
+{id:'q052',type:'question',cat:'صراحة',diff:'medium',text:'واش تقادر تسامح شخص غدرك بصح؟ كاملتي سامحتيه؟'},
+{id:'q053',type:'question',cat:'صراحة',diff:'medium',text:'واش كنتي راضي على نفسك دابا هاد اللحظة؟'},
+{id:'q054',type:'question',cat:'صراحة',diff:'hard',text:'أشنو الشي اللي تمنيتي لو رجعتي لحظة ودبدلتيها؟'},
+{id:'q055',type:'question',cat:'صراحة',diff:'hard',text:'واش سبق ليك تبكي بوحدك بدون أن يعرف حتى واحد؟ على أشنو؟'},
+{id:'q056',type:'question',cat:'صراحة',diff:'hard',text:'شنو الحلم اللي ما قلتيه لحتى واحد حتى الآن؟'},
+{id:'q057',type:'question',cat:'صراحة',diff:'hard',text:'واش كيخليك خايف أكثر: الفشل ولا الوحدة؟'},
+{id:'q058',type:'question',cat:'صراحة',diff:'hard',text:'شنو الحاجة اللي كتقولها «كنشتغل عليها» وفي الحقيقة ما بدلتيهاش؟'},
+{id:'q059',type:'question',cat:'صراحة',diff:'hard',text:'أشنو آخر مرة حسيتي بالفخر الحقيقي؟ فأشنو كانت؟'},
+{id:'q060',type:'question',cat:'صراحة',diff:'hard',text:'واش راك عارف أشنو بغيتي تدير في حياتك ولا لا زال ما عرفتيش؟'},
+{id:'q061',type:'question',cat:'صراحة',diff:'hard',text:'شنو الشي اللي بغيتي يفهمك الناس فيه بصح ما حاولتيش تفسره؟'},
+{id:'q062',type:'question',cat:'صراحة',diff:'hard',text:'أشنو أصعب جملة سمعتيها في حياتك ولا زال كيأثر فيك؟'},
+{id:'q063',type:'question',cat:'صراحة',diff:'hard',text:'واش عندك حاجة كتتأسف عليها كل ما فكرتي فيها؟ شنو هي؟'},
+{id:'q064',type:'question',cat:'صراحة',diff:'hard',text:'شنو الشيء اللي ما شفتيه في نفسك وخصك شخص آخر يقوله ليك؟'},
+{id:'q065',type:'question',cat:'صراحة',diff:'hard',text:'واش كيجي وقت كتحس فيه بلي أنت وحدك حتى وأنت محاط بالناس؟'},
+/* ── صحاب (15) ─────────────────────────────────────── */
+{id:'q066',type:'question',cat:'صحاب',diff:'easy',text:'أشنو أكثر شي كيفرحك في صاحبك اللي جنبك دابا هاد اللحظة؟'},
+{id:'q067',type:'question',cat:'صحاب',diff:'easy',text:'واش سبق ليك تغير شي في نفسك باش تعجب صاحبك؟'},
+{id:'q068',type:'question',cat:'صحاب',diff:'medium',text:'أشنو السر اللي ما قلتيه لأحسن صاحبك ولا زال مخبيه؟'},
+{id:'q069',type:'question',cat:'صحاب',diff:'medium',text:'واش تقادر تعيش بعيد على كل صحابك لمدة سنة كاملة؟'},
+{id:'q070',type:'question',cat:'صحاب',diff:'medium',text:'أشنو الشي اللي كيعجبك في صاحبك بصح مبغيش يتغير؟'},
+{id:'q071',type:'question',cat:'صحاب',diff:'medium',text:'واش سبق ليك تشكي على صاحبك لحد ثالث ومندمتي عليها؟'},
+{id:'q072',type:'question',cat:'صحاب',diff:'medium',text:'أشنو الذكرى المضحكة اللي عندك مع واحد من الجماعة دابا؟'},
+{id:'q073',type:'question',cat:'صحاب',diff:'medium',text:'واش تقادر تقول الحقيقة لصاحبك حتى لو كيأذيه؟'},
+{id:'q074',type:'question',cat:'صحاب',diff:'medium',text:'أشنو الشي اللي ما كيعجبكش في صاحبك بصح ما قلتيهوش ليه؟'},
+{id:'q075',type:'question',cat:'صحاب',diff:'medium',text:'واش سبق ليك تغضب من صاحبك وكاملتي تحجي بلا مشكلة؟'},
+{id:'q076',type:'question',cat:'صحاب',diff:'hard',text:'أشنو أحسن ذكرى مشتركة عندك مع شخص في الجماعة دابا؟'},
+{id:'q077',type:'question',cat:'صحاب',diff:'hard',text:'واش تقادر تقول لصاحبك «كنبغيك» بدون حشمة الآن؟'},
+{id:'q078',type:'question',cat:'صحاب',diff:'hard',text:'أشنو الشي اللي بغيتي تغيره في طريقة تعاملك مع صحابك عمومًا؟'},
+{id:'q079',type:'question',cat:'صحاب',diff:'hard',text:'واش عندك صاحب كنتي قريب منه بزاف وبعدتي عليه؟ شنو صرا؟'},
+{id:'q080',type:'question',cat:'صحاب',diff:'hard',text:'أشنو أصعب شي في الصداقة الحقيقية بالنسبة ليك؟'},
+/* ── حب (15) ─────────────────────────────────────── */
+{id:'q081',type:'question',cat:'حب',diff:'easy',text:'أشنو أول شي كيجلبك في شخص عندما تلقاه لأول مرة؟'},
+{id:'q082',type:'question',cat:'حب',diff:'medium',text:'واش عندك كراش دابا؟ — بلا تقول الاسم، غير نعم أو لا'},
+{id:'q083',type:'question',cat:'حب',diff:'medium',text:'أشنو الحاجة اللي بغيتي تسمعها من شخص قريب منك؟'},
+{id:'q084',type:'question',cat:'حب',diff:'medium',text:'واش سبق ليك تحب شخص مدة طويلة وكاملتي ما عرفك؟'},
+{id:'q085',type:'question',cat:'حب',diff:'medium',text:'أشنو أحسن وأصعب شي في الحب بالنسبة ليك؟'},
+{id:'q086',type:'question',cat:'حب',diff:'medium',text:'واش تقادر تبدا علاقة مع شخص ما عجبكش شكله بصح عجبك خلقه؟'},
+{id:'q087',type:'question',cat:'حب',diff:'hard',text:'أشنو أكثر شي يخليك حاضر تتفدا فعلاقة بلا حساب؟'},
+{id:'q088',type:'question',cat:'حب',diff:'hard',text:'أشنو أصعب جملة قلتيها أو سمعتيها في علاقة عاطفية؟'},
+{id:'q089',type:'question',cat:'حب',diff:'hard',text:'واش تعتقد بلي الحب الحقيقي موجود ولا رواية فقط؟'},
+{id:'q090',type:'question',cat:'حب',diff:'hard',text:'أشنو الشي اللي ما تغفرش فيه في علاقة عاطفية أبدًا؟'},
+{id:'q091',type:'question',cat:'حب',diff:'hard',text:'واش بغيتي تبقى مع شخص واحد دايمًا أو تعرف أشخاص كتيرين؟'},
+{id:'q092',type:'question',cat:'حب',diff:'hard',text:'أشنو الشي اللي يفرق الكراش من الحب الحقيقي بالنسبة ليك؟'},
+{id:'q093',type:'question',cat:'حب',diff:'hard',text:'واش سبق ليك تشوف حلم رومانسي وتستحي تقوله؟ شنو كان؟'},
+{id:'q094',type:'question',cat:'حب',diff:'hard',text:'أشنو الـgesture الرومانسي اللي بغيتيه أكثر من أي حاجة؟'},
+{id:'q095',type:'question',cat:'حب',diff:'hard',text:'واش سبق ليك تقلق على شخص بزاف وهو ما عارفش بأمرك؟'},
+/* ── مغربي (5) ─────────────────────────────────────── */
+{id:'q096',type:'question',cat:'مغربي',diff:'easy',text:'واش تفضل عيد الأضحى ولا رمضان وعلاش؟'},
+{id:'q097',type:'question',cat:'مغربي',diff:'easy',text:'أشنو الشي المغربي اللي كيفخرك بزاف فالخارج أو مع الغرب؟'},
+{id:'q098',type:'question',cat:'مغربي',diff:'easy',text:'واش الحريرة أحسن من كل الشربات الأخرى؟ دافع على رأيك!'},
+{id:'q099',type:'question',cat:'مغربي',diff:'medium',text:'أشنو أكثر «مغربي» تاع قلبك؟ مدينة، حي، أكلة، أي حاجة'},
+{id:'q100',type:'question',cat:'مغربي',diff:'medium',text:'واش تفضل الكسكس ديال نهار الجمعة ولا كسكس العيد؟ علاش؟'},
+];
+
+/* ══════════════════════════════════════════════════════════
+   DATA — 100 ACTIONS
+══════════════════════════════════════════════════════════ */
+const ACTIONS = [
+/* ── ضحك (25) ─────────────────────────────────────── */
+{id:'a001',type:'action',cat:'ضحك',diff:'easy',text:'دير صوت حيوان من اختيار الجماعة مدة 10 ثواني بدون ما تضحك'},
+{id:'a002',type:'action',cat:'ضحك',diff:'easy',text:'قلد أستاذ أو مدير كيشرح الدرس مدة 20 ثانية'},
+{id:'a003',type:'action',cat:'ضحك',diff:'easy',text:'صمد بلا ما تضحك وشي واحد من الجماعة يحاول يضحكك مدة 30 ثانية'},
+{id:'a004',type:'action',cat:'ضحك',diff:'easy',text:'دير تمثيلية صامتة وشي واحد يخمن أشنو كتمثل — دابا'},
+{id:'a005',type:'action',cat:'ضحك',diff:'easy',text:'قول 5 أغاني مغربية معروفة في أقل من 10 ثواني'},
+{id:'a006',type:'action',cat:'ضحك',diff:'easy',text:'احكي شي مضحك صرالك قريبًا بأكثر دراما ممكنة'},
+{id:'a007',type:'action',cat:'ضحك',diff:'easy',text:'غيّر صوتك وكلم شخص من الجماعة بحال روبوت مدة 20 ثانية'},
+{id:'a008',type:'action',cat:'ضحك',diff:'easy',text:'دير رقصة عشوائية مدة 10 ثواني والجماعة تصفق'},
+{id:'a009',type:'action',cat:'ضحك',diff:'easy',text:'صف شخصيتك بـ3 كلمات فقط وشي واحد من الجماعة يخمن الكلمات'},
+{id:'a010',type:'action',cat:'ضحك',diff:'easy',text:'احكي قصيدة أو مثل مغربي من رأسك بصوت عالي'},
+{id:'a011',type:'action',cat:'ضحك',diff:'easy',text:'قلد مشية أي شخص من الجماعة والكل يخمن شكون'},
+{id:'a012',type:'action',cat:'ضحك',diff:'easy',text:'اقترح اسم جديد لكل لاعب في الجماعة'},
+{id:'a013',type:'action',cat:'ضحك',diff:'easy',text:'غني «هبدي هبدي» أو أي أغنية طفولية بصوت عالي 15 ثانية'},
+{id:'a014',type:'action',cat:'ضحك',diff:'easy',text:'دير وجه كل لاعب من الجماعة واحد واحد'},
+{id:'a015',type:'action',cat:'ضحك',diff:'easy',text:'احكي كيف تتخيل حياتك بعد 10 سنين بطريقة مضحكة مبالغ فيها'},
+{id:'a016',type:'action',cat:'ضحك',diff:'medium',text:'دير دعاية خيالية لمنتج مغربي كيفيف بالدارجة مدة 20 ثانية'},
+{id:'a017',type:'action',cat:'ضحك',diff:'medium',text:'حاكي كلام أي لاعب من الجماعة والكل يخمن شكون'},
+{id:'a018',type:'action',cat:'ضحك',diff:'medium',text:'دير تمثيلية «مغربي طمونيه مشى فالزنقة» مدة 15 ثانية'},
+{id:'a019',type:'action',cat:'ضحك',diff:'medium',text:'صف مشهد الفطور الصباحي ديالك بحال كيعلق معلق كرة القدم'},
+{id:'a020',type:'action',cat:'ضحك',diff:'medium',text:'غني أغنية وقف باش ما تتغيرش اللحن وشي واحد يخمنها'},
+{id:'a021',type:'action',cat:'ضحك',diff:'medium',text:'احكي كيف تشرح الواتساب لجدك أو جدتك بطريقة بسيطة'},
+{id:'a022',type:'action',cat:'ضحك',diff:'medium',text:'دير معلق كرة القدم وصف ما كيجري في الغرفة دابا'},
+{id:'a023',type:'action',cat:'ضحك',diff:'medium',text:'ترجم مقطع من أغنية مغربية للفرنسية بحال ما هو وغنيه'},
+{id:'a024',type:'action',cat:'ضحك',diff:'medium',text:'احكي قصة الحياة ديالك من البداية في 30 ثانية فقط'},
+{id:'a025',type:'action',cat:'ضحك',diff:'medium',text:'دير صوت «مول الحانوت» كيشرح ليك الثمن ديال شي ما'},
+/* ── محرج (20) ─────────────────────────────────────── */
+{id:'a026',type:'action',cat:'محرج',diff:'medium',text:'قول لكل لاعب شي صادق ومحرج فيه — في جملة وحدة فقط'},
+{id:'a027',type:'action',cat:'محرج',diff:'medium',text:'دير سيلفي بأكثر وجه بيشع وشارك مع الجماعة'},
+{id:'a028',type:'action',cat:'محرج',diff:'medium',text:'قول بصوت عالي الشي اللي كتفكر فيه هاد اللحظة بصراحة كاملة'},
+{id:'a029',type:'action',cat:'محرج',diff:'medium',text:'غني بصوت عالي مقطع من أغنية رومانسية مشهورة وقف في الوسط'},
+{id:'a030',type:'action',cat:'محرج',diff:'medium',text:'احكي عن أول كراش عندك بكل التفاصيل اللي تتذكرها'},
+{id:'a031',type:'action',cat:'محرج',diff:'medium',text:'قلد شخص من الجماعة وشي واحد يخمن شكون — ممنوع الكلام'},
+{id:'a032',type:'action',cat:'محرج',diff:'medium',text:'قول كدبة مقنعة جدًا وحاول الجماعة تكشفها'},
+{id:'a033',type:'action',cat:'محرج',diff:'medium',text:'دير مقابلة بحال أنك مرشح لبرنامج ريالتي مشهور'},
+{id:'a034',type:'action',cat:'محرج',diff:'medium',text:'صف شخصيتك كأنك كتبيع نفسك فمنصة تعارف لمدة 20 ثانية'},
+{id:'a035',type:'action',cat:'محرج',diff:'medium',text:'قول شي مبالغ فيه وجميل عن كل لاعب في الجماعة'},
+{id:'a036',type:'action',cat:'محرج',diff:'medium',text:'احكي قصة محرجة حدثت ليك الشهر اللي فات أو قريبًا'},
+{id:'a037',type:'action',cat:'محرج',diff:'hard',text:'دير حوار خيالي بينك وبين شخص مشهور تختاره أنت مدة 20 ثانية'},
+{id:'a038',type:'action',cat:'محرج',diff:'hard',text:'دير صوتك بحال شخص في مسلسل تركي كيبكي على حبيبو'},
+{id:'a039',type:'action',cat:'محرج',diff:'hard',text:'اقرا بصوت عالي آخر رسالة كتبتيها لحد — SMS ولا واتساب'},
+{id:'a040',type:'action',cat:'محرج',diff:'hard',text:'غني أغنية رومانسية لشخص تختاره من الجماعة — كامل مقطع'},
+{id:'a041',type:'action',cat:'محرج',diff:'hard',text:'دير نظرة «كيلا» لكل واحد في الجماعة واحد واحد — بدون ضحك'},
+{id:'a042',type:'action',cat:'محرج',diff:'hard',text:'احكي بصوت عالي كيف حسيتي آخر مرة خذلك شخص'},
+{id:'a043',type:'action',cat:'محرج',diff:'hard',text:'قول للجماعة 3 أشياء كنتي بغيتي تغيرها في نفسك صراحة'},
+{id:'a044',type:'action',cat:'محرج',diff:'hard',text:'دير تمثيلية «فاشل في الحياة» مدة 20 ثانية بكل دراما'},
+{id:'a045',type:'action',cat:'محرج',diff:'hard',text:'اعمل نشيد قصير من 4 كلمات عن الشخص اللي حدايك دابا'},
+/* ── صراحة (15) ─────────────────────────────────────── */
+{id:'a046',type:'action',cat:'صراحة',diff:'medium',text:'قول للجماعة شي ما قلتيه لحتى واحد من قبل — بصوت عالي'},
+{id:'a047',type:'action',cat:'صراحة',diff:'medium',text:'قول لشخص من الجماعة شي كنتي دايمًا بغيتي تقوله ليه بصراحة'},
+{id:'a048',type:'action',cat:'صراحة',diff:'medium',text:'اعترف بالشي اللي كيخجلك أكثر في حياتك دابا'},
+{id:'a049',type:'action',cat:'صراحة',diff:'medium',text:'قول لكل لاعب شي واحد صادق وإيجابي كيعجبك فيه'},
+{id:'a050',type:'action',cat:'صراحة',diff:'medium',text:'اعترف بأكبر غلطة ديالك وشنو تعلمتي منها'},
+{id:'a051',type:'action',cat:'صراحة',diff:'medium',text:'احكي عن لحظة حسيتي فيها بالفخر الحقيقي في حياتك'},
+{id:'a052',type:'action',cat:'صراحة',diff:'hard',text:'اعترف بالأغنية أو المسلسل اللي كتشوف فيه بالسر — الكل يعرف دابا'},
+{id:'a053',type:'action',cat:'صراحة',diff:'hard',text:'قول للجماعة شنو تتمنى يتغير في طريقة تعاملكم مع بعضياتكم'},
+{id:'a054',type:'action',cat:'صراحة',diff:'hard',text:'قول كيفاش كنتي تصف نفسك لشخص ما عمرك ما شافك في 20 ثانية'},
+{id:'a055',type:'action',cat:'صراحة',diff:'hard',text:'اعترف بآخر مرة كذبتي فيها على شخص قريب منك وعلاش'},
+{id:'a056',type:'action',cat:'صراحة',diff:'hard',text:'قول للجماعة شنو بغيتي تغيره في نفسك لو عندك فرصة دابا'},
+{id:'a057',type:'action',cat:'صراحة',diff:'hard',text:'اعترف بالحاجة اللي ما كملتيهاش وكتمنى لو كملتيها'},
+{id:'a058',type:'action',cat:'صراحة',diff:'hard',text:'قول لشخص من الجماعة الشي اللي ما قلتيه ليه مدة طويلة'},
+{id:'a059',type:'action',cat:'صراحة',diff:'hard',text:'احكي عن شخص غيّر حياتك بطريقة ما تخيلتيهاش'},
+{id:'a060',type:'action',cat:'صراحة',diff:'hard',text:'قول للجماعة الشي اللي بغيتي يعرفوه عليك ولا يعرفوه حتى الآن'},
+/* ── صحاب (15) ─────────────────────────────────────── */
+{id:'a061',type:'action',cat:'صحاب',diff:'easy',text:'قبل جبهة الشخص اللي حدايك — مع إذنه طبعًا'},
+{id:'a062',type:'action',cat:'صحاب',diff:'easy',text:'دير معناق مع كل لاعب في الجماعة واحد واحد'},
+{id:'a063',type:'action',cat:'صحاب',diff:'easy',text:'قول لكل لاعب شي واحد تقدر تتعلمو منه'},
+{id:'a064',type:'action',cat:'صحاب',diff:'easy',text:'قول للجماعة من فيهم أقرب شخص ليك الآن وعلاش'},
+{id:'a065',type:'action',cat:'صحاب',diff:'easy',text:'صف أحسن ذكرى مشتركة عندك مع شخص من الجماعة'},
+{id:'a066',type:'action',cat:'صحاب',diff:'medium',text:'قول لصاحبك اللي جنبك 3 أشياء بغيتك تعرفها — الآن'},
+{id:'a067',type:'action',cat:'صحاب',diff:'medium',text:'اشرح شخصية لاعب من الجماعة بحال كنتي تعرفو من أزيد من 10 سنين'},
+{id:'a068',type:'action',cat:'صحاب',diff:'medium',text:'قول من فالجماعة اللي تتصل بيه في منتصف الليل لو عندك مشكلة'},
+{id:'a069',type:'action',cat:'صحاب',diff:'medium',text:'صف شخص من الجماعة بدون تقول اسمه والكل يخمن'},
+{id:'a070',type:'action',cat:'صحاب',diff:'medium',text:'قول لشخص من الجماعة شي تقدر تشركو معاه بصدق'},
+{id:'a071',type:'action',cat:'صحاب',diff:'medium',text:'احكي عن لحظة مضحكة مشتركة مع شخص من الجماعة — مع كل التفاصيل'},
+{id:'a072',type:'action',cat:'صحاب',diff:'hard',text:'قول للجماعة شكون من فيهم اللي كيشوف تتحسن فيه أكثر'},
+{id:'a073',type:'action',cat:'صحاب',diff:'hard',text:'اكتب رسالة تشكر قصيرة لشخص من الجماعة واقراها بصوت عالي'},
+{id:'a074',type:'action',cat:'صحاب',diff:'hard',text:'قول للجماعة شكون من فيهم غادي يبقى صاحبك مدة طويلة وعلاش'},
+{id:'a075',type:'action',cat:'صحاب',diff:'hard',text:'قول لكل شخص من الجماعة الشي اللي بغيتي يعرفه عليك'},
+/* ── حب (10) ─────────────────────────────────────── */
+{id:'a076',type:'action',cat:'حب',diff:'medium',text:'احكي عن أول كراش بطريقة سينمائية مدة 30 ثانية'},
+{id:'a077',type:'action',cat:'حب',diff:'medium',text:'قول شي رومانسي جميل لشخص من الجماعة تختاره — مزح طبعًا'},
+{id:'a078',type:'action',cat:'حب',diff:'medium',text:'احكي كيف تتخيل قصة الحب المثالية ديالك في 30 ثانية'},
+{id:'a079',type:'action',cat:'حب',diff:'medium',text:'دير وجه «أنا مستاهل للحب» وخلي الجماعة تتصور معك'},
+{id:'a080',type:'action',cat:'حب',diff:'medium',text:'قول للجماعة من فيهم اللي كيشبه النمط ديالك في الحب'},
+{id:'a081',type:'action',cat:'حب',diff:'hard',text:'اكتب SMS خيالي لكراشك واقراه بصوت عالي أمام الجماعة'},
+{id:'a082',type:'action',cat:'حب',diff:'hard',text:'غني مقطع من أغنية رومانسية لشخص من الجماعة تختاره أنت'},
+{id:'a083',type:'action',cat:'حب',diff:'hard',text:'احكي بدون هوادة ما اللي بغيتي في الشريك المثالي في 20 ثانية'},
+{id:'a084',type:'action',cat:'حب',diff:'hard',text:'دير تمثيلية «العيان بالغيرة» مدة 15 ثانية بكل دراما'},
+{id:'a085',type:'action',cat:'حب',diff:'hard',text:'دير نظرة حب «سينمائية» لشخص من الجماعة مدة 10 ثواني بدون تضحك'},
+/* ── مغربي (10) ─────────────────────────────────────── */
+{id:'a086',type:'action',cat:'مغربي',diff:'easy',text:'قول قائمة الفطور المغربي المثالي ديالك في 15 ثانية فقط'},
+{id:'a087',type:'action',cat:'مغربي',diff:'easy',text:'دير دعاية للأتاي المغربي بالدارجة — مثل دعاية تلفزيونية حقيقية'},
+{id:'a088',type:'action',cat:'مغربي',diff:'easy',text:'احكي عن أحسن عيد أو مناسبة مغربية عندك في حياتك'},
+{id:'a089',type:'action',cat:'مغربي',diff:'easy',text:'علم أي لاعب مثلًا مغربيًا وشرح معناه الحقيقي'},
+{id:'a090',type:'action',cat:'مغربي',diff:'easy',text:'قول 5 أكلات مغربية في 5 ثواني — بدون تكرار'},
+{id:'a091',type:'action',cat:'مغربي',diff:'medium',text:'دير تمثيلية «مغربي فالخارج لقى الحريرة» — مع كل العواطف'},
+{id:'a092',type:'action',cat:'مغربي',diff:'medium',text:'احكي كيف تشرح الدارجة المغربية لأجنبي ما كيعرفهاش'},
+{id:'a093',type:'action',cat:'مغربي',diff:'medium',text:'دير نقاش «عائلي» على الخروف ديال العيد — أنت كل الأدوار'},
+{id:'a094',type:'action',cat:'مغربي',diff:'medium',text:'احكي عن أحسن حفلة أو سهرة مغربية شفتيها في حياتك'},
+{id:'a095',type:'action',cat:'مغربي',diff:'hard',text:'قلد المزاج ديال مول الحانوت فالصباح الباكر لمدة 20 ثانية'},
+/* ── hard (5) ─────────────────────────────────────── */
+{id:'a096',type:'action',cat:'hard',diff:'hard',text:'غني أغنية كاملة — على الأقل مقطعين — بصوت عالي وواقف'},
+{id:'a097',type:'action',cat:'hard',diff:'hard',text:'قول لكل واحد في الجماعة شي يمكن يخليه يتضايق منك — بأدب وصراحة'},
+{id:'a098',type:'action',cat:'hard',diff:'hard',text:'دير لحظة «أنا النجم» وكلم الجماعة بحال كنتي مشهور لمدة 30 ثانية'},
+{id:'a099',type:'action',cat:'hard',diff:'hard',text:'احكي بصوت عالي أصعب لحظة مريتي بيها في السنة اللي فاتت'},
+{id:'a100',type:'action',cat:'hard',diff:'hard',text:'قول للجماعة كاملين شنو تشوف في كل واحد فيهم بالصراحة الكاملة — شي إيجابي وشي بغيتي يتحسن'},
+];
+
+/* ══════════════════════════════════════════════════════════
+   CONSTANTS
+══════════════════════════════════════════════════════════ */
+const TOTAL_ROUNDS = 10;
+const PLAYER_COLORS = ['#F472B6','#A855F7','#34D399','#60A5FA','#FBBF24','#F97316','#F43F5E','#14B8A6'];
+const POINTS = {
+  question_easy:10, question_medium:10, question_hard:15,
+  action_easy:20, action_medium:20, action_hard:30,
+};
+
+/* ══════════════════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════════════════ */
+const S = {
+  phase:'home',
+  players:[],           /* [{id,name,color,score}] */
+  nameInput:'',
+  nameError:'',
+  prevPlayerId:null,
+  currentPlayer:null,
+  challengeType:null,   /* 'question'|'action' */
+  currentChallenge:null,
+  round:0,
+  usedQIds:new Set(),
+  usedAIds:new Set(),
+  _lastPhase:null,
+};
+
+/* ══════════════════════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════════════════════ */
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pick = a => a[Math.floor(Math.random()*a.length)];
+let uid = 0;
+const nextId = () => 'p'+(++uid);
+
+function selectRandomPlayer(){
+  const avail = S.prevPlayerId && S.players.length > 1
+    ? S.players.filter(p=>p.id!==S.prevPlayerId)
+    : [...S.players];
+  return pick(avail);
+}
+
+function getChallenge(type){
+  const pool = type==='question' ? QUESTIONS : ACTIONS;
+  const used = type==='question' ? S.usedQIds : S.usedAIds;
+  let avail = pool.filter(c=>!used.has(c.id));
+  if(!avail.length){
+    if(type==='question') S.usedQIds=new Set();
+    else S.usedAIds=new Set();
+    avail = pool;
+  }
+  const c = pick(avail);
+  if(type==='question') S.usedQIds.add(c.id);
+  else S.usedAIds.add(c.id);
+  return c;
+}
+
+function calcPoints(challenge){
+  return POINTS[`${challenge.type}_${challenge.diff}`]
+    || (challenge.type==='question' ? 10 : 20);
+}
+
+function getInitial(name){
+  return (name||'').trim().charAt(0).toUpperCase() || '?';
+}
+
+/* ══════════════════════════════════════════════════════════
+   ROULETTE
+══════════════════════════════════════════════════════════ */
+let roulTimer = null;
+
+function startRoulette(){
+  clearTimeout(roulTimer);
+  let delay = 65;
+  let count = 0;
+  const MAX = 22;
+
+  function tick(){
+    const el = document.getElementById('roul-name');
+    if(!el) return;
+    const p = S.players[Math.floor(Math.random()*S.players.length)];
+    el.textContent = p.name;
+    el.classList.remove('tick');
+    void el.offsetWidth;
+    el.classList.add('tick');
+    count++;
+    if(count < MAX){
+      delay = Math.round(delay * 1.13);
+      roulTimer = setTimeout(tick, Math.min(delay, 700));
+    } else {
+      const winner = selectRandomPlayer();
+      el.textContent = winner.name;
+      el.classList.remove('tick');
+      void el.offsetWidth;
+      el.classList.add('tick');
+      roulTimer = setTimeout(()=>{
+        S.currentPlayer = winner;
+        S.prevPlayerId  = winner.id;
+        go('chosen');
+      }, 750);
+    }
+  }
+  roulTimer = setTimeout(tick, delay);
+}
+
+/* ══════════════════════════════════════════════════════════
+   CONFETTI
+══════════════════════════════════════════════════════════ */
+function confetti(n=55){
+  const colors=['#F472B6','#A855F7','#60A5FA','#34D399','#FBBF24','#F97316'];
+  for(let i=0;i<n;i++){
+    const el=document.createElement('div');
+    el.className='confetti-piece';
+    el.style.cssText=`
+      left:${Math.random()*100}vw;
+      background:${pick(colors)};
+      width:${6+Math.random()*8}px;
+      height:${10+Math.random()*8}px;
+      border-radius:${Math.random()>.5?'50%':'3px'};
+      animation-duration:${2+Math.random()*2.5}s;
+      animation-delay:${Math.random()*.6}s;
+    `;
+    document.body.appendChild(el);
+    el.addEventListener('animationend',()=>el.remove());
+  }
+}
+
+function showScoreToast(pts){
+  const el = document.createElement('div');
+  el.className = 'score-toast';
+  el.textContent = `+${pts}`;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 900);
+}
+
+/* ══════════════════════════════════════════════════════════
+   RENDER
+══════════════════════════════════════════════════════════ */
+const app = document.getElementById('app');
+const go  = p => { S.phase=p; render(); };
+window.act = {};
+
+const GAME_PHASES = new Set(['selecting','chosen','challenge']);
+
+function render(){
+  const same = S._lastPhase === S.phase;
+  S._lastPhase = S.phase;
+  const savedInput = same ? (app.querySelector('#name-input')||{}).value : null;
+  app.innerHTML = `<div class="screen${same?' same':''}">${VIEWS[S.phase]()}</div>`;
+  if(savedInput !== null){
+    const inp = app.querySelector('#name-input');
+    if(inp){ inp.value = savedInput; S.nameInput = savedInput; }
+  }
+  const qb = document.getElementById('quit-btn');
+  if(qb) qb.hidden = !GAME_PHASES.has(S.phase);
+  const af = app.querySelector('[autofocus]');
+  if(af) requestAnimationFrame(()=>af.focus());
+}
+
+/* ══════════════════════════════════════════════════════════
+   VIEWS
+══════════════════════════════════════════════════════════ */
+const VIEWS = {
+
+/* ── HOME ─────────────────────────────────────────────── */
+home: ()=>`
+  <div class="home-orb home-orb-1"></div>
+  <div class="home-orb home-orb-2"></div>
+  <div class="spacer"></div>
+  <div class="hero anim-fadeup">
+    <span class="game-emoji">❓</span>
+    <h1 class="home-title">سول ولا دير؟</h1>
+    <p class="home-sub">الحقيقة ولا التحدي — الاختيار عليك 🇲🇦</p>
+    <div class="home-badge d2">من 3 ل 8 لاعبين</div>
+  </div>
+  <div class="spacer"></div>
+  <div class="home-feats anim-fadeup d3">
+    <div class="home-feat">
+      <span class="home-feat-ico">🔮</span>
+      <span class="home-feat-lbl">100<br>سؤال</span>
+    </div>
+    <div class="home-feat">
+      <span class="home-feat-ico">💪</span>
+      <span class="home-feat-lbl">100<br>تحدي</span>
+    </div>
+    <div class="home-feat">
+      <span class="home-feat-ico">🎯</span>
+      <span class="home-feat-lbl">10<br>جولات</span>
+    </div>
+  </div>
+  <div style="height:14px"></div>
+  <button class="btn-primary anim-fadeup d4" onclick="act.goSetup()" style="font-size:20px;padding:18px">
+    بدا اللعب 🚀
+  </button>
+`,
+
+/* ── SETUP ────────────────────────────────────────────── */
+setup: ()=>`
+  <h2 class="anim-fadeup" style="text-align:center">شكون غادي يلعب؟</h2>
+  <p class="anim-fadeup d1" style="text-align:center">من 3 ل 8 لاعبين — على تيليفون وحد</p>
+
+  <div class="row anim-fadeup d2">
+    <input
+      id="name-input"
+      type="text"
+      placeholder="دخل السمية..."
+      maxlength="20"
+      autocomplete="off"
+      autofocus
+      onkeydown="if(event.key==='Enter')act.addPlayer()"
+      oninput="act.inputChange(this.value)"
+      style="flex:1"
+    >
+    <button
+      onclick="act.addPlayer()"
+      style="width:auto;padding:14px 20px;background:linear-gradient(135deg,var(--violet2),var(--pink));color:#fff;box-shadow:0 4px 0 rgba(124,58,237,.5)"
+      ${S.players.length>=8?'disabled':''}
+    >+</button>
+  </div>
+
+  ${S.nameError ? `<div class="error-msg">${esc(S.nameError)}</div>` : ''}
+
+  <div id="players-list" style="display:flex;flex-direction:column;gap:8px">
+    ${S.players.map((p,i)=>`
+      <div class="player-chip" style="animation-delay:${i*.04}s">
+        <div class="avatar" style="background:${p.color}20;color:${p.color};border-color:${p.color}50">
+          ${esc(getInitial(p.name))}
+        </div>
+        <span class="name">${esc(p.name)}</span>
+        <button class="rm" onclick="act.removePlayer('${p.id}')" aria-label="حذف ${esc(p.name)}">×</button>
+      </div>
+    `).join('')}
+  </div>
+
+  <div class="spacer"></div>
+
+  ${S.players.length < 3 ? `
+    <p style="text-align:center;font-size:13px;color:var(--ink30)">
+      ${S.players.length===0?'زيد اللاعبين':S.players.length===1?'زيد لاعب آخر على الأقل 2':'خاصك لاعب آخر واحد على الأقل'}
+    </p>
+  ` : ''}
+
+  <button
+    class="btn-primary"
+    onclick="act.startGame()"
+    ${S.players.length < 3 ? 'disabled' : ''}
+    style="font-size:18px;padding:17px"
+  >
+    ${S.players.length < 3
+      ? `بداو اللعب (${S.players.length}/3)`
+      : `بداو اللعب — ${S.players.length} لاعبين 🎮`}
+  </button>
+`,
+
+/* ── SELECTING ────────────────────────────────────────── */
+selecting: ()=>`
+  <div class="round-bar anim-fadeup">
+    <span>الجولة <b>${S.round+1}</b> / ${TOTAL_ROUNDS}</span>
+    <span>👥 ${S.players.length}</span>
+  </div>
+  <div class="round-progress">
+    <div class="round-fill" style="width:${(S.round/TOTAL_ROUNDS)*100}%"></div>
+  </div>
+
+  <div class="roul-wrap">
+    <div class="roul-ring">
+      <div class="roul-ring-pulse"></div>
+      <div class="roul-ring-pulse roul-ring-pulse-2"></div>
+      <span id="roul-name" class="roul-name">؟</span>
+    </div>
+    <p class="roul-label">الرولي كيدور…</p>
+    <div class="roul-dots">
+      <div class="roul-dot"></div>
+      <div class="roul-dot"></div>
+      <div class="roul-dot"></div>
+    </div>
+  </div>
+`,
+
+/* ── CHOSEN ───────────────────────────────────────────── */
+chosen: ()=>{
+  const p = S.currentPlayer;
+  if(!p) return VIEWS.selecting();
+  return `
+  <div class="round-bar anim-fadeup">
+    <span>الجولة <b>${S.round+1}</b> / ${TOTAL_ROUNDS}</span>
+    <span style="color:${p.color};font-weight:900">${esc(p.name)}</span>
+  </div>
+  <div class="round-progress">
+    <div class="round-fill" style="width:${(S.round/TOTAL_ROUNDS)*100}%"></div>
+  </div>
+
+  <div class="chosen-wrap">
+    <div class="chosen-avatar" style="background:${p.color}20;border-color:${p.color}60;color:${p.color}">
+      ${esc(getInitial(p.name))}
+    </div>
+    <div>
+      <p class="chosen-label">الدور ديالك يا</p>
+      <h2 class="chosen-name" style="color:${p.color};text-shadow:0 0 20px ${p.color}60">
+        ${esc(p.name)}!
+      </h2>
+    </div>
+    <div class="choice-label">شنو بغيتي؟</div>
+  </div>
+
+  <div class="row" style="gap:12px">
+    <button class="btn-q" onclick="act.pickType('question')" style="font-size:17px">
+      🔮 سول
+    </button>
+    <button class="btn-a" onclick="act.pickType('action')" style="font-size:17px">
+      💪 دير
+    </button>
+  </div>
+`;},
+
+/* ── CHALLENGE ────────────────────────────────────────── */
+challenge: ()=>{
+  const p = S.currentPlayer;
+  const c = S.currentChallenge;
+  const isQ = S.challengeType==='question';
+  if(!p||!c) return VIEWS.chosen();
+  const pts = calcPoints(c);
+  return `
+  <div class="challenge-header anim-fadeup">
+    <div class="challenge-player">
+      <span class="dot" style="background:${p.color}"></span>
+      <span>${esc(p.name)}</span>
+    </div>
+    <div class="challenge-type ${isQ?'q':'a'}">
+      ${isQ?'🔮 سول':'💪 دير'}
+    </div>
+  </div>
+
+  <div class="round-bar">
+    <span class="cat-pill">${esc(c.cat)}</span>
+    <span>الجولة <b style="color:var(--pink)">${S.round+1}</b> / ${TOTAL_ROUNDS}</span>
+  </div>
+
+  <div class="challenge-card">
+    <div class="challenge-text">${esc(c.text)}</div>
+    <div class="points-badge">🌟 +${pts} نقطة</div>
+  </div>
+
+  <button
+    class="btn-primary"
+    onclick="act.complete(true)"
+    style="font-size:17px;padding:17px"
+  >
+    ✅ ${isQ?'جاوبت':'درتها'} — +${pts}
+  </button>
+  <button class="btn-skip" onclick="act.complete(false)">
+    ❌ سالت — +0
+  </button>
+`;},
+
+/* ── END ──────────────────────────────────────────────── */
+end: ()=>{
+  const sorted = [...S.players].sort((a,b)=>b.score-a.score);
+  const max = sorted[0]?.score || 0;
+  return `
+  <div class="spacer"></div>
+  <div class="hero anim-fadeup" style="gap:8px">
+    <span style="font-size:56px;filter:drop-shadow(0 0 20px rgba(251,191,36,.5))">🏆</span>
+    <h2>سالات اللعبة!</h2>
+    <p style="text-align:center">الريصولتا النهائية</p>
+  </div>
+  <div class="podium anim-fadeup d2">
+    ${sorted.map((p,i)=>`
+      <div class="score-row ${p.score===max&&i===0?'winner':''}" style="animation-delay:${i*.07}s">
+        <span class="score-rank">${['🥇','🥈','🥉'][i]||`${i+1}`}</span>
+        <div class="score-avatar" style="background:${p.color}20;color:${p.color};border-color:${p.color}50">
+          ${esc(getInitial(p.name))}
+        </div>
+        <span class="score-name">${esc(p.name)}</span>
+        <span class="score-pts">${p.score}</span>
+      </div>
+    `).join('')}
+  </div>
+  <div class="spacer"></div>
+  <button
+    class="btn-primary anim-fadeup d3"
+    onclick="act.replayGame()"
+    style="font-size:17px;padding:16px"
+  >
+    🔄 عاودو اللعب
+  </button>
+  <button
+    class="btn-ghost btn-sm anim-fadeup d4"
+    onclick="act.changePlayers()"
+  >
+    👥 بدلو اللاعبين
+  </button>
+`;},
+
+};
+
+/* ══════════════════════════════════════════════════════════
+   ACTIONS
+══════════════════════════════════════════════════════════ */
+
+act.goSetup = () => {
+  S.players = [];
+  S.nameInput = '';
+  S.nameError = '';
+  go('setup');
+};
+
+act.inputChange = v => {
+  S.nameInput = v;
+  S.nameError = '';
+};
+
+act.addPlayer = () => {
+  const name = (S.nameInput||'').trim();
+  if(!name){
+    S.nameError = 'دخل السمية خاصها تكون كاملة';
+    render(); return;
+  }
+  if(name.length < 2){
+    S.nameError = 'السمية قصيرة بزاف، زيد حرفين على الأقل';
+    render(); return;
+  }
+  if(S.players.some(p=>p.name.toLowerCase()===name.toLowerCase())){
+    S.nameError = 'هاد السمية كاينة ديجا — دخل سمية أخرى';
+    render(); return;
+  }
+  if(S.players.length >= 8){
+    S.nameError = 'وصلتو للحد الأقصى — 8 لاعبين كافيين 😅';
+    render(); return;
+  }
+  S.players.push({
+    id: nextId(),
+    name,
+    color: PLAYER_COLORS[S.players.length % PLAYER_COLORS.length],
+    score: 0,
+  });
+  S.nameInput = '';
+  S.nameError = '';
+  render();
+  // focus input after render
+  requestAnimationFrame(()=>{
+    const inp = document.getElementById('name-input');
+    if(inp){ inp.value=''; inp.focus(); }
+  });
+};
+
+act.removePlayer = id => {
+  S.players = S.players.filter(p=>p.id!==id);
+  S.nameError = '';
+  render();
+};
+
+act.startGame = () => {
+  if(S.players.length < 3) return;
+  S.round = 0;
+  S.prevPlayerId = null;
+  S.currentPlayer = null;
+  S.usedQIds = new Set();
+  S.usedAIds = new Set();
+  S.players.forEach(p=>p.score=0);
+  S.round++; /* first round starts */
+  go('selecting');
+  requestAnimationFrame(()=>startRoulette());
+};
+
+act.pickType = type => {
+  S.challengeType = type;
+  S.currentChallenge = getChallenge(type);
+  go('challenge');
+};
+
+act.complete = ok => {
+  if(ok && S.currentPlayer && S.currentChallenge){
+    const pts = calcPoints(S.currentChallenge);
+    S.currentPlayer.score += pts;
+    showScoreToast(pts);
+  }
+  if(S.round >= TOTAL_ROUNDS){
+    setTimeout(()=>{
+      confetti();
+      go('end');
+      window.parent?.postMessage({type:'game-over'},'*');
+    }, 400);
+  } else {
+    S.round++;
+    go('selecting');
+    requestAnimationFrame(()=>startRoulette());
+  }
+};
+
+act.replayGame = () => {
+  S.round = 0;
+  S.prevPlayerId = null;
+  S.currentPlayer = null;
+  S.usedQIds = new Set();
+  S.usedAIds = new Set();
+  S.players.forEach(p=>p.score=0);
+  S.round++;
+  go('selecting');
+  requestAnimationFrame(()=>startRoulette());
+};
+
+act.changePlayers = () => {
+  S.nameInput = '';
+  S.nameError = '';
+  go('setup');
+};
+
+/* ── QUIT MODAL ──────────────────────────────────────── */
+act.showQuit = () => {
+  clearTimeout(roulTimer);
+  const m = document.getElementById('quit-modal');
+  if(m) m.hidden = false;
+};
+act.hideQuit = () => {
+  const m = document.getElementById('quit-modal');
+  if(m) m.hidden = true;
+  if(S.phase==='selecting') startRoulette();
+};
+act.confirmQuit = () => {
+  const m = document.getElementById('quit-modal');
+  if(m) m.hidden = true;
+  clearTimeout(roulTimer);
+  go('home');
+};
+
+/* ══════════════════════════════════════════════════════════
+   BOOT
+══════════════════════════════════════════════════════════ */
+render();
+</script>
+</body>
+</html>

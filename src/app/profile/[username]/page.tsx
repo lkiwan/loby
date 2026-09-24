@@ -3,6 +3,7 @@ import { use, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Loader2, Copy, Check, Zap, Coins } from 'lucide-react';
 import { StarMark } from '@/components/Star';
+import GameIcon from '@/components/GameIcon';
 import { GAMES } from '@/lib/games';
 import dynamic from 'next/dynamic';
 
@@ -197,7 +198,7 @@ export default function ProfilePage({
                       key={i}
                       className="flex items-center gap-3 rounded-xl border border-white/[0.05] bg-white/[0.02] p-3"
                     >
-                      <span className="shrink-0 text-2xl">{game?.emoji ?? '🎮'}</span>
+                      <GameIcon game={game} size={36} />
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-cairo text-[13px] font-bold text-neutral-300">
                           {game?.darijaTitle ?? s.gameId}

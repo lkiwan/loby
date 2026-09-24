@@ -7,6 +7,7 @@ import { ArrowRight, Loader2, RefreshCw, X, Coins, Trophy, Zap } from 'lucide-re
 import { useRewardedAd } from '@/lib/useRewardedAd';
 import { rememberPayMethod, getRememberedPayMethod } from '@/lib/payMethod';
 import { StarMark } from '@/components/Star';
+import GameIcon from '@/components/GameIcon';
 import { GAMES } from '@/lib/games';
 
 const EXTERNAL_GAMES: Record<string, string> = {
@@ -14,6 +15,7 @@ const EXTERNAL_GAMES: Record<string, string> = {
   'mafia':           '/game-files/mafia/index.html',
   '7azr-fazr':       '/game-files/7azr-fazr/index.html',
   'bara-salfa':      '/game-files/bara-salfa/index.html',
+  'sowl-wla-dir':    '/game-files/sowl-wla-dir/index.html',
 };
 
 export default function GamePage({
@@ -165,7 +167,7 @@ export default function GamePage({
                   }}
                 />
               ))}
-              <span className="relative z-10 text-5xl">{game?.emoji ?? '🎮'}</span>
+              <GameIcon game={game} size={92} />
             </div>
 
             <div className="text-center">
