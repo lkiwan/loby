@@ -205,13 +205,19 @@ export default function GameCard({
               opacity:     !canAfford ? 0.42 : 1,
             }}
           >
-            {isBusy && loadingAction === "coins"
-              ? <Loader2 className="h-[17px] w-[17px] animate-spin" />
-              : <Play className="h-[17px] w-[17px] fill-current" />}
+            {/* play icon zone */}
+            <span className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-xl bg-white/15 shadow-inner">
+              {isBusy && loadingAction === "coins"
+                ? <Loader2 className="h-[15px] w-[15px] animate-spin" />
+                : <Play className="h-[15px] w-[15px] fill-current" />}
+            </span>
             لعب دابا
             {/* coin cost badge */}
-            <span className="ms-auto flex items-center gap-0.5 rounded-full bg-black/25 px-2 py-[3px] font-cairo text-[9.5px] font-black leading-none">
-              <Coins className="h-2.5 w-2.5" /> {game.cost}
+            <span className="ms-auto flex items-center gap-1 rounded-full border border-amber-400/45 bg-amber-400/10 px-2 py-[4px] font-cairo text-[10px] font-black leading-none text-amber-300">
+              <span className="flex h-[14px] w-[14px] shrink-0 items-center justify-center rounded-full bg-amber-400/25">
+                <Coins className="h-2.5 w-2.5 text-amber-400" />
+              </span>
+              {game.cost}
             </span>
           </button>
 
@@ -219,11 +225,14 @@ export default function GameCard({
           <button
             onClick={onWatchAd}
             disabled={isBusy}
-            className="btn-chunk btn-ghost-hollow relative w-full gap-1.5 overflow-hidden py-[9px] text-[11.5px] text-neutral-300"
+            className="btn-chunk btn-ghost-hollow relative w-full overflow-hidden py-[9px] text-[11.5px] text-neutral-300"
           >
-            {isBusy && loadingAction === "ad"
-              ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              : <Video className="h-3.5 w-3.5 shrink-0 text-fuchsia-300" />}
+            {/* video icon zone */}
+            <span className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-lg bg-fuchsia-400/15">
+              {isBusy && loadingAction === "ad"
+                ? <Loader2 className="h-[13px] w-[13px] animate-spin text-fuchsia-300" />
+                : <Video className="h-[13px] w-[13px] text-fuchsia-300" />}
+            </span>
             شاهد إعلان ثم العب
             <span className="ms-auto rounded-full border border-white/10 bg-white/[0.05] px-2 py-0.5 font-cairo text-[9px] font-black leading-none text-neutral-500">
               بدون كوين

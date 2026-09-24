@@ -46,15 +46,20 @@ export function GameTags({ game, compact = false, className = "" }: GameTagsProp
         return (
           <span
             key={label}
-            className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5"
+            className="inline-flex items-center gap-1.5 rounded-full border px-1.5 py-1"
             style={{
-              borderColor: `${game.starAccent}55`,
-              background: `${game.starAccent}14`,
+              borderColor: `${game.starAccent}50`,
+              background: `${game.starAccent}12`,
               color: game.starAccent,
             }}
           >
-            <Icon className={icon} strokeWidth={2.25} />
-            <span className={`font-cairo font-black leading-none ${text}`}>{label}</span>
+            <span
+              className="flex h-4 w-4 shrink-0 items-center justify-center rounded-[4px]"
+              style={{ background: `${game.starAccent}28` }}
+            >
+              <Icon className={compact ? "h-2.5 w-2.5" : "h-[11px] w-[11px]"} strokeWidth={2.5} />
+            </span>
+            <span className={`font-cairo font-black leading-none ${text} pe-0.5`}>{label}</span>
           </span>
         );
       })}

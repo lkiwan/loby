@@ -26,13 +26,18 @@ export function GameMetaRow({ game, compact = false, className = "" }: GameMetaR
   ];
 
   return (
-    <div className={`flex flex-wrap items-center gap-x-3 gap-y-1 ${className}`}>
+    <div className={`flex items-stretch divide-x divide-white/[0.08] overflow-hidden rounded-xl border border-white/[0.07] bg-white/[0.03] ${className}`}>
       {items.map(({ Icon, value }) => (
         <span
           key={value}
-          className={`inline-flex items-center gap-1 ${text} font-black leading-none text-neutral-400`}
+          className={`inline-flex items-center gap-2 px-3 py-1.5 ${text} font-black leading-none text-neutral-300`}
         >
-          <Icon className={icon} strokeWidth={2.25} />
+          <span
+            className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md"
+            style={{ background: `${game.starAccent}22` }}
+          >
+            <Icon className={compact ? "h-2.5 w-2.5" : "h-3 w-3"} strokeWidth={2.5} style={{ color: game.starAccent }} />
+          </span>
           {value}
         </span>
       ))}
