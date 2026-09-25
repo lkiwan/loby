@@ -7,7 +7,7 @@ import Link from 'next/link';
 import {
   AlertTriangle, Check, ChevronDown, Clock, Coins,
   Flame, Gamepad2, Loader2, LogIn, LogOut,
-  Play, Settings, ShieldCheck, Target, UserPlus, Users, Volume2, VolumeX, X, Zap,
+  Music, Play, Settings, ShieldCheck, Target, UserPlus, Users, Volume2, VolumeX, X, Zap,
 } from 'lucide-react';
 import { StarMark } from '@/components/Star';
 import GameCard from '@/components/GameCard';
@@ -20,7 +20,7 @@ import { GAMES, type Game } from '@/lib/games';
 import { useRewardedAd } from '@/lib/useRewardedAd';
 import { rememberPayMethod } from '@/lib/payMethod';
 import { trackDevice } from '@/lib/device';
-import { Sounds, isMuted, setMuted } from '@/lib/sounds';
+import { Sounds, isMuted, setMuted, musicPlayer, isMusicMuted } from '@/lib/sounds';
 import dynamic from 'next/dynamic';
 
 const StarField      = dynamic(() => import('@/components/StarField'),      { ssr: false });
@@ -286,6 +286,24 @@ function LobbyContent() {
     setMuted(next);
     setMutedState(next);
     if (!next) Sounds.click();
+  };
+
+  const [musicMuted, setMusicMutedState] = useState(false);
+  useEffect(() => { setMusicMutedState(isMusicMuted()); }, []);
+
+  /* Start music on first interaction; stop cleanly on page unmount */
+  useEffect(() => {
+    const tryStart = () => { if (!isMusicMuted()) musicPlayer.start(); };
+    window.addEventListener('click',      tryStart, { once: true });
+    window.addEventListener('touchstart', tryStart, { once: true });
+    return () => { musicPlayer.stop(); };
+  }, []);
+
+  const toggleMusic = () => {
+    const next = !musicMuted;
+    musicPlayer.setVolume(next);
+    setMusicMutedState(next);
+    if (!next && !musicPlayer.isPlaying) musicPlayer.start();
   };
   const { show: showRewardedAd } = useRewardedAd();
 
@@ -575,6 +593,13 @@ function LobbyContent() {
               title={muted ? 'شعل الصوت' : 'طفي الصوت'}
             >
               {muted ? <VolumeX className="h-4 w-4 text-neutral-500" /> : <Volume2 className="h-4 w-4" />}
+            </button>
+            <button
+              onClick={toggleMusic}
+              className="hidden h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] transition hover:border-cyan-400/40 hover:text-cyan-300 sm:grid"
+              title={musicMuted ? 'شعل الموسيقى' : 'طفي الموسيقى'}
+            >
+              <Music className={`h-4 w-4 ${musicMuted ? 'text-neutral-500' : 'text-cyan-300'}`} />
             </button>
           </div>
         </div>
@@ -1024,6 +1049,20 @@ function LobbyContent() {
                 </span>
                 <span className={`relative h-6 w-11 rounded-full transition-colors ${muted ? 'bg-white/10' : 'bg-cyan-500/40'}`}>
                   <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${muted ? 'start-0.5' : 'start-[1.375rem]'}`} />
+                </span>
+              </button>
+
+              {/* Music toggle */}
+              <button
+                onClick={toggleMusic}
+                className="flex w-full items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5"
+              >
+                <span className="flex items-center gap-2.5 font-cairo text-[13px] font-bold text-neutral-300">
+                  <Music className={`h-4 w-4 ${musicMuted ? 'text-neutral-500' : 'text-cyan-300'}`} />
+                  الموسيقى
+                </span>
+                <span className={`relative h-6 w-11 rounded-full transition-colors ${musicMuted ? 'bg-white/10' : 'bg-cyan-500/40'}`}>
+                  <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${musicMuted ? 'start-0.5' : 'start-[1.375rem]'}`} />
                 </span>
               </button>
 
