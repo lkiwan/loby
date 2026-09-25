@@ -7,7 +7,8 @@ export async function GET(req: Request) {
   const tab = searchParams.get('tab') ?? 'coins';
 
   const field = tab === 'xp' ? 'xp' : tab === 'streak' ? 'streakCount' : 'coins';
-  const cacheKey = `leaderboard:${field}`;
+  const limit = 5;
+  const cacheKey = `leaderboard:${field}:top5`;
 
   /* 30-second Redis cache — leaderboard doesn't need real-time accuracy */
   try {
@@ -32,7 +33,7 @@ export async function GET(req: Request) {
       streakCount: true,
     },
     orderBy: { [field]: 'desc' },
-    take: 50,
+    take: limit,
   });
 
   const data = { players: players.map((p, i) => ({ ...p, rank: i + 1 })) };
