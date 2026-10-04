@@ -1087,6 +1087,13 @@ end: ()=>{
   >
     👥 بدلو اللاعبين
   </button>
+  <button
+    class="btn-ghost btn-sm anim-fadeup d5"
+    onclick="act.exitToLobby()"
+    style="border-color:rgba(96,165,250,.3);color:var(--blue)"
+  >
+    🏠 رجع للساحة
+  </button>
 `;},
 
 };
@@ -1176,7 +1183,6 @@ act.complete = ok => {
     setTimeout(()=>{
       confetti();
       go('end');
-      window.parent?.postMessage({type:'game-over'},'*');
     }, 400);
   } else {
     S.round++;
@@ -1186,21 +1192,17 @@ act.complete = ok => {
 };
 
 act.replayGame = () => {
-  S.round = 0;
-  S.prevPlayerId = null;
-  S.currentPlayer = null;
-  S.usedQIds = new Set();
-  S.usedAIds = new Set();
-  S.players.forEach(p=>p.score=0);
-  S.round++;
-  go('selecting');
-  requestAnimationFrame(()=>startRoulette());
+  window.parent?.postMessage({type:'replay-requested'},'*');
 };
 
 act.changePlayers = () => {
   S.nameInput = '';
   S.nameError = '';
   go('setup');
+};
+
+act.exitToLobby = () => {
+  window.parent?.postMessage({type:'game-over'},'*');
 };
 
 /* ── QUIT MODAL ──────────────────────────────────────── */

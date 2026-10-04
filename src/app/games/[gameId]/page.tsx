@@ -34,11 +34,11 @@ export default function GamePage({
       : baseUrl
     : undefined;
 
-  const [exitConfirm, setExitConfirm]   = useState(false);
-  const [replaying, setReplaying]       = useState(false);
-  const [gameOver, setGameOver]         = useState(false);
-  const [coins, setCoins]               = useState<number | null>(null);
-  const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [exitConfirm, setExitConfirm]       = useState(false);
+  const [replaying, setReplaying]           = useState(false);
+  const [gameOver, setGameOver]             = useState(false);
+  const [coins, setCoins]                   = useState<number | null>(null);
+  const [iframeLoaded, setIframeLoaded]     = useState(false);
   const game = GAMES.find((g) => g.id === resolvedParams.gameId);
   const router = useRouter();
   const { show: showRewardedAd } = useRewardedAd();
@@ -80,7 +80,10 @@ export default function GamePage({
 
   useEffect(() => {
     const handler = (e: MessageEvent) => {
-      if (e.data?.type === 'game-over') { setGameOver(true); fetchCoins(); }
+      if (e.data?.type === 'game-over' || e.data?.type === 'replay-requested') {
+        setGameOver(true);
+        fetchCoins();
+      }
     };
     window.addEventListener('message', handler);
     return () => window.removeEventListener('message', handler);

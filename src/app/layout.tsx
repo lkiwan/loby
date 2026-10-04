@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import { Geist, Geist_Mono, Lalezar, Cairo, Archivo_Black } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
@@ -8,11 +7,13 @@ import ConsentBanner from "@/components/ConsentBanner";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  preload: false,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  preload: false,
 });
 
 const lalezar = Lalezar({
@@ -51,31 +52,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-7713392774673260";
-
   return (
     <html lang="ar" dir="rtl">
       <body
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} ${lalezar.variable} ${cairo.variable} ${archivoBlack.variable} antialiased`}
       >
-        <Script
-          id="adsense-loader"
-          strategy="afterInteractive"
-          async
-          crossOrigin="anonymous"
-          data-ad-frequency-hint="60s"
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
-        />
-        <Script id="adsense-init" strategy="afterInteractive">{`
-          window.adsbygoogle = window.adsbygoogle || [];
-          window.adBreak = function (o) { window.adsbygoogle.push(o); };
-          window.adConfig = function (o) { window.adsbygoogle.push(o); };
-          window.adConfig({
-            preloadAdBreaks: 'on',
-            sound: 'on',
-            onReady: function () { window.__adsReady = true; }
-          });
-        `}</Script>
         <Providers>{children}</Providers>
         <ConsentBanner />
       </body>

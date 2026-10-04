@@ -5,7 +5,7 @@ const DEFAULTS = {
   signupGrant: 100,
   checkinLadder: [25, 35, 50, 75, 100, 150, 250],
   adRewardCoins: 25,
-  adDailyCap: 6,
+  adDailyCap: 9999,
   giftFeePct: 10,
   referralBonus: 50,
   freeFirstPlayDaily: true,
@@ -49,7 +49,7 @@ export async function getConfig(): Promise<AppConfig> {
   const cfg = await loadConfig();
   memoryCache = { at: Date.now(), cfg };
   try {
-    await redis.set('cfg:remote', JSON.stringify(cfg), 'EX', 60);
+    await redis.set('cfg:remote', JSON.stringify(cfg), 'EX', 5);
   } catch {
     // ignore
   }

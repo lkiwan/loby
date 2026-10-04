@@ -1563,9 +1563,9 @@ board: ()=>{
   </table>
   <div class="spacer"></div>
   ${done?`
-  <button class="btn-cta anim-fadeup d3" onclick="act.newGame()">🎲 لعبة جديدة</button>
-  <button class="btn-primary anim-fadeup d4" onclick="act.again()">🔄 نفس اللاعبين — عاود</button>
-  <button class="btn-ghost anim-fadeup d5" onclick="go('home')">🏠 الصفحة الرئيسية</button>`
+  <button class="btn-cta anim-fadeup d3" onclick="act.replayPaid()">🎲 لعبة جديدة</button>
+  <button class="btn-primary anim-fadeup d4" onclick="act.replayPaid()">🔄 نفس اللاعبين — عاود</button>
+  <button class="btn-ghost anim-fadeup d5" onclick="act.exitToLobby()">🏠 رجع للساحة</button>`
   :`
   <button class="btn-cta anim-fadeup d3" onclick="act.start()">الجولة اللي جاية ⚡</button>
   <button class="btn-ghost anim-fadeup d4" onclick="act.showQuitModal()">🚪 خروج من اللعبة</button>`}`;
@@ -1775,6 +1775,8 @@ act.again = ()=>{
   S.players.forEach(p=>S.scores[p]=0);
   go('config');
 };
+act.replayPaid  = ()=>{ window.parent?.postMessage({type:'replay-requested'},'*'); };
+act.exitToLobby = ()=>{ window.parent?.postMessage({type:'game-over'},'*'); };
 act.newGame = ()=>{
   stopClock();
   S.phase='home'; S.players=[]; S.mode='classic'; S.catId=null;

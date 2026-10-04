@@ -4,9 +4,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import { prisma } from '@/lib/prisma';
 import { redis } from '@/lib/redis';
-import { getConfig } from '@/lib/config';
 import { checkRate } from '@/lib/rateLimit';
-import { casablancaDay } from '@/lib/time';
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
@@ -14,7 +12,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  if (!(await checkRate('ad_start', session.user.id, 20, 60))) {
+  if (!(await checkRate('ad_start', session.user.id, 200, 60))) {
     return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
   }
 
@@ -24,21 +22,8 @@ export async function POST(req: Request) {
   }
 
   const userId = session.user.id;
-  const cfg = await getConfig();
-  const day = casablancaDay();
-  const capKey = `ad:cap:${userId}:${day}`;
-
-  try {
-    const count = await redis.incr(capKey);
-    if (count === 1) await redis.expire(capKey, 60 * 60 * 26);
-    if (count > (cfg.adDailyCap as unknown as number)) {
-      return NextResponse.json({ error: 'Daily ad limit reached' }, { status: 429 });
-    }
-  } catch {
-    // cap is best-effort; fail open
-  }
-
   const nonce = crypto.randomUUID();
+
   await redis.set(
     `ad:nonce:${nonce}`,
     JSON.stringify({ userId, gameId, placement, issuedAt: Date.now() }),
@@ -47,7 +32,7 @@ export async function POST(req: Request) {
   );
 
   await prisma.adImpression.create({
-    data: { userId, gameId, placement, network: 'adsense_h5', nonce, status: 'STARTED' },
+    data: { userId, gameId, placement, network: 'adsterra', nonce, status: 'STARTED' },
   });
 
   return NextResponse.json({ nonce, expiresIn: 300 });

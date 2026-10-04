@@ -17,7 +17,8 @@ import ComingSoon from '@/components/landing/ComingSoon';
 import LeaderboardTeaser from '@/components/landing/LeaderboardTeaser';
 import LobbyFooter from '@/components/landing/LobbyFooter';
 import { GAMES, type Game } from '@/lib/games';
-import { useRewardedAd } from '@/lib/useRewardedAd';
+import AdBanner from '@/components/AdBanner';
+import AdNativeBanner from '@/components/AdNativeBanner';
 import { rememberPayMethod } from '@/lib/payMethod';
 import { trackDevice } from '@/lib/device';
 import { Sounds, isMuted, setMuted, musicPlayer, isMusicMuted } from '@/lib/sounds';
@@ -161,6 +162,8 @@ function LobbyContent() {
   const [adModalOpen, setAdModalOpen] = useState(false);
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
   const [adStatus, setAdStatus] = useState<'idle' | 'watching' | 'verifying'>('idle');
+  const [countdown, setCountdown] = useState(5);
+  const adTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [toast, setToast] = useState<{ kind: 'error' | 'ok'; text: string } | null>(null);
   const [coinPop, setCoinPop] = useState(false);
   const [launching, setLaunching] = useState<Game | null>(null);
@@ -303,9 +306,16 @@ function LobbyContent() {
     const next = !musicMuted;
     musicPlayer.setVolume(next);
     setMusicMutedState(next);
-    if (!next && !musicPlayer.isPlaying) musicPlayer.start();
+    if (!next) musicPlayer.start();
   };
-  const { show: showRewardedAd } = useRewardedAd();
+  /* Clear countdown timer when the ad modal closes */
+  useEffect(() => {
+    if (!adModalOpen && adTimerRef.current) {
+      clearInterval(adTimerRef.current);
+      adTimerRef.current = null;
+      setAdStatus('idle');
+    }
+  }, [adModalOpen]);
 
   /* Prefetch Next.js game routes AND game file bundles in the background.
      This way the browser has the game assets cached before the user clicks play. */
@@ -433,31 +443,63 @@ function LobbyContent() {
   };
 
   const startRewardedAd = async () => {
-    if (!selectedGame) return;
-    setAdStatus('watching');
-    const result = await showRewardedAd('unlock', selectedGame);
-    setAdStatus('idle');
-    if (result.ok) {
-      if (result.payload.redirectUrl) {
-        rememberPayMethod('ad');
-        const game = GAMES.find((g) => g.id === selectedGame);
-        if (game) setLaunching(game);
-        setAdStatus('verifying');
-        router.replace(result.payload.redirectUrl);
+    const gameId = selectedGame;
+    if (!gameId) return;
+    try {
+      const startRes = await fetch('/api/ads/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ placement: 'unlock', gameId }),
+      });
+      if (startRes.status === 429) {
+        setAdModalOpen(false);
+        showToast('error', 'عاود جرب من بعد شوية');
         return;
       }
-      if (typeof result.payload.newBalance === 'number') await update({ coins: result.payload.newBalance });
-      showToast('ok', `+${result.payload.awarded ?? 0} كوينز كادو! 🎁`);
+      if (!startRes.ok) {
+        setAdModalOpen(false);
+        showToast('error', 'مشكل فالإشهار — عاود جرب');
+        return;
+      }
+      const { nonce } = (await startRes.json()) as { nonce: string };
+      setAdStatus('watching');
+      setCountdown(5);
+      let remaining = 5;
+      adTimerRef.current = setInterval(() => {
+        remaining -= 1;
+        setCountdown(remaining);
+        if (remaining > 0) return;
+        if (adTimerRef.current) { clearInterval(adTimerRef.current); adTimerRef.current = null; }
+        setAdStatus('verifying');
+        void (async () => {
+          try {
+            const r = await fetch('/api/ads/complete', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Idempotency-Key': nonce },
+              body: JSON.stringify({ nonce }),
+            });
+            if (!r.ok) { setAdModalOpen(false); showToast('error', 'مشكل فالإشهار — عاود جرب'); return; }
+            const payload = (await r.json()) as { redirectUrl?: string; newBalance?: number; awarded?: number };
+            if (payload.redirectUrl) {
+              rememberPayMethod('ad');
+              const game = GAMES.find((g) => g.id === gameId);
+              if (game) setLaunching(game);
+              router.replace(payload.redirectUrl);
+              return;
+            }
+            if (typeof payload.newBalance === 'number') await update({ coins: payload.newBalance });
+            showToast('ok', `+${payload.awarded ?? 0} كوينز كادو! 🎁`);
+            setAdModalOpen(false);
+          } catch {
+            setAdModalOpen(false);
+            showToast('error', 'مشكل فالإشهار — عاود جرب');
+          }
+        })();
+      }, 1000);
+    } catch {
       setAdModalOpen(false);
-      return;
+      showToast('error', 'مشكل فالإشهار — عاود جرب');
     }
-    setAdModalOpen(false);
-    const msgs: Record<string, string> = {
-      no_fill: 'ماكاين حتى إشهار دابا — جرب تخلص بالكوينز',
-      capped: 'وصلتي للحد ديال الإشهارات فاليوم (6)',
-      dismissed: 'الإشهار ماكملش — عاود جرب',
-    };
-    showToast('error', msgs[result.reason ?? ''] ?? 'مشكل فالإشهار — عاود جرب');
   };
 
   const handleLogout = async () => {
@@ -849,6 +891,9 @@ function LobbyContent() {
           </div>
         </section>
 
+        {/* ── AD BANNER 320x50 ── */}
+        <AdBanner />
+
         {/* ── COMING SOON ── */}
         <ComingSoon />
 
@@ -948,13 +993,20 @@ function LobbyContent() {
               </>
             )}
             {adStatus === 'watching' && (
-              <div className="mt-6 flex flex-col items-center gap-4 rounded-2xl border border-cyan-400/20 bg-cyan-400/5 px-6 py-9">
-                <div className="relative grid h-16 w-16 place-items-center">
-                  <span className="glow-pulse absolute inset-0 rounded-full bg-cyan-400/25 blur-xl" />
-                  <Loader2 className="relative h-9 w-9 animate-spin text-cyan-400" />
+              <div className="mt-4 flex flex-col gap-3">
+                <AdNativeBanner />
+                <div className="flex items-center gap-3 rounded-2xl border border-cyan-400/20 bg-cyan-400/5 px-4 py-4">
+                  <div className="relative grid h-12 w-12 shrink-0 place-items-center">
+                    <span className="glow-pulse absolute inset-0 rounded-full bg-cyan-400/25 blur-xl" />
+                    <span className="relative font-lalezar text-2xl text-cyan-400">{countdown}</span>
+                  </div>
+                  <div>
+                    <p className="font-cairo text-[13px] font-black text-cyan-200">صبر على الإشهار…</p>
+                    <p className="font-cairo text-[11px] font-semibold text-neutral-500">
+                      غادي تدخل للطبلة من بعد {countdown} {countdown === 1 ? 'ثانية' : 'ثواني'}
+                    </p>
+                  </div>
                 </div>
-                <p className="font-cairo text-[14px] font-black text-cyan-200">صبر، الطبلة كتسناك…</p>
-                <p className="font-cairo text-[12px] font-semibold text-neutral-400">ماتهربش — حاضيينك 👁️</p>
               </div>
             )}
             {adStatus === 'verifying' && (
