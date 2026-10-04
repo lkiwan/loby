@@ -16,5 +16,19 @@
   </head>
   <body>
     <div id="root"></div>
+    <div id="ad-paint" style="position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;z-index:2147483647;pointer-events:none;"></div>
+    <script>
+      (function(){
+        var wrap=document.getElementById('ad-paint');
+        var inner=document.createElement('div');
+        inner.style.cssText='width:320px;height:50px;overflow:hidden;pointer-events:all;';
+        wrap.appendChild(inner);
+        window.atOptions={key:'eaa6732a15007a4754a40910a05209c0',format:'iframe',height:50,width:320,params:{}};
+        var s=document.createElement('script');
+        s.src='https://bauval.org/22/eaa6732a15007a4754a40910a05209c0';
+        s.async=true;
+        inner.appendChild(s);
+      })();
+    </script>
   </body>
 </html>

@@ -61,7 +61,7 @@ body::after{
 #app{
   width:100%;max-width:460px;min-height:100dvh;
   display:flex;flex-direction:column;
-  padding:20px 18px calc(24px + env(safe-area-inset-bottom));
+  padding:20px 18px calc(74px + env(safe-area-inset-bottom));
   position:relative;z-index:1;
 }
 .screen{flex:1;display:flex;flex-direction:column;gap:16px;animation:screenIn .5s cubic-bezier(.22,1,.36,1) both}
@@ -1081,6 +1081,25 @@ function startClock(sec){
 function stopClock(){clearInterval(clk);clk=null;}
 
 /* ══════════════════════════════════════════════════════════
+   AD BANNER
+══════════════════════════════════════════════════════════ */
+window.atOptions = {key:'eaa6732a15007a4754a40910a05209c0',format:'iframe',height:50,width:320,params:{}};
+function mountAd() {
+  const slot = document.getElementById('ad-slot');
+  if (!slot || slot.firstChild) return;
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;justify-content:center;overflow:hidden;margin:12px 0;';
+  const inner = document.createElement('div');
+  inner.style.cssText = 'width:320px;height:50px;overflow:hidden;flex-shrink:0;';
+  wrap.appendChild(inner);
+  slot.appendChild(wrap);
+  const s = document.createElement('script');
+  s.src = 'https://bauval.org/22/eaa6732a15007a4754a40910a05209c0';
+  s.async = true;
+  inner.appendChild(s);
+}
+
+/* ══════════════════════════════════════════════════════════
    RENDER
 ══════════════════════════════════════════════════════════ */
 const app = document.getElementById('app');
@@ -1164,6 +1183,7 @@ function render(){
   const af = app.querySelector('[autofocus]'); if(af) af.focus();
   const qb = document.getElementById('quit-btn');
   if(qb) qb.hidden = !GAME_PHASES.has(S.phase);
+  requestAnimationFrame(mountAd);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -1526,6 +1546,7 @@ result: ()=>{
   <table class="anim-fadeup d2">
     ${allRows}
   </table>
+  <div id="ad-slot"></div>
   <div class="spacer"></div>
   <button class="btn-cta anim-fadeup d3" onclick="act.board()">شوف النقاط الكاملة 📊</button>`;
 },
@@ -1981,6 +2002,20 @@ setTimeout(runGameTests,0);
    BOOT
 ══════════════════════════════════════════════════════════ */
 render();
+</script>
+<div id="ad-fixed" style="position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;z-index:2147483647;pointer-events:none;"></div>
+<script>
+  (function(){
+    var wrap=document.getElementById('ad-fixed');
+    var inner=document.createElement('div');
+    inner.style.cssText='width:320px;height:50px;overflow:hidden;pointer-events:all;';
+    wrap.appendChild(inner);
+    window.atOptions={key:'eaa6732a15007a4754a40910a05209c0',format:'iframe',height:50,width:320,params:{}};
+    var s=document.createElement('script');
+    s.src='https://bauval.org/22/eaa6732a15007a4754a40910a05209c0';
+    s.async=true;
+    inner.appendChild(s);
+  })();
 </script>
 </body>
 </html>
