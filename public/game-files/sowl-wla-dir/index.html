@@ -11,33 +11,33 @@
 <style>
 /* ─── TOKENS ──────────────────────────────────────────────── */
 :root{
-  --bg:#0E0A1E;
-  --bg2:#150E2A;
-  --card:#1C1538;
-  --card2:#221B44;
-  --border:rgba(168,85,247,.22);
-  --border2:rgba(244,114,182,.22);
-  --ink:#EDE0FF;
-  --ink70:rgba(237,224,255,.7);
-  --ink50:rgba(237,224,255,.5);
-  --ink30:rgba(237,224,255,.3);
-  --ink15:rgba(237,224,255,.15);
+  --bg:#030812;
+  --bg2:#07101f;
+  --card:#0c1428;
+  --card2:#0f1835;
+  --border:rgba(168,85,247,.28);
+  --border2:rgba(0,217,255,.22);
+  --ink:#f1e7d6;
+  --ink70:rgba(241,231,214,.7);
+  --ink50:rgba(241,231,214,.5);
+  --ink30:rgba(241,231,214,.3);
+  --ink15:rgba(241,231,214,.15);
   --pink:#F472B6;
   --pink2:#EC4899;
   --violet:#A855F7;
   --violet2:#7C3AED;
-  --blue:#60A5FA;
-  --blue2:#2563EB;
+  --blue:#00d9ff;
+  --blue2:#00b8d4;
   --green:#34D399;
   --green2:#059669;
-  --gold:#FBBF24;
+  --gold:#f2b23d;
   --red:#F43F5E;
   --r:20px;
   --r-sm:14px;
   --shadow:0 4px 0 rgba(0,0,0,.7);
   --shadow-sm:0 3px 0 rgba(0,0,0,.55);
-  --glow-v:0 0 20px rgba(168,85,247,.35);
-  --glow-p:0 0 20px rgba(244,114,182,.35);
+  --glow-v:0 0 24px rgba(168,85,247,.45);
+  --glow-p:0 0 22px rgba(0,217,255,.3);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow-x:hidden}
@@ -56,15 +56,15 @@ input,textarea{-webkit-user-select:text;user-select:text}
 body::before{
   content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background-image:
-    radial-gradient(1px 1px at 15% 12%,rgba(168,85,247,.6) 0,transparent 0),
-    radial-gradient(1px 1px at 73% 8%,rgba(244,114,182,.5) 0,transparent 0),
-    radial-gradient(1px 1px at 42% 28%,rgba(237,224,255,.4) 0,transparent 0),
-    radial-gradient(1px 1px at 88% 35%,rgba(168,85,247,.5) 0,transparent 0),
+    radial-gradient(1px 1px at 15% 12%,rgba(168,85,247,.7) 0,transparent 0),
+    radial-gradient(1px 1px at 73% 8%,rgba(242,178,61,.6) 0,transparent 0),
+    radial-gradient(1px 1px at 42% 28%,rgba(0,217,255,.5) 0,transparent 0),
+    radial-gradient(1px 1px at 88% 35%,rgba(168,85,247,.55) 0,transparent 0),
     radial-gradient(1px 1px at 6% 55%,rgba(244,114,182,.4) 0,transparent 0),
-    radial-gradient(1px 1px at 62% 62%,rgba(237,224,255,.3) 0,transparent 0),
-    radial-gradient(1px 1px at 31% 78%,rgba(168,85,247,.5) 0,transparent 0),
+    radial-gradient(1px 1px at 62% 62%,rgba(242,178,61,.4) 0,transparent 0),
+    radial-gradient(1px 1px at 31% 78%,rgba(0,217,255,.5) 0,transparent 0),
     radial-gradient(1px 1px at 92% 82%,rgba(244,114,182,.4) 0,transparent 0),
-    radial-gradient(1.5px 1.5px at 54% 90%,rgba(237,224,255,.5) 0,transparent 0),
+    radial-gradient(1.5px 1.5px at 54% 90%,rgba(241,231,214,.5) 0,transparent 0),
     radial-gradient(1px 1px at 22% 93%,rgba(168,85,247,.4) 0,transparent 0);
 }
 
@@ -180,7 +180,7 @@ input::placeholder{color:var(--ink30);font-weight:600}
   animation:orbFloat 12s ease-in-out infinite;
 }
 .home-orb-1{width:300px;height:300px;background:var(--violet);top:-80px;right:-80px}
-.home-orb-2{width:260px;height:260px;background:var(--pink);bottom:0;left:-80px;animation-direction:reverse;animation-duration:15s}
+.home-orb-2{width:260px;height:260px;background:var(--gold);bottom:0;left:-80px;animation-direction:reverse;animation-duration:15s}
 .hero{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .game-emoji{
   font-size:72px;line-height:1;
