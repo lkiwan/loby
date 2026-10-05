@@ -534,16 +534,12 @@ function LobbyContent() {
 
       {/* Header */}
       <header className="header-zellige sticky top-4 z-30 mx-4 rounded-full bg-[#12294D] border border-white/10 shadow-lg mt-4 px-4 py-2 flex items-center justify-between sm:mx-auto sm:max-w-6xl">
-        <Link href="/" className="flex items-center gap-2">
-          <Image src="/images/logo-playm3ana.png" alt="PlayM3ana" width={32} height={32} className="rounded-full" />
-          <span className="text-gradient-gold-teal font-grit text-lg font-bold tracking-tight">PLAYM3ANA</span>
-        </Link>
         <div className="flex items-center gap-3">
           {isAuthed ? (
             <>
               <button className="relative">
                 <Bell className="h-5 w-5 text-[#B8C4D8]" />
-                <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-[#F97066]" />
+                <span className="absolute top-0 end-0 h-2 w-2 rounded-full bg-[#F97066]" />
               </button>
               <button onClick={openSettings} className="grid h-8 w-8 place-items-center rounded-full bg-[#0B1F3A] border border-[#2DD4BF]/30">
                 <User className="h-4 w-4 text-[#2DD4BF]" />
@@ -555,6 +551,10 @@ function LobbyContent() {
             </Link>
           )}
         </div>
+        <Link href="/" className="flex items-center gap-2">
+          <Image src="/images/logo-playm3ana.png" alt="PlayM3ana" width={32} height={32} className="rounded-full" />
+          <span className="text-gradient-gold-teal font-grit text-lg font-bold tracking-tight">PLAYM3ANA</span>
+        </Link>
       </header>
 
       {/* Coins pill */}
