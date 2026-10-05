@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useState, useEffect, useCallback } from 'react';
+import { use, useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, Loader2, RefreshCw, X, Coins, Trophy, Zap } from 'lucide-react';
@@ -9,6 +9,7 @@ import { rememberPayMethod, getRememberedPayMethod } from '@/lib/payMethod';
 import { StarMark } from '@/components/Star';
 import GameIcon from '@/components/GameIcon';
 import { GAMES } from '@/lib/games';
+import { encodeRoster } from '@/lib/roster';
 
 const EXTERNAL_GAMES: Record<string, string> = {
   'paint-followers': '/game-files/paint-followers/index.html',
@@ -28,11 +29,31 @@ export default function GamePage({
   const resolvedParams  = use(params);
   const { token }       = use(searchParams);
   const baseUrl         = EXTERNAL_GAMES[resolvedParams.gameId];
-  const externalUrl     = baseUrl
-    ? token
-      ? `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}`
-      : baseUrl
-    : undefined;
+  const [rosterParam, setRosterParam] = useState<string | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    fetch('/api/friends', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : { friends: [] }))
+      .then((d: { friends?: { name: string }[] }) => {
+        if (!alive) return;
+        setRosterParam(encodeRoster((d.friends ?? []).map((x: any) => x.name), resolvedParams.gameId));
+      })
+      .catch(() => {
+        if (alive) setRosterParam('');
+      });
+    return () => {
+      alive = false;
+    };
+  }, [resolvedParams.gameId]);
+
+  const externalUrl = useMemo(() => {
+    if (!baseUrl) return undefined;
+    const qs: string[] = [];
+    if (token) qs.push(`token=${encodeURIComponent(token)}`);
+    if (rosterParam) qs.push(`p=${rosterParam}`);
+    return qs.length ? `${baseUrl}?${qs.join('&')}` : baseUrl;
+  }, [baseUrl, token, rosterParam]);
 
   const [exitConfirm, setExitConfirm]       = useState(false);
   const [replaying, setReplaying]           = useState(false);
@@ -63,10 +84,10 @@ export default function GamePage({
 
   /* Force-hide the loading screen after 3 seconds if onLoad never fires */
   useEffect(() => {
-    if (iframeLoaded) return;
+    if (iframeLoaded || rosterParam === null) return;
     const t = setTimeout(() => setIframeLoaded(true), 3000);
     return () => clearTimeout(t);
-  }, [iframeLoaded]);
+  }, [iframeLoaded, rosterParam]);
 
   const fetchCoins = useCallback(async () => {
     try {
@@ -143,7 +164,7 @@ export default function GamePage({
     <div className="relative h-dvh w-full overflow-hidden bg-[#030812]">
 
       {/* iframe loading screen */}
-      {!iframeLoaded && (
+      {(!iframeLoaded || rosterParam === null) && (
         <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-6 bg-[#030812]">
           <div className="pointer-events-none absolute inset-0">
             <div className="cyber-grid opacity-30 absolute inset-0" />
@@ -220,13 +241,16 @@ export default function GamePage({
         </button>
       </div>
 
-      <iframe
-        src={externalUrl}
-        className="h-full w-full border-0"
-        allow="autoplay; fullscreen; clipboard-write"
-        title={`Game: ${resolvedParams.gameId}`}
-        onLoad={() => setIframeLoaded(true)}
-      />
+      {rosterParam !== null && (
+        <iframe
+          key={externalUrl}
+          src={externalUrl}
+          className="h-full w-full border-0"
+          allow="autoplay; fullscreen; clipboard-write"
+          title={`Game: ${resolvedParams.gameId}`}
+          onLoad={() => setIframeLoaded(true)}
+        />
+      )}
 
       {/* Game Over modal */}
       {gameOver && (
