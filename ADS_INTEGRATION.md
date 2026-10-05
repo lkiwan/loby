@@ -39,16 +39,16 @@ skip that section; a naive `POST /reward` after an ad is a free coin printer.
 
 ## 2. Why not the others
 
-| Network | Web rewarded? | S2S callback | Verdict for you |
-|---|---|---|---|
-| **AdSense H5 Games Ads** | ✅ | ❌ | **Pick this.** Best eCPM available to web, no minimums |
-| Google Ad Manager (GAM) H5 | ✅ | ❌ | Same formats, better controls — but needs scale to be worth the setup |
-| AdMob | ❌ app only | ✅ | Only if you ship a real Android/iOS app later |
-| Unity Ads / ironSource / AppLovin MAX | ❌ app only | ✅ | Not usable in a browser. Ignore. |
-| AppLixir | ✅ | partial | Good web-specific fallback, wants ~5k DAU |
-| ayetStudios HTML5 video | ✅ | ✅ signed S2S | The only one that fits your postback design natively. Lower demand quality. Keep as **fill fallback**. |
-| Adsterra / Monetag / PropellerAds | popunders, "rewarded interstitial" | partial | Accepts anyone, pays in MENA, but will wreck retention and can get you blacklisted from Google later. **Do not start here.** |
-| GameMonetize / GameDistribution | ✅ | ❌ | Requires hosting your games on their platform. Conflicts with your own lobby. |
+| Network                               | Web rewarded?                      | S2S callback  | Verdict for you                                                                                                             |
+| ------------------------------------- | ---------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **AdSense H5 Games Ads**              | ✅                                 | ❌            | **Pick this.** Best eCPM available to web, no minimums                                                                      |
+| Google Ad Manager (GAM) H5            | ✅                                 | ❌            | Same formats, better controls — but needs scale to be worth the setup                                                       |
+| AdMob                                 | ❌ app only                        | ✅            | Only if you ship a real Android/iOS app later                                                                               |
+| Unity Ads / ironSource / AppLovin MAX | ❌ app only                        | ✅            | Not usable in a browser. Ignore.                                                                                            |
+| AppLixir                              | ✅                                 | partial       | Good web-specific fallback, wants ~5k DAU                                                                                   |
+| ayetStudios HTML5 video               | ✅                                 | ✅ signed S2S | The only one that fits your postback design natively. Lower demand quality. Keep as**fill fallback**.                       |
+| Adsterra / Monetag / PropellerAds     | popunders, "rewarded interstitial" | partial       | Accepts anyone, pays in MENA, but will wreck retention and can get you blacklisted from Google later.**Do not start here.** |
+| GameMonetize / GameDistribution       | ✅                                 | ❌            | Requires hosting your games on their platform. Conflicts with your own lobby.                                               |
 
 **Waterfall plan:** AdSense H5 as primary. If fill rate in Morocco drops below ~70%,
 add ayetStudios as a secondary call when `breakStatus === 'noAdPreloaded'`. Never run two
@@ -127,18 +127,18 @@ the claim has to be unforgeable and single-use.
 
 **Why this is safe enough:**
 
-| Attack | Blocked by |
-|---|---|
-| Call `/complete` without watching | Needs a nonce, and nonce is only issued by `/start` |
-| Replay the same nonce | `GETDEL` burns it; `LedgerEntry.idempotencyKey` is `@unique` |
-| Script `/start` → `/complete` in a loop | 5s minimum elapsed + 6/day cap + rate limit |
-| Farm nonces for later | 300s TTL |
-| Multi-account farming | device fingerprint cap (§5 of the rewards doc) |
+| Attack                                 | Blocked by                                                   |
+| -------------------------------------- | ------------------------------------------------------------ |
+| Call`/complete` without watching       | Needs a nonce, and nonce is only issued by`/start`           |
+| Replay the same nonce                  | `GETDEL` burns it; `LedgerEntry.idempotencyKey` is `@unique` |
+| Script`/start` → `/complete` in a loop | 5s minimum elapsed + 6/day cap + rate limit                  |
+| Farm nonces for later                  | 300s TTL                                                     |
+| Multi-account farming                  | device fingerprint cap (§5 of the rewards doc)               |
 
 **Reconcile weekly.** Compare `COUNT(AdImpression WHERE status=COMPLETED)` against the
 impressions Google reports in the AdSense H5 report (Reports → Filter → Ad format →
 Rewarded). If your count is meaningfully higher, someone is forging completions. That
-comparison *is* your S2S substitute.
+comparison _is_ your S2S substitute.
 
 ---
 
@@ -149,9 +149,14 @@ comparison *is* your S2S substitute.
 ```tsx
 import Script from "next/script";
 
-const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-7713392774673260";
+const ADSENSE_CLIENT =
+  process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-7713392774673260";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="ar" dir="rtl">
       <body>
@@ -251,20 +256,30 @@ export function useRewardedAd() {
           beforeReward: (showAdFn: () => void) => showAdFn(), // we already had a user tap
           beforeAd: () => document.body.classList.add("ad-playing"),
           afterAd: () => document.body.classList.remove("ad-playing"),
-          adViewed: () => { viewed = true; },
-          adDismissed: () => { viewed = false; },
+          adViewed: () => {
+            viewed = true;
+          },
+          adDismissed: () => {
+            viewed = false;
+          },
           adBreakDone: async (info: { breakStatus: string }) => {
             setBusy(false);
             if (!viewed && info.breakStatus !== "viewed") {
               return resolve({
                 ok: false,
-                reason: info.breakStatus === "noAdPreloaded" ? "no_fill" : "dismissed",
+                reason:
+                  info.breakStatus === "noAdPreloaded"
+                    ? "no_fill"
+                    : "dismissed",
               });
             }
             // 3) claim the reward with the burned nonce
             const r = await fetch("/api/ads/complete", {
               method: "POST",
-              headers: { "Content-Type": "application/json", "Idempotency-Key": nonce },
+              headers: {
+                "Content-Type": "application/json",
+                "Idempotency-Key": nonce,
+              },
               body: JSON.stringify({ nonce }),
             });
             if (!r.ok) return resolve({ ok: false, reason: "error" });
@@ -272,7 +287,7 @@ export function useRewardedAd() {
           },
         });
       }),
-    [busy]
+    [busy],
   );
 
   return { show, busy };
@@ -298,7 +313,8 @@ const DAILY_CAP = 6;
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) return Response.json({ error: "unauth" }, { status: 401 });
+  if (!session?.user?.id)
+    return Response.json({ error: "unauth" }, { status: 401 });
 
   const { placement, gameId } = await req.json();
   const userId = session.user.id;
@@ -308,17 +324,25 @@ export async function POST(req: Request) {
   const capKey = `ad:cap:${userId}:${day}`;
   const count = await redis.incr(capKey);
   if (count === 1) await redis.expire(capKey, 60 * 60 * 26);
-  if (count > DAILY_CAP) return Response.json({ error: "capped" }, { status: 429 });
+  if (count > DAILY_CAP)
+    return Response.json({ error: "capped" }, { status: 429 });
 
   const nonce = randomUUID();
   await redis.setex(
     `ad:nonce:${nonce}`,
     300,
-    JSON.stringify({ userId, gameId, placement, issuedAt: Date.now() })
+    JSON.stringify({ userId, gameId, placement, issuedAt: Date.now() }),
   );
 
   await prisma.adImpression.create({
-    data: { userId, gameId, placement, network: "adsense_h5", nonce, status: "STARTED" },
+    data: {
+      userId,
+      gameId,
+      placement,
+      network: "adsense_h5",
+      nonce,
+      status: "STARTED",
+    },
   });
 
   return Response.json({ nonce });
@@ -337,13 +361,14 @@ export async function POST(req: Request) {
 const REWARD_COINS: Record<string, number> = {
   double_reward: 50,
   daily_bonus: 50,
-  continue: 0,   // grants a life, not coins
-  unlock: 0,     // grants a game token, not coins
+  continue: 0, // grants a life, not coins
+  unlock: 0, // grants a game token, not coins
 };
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) return Response.json({ error: "unauth" }, { status: 401 });
+  if (!session?.user?.id)
+    return Response.json({ error: "unauth" }, { status: 401 });
 
   const { nonce } = await req.json();
 
@@ -358,18 +383,22 @@ export async function POST(req: Request) {
   const elapsed = Date.now() - data.issuedAt;
   if (elapsed < 5_000) {
     await prisma.adImpression.update({
-      where: { nonce }, data: { status: "REJECTED" },
+      where: { nonce },
+      data: { status: "REJECTED" },
     });
     return Response.json({ error: "too_fast" }, { status: 400 });
   }
 
   await prisma.adImpression.update({
-    where: { nonce }, data: { status: "COMPLETED", completedAt: new Date() },
+    where: { nonce },
+    data: { status: "COMPLETED", completedAt: new Date() },
   });
 
   if (data.placement === "unlock") {
     const token = await generateGameToken(data.userId, data.gameId);
-    return Response.json({ redirectUrl: `/games/${data.gameId}?token=${token}` });
+    return Response.json({
+      redirectUrl: `/games/${data.gameId}?token=${token}`,
+    });
   }
 
   const amount = REWARD_COINS[data.placement] ?? 25;
@@ -387,13 +416,13 @@ Prisma throws `P2002` and you return the original entry instead of paying twice.
 
 Build them in this order.
 
-| # | Placement | Trigger | Offer | Expected opt-in |
-|---|---|---|---|---|
-| 1 | **`double_reward`** | Run ends, score shown | "ضاعف مكافأتك ×2" | **50–70%** — highest-yield slot in mobile gaming |
-| 2 | **`continue`** | Player dies with a good score | "كمل اللعب" | 30–45%, strongest at a personal best |
-| 3 | **`unlock`** | Not enough coins to play | "شاهد إعلان والعب مجاناً" | 40–60%, you already have this |
-| 4 | **`daily_bonus`** | Streak claim screen | "×2 على مكافأة اليوم" | 25–40% |
-| 5 | `interstitial` | Between plays, capped 1 per 3 games | — | passive, low value, mildly hurts retention |
+| #   | Placement           | Trigger                             | Offer                     | Expected opt-in                                  |
+| --- | ------------------- | ----------------------------------- | ------------------------- | ------------------------------------------------ |
+| 1   | **`double_reward`** | Run ends, score shown               | "ضاعف مكافأتك ×2"         | **50–70%** — highest-yield slot in mobile gaming |
+| 2   | **`continue`**      | Player dies with a good score       | "كمل اللعب"               | 30–45%, strongest at a personal best             |
+| 3   | **`unlock`**        | Not enough coins to play            | "شاهد إعلان والعب مجاناً" | 40–60%, you already have this                    |
+| 4   | **`daily_bonus`**   | Streak claim screen                 | "×2 على مكافأة اليوم"     | 25–40%                                           |
+| 5   | `interstitial`      | Between plays, capped 1 per 3 games | —                         | passive, low value, mildly hurts retention       |
 
 **Why #1 beats #3:** the unlock ad is a toll before the fun. The double-reward ad is a
 bonus right after the dopamine hit, when the player already feels good. Same inventory,
@@ -429,13 +458,13 @@ These are not suggestions. AdSense disables serving first and discusses later.
 
 Morocco is a low-CPM geo. Plan with these, not with US blog numbers:
 
-| | Conservative | Realistic | Good |
-|---|---|---|---|
-| Rewarded eCPM (MA/MENA) | $0.80 | $2.00 | $4.00 |
-| Rewarded views / DAU | 1.5 | 3.0 | 4.5 |
-| **ARPDAU** | $0.0012 | $0.0060 | $0.0180 |
-| **1,000 DAU / month** | $36 | $180 | $540 |
-| **10,000 DAU / month** | $360 | $1,800 | $5,400 |
+|                         | Conservative | Realistic | Good    |
+| ----------------------- | ------------ | --------- | ------- |
+| Rewarded eCPM (MA/MENA) | $0.80        | $2.00     | $4.00   |
+| Rewarded views / DAU    | 1.5          | 3.0       | 4.5     |
+| **ARPDAU**              | $0.0012      | $0.0060   | $0.0180 |
+| **1,000 DAU / month**   | $36          | $180      | $540    |
+| **10,000 DAU / month**  | $360         | $1,800    | $5,400  |
 
 Two levers, and only one is yours: **eCPM is set by the market, views/DAU is set by your
 design.** Going from 1.5 → 4.5 views is a 3× revenue increase you control entirely through
@@ -471,14 +500,14 @@ start that process early, it takes weeks.
 
 ## 10. What to delete from the current implementation
 
-| Today | Replace with |
-|---|---|
-| 5-second mock ad modal | real `adBreak({type:'reward'})` |
-| Client polls `/unlock` every 2s, max 10 | single `adBreakDone` callback |
-| `ad_completed:{userId}:{gameId}` Redis key, TTL 120s | `ad:nonce:{nonce}`, TTL 300s |
-| `AD_NETWORK_WEBHOOK_SECRET` in a query string | HMAC over the full payload (only if you add a real S2S network) |
-| No ad cap | `ad:cap:{userId}:{day}`, 6/day |
-| No impression record | `AdImpression` rows for every start and completion |
+| Today                                                | Replace with                                                    |
+| ---------------------------------------------------- | --------------------------------------------------------------- |
+| 5-second mock ad modal                               | real`adBreak({type:'reward'})`                                  |
+| Client polls`/unlock` every 2s, max 10               | single`adBreakDone` callback                                    |
+| `ad_completed:{userId}:{gameId}` Redis key, TTL 120s | `ad:nonce:{nonce}`, TTL 300s                                    |
+| `AD_NETWORK_WEBHOOK_SECRET` in a query string        | HMAC over the full payload (only if you add a real S2S network) |
+| No ad cap                                            | `ad:cap:{userId}:{day}`, 6/day                                  |
+| No impression record                                 | `AdImpression` rows for every start and completion              |
 
 The polling design was a reasonable placeholder, but it has a hole: `/unlock` with
 `paymentMethod:"ad"` grants a token whenever the Redis key exists, and nothing proves a

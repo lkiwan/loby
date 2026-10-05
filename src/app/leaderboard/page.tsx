@@ -5,7 +5,6 @@ import { ArrowRight, Trophy, Loader2 } from 'lucide-react';
 import { StarMark } from '@/components/Star';
 import dynamic from 'next/dynamic';
 
-const StarField = dynamic(() => import('@/components/StarField'), { ssr: false });
 
 type Player = {
   rank: number;
@@ -34,20 +33,20 @@ export default function LeaderboardPage() {
   const rest   = players.slice(1);
 
   return (
-    <div className="relative min-h-dvh bg-[#030812] text-[#f1e7d6]">
+    <div className="relative min-h-dvh bg-[#0B1F3A] zellige-bg text-[#FFF7E8]">
       {/* Background */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <StarField />
+        
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_50%_30%,rgba(242,178,61,.07),transparent_65%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_85%_75%_at_50%_50%,transparent_25%,rgba(3,8,18,.9)_100%)]" />
       </div>
 
       {/* Header */}
-      <header className="glass-header sticky top-0 z-30">
+      <header className="header-zellige mt-4 mx-4 rounded-full border border-white/10 bg-[#12294D] shadow-lg sticky top-0 z-30">
         <div className="mx-auto flex h-16 max-w-4xl items-center justify-between px-4 sm:px-6">
           <Link
             href="/"
-            className="flex items-center gap-2 font-cairo text-sm font-bold text-neutral-400 transition hover:text-cyan-400"
+            className="flex items-center gap-2 font-cairo text-sm font-bold text-[#B8C4D8] transition hover:text-[#2DD4BF]"
           >
             <ArrowRight className="h-4 w-4" />
             رجع
@@ -141,7 +140,7 @@ export default function LeaderboardPage() {
                     </div>
 
                     {/* Avatar */}
-                    <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/[0.08] bg-white/[0.04] font-cairo text-sm font-black text-neutral-400">
+                    <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/[0.08] bg-white/[0.04] font-cairo text-sm font-black text-[#B8C4D8]">
                       {(p.username?.[0] ?? '?').toUpperCase()}
                     </div>
 

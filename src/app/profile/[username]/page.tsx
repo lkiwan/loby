@@ -7,7 +7,6 @@ import GameIcon from '@/components/GameIcon';
 import { GAMES } from '@/lib/games';
 import dynamic from 'next/dynamic';
 
-const StarField = dynamic(() => import('@/components/StarField'), { ssr: false });
 
 function xpForLvl(n: number) {
   return Math.floor(100 * Math.pow(n, 1.4));
@@ -61,10 +60,10 @@ export default function ProfilePage({
 
   if (notFound) {
     return (
-      <div className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-[#030812] px-6 text-center">
+      <div className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-[#0B1F3A] zellige-bg px-6 text-center">
         <StarMark size={48} />
         <h1 className="font-lalezar text-3xl text-neutral-50">مالقيناش هاد اللعّاب 🥲</h1>
-        <p className="font-cairo text-sm font-semibold text-neutral-400">
+        <p className="font-cairo text-sm font-semibold text-[#B8C4D8]">
           يمكن بدل السمية ولا مسح الكونط.
         </p>
         <Link href="/" className="btn-chunk btn-cyber mt-2 px-6 py-3 text-sm">
@@ -75,18 +74,18 @@ export default function ProfilePage({
   }
 
   return (
-    <div className="relative min-h-dvh bg-[#030812] text-[#f1e7d6]">
+    <div className="relative min-h-dvh bg-[#0B1F3A] zellige-bg text-[#FFF7E8]">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <StarField />
+        
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_20%,rgba(168,85,247,.06),transparent_65%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_85%_75%_at_50%_50%,transparent_25%,rgba(3,8,18,.9)_100%)]" />
       </div>
 
-      <header className="glass-header sticky top-0 z-30">
+      <header className="header-zellige mt-4 mx-4 rounded-full border border-white/10 bg-[#12294D] shadow-lg sticky top-0 z-30">
         <div className="mx-auto flex h-16 max-w-2xl items-center justify-between px-4 sm:px-6">
           <Link
             href="/"
-            className="flex items-center gap-2 font-cairo text-sm font-bold text-neutral-400 transition hover:text-cyan-400"
+            className="flex items-center gap-2 font-cairo text-sm font-bold text-[#B8C4D8] transition hover:text-[#2DD4BF]"
           >
             <ArrowRight className="h-4 w-4" />
             رجع
@@ -147,7 +146,7 @@ export default function ProfilePage({
           <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
               { label: 'كوينز',       val: profile.coins.toLocaleString(),   color: 'text-amber-400',  icon: '🪙' },
-              { label: 'ڭلسات',       val: profile.gamesPlayed,               color: 'text-cyan-400',   icon: '🎮' },
+              { label: 'ڭلسات',       val: profile.gamesPlayed,               color: 'text-[#2DD4BF]',   icon: '🎮' },
               { label: 'الستريك ديال دابا', val: `${profile.streakCount} 🔥`,       color: 'text-red-400',    icon: '' },
               { label: 'أطول ستريك',  val: `${profile.longestStreak} يوم`,    color: 'text-orange-400', icon: '' },
             ].map((s) => (
@@ -169,7 +168,7 @@ export default function ProfilePage({
                 <span className="font-cairo text-[13px] font-black text-purple-300">الكود د الدعوة ديالك</span>
               </div>
               <div className="flex items-center gap-2">
-                <code className="flex-1 overflow-hidden rounded-lg border border-purple-400/15 bg-[#030812] px-4 py-2.5 font-mono text-[15px] tracking-widest text-purple-200">
+                <code className="flex-1 overflow-hidden rounded-lg border border-purple-400/15 bg-[#0B1F3A] zellige-bg px-4 py-2.5 font-mono text-[15px] tracking-widest text-purple-200">
                   {profile.referralCode}
                 </code>
                 <button
@@ -234,7 +233,7 @@ export default function ProfilePage({
       ) : (
         <div className="flex justify-center pt-32">
           <div className="pulse-glow-ring grid h-12 w-12 place-items-center rounded-full border-2 border-cyan-400/40">
-            <Loader2 className="h-5 w-5 animate-spin text-cyan-400" />
+            <Loader2 className="h-5 w-5 animate-spin text-[#2DD4BF]" />
           </div>
         </div>
       )}

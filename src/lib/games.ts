@@ -7,6 +7,7 @@ export type Game = {
   glowAccent: string;
   isMafia: boolean;
   keyArt?: string;
+  logo?: string;
   players: string;
   duration: string;
   difficulty: 'سهل' | 'متوسط' | 'صعب';
@@ -25,6 +26,7 @@ export const GAMES: Game[] = [
     starAccent: '#EAB308',
     glowAccent: '#DC2626',
     isMafia: true,
+    logo: '/images/game-mafia-logo.png',
     players: '6+',
     duration: '25 دقيقة',
     difficulty: 'متوسط',
@@ -42,6 +44,7 @@ export const GAMES: Game[] = [
     glowAccent: '#3FBA9A',
     isMafia: false,
     keyArt: '/images/paint-followers-2.jpeg',
+    logo: '/images/game-paint-logo.png',
     players: '3–15',
     duration: '15 دقيقة',
     difficulty: 'سهل',
@@ -59,6 +62,7 @@ export const GAMES: Game[] = [
     glowAccent: '#E85C2A',
     isMafia: false,
     keyArt: '/images/7azr-fazr.jpeg',
+    logo: '/images/game-hazr-logo.png',
     players: '3–15',
     duration: '15 دقيقة',
     difficulty: 'متوسط',
@@ -76,6 +80,7 @@ export const GAMES: Game[] = [
     glowAccent: '#E85C2A',
     isMafia: false,
     keyArt: '/images/bara-salfa.jpeg',
+    logo: '/images/game-bara-logo.png',
     players: '3–15',
     duration: '15 دقيقة',
     difficulty: 'متوسط',
@@ -93,6 +98,7 @@ export const GAMES: Game[] = [
     glowAccent: '#a855f7',
     isMafia: false,
     keyArt: '/images/sowl-wla-dir.png',
+    logo: '/images/game-sowl-logo.png',
     players: '3–8',
     duration: '10 دقايق',
     difficulty: 'متوسط',

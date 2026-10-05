@@ -17,11 +17,59 @@ function getCtx(): AudioContext | null {
   }
 }
 
-/* Unlock AudioContext on first user interaction so sounds work in effects too */
+/* ── Autoplay unlock manager ──
+   Browsers block audible playback until a user gesture (and on iOS until the
+   page has been interacted with). Strategy:
+     1. Try immediately on load — succeeds on desktop with media engagement
+        and on repeat visits to the origin.
+     2. Stay subscribed to every early gesture so the very first tap/keypress
+        anywhere starts audio.
+     3. Retry on tab focus / visibility, since some browsers only lift the
+        suspension then.                                                              */
+
+const _readyCbs = new Set<() => void>();
+let _readyFired = false;
+
+function fireReady() {
+  if (_readyFired) return;
+  if (!_ctx || _ctx.state !== 'running') return;
+  _readyFired = true;
+  _readyCbs.forEach((cb) => { try { cb(); } catch {} });
+  _readyCbs.clear();
+}
+
+/** True when the shared AudioContext is actually producing sound. */
+export function isAudioRunning() {
+  return !!_ctx && _ctx.state === 'running';
+}
+
+/** Kick the context out of suspension. Safe to call at any time. */
+export function unlockAudio() {
+  getCtx();
+  if (_ctx && _ctx.state === 'suspended') _ctx.resume().then(fireReady).catch(() => {});
+  else fireReady();
+}
+
+/** Run cb as soon as audio is running (now, or on the first gesture). */
+export function onAudioReady(cb: () => void): () => void {
+  _readyCbs.add(cb);
+  if (isAudioRunning()) fireReady();
+  return () => { _readyCbs.delete(cb); };
+}
+
 if (typeof window !== 'undefined') {
-  const unlock = () => { getCtx(); };
-  window.addEventListener('click',      unlock, { once: true });
-  window.addEventListener('touchstart', unlock, { once: true });
+  const gestures: (keyof WindowEventMap)[] = [
+    'pointerdown', 'pointerup', 'touchstart', 'touchend',
+    'click', 'keydown', 'keyup', 'wheel', 'scroll',
+  ];
+  gestures.forEach((evt) =>
+    window.addEventListener(evt, () => unlockAudio(), { capture: true, passive: true }),
+  );
+  window.addEventListener('focus', () => unlockAudio());
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) unlockAudio();
+  });
+  unlockAudio();
 }
 
 /* ── Mute state (persisted in localStorage) ── */
@@ -172,15 +220,16 @@ class MusicPlayer {
   private _step = 0;
   private _next = 0;
 
-  private _ac(): AudioContext {
+  private _ac(): AudioContext | null {
+    const ac = getCtx();
+    if (!ac) return null;
     if (!this._ctx) {
-      this._ctx = new (window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
-      this._master = this._ctx.createGain();
+      this._ctx = ac;
+      this._master = ac.createGain();
       this._master.gain.value = 0;
-      this._master.connect(this._ctx.destination);
+      this._master.connect(ac.destination);
     }
-    return this._ctx;
+    return ac;
   }
 
   private _kick(t: number) {
@@ -278,6 +327,8 @@ class MusicPlayer {
 
   private _doStart() {
     const ac = this._ctx!;
+    if (ac.state !== 'running') { this._pending = true; return; }
+    this._pending = false;
     this._playing = true;
     this._step = 0;
     this._next = ac.currentTime + 0.05;
@@ -289,17 +340,33 @@ class MusicPlayer {
     this._timer = setInterval(() => this._tick(), 30);
   }
 
+  private _pending = false;
+  private _unsubscribe: (() => void) | null = null;
+
+  /** Idempotent — safe to call on mount and on every gesture. */
   start() {
-    if (this._playing) return;
+    if (this._playing || this._pending) return;
     const ac = this._ac();
-    if (ac.state === 'suspended') {
-      ac.resume().then(() => this._doStart()).catch(() => {});
-    } else {
-      this._doStart();
+    if (!ac) return;
+    if (ac.state !== 'running') {
+      this._pending = true;
+      unlockAudio();
+      if (!this._unsubscribe) {
+        this._unsubscribe = onAudioReady(() => {
+          this._unsubscribe?.();
+          this._unsubscribe = null;
+          if (this._pending) this._doStart();
+        });
+      }
+      return;
     }
+    this._doStart();
   }
 
   stop() {
+    this._pending = false;
+    this._unsubscribe?.();
+    this._unsubscribe = null;
     if (!this._playing) return;
     this._playing = false;
     if (this._timer) { clearInterval(this._timer); this._timer = null; }

@@ -4,10 +4,12 @@ import { useEffect, useRef, useState, useCallback, Suspense } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   AlertTriangle, Check, ChevronDown, Clock, Coins,
   Flame, Gamepad2, Loader2, LogIn, LogOut,
   Music, Play, Settings, ShieldCheck, Target, UserPlus, Users, Volume2, VolumeX, X, Zap,
+  Bell, Home, User
 } from 'lucide-react';
 import { StarMark } from '@/components/Star';
 import GameCard from '@/components/GameCard';
@@ -21,11 +23,9 @@ import AdBanner from '@/components/AdBanner';
 import AdNativeBanner from '@/components/AdNativeBanner';
 import { rememberPayMethod } from '@/lib/payMethod';
 import { trackDevice } from '@/lib/device';
-import { Sounds, isMuted, setMuted, musicPlayer, isMusicMuted } from '@/lib/sounds';
+import { Sounds, isMuted, setMuted, musicPlayer, isMusicMuted, unlockAudio } from '@/lib/sounds';
 import dynamic from 'next/dynamic';
 
-const StarField      = dynamic(() => import('@/components/StarField'),      { ssr: false });
-const GameBackground = dynamic(() => import('@/components/GameBackground'), { ssr: false });
 const MissionsPanel  = dynamic(() => import('@/components/MissionsPanel'),  { ssr: false });
 
 const TICKER_ITEMS = [
@@ -294,11 +294,9 @@ function LobbyContent() {
   const [musicMuted, setMusicMutedState] = useState(false);
   useEffect(() => { setMusicMutedState(isMusicMuted()); }, []);
 
-  /* Start music on first interaction; stop cleanly on page unmount */
   useEffect(() => {
-    const tryStart = () => { if (!isMusicMuted()) musicPlayer.start(); };
-    window.addEventListener('click',      tryStart, { once: true });
-    window.addEventListener('touchstart', tryStart, { once: true });
+    if (isMusicMuted()) return;
+    musicPlayer.start();
     return () => { musicPlayer.stop(); };
   }, []);
 
@@ -306,9 +304,9 @@ function LobbyContent() {
     const next = !musicMuted;
     musicPlayer.setVolume(next);
     setMusicMutedState(next);
-    if (!next) musicPlayer.start();
+    if (!next) { unlockAudio(); musicPlayer.start(); }
+    else musicPlayer.stop();
   };
-  /* Clear countdown timer when the ad modal closes */
   useEffect(() => {
     if (!adModalOpen && adTimerRef.current) {
       clearInterval(adTimerRef.current);
@@ -317,20 +315,13 @@ function LobbyContent() {
     }
   }, [adModalOpen]);
 
-  /* Prefetch Next.js game routes AND game file bundles in the background.
-     This way the browser has the game assets cached before the user clicks play. */
   useEffect(() => {
     GAMES.forEach((g) => {
       router.prefetch(`/games/${g.id}`);
-      /* Low-priority fetch of the game's HTML entry point so the browser
-         discovers and caches its JS/CSS chunks ahead of time. */
       fetch(`/game-files/${g.id}/index.html`, { priority: 'low' } as RequestInit).catch(() => {});
     });
   }, [router]);
 
-  /* cardsRef kept for future scroll effects */
-
-  /* Fetch XP / streak / referral data once authenticated */
   useEffect(() => {
     if (status !== 'authenticated') return;
     fetch('/api/economy/balance')
@@ -384,8 +375,6 @@ function LobbyContent() {
   const requireAuth = (gameId: string, method: 'coins' | 'ad') => {
     if (status === 'authenticated') return true;
     const intent = `?play=${gameId}&method=${method}`;
-    /* Phone: stay in the lobby, remember the intent, slide up an auth sheet.
-       Desktop keeps the plain /login redirect (which also resumes intent). */
     if (typeof window !== 'undefined' && window.matchMedia('(min-width: 640px)').matches) {
       router.push(`/login${intent}`);
     } else {
@@ -406,12 +395,11 @@ function LobbyContent() {
       return;
     }
 
-    /* Coin burst at click position */
     if (e) spawnCoins(e.clientX, e.clientY);
     Sounds.coin();
 
     setBusyId(gameId); setBusyAction('coins');
-    setLaunching(game); /* Show launch overlay IMMEDIATELY */
+    setLaunching(game);
 
     try {
       const res = await fetch('/api/games/unlock', {
@@ -507,8 +495,6 @@ function LobbyContent() {
     router.push('/login');
   };
 
-  /* Resume a play intent after login: user tapped play as a guest, logged in,
-     now auto-continue the tap they wanted (/?play=<gameId>&method=coins|ad). */
   const resumedPlay = useRef(false);
   useEffect(() => {
     if (status !== 'authenticated' || resumedPlay.current) return;
@@ -522,21 +508,18 @@ function LobbyContent() {
     else watchAdToPlay(gameId);
   }, [status, searchParams, router]);
 
-  /* ── Loading screen ── */
   if (status === 'loading') {
     return (
-      <div className="relative flex min-h-dvh flex-col items-center justify-center gap-6 bg-[#030812] overflow-hidden">
+      <div className="relative flex min-h-dvh flex-col items-center justify-center gap-6 bg-[#0B1F3A] overflow-hidden zellige-bg">
         <div className="pointer-events-none fixed inset-0 overflow-hidden">
-          <StarField />
-          <GameBackground />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_85%_75%_at_50%_50%,transparent_25%,rgba(3,8,18,.88)_100%)]" />
+          <div className="absolute inset-0 bg-[#0B1F3A]" />
         </div>
         <div className="relative z-10 flex flex-col items-center gap-4">
           <StarMark size={60} />
-          <div className="pulse-glow-ring h-12 w-12 rounded-full border-2 border-cyan-400/40 grid place-items-center">
-            <Loader2 className="h-5 w-5 animate-spin text-cyan-400" />
+          <div className="pulse-glow-ring h-12 w-12 rounded-full border-2 border-[#2DD4BF]/40 grid place-items-center">
+            <Loader2 className="h-5 w-5 animate-spin text-[#2DD4BF]" />
           </div>
-          <p className="font-lalezar text-2xl text-[#e8d9c0] text-glow-cyan">كنوجدو الكراسا…</p>
+          <p className="font-lalezar text-2xl text-[#FFF7E8] text-glow-gold">كنوجدو الكراسا…</p>
         </div>
       </div>
     );
@@ -546,373 +529,175 @@ function LobbyContent() {
   const coins = session?.user?.coins ?? 0;
 
   return (
-    <div className="relative min-h-dvh overflow-x-hidden bg-[#030812] text-[#f1e7d6]">
-
-      {/* Launch overlay */}
+    <div className="relative min-h-dvh overflow-x-hidden bg-[#0B1F3A] text-[#FFF7E8] zellige-bg pb-24">
       {launching && <LaunchOverlay game={launching} />}
 
-      {/* ═══════════════ BACKGROUND ═══════════════ */}
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <StarField />
-        <GameBackground />
-        {/* Edge vignette to keep content readable */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_85%_75%_at_50%_50%,transparent_25%,rgba(3,8,18,.88)_100%)]" />
-      </div>
-
-      {/* Scanline */}
-      <div className="pointer-events-none fixed inset-0 z-[2] overflow-hidden">
-        <div className="scanline-pass absolute inset-0" />
-      </div>
-
-      {/* ═══════════════ HEADER ═══════════════ */}
-      <header className="glass-header sticky top-0 z-30">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
-          <div className="relative flex items-center">
-            <Link href="/" className="group flex items-center gap-3">
-              <StarMark size={32} />
-              <span className="flex flex-col leading-none">
-                <span className="font-grit text-[0.95rem] uppercase tracking-tight transition-colors group-hover:text-cyan-300">
-                  <span className="text-gold-sheen">PLAY</span><span className="text-[#7a9bd6]">M3ANA</span>
-                </span>
-                <span className="mt-0.5 hidden items-center gap-1.5 font-cairo text-[9px] font-black text-[#a08a63] sm:flex">
-                  <span className="live-dot" style={{ width: 5, height: 5 }} />
-                  بلاصة اللعب
-                </span>
-              </span>
+      {/* Header */}
+      <header className="header-zellige sticky top-4 z-30 mx-4 rounded-full bg-[#12294D] border border-white/10 shadow-lg mt-4 px-4 py-2 flex items-center justify-between sm:mx-auto sm:max-w-6xl">
+        <Link href="/" className="flex items-center gap-2">
+          <Image src="/images/logo-playm3ana.png" alt="PlayM3ana" width={32} height={32} className="rounded-full" />
+          <span className="text-gradient-gold-teal font-grit text-lg font-bold tracking-tight">PLAYM3ANA</span>
+        </Link>
+        <div className="flex items-center gap-3">
+          {isAuthed ? (
+            <>
+              <button className="relative">
+                <Bell className="h-5 w-5 text-[#B8C4D8]" />
+                <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-[#F97066]" />
+              </button>
+              <button onClick={openSettings} className="grid h-8 w-8 place-items-center rounded-full bg-[#0B1F3A] border border-[#2DD4BF]/30">
+                <User className="h-4 w-4 text-[#2DD4BF]" />
+              </button>
+            </>
+          ) : (
+            <Link href="/login" className="btn-gold rounded-full px-4 py-1.5 text-sm font-bold bg-[#F5B942] text-[#0B1F3A]">
+              دخول
             </Link>
-          </div>
-
-          <div className="flex items-center gap-2 sm:gap-3">
-            {isAuthed ? (
-              <>
-                {xpData && (() => {
-                  const lvl = xpData.level;
-                  const games = xpData.gamesPlayed ?? 0;
-                  const inLvl = games % 10;
-                  const pct = Math.round((inLvl / 10) * 100);
-                  return (
-                    <Link href={`/profile/${session?.user?.username}`} className="xp-pill group" title={`Level ${lvl} — ${games} games`}>
-                      <Zap className="h-3 w-3 shrink-0 text-purple-400" />
-                      <span className="font-grit text-[10px] text-purple-300">LV.{lvl}</span>
-                      <div className="xp-pill-track">
-                        <div className="xp-pill-fill" style={{ width: `${pct}%` }} />
-                      </div>
-                    </Link>
-                  );
-                })()}
-                <span className="hidden max-w-[7rem] truncate font-cairo text-sm font-bold text-[#d8c39a] sm:block">
-                  {session?.user?.displayName || session?.user?.username}
-                </span>
-                {session?.user?.role === 'ADMIN' && (
-                  <Link href="/admin" className="btn-chunk btn-ink hidden h-9 w-9 place-items-center rounded-full sm:grid" title="Admin">
-                    <ShieldCheck className="h-3.5 w-3.5" />
-                  </Link>
-                )}
-                <button
-                  onClick={handleLogout}
-                  className="hidden h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] transition hover:border-red-500/50 hover:bg-red-500/10 hover:text-red-400 sm:grid"
-                  title="خروج"
-                >
-                  <LogOut className="h-4 w-4" />
-                </button>
-              </>
-            ) : (
-              <Link href="/login" className="btn-chunk btn-amber px-4 py-2 text-[13px]">
-                <LogIn className="h-4 w-4" /> دخول
-              </Link>
-            )}
-            <button
-              onClick={openSettings}
-              className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] transition hover:border-cyan-400/40 hover:text-cyan-300 sm:hidden"
-              title="الإعدادات"
-              aria-label="الإعدادات"
-            >
-              <Settings className="h-4 w-4" />
-            </button>
-            <button
-              onClick={toggleMute}
-              className="hidden h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] transition hover:border-cyan-400/40 hover:text-cyan-300 sm:grid"
-              title={muted ? 'شعل الصوت' : 'طفي الصوت'}
-            >
-              {muted ? <VolumeX className="h-4 w-4 text-neutral-500" /> : <Volume2 className="h-4 w-4" />}
-            </button>
-            <button
-              onClick={toggleMusic}
-              className="hidden h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] transition hover:border-cyan-400/40 hover:text-cyan-300 sm:grid"
-              title={musicMuted ? 'شعل الموسيقى' : 'طفي الموسيقى'}
-            >
-              <Music className={`h-4 w-4 ${musicMuted ? 'text-neutral-500' : 'text-cyan-300'}`} />
-            </button>
-          </div>
+          )}
         </div>
       </header>
 
-      {/* Coins pill — floats top-right just below the header (all screens) */}
+      {/* Coins pill */}
       {isAuthed && (
-        <div
-          className={`fixed start-4 top-[68px] z-[55] flex select-none items-center gap-1.5 rounded-full border border-amber-400/40 bg-[#0a0f1c]/95 px-3 py-1 font-cairo text-[13px] font-black tabular-nums text-amber-300 shadow-[0_0_14px_rgba(242,178,61,.35)] pointer-events-none ${coinPop ? 'coin-pop' : ''}`}
-        >
+        <div className={`fixed start-4 top-[84px] z-[55] flex select-none items-center gap-1.5 rounded-full border border-[#F5B942]/40 bg-[#12294D]/95 px-3 py-1 font-cairo text-[13px] font-black tabular-nums text-[#F5B942] shadow-[0_0_14px_rgba(245,185,66,.35)] pointer-events-none ${coinPop ? 'coin-pop' : ''}`}>
           <Coins className="h-3.5 w-3.5" />
           {coins}
         </div>
       )}
 
-      {/* ═══════════════ HERO ═══════════════ */}
-      <section className="hero-scene relative flex min-h-0 flex-col items-center justify-center px-4 pb-4 pt-6 text-center sm:min-h-[100dvh] sm:pb-12 sm:pt-8">
-
-        {/* Cyber grid */}
-        <div className="cyber-grid pointer-events-none absolute inset-0 opacity-55" />
-
-        {/* Vertical scanline */}
-        <div className="vert-scan" style={{ zIndex: 0 }} />
-
-        {/* Floating data particles */}
-        {[...Array(7)].map((_, i) => (
-          <div
-            key={i}
-            className="data-line"
-            style={{
-              left: `${6 + i * 14}%`,
-              height: `${40 + (i % 4) * 28}px`,
-              animationDuration: `${3.2 + (i % 5) * 0.9}s`,
-              animationDelay: `${i * 0.55}s`,
-              zIndex: 0,
-            }}
-          />
-        ))}
-
-        {/* Local perspective floor for hero depth */}
-        <div className="perspective-floor" style={{ zIndex: 0 }} />
-
-        {/* HUD corners */}
-        <div className="hud-corner hud-corner-tl hidden sm:block" style={{ zIndex: 4 }} />
-        <div className="hud-corner hud-corner-tr hidden sm:block" style={{ zIndex: 4 }} />
-        <div className="hud-corner hud-corner-bl hidden sm:block" style={{ zIndex: 4 }} />
-        <div className="hud-corner hud-corner-br hidden sm:block" style={{ zIndex: 4 }} />
-
-        {/* Badge */}
-        <div className="badge-cyber anim-fadeup d1 hidden! sm:inline-flex" style={{ position: 'relative', zIndex: 5 }}>
-          <span className="live-dot" />
-          🃏 ڭلسة + حومة + شوهة — 100% بالدارجة
-        </div>
-
-        {/* Animated title */}
-        <div className="relative mt-7 hidden select-none sm:block" dir="rtl" style={{ zIndex: 5 }}>
-          {/* Row 1 */}
-          <p
-            className="flex flex-wrap items-center justify-center gap-x-5 font-lalezar leading-none"
-            style={{ fontSize: 'clamp(2.4rem,10vw,4.5rem)' }}
-          >
-            {TITLE_WORDS_1.map((w, i) => (
-              <span
-                key={i}
-                className="letter-in text-[#ede0c6] text-glow-white"
-                style={{ animationDelay: `${0.08 + i * 0.16}s` }}
-              >
-                {w}
-              </span>
-            ))}
-          </p>
-          {/* Row 2 — neon gold */}
-          <p
-            className="flex flex-wrap items-center justify-center gap-x-5 font-lalezar leading-none"
-            style={{ fontSize: 'clamp(3.2rem,16vw,7.5rem)' }}
-          >
-            {TITLE_WORDS_2.map((w, i) => (
-              <span
-                key={i}
-                className="letter-in text-gold-neon"
-                style={{ animationDelay: `${0.3 + i * 0.14}s` }}
-              >
-                {w}
-              </span>
-            ))}
-          </p>
-        </div>
-
-        {/* Wavy underline */}
-        <svg
-          viewBox="0 0 340 20"
-          className="anim-fadeup d3 mx-auto mt-1 hidden h-5 w-[280px] sm:block sm:w-[340px] text-cyan-400/60"
-          aria-hidden
-          style={{ position: 'relative', zIndex: 5 }}
-        >
-          <path
-            d="M5 13 c35-10 65-10 100-2 s40 9 80 1 s50-9 110-1 s30 7 40 2"
-            fill="none" stroke="currentColor" strokeWidth="4.5"
-            strokeLinecap="round" strokeLinejoin="round"
-          />
-        </svg>
-
-        {/* Subtitle */}
-        <p
-          className="anim-fadeup d3 mx-auto mt-6 hidden max-w-[460px] font-cairo text-[15.5px] font-semibold leading-relaxed text-[#b8a888] sm:block"
-          style={{ position: 'relative', zIndex: 5 }}
-        >
-          تيليفون واحد، دراري بزاف، وواحد فيكم غادي يدي الجائزة{' '}
-          <span className="font-black text-[#f0deb4]">«هضرة الحومة»</span> الليلة 💀
-        </p>
-
-        {/* Stats */}
-        <div
-          className="anim-fadeup d4 mt-8 hidden flex-wrap items-center justify-center gap-3 sm:flex"
-          style={{ position: 'relative', zIndex: 5 }}
-        >
-          {[
-            { ico: <Gamepad2 className="h-5 w-5 text-amber-400" />, val: `${GAMES.length}`, label: 'ألعاب' },
-            { ico: <Users className="h-5 w-5 text-cyan-400" />,     val: '15',              label: 'ضحية ماكس' },
-            { ico: <Flame className="h-5 w-5 text-red-400" />,      val: '100%',            label: 'بالدارجة 100%' },
-            { ico: <Clock className="h-5 w-5 text-emerald-400" />,  val: '0ث',              label: 'بلا ماتيليشارجي' },
-          ].map((s) => (
-            <div key={s.label} className="stat-card">
-              {s.ico}
-              <span className="font-lalezar text-xl leading-none text-[#f5eddc]">{s.val}</span>
-              <span className="font-cairo text-[10px] font-black text-neutral-500">{s.label}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* CTA for guests */}
-        {!isAuthed && (
-          <div
-            className="anim-fadeup d5 mt-10 hidden flex-wrap items-center justify-center gap-3 sm:flex"
-            style={{ position: 'relative', zIndex: 5 }}
-          >
-            <div className="cta-glow">
-              <Link href="/register" className="btn-arcade relative z-10 inline-flex items-center gap-2.5 px-9 py-4 text-[16px] font-black">
-                <Zap className="h-5 w-5" />
-                بدا الشوهة فابور
-              </Link>
-            </div>
-            <Link href="/login" className="btn-chunk btn-ghost-hollow inline-flex items-center gap-2 px-6 py-4 text-[14px]">
-              <LogIn className="h-4 w-4" /> عندي كونط
-            </Link>
-          </div>
-        )}
-
-        {/* Authenticated welcome */}
-        {isAuthed && (
-          <div
-            className="anim-fadeup d5 mt-8 hidden items-center gap-3 sm:flex"
-            style={{ position: 'relative', zIndex: 5 }}
-          >
-            <div className="relative">
-              <div className="sonar-ring text-amber-400" />
-              <div className="sonar-ring sonar-ring-2 text-amber-400" />
-              <div className="coin-counter relative z-10">
-                <Coins className="h-4 w-4 text-amber-400" />
-                <span className="font-lalezar text-lg">{coins}</span>
-                <span className="font-cairo text-[11px] font-black text-amber-300/70"> جولة</span>
-              </div>
-            </div>
-            <div>
-              <p className="font-cairo text-[13px] font-bold text-neutral-400">
-                رجعتي يا <span className="text-amber-300">{session?.user?.username}</span>؟ مرحبا 🤙
-              </p>
-              {xpData && xpData.streak >= 2 && (
-                <div className="mt-1.5 inline-flex items-center gap-1.5 rounded-full border border-red-500/25 bg-red-950/20 px-2.5 py-1">
-                  <Flame className="h-3.5 w-3.5 text-red-400" />
-                  <span className="font-cairo text-[11px] font-black text-red-300">
-                    {xpData.streak} يام متابعة 🔥
-                  </span>
+      <main className="relative z-10 mx-auto max-w-6xl px-4 pb-[max(5rem,env(safe-area-inset-bottom))] sm:px-6 mt-6 flex flex-col gap-6">
+        
+        {/* Hero Card */}
+        <section className="hero-card-zellige zellige-corners rounded-2xl bg-gradient-to-br from-[#2DD4BF] to-[#F97066] p-6 text-[#FFF7E8] shadow-lg relative overflow-hidden">
+          <div className="relative z-10 flex flex-col items-start gap-2">
+            {isAuthed ? (
+              <>
+                <h2 className="font-lalezar text-3xl">أهلا بيك يا سيد! 🪔</h2>
+                <p className="font-cairo text-sm font-semibold opacity-90">جلسة اللعب دايرينها دابا — جاهز تدخل مع صحابك؟</p>
+              </>
+            ) : (
+              <>
+                <h2 className="font-lalezar text-3xl">مرحبا بيك فالحومة! 🪔</h2>
+                <p className="font-cairo text-sm font-semibold opacity-90 mb-2">صاوب كونط دابا باش تلعب مع صحابك وتعيش الشوهة</p>
+                <div className="flex gap-3 mt-2 w-full">
+                  <Link href="/register" className="flex-1 bg-[#F5B942] text-[#0B1F3A] font-bold py-2 rounded-xl text-center">بدا فابور</Link>
+                  <Link href="/login" className="flex-1 bg-white/20 backdrop-blur font-bold py-2 rounded-xl text-center">عندي كونط</Link>
                 </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Scroll hint */}
-        <div className="absolute bottom-8 start-1/2 hidden -translate-x-1/2 scroll-hint sm:block" style={{ zIndex: 5 }}>
-          <ChevronDown className="h-6 w-6 text-cyan-400/40" />
-        </div>
-      </section>
-
-      {/* ═══════════════ MAIN CONTENT ═══════════════ */}
-      <main className="relative z-10 mx-auto max-w-6xl px-4 pb-[max(3.5rem,env(safe-area-inset-bottom))] sm:px-6">
-
-        {/* LED Ticker */}
-        <div className="led-strip hidden py-2.5 sm:block">
-          <div className="led-strip-track">
-            {[...Array(2)].map((_, l) => (
-              <span key={l} className="flex shrink-0 items-center gap-5 px-6 font-cairo text-[12.5px] font-black text-cyan-300/50">
-                {TICKER_ITEMS.map((item, i) => (
-                  <span key={i} className="flex items-center gap-5">
-                    <span className="text-cyan-500/35">◆</span>{item}
-                  </span>
-                ))}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Guest notice */}
-        {!isAuthed && <GuestNotice />}
-
-        {/* ── GAMES SECTION ── */}
-        <section className="mt-4 sm:mt-14">
-          {/* Section header */}
-          <div className="section-entrance mb-5 flex flex-col items-center gap-2.5 text-center sm:mb-10">
-            <div className="section-label inline-flex">الطبلات د هاد الليلة</div>
-            <h2 className="font-lalezar text-[clamp(1.9rem,8vw,3.5rem)] leading-none text-[#f5eddc] text-glow-amber">
-              عزل طبلتك — بصحتك
-            </h2>
-            <p className="hidden font-cairo text-[13.5px] font-semibold text-[#d8c39a]/55 sm:block">
-              إشهار قصير = طبلة فابور. كوينز = دخلة بكرامتك. عزل لي بغيتي 😅
-            </p>
-          </div>
-
-          {/* ONE map — all games, no duplicates.
-              Mafia spans the full row width on tablet/desktop via col-span.
-              The GameCard component handles both vertical (default) and
-              horizontal (Mafia on lg+) layouts with responsive CSS.          */}
-          <div
-            ref={cardsRef}
-            className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 lg:gap-6"
-          >
-            {GAMES.map((game, i) => (
-              <div
-                key={game.id}
-                className={
-                  game.isMafia
-                    ? "sm:col-span-2 lg:col-span-4"
-                    : `card-entrance stagger-${Math.min(i, 3) + 1}`
-                }
-              >
-                <GameCard
-                  game={game}
-                  coins={coins}
-                  isBusy={busyId === game.id}
-                  loadingAction={busyAction}
-                  onPlay={(e) => playWithCoins(game.id, e)}
-                  onWatchAd={() => watchAdToPlay(game.id)}
-                />
-              </div>
-            ))}
+              </>
+            )}
           </div>
         </section>
 
-        {/* ── AD BANNER 320x50 ── */}
+        {/* Lobby of the day */}
+        <section className="lobby-card-zellige zellige-corners rounded-2xl bg-[#12294D] border border-white/10 p-5 shadow-lg relative overflow-hidden">
+          <div className="flex justify-between items-start mb-3">
+            <h3 className="font-lalezar text-xl text-[#F5B942]">🎉 اللوبي ديال اليوم</h3>
+            <div className="flex items-center gap-1.5 bg-[#2DD4BF]/10 px-2 py-1 rounded-full border border-[#2DD4BF]/20">
+              <span className="live-dot bg-[#2DD4BF] h-2 w-2 rounded-full animate-pulse" />
+              <span className="font-cairo text-xs font-bold text-[#2DD4BF]">مباشر الآن</span>
+            </div>
+          </div>
+          <p className="font-cairo text-sm text-[#B8C4D8] mb-4">حضور: 2,831 لاعب دابا • 14 غرفة مفتوحة</p>
+          <div className="flex items-center justify-between">
+            <div className="flex -space-x-2 rtl:space-x-reverse">
+              <div className="h-8 w-8 rounded-full border-2 border-[#12294D] bg-[#2DD4BF] grid place-items-center"><User className="h-4 w-4 text-[#0B1F3A]"/></div>
+              <div className="h-8 w-8 rounded-full border-2 border-[#12294D] bg-[#F97066] grid place-items-center"><User className="h-4 w-4 text-[#0B1F3A]"/></div>
+              <div className="h-8 w-8 rounded-full border-2 border-[#12294D] bg-[#F5B942] grid place-items-center"><User className="h-4 w-4 text-[#0B1F3A]"/></div>
+            </div>
+            <button className="btn-gold bg-[#F5B942] text-[#0B1F3A] font-bold px-5 py-2 rounded-xl text-sm">
+              دخل اللوبي
+            </button>
+          </div>
+        </section>
+
+        {/* New Games Row */}
+        <section className="mt-2">
+          <h3 className="section-title-zellige font-lalezar text-2xl text-[#FFF7E8] mb-4">✨ اللعاب الجدد اليوم</h3>
+          
+          {/* Desktop Grid */}
+          <div className="hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-5">
+            {GAMES.map((game, i) => (
+              <GameCard
+                key={game.id}
+                game={game}
+                coins={coins}
+                isBusy={busyId === game.id}
+                loadingAction={busyAction}
+                onPlay={(e) => playWithCoins(game.id, e)}
+                onWatchAd={() => watchAdToPlay(game.id)}
+              />
+            ))}
+          </div>
+
+          {/* Mobile Horizontal Scroll */}
+          <div className="flex sm:hidden overflow-x-auto gap-4 pb-4 snap-x -mx-4 px-4 scrollbar-hide">
+            {GAMES.map((game, i) => {
+              const colors = ['from-[#2DD4BF] to-teal-500', 'from-[#F97066] to-orange-500', 'from-[#F5B942] to-amber-500', 'from-blue-500 to-indigo-500', 'from-purple-500 to-pink-500'];
+              const bgGrad = colors[i % colors.length];
+              const statuses = ['سخون 🔥', 'كيمشي دابا', 'جديد!'];
+              const status = statuses[i % statuses.length];
+              return (
+                <div key={game.id} className="game-card-zellige snap-center shrink-0 w-40 rounded-2xl bg-[#12294D] border border-white/10 overflow-hidden flex flex-col" onClick={(e) => playWithCoins(game.id, e)}>
+                  <div className={`h-24 bg-gradient-to-br ${bgGrad} flex items-center justify-center relative`}>
+                    <div className="absolute top-2 right-2 bg-black/40 backdrop-blur rounded-full px-2 py-0.5 font-cairo text-[10px] font-bold text-white status-chip">
+                      {status}
+                    </div>
+                    {game.logo ? <Image src={game.logo} alt={game.darijaTitle} width={48} height={48} className="rounded-xl" /> : <GameIcon game={game} size={48} />}
+                  </div>
+                  <div className="p-3 flex flex-col gap-1">
+                    <h4 className="font-lalezar text-[15px] text-[#FFF7E8] truncate">{game.darijaTitle}</h4>
+                    <div className="flex items-center gap-1 font-cairo text-[11px] text-[#B8C4D8]">
+                      <Users className="h-3 w-3" />
+                      <span>{120 + i * 15} لاعب</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Missions Card */}
+        {isAuthed && (
+          <section className="missions-card-zellige bg-[#12294D] rounded-2xl border border-white/10 p-4 flex items-center justify-between cursor-pointer" onClick={() => setMissionsOpen(true)}>
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-[#F5B942]/20 grid place-items-center">
+                <Target className="h-5 w-5 text-[#F5B942]" />
+              </div>
+              <div>
+                <h3 className="font-lalezar text-lg text-[#FFF7E8]">🎁 مهامك اليوم</h3>
+                <p className="font-cairo text-xs text-[#B8C4D8]">كمل المهام وربح كوينز</p>
+              </div>
+            </div>
+            <ChevronDown className="h-5 w-5 text-[#B8C4D8] -rotate-90" />
+          </section>
+        )}
+
+        {/* Guest Notice */}
+        {!isAuthed && <GuestNotice />}
+
+        {/* Ad Banner */}
         <AdBanner />
 
-        {/* ── COMING SOON ── */}
+        {/* Coming Soon */}
         <ComingSoon />
 
-        {/* ── LEADERBOARD TEASER ── */}
+        {/* Leaderboard Teaser */}
         <LeaderboardTeaser />
 
-        {/* ── REFERRAL SECTION (authenticated only) ── */}
+        {/* Referral Section */}
         {isAuthed && xpData?.referralCode && (
-          <section className="mt-10">
-            <div className="overflow-hidden rounded-2xl border border-purple-400/15 bg-gradient-to-br from-purple-950/15 via-[#060c1a] to-[#060c1a] p-6">
+          <section className="mt-4">
+            <div className="overflow-hidden rounded-2xl border border-[#F5B942]/20 bg-gradient-to-br from-[#12294D] to-[#0B1F3A] p-6 shadow-lg">
               <div className="mb-4 flex items-center gap-2">
-                <Zap className="h-5 w-5 text-purple-400" />
-                <span className="font-lalezar text-xl text-purple-300">عرض على صاحبك</span>
+                <Zap className="h-5 w-5 text-[#F5B942]" />
+                <span className="font-lalezar text-xl text-[#F5B942]">عرض على صاحبك</span>
               </div>
-              <p className="mb-4 font-cairo text-[13px] font-semibold text-neutral-400">
+              <p className="mb-4 font-cairo text-[13px] font-semibold text-[#B8C4D8]">
                 بارطاجي الكود مع صاحبك — بجوج غاتربحو كوينز فابور 🎁
               </p>
               <div className="flex items-center gap-3">
-                <code className="flex-1 overflow-hidden rounded-xl border border-purple-400/15 bg-[#030812] px-4 py-3 font-mono text-[15px] tracking-widest text-purple-200">
+                <code className="flex-1 overflow-hidden rounded-xl border border-[#F5B942]/20 bg-[#0B1F3A] px-4 py-3 font-mono text-[15px] tracking-widest text-[#FFF7E8]">
                   {xpData.referralCode}
                 </code>
                 <button
@@ -921,7 +706,7 @@ function LobbyContent() {
                     setReferralCopied(true);
                     setTimeout(() => setReferralCopied(false), 2200);
                   }}
-                  className="flex shrink-0 items-center gap-1.5 rounded-xl border border-purple-400/30 bg-purple-400/10 px-4 py-3 font-cairo text-[13px] font-black text-purple-300 transition hover:bg-purple-400/20 active:scale-95"
+                  className="flex shrink-0 items-center gap-1.5 rounded-xl border border-[#2DD4BF]/30 bg-[#2DD4BF]/10 px-4 py-3 font-cairo text-[13px] font-black text-[#2DD4BF] transition hover:bg-[#2DD4BF]/20 active:scale-95"
                 >
                   {referralCopied ? <Check className="h-4 w-4" /> : <Zap className="h-4 w-4" />}
                   {referralCopied ? 'تم!' : 'كوپي'}
@@ -931,23 +716,39 @@ function LobbyContent() {
           </section>
         )}
 
-        {/* ── FOOTER ── */}
+        {/* Footer */}
         <LobbyFooter isAuthed={isAuthed} username={session?.user?.username} />
       </main>
 
-      {/* ═══════════════ MISSIONS FAB ═══════════════ */}
-      {isAuthed && (
-        <button
-          onClick={() => setMissionsOpen(true)}
-          className="missions-fab"
-          aria-label="المهام د اليوم"
-        >
-          <Target className="h-5 w-5" />
-          <span className="font-cairo text-[11px] font-bold">مهام</span>
+      {/* Sticky CTA */}
+      <div className="sticky-cta-zellige fixed bottom-20 left-4 right-4 z-40 sm:hidden">
+        <button className="w-full bg-[#F5B942] text-[#0B1F3A] font-lalezar text-lg py-3 rounded-2xl shadow-xl flex items-center justify-center gap-2">
+          <Gamepad2 className="h-5 w-5" />
+          بدا لعب دابا — جلسة جديدة
         </button>
-      )}
+      </div>
 
-      {/* Missions panel */}
+      {/* Bottom Tab Bar */}
+      <nav className="bottom-tab-bar fixed bottom-0 left-0 right-0 h-16 bg-[#12294D] border-t border-white/10 z-50 flex items-center justify-around sm:hidden px-2 pb-safe">
+        <div className="bottom-tab-bar-item flex flex-col items-center gap-1 text-[#F5B942]">
+          <Home className="h-5 w-5" />
+          <span className="font-cairo text-[10px] font-bold">الرئيسية</span>
+        </div>
+        <div className="bottom-tab-bar-item flex flex-col items-center gap-1 text-[#B8C4D8]">
+          <Users className="h-5 w-5" />
+          <span className="font-cairo text-[10px] font-bold">الصحاب</span>
+        </div>
+        <div className="bottom-tab-bar-item flex flex-col items-center gap-1 text-[#B8C4D8]">
+          <Gamepad2 className="h-5 w-5" />
+          <span className="font-cairo text-[10px] font-bold">اللعاب</span>
+        </div>
+        <div className="bottom-tab-bar-item flex flex-col items-center gap-1 text-[#B8C4D8]" onClick={openSettings}>
+          <User className="h-5 w-5" />
+          <span className="font-cairo text-[10px] font-bold">حسابي</span>
+        </div>
+      </nav>
+
+      {/* Missions Panel */}
       {missionsOpen && (
         <MissionsPanel
           onClose={() => setMissionsOpen(false)}
@@ -963,30 +764,30 @@ function LobbyContent() {
       {adModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={() => setAdModalOpen(false)} />
-          <div className="bounce-in relative w-full max-w-md overflow-hidden rounded-2xl border border-cyan-400/20 bg-[#060c1a] p-6 shadow-[0_40px_100px_-20px_rgba(0,0,0,.95)]">
+          <div className="bounce-in relative w-full max-w-md overflow-hidden rounded-2xl border border-[#2DD4BF]/20 bg-[#12294D] p-6 shadow-xl">
             <button
               onClick={() => setAdModalOpen(false)}
-              className="absolute start-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/10 text-neutral-400 transition hover:border-red-500/40 hover:text-red-400"
+              className="absolute start-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/10 text-[#B8C4D8] transition hover:border-red-500/40 hover:text-red-400"
               aria-label="close"
             >
               <X className="h-4 w-4" />
             </button>
             <div className="flex items-center gap-2">
               <StarMark size={26} />
-              <p className="font-cairo text-[13px] font-black text-neutral-300">إشهار باش تلعب</p>
+              <p className="font-cairo text-[13px] font-black text-[#FFF7E8]">إشهار باش تلعب</p>
             </div>
             {adStatus === 'idle' && (
               <>
-                <h3 className="mt-5 font-lalezar text-2xl text-neutral-100">ثواني من وقتك مقابل الليلة كاملة</h3>
-                <p className="mt-1.5 font-cairo text-[13px] font-semibold leading-relaxed text-neutral-400">
-                  شاهد الإعلان وغادي نفتح ليك الطاولة <b className="text-amber-300">فابور</b> — ماشي هزيمة، هذا تكتيك 😅
+                <h3 className="mt-5 font-lalezar text-2xl text-[#FFF7E8]">ثواني من وقتك مقابل الليلة كاملة</h3>
+                <p className="mt-1.5 font-cairo text-[13px] font-semibold leading-relaxed text-[#B8C4D8]">
+                  شاهد الإعلان وغادي نفتح ليك الطاولة <b className="text-[#F5B942]">فابور</b> — ماشي هزيمة، هذا تكتيك 😅
                 </p>
-                <button onClick={startRewardedAd} className="btn-chunk btn-amber group mt-6 w-full py-4 text-[15px]">
+                <button onClick={startRewardedAd} className="bg-[#F5B942] text-[#0B1F3A] font-bold rounded-xl flex items-center justify-center gap-2 mt-6 w-full py-4 text-[15px]">
                   <Play className="h-5 w-5" /> تفرج — وعيني عينك
                 </button>
                 <button
                   onClick={() => setAdModalOpen(false)}
-                  className="mt-2.5 w-full py-2 text-center font-cairo text-[12.5px] font-bold text-neutral-500 transition hover:text-neutral-300"
+                  className="mt-2.5 w-full py-2 text-center font-cairo text-[12.5px] font-bold text-[#B8C4D8] transition hover:text-[#FFF7E8]"
                 >
                   لا شكرا، غانخلص بالكوينز
                 </button>
@@ -995,14 +796,14 @@ function LobbyContent() {
             {adStatus === 'watching' && (
               <div className="mt-4 flex flex-col gap-3">
                 <AdNativeBanner />
-                <div className="flex items-center gap-3 rounded-2xl border border-cyan-400/20 bg-cyan-400/5 px-4 py-4">
+                <div className="flex items-center gap-3 rounded-2xl border border-[#2DD4BF]/20 bg-[#2DD4BF]/5 px-4 py-4">
                   <div className="relative grid h-12 w-12 shrink-0 place-items-center">
-                    <span className="glow-pulse absolute inset-0 rounded-full bg-cyan-400/25 blur-xl" />
-                    <span className="relative font-lalezar text-2xl text-cyan-400">{countdown}</span>
+                    <span className="glow-pulse absolute inset-0 rounded-full bg-[#2DD4BF]/25 blur-xl" />
+                    <span className="relative font-lalezar text-2xl text-[#2DD4BF]">{countdown}</span>
                   </div>
                   <div>
-                    <p className="font-cairo text-[13px] font-black text-cyan-200">صبر على الإشهار…</p>
-                    <p className="font-cairo text-[11px] font-semibold text-neutral-500">
+                    <p className="font-cairo text-[13px] font-black text-[#2DD4BF]">صبر على الإشهار…</p>
+                    <p className="font-cairo text-[11px] font-semibold text-[#B8C4D8]">
                       غادي تدخل للطبلة من بعد {countdown} {countdown === 1 ? 'ثانية' : 'ثواني'}
                     </p>
                   </div>
@@ -1015,7 +816,7 @@ function LobbyContent() {
                   <Check className="h-7 w-7 text-emerald-400" />
                 </div>
                 <p className="font-cairo text-[14px] font-black text-emerald-300">كنتأكدو بلي ماتفرجتيش ف الإشهار وعينيك مسدودين…</p>
-                <p className="font-cairo text-[12px] font-semibold text-neutral-400">تقدر تعيط لصحابك باش توجدو 🫡</p>
+                <p className="font-cairo text-[12px] font-semibold text-emerald-100/70">تقدر تعيط لصحابك باش توجدو 🫡</p>
               </div>
             )}
           </div>
@@ -1026,33 +827,33 @@ function LobbyContent() {
       {authSheetOpen && (
         <div className="fixed inset-0 z-[65] sm:hidden">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setAuthSheetOpen(false)} />
-          <div className="bounce-in absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-cyan-400/20 bg-[#060c1a] p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-[0_-20px_80px_rgba(0,0,0,.9)]">
+          <div className="bounce-in absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-[#2DD4BF]/20 bg-[#12294D] p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-[0_-20px_80px_rgba(0,0,0,.9)]">
             <button
               onClick={() => setAuthSheetOpen(false)}
-              className="absolute end-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/10 text-neutral-400 transition hover:border-red-500/40 hover:text-red-400"
+              className="absolute end-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/10 text-[#B8C4D8] transition hover:border-red-500/40 hover:text-red-400"
               aria-label="close"
             >
               <X className="h-4 w-4" />
             </button>
             <div className="flex items-center gap-2">
               <StarMark size={26} />
-              <p className="font-cairo text-[13px] font-black text-neutral-300">التهاليب محجوزين للعضاء</p>
+              <p className="font-cairo text-[13px] font-black text-[#FFF7E8]">التهاليب محجوزين للعضاء</p>
             </div>
-            <h3 className="mt-4 font-lalezar text-2xl text-neutral-100">دخول في 5 ثواني باش تفرش الطبلة</h3>
-            <p className="mt-1.5 font-cairo text-[13px] font-semibold leading-relaxed text-neutral-400">
+            <h3 className="mt-4 font-lalezar text-2xl text-[#FFF7E8]">دخول في 5 ثواني باش تفرش الطبلة</h3>
+            <p className="mt-1.5 font-cairo text-[13px] font-semibold leading-relaxed text-[#B8C4D8]">
               دخل ولا صاوب كونط فابور — وعندك 100 كوين باش تبدا الشوهة فابور 🪙
             </p>
             <div className="mt-6 flex flex-col gap-2.5">
-              <Link href="/login" className="btn-chunk btn-amber w-full py-3.5 text-[15px]">
+              <Link href="/login" className="bg-[#F5B942] text-[#0B1F3A] font-bold rounded-xl flex items-center justify-center gap-2 w-full py-3.5 text-[15px]">
                 <LogIn className="h-5 w-5" /> دخول
               </Link>
-              <Link href="/register" className="btn-chunk btn-ghost-hollow w-full py-3.5 text-[14px]">
+              <Link href="/register" className="bg-white/10 text-[#FFF7E8] font-bold rounded-xl flex items-center justify-center gap-2 border border-white/20 w-full py-3.5 text-[14px]">
                 <UserPlus className="h-5 w-5" /> صاوب كونط — فابور
               </Link>
             </div>
             <button
               onClick={() => setAuthSheetOpen(false)}
-              className="mt-3 w-full py-2 text-center font-cairo text-[12.5px] font-bold text-neutral-500 transition hover:text-neutral-300"
+              className="mt-3 w-full py-2 text-center font-cairo text-[12.5px] font-bold text-[#B8C4D8] transition hover:text-[#FFF7E8]"
             >
               شوف الطبلات — من بعد ندير الحساب
             </button>
@@ -1064,25 +865,25 @@ function LobbyContent() {
       {settingsOpen && (
         <div className="fixed inset-0 z-[66] sm:hidden">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setSettingsOpen(false)} />
-          <div className="bounce-in absolute inset-x-0 bottom-0 max-h-[88dvh] overflow-y-auto rounded-t-3xl border-t border-cyan-400/20 bg-[#060c1a] p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-[0_-20px_80px_rgba(0,0,0,.9)]">
+          <div className="bounce-in absolute inset-x-0 bottom-0 max-h-[88dvh] overflow-y-auto rounded-t-3xl border-t border-[#2DD4BF]/20 bg-[#12294D] p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-[0_-20px_80px_rgba(0,0,0,.9)]">
             <button
               onClick={() => setSettingsOpen(false)}
-              className="absolute end-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/10 text-neutral-400 transition hover:border-red-500/40 hover:text-red-400"
+              className="absolute end-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/10 text-[#B8C4D8] transition hover:border-red-500/40 hover:text-red-400"
               aria-label="close"
             >
               <X className="h-4 w-4" />
             </button>
             <div className="flex items-center gap-2">
-              <Settings className="h-5 w-5 text-cyan-300" />
-              <p className="font-cairo text-[14px] font-black text-neutral-200">الإعدادات</p>
+              <Settings className="h-5 w-5 text-[#2DD4BF]" />
+              <p className="font-cairo text-[14px] font-black text-[#FFF7E8]">الإعدادات</p>
             </div>
 
             <div className="mt-5 flex flex-col gap-2.5">
               {/* Coins */}
               {isAuthed && (
-                <div className="flex items-center justify-between rounded-2xl border border-amber-400/15 bg-amber-950/10 px-4 py-3">
-                  <span className="font-cairo text-[13px] font-bold text-neutral-300">الكوينز ديالك</span>
-                  <span className="flex items-center gap-1.5 font-cairo text-[15px] font-black tabular-nums text-amber-300">
+                <div className="flex items-center justify-between rounded-2xl border border-[#F5B942]/20 bg-[#F5B942]/10 px-4 py-3">
+                  <span className="font-cairo text-[13px] font-bold text-[#FFF7E8]">الكوينز ديالك</span>
+                  <span className="flex items-center gap-1.5 font-cairo text-[15px] font-black tabular-nums text-[#F5B942]">
                     <Coins className="h-4 w-4" /> {coins}
                   </span>
                 </div>
@@ -1093,13 +894,13 @@ function LobbyContent() {
                 onClick={toggleMute}
                 className="flex w-full items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5"
               >
-                <span className="flex items-center gap-2.5 font-cairo text-[13px] font-bold text-neutral-300">
+                <span className="flex items-center gap-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8]">
                   {muted
-                    ? <VolumeX className="h-4 w-4 text-neutral-500" />
-                    : <Volume2 className="h-4 w-4 text-cyan-300" />}
+                    ? <VolumeX className="h-4 w-4 text-[#B8C4D8]" />
+                    : <Volume2 className="h-4 w-4 text-[#2DD4BF]" />}
                   الصوت
                 </span>
-                <span className={`relative h-6 w-11 rounded-full transition-colors ${muted ? 'bg-white/10' : 'bg-cyan-500/40'}`}>
+                <span className={`relative h-6 w-11 rounded-full transition-colors ${muted ? 'bg-white/10' : 'bg-[#2DD4BF]/40'}`}>
                   <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${muted ? 'start-0.5' : 'start-[1.375rem]'}`} />
                 </span>
               </button>
@@ -1109,25 +910,25 @@ function LobbyContent() {
                 onClick={toggleMusic}
                 className="flex w-full items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5"
               >
-                <span className="flex items-center gap-2.5 font-cairo text-[13px] font-bold text-neutral-300">
-                  <Music className={`h-4 w-4 ${musicMuted ? 'text-neutral-500' : 'text-cyan-300'}`} />
+                <span className="flex items-center gap-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8]">
+                  <Music className={`h-4 w-4 ${musicMuted ? 'text-[#B8C4D8]' : 'text-[#2DD4BF]'}`} />
                   الموسيقى
                 </span>
-                <span className={`relative h-6 w-11 rounded-full transition-colors ${musicMuted ? 'bg-white/10' : 'bg-cyan-500/40'}`}>
+                <span className={`relative h-6 w-11 rounded-full transition-colors ${musicMuted ? 'bg-white/10' : 'bg-[#2DD4BF]/40'}`}>
                   <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${musicMuted ? 'start-0.5' : 'start-[1.375rem]'}`} />
                 </span>
               </button>
 
               {/* Change name */}
               {isAuthed && (
-                <div className="rounded-2xl border border-purple-400/20 bg-purple-950/10 px-4 py-3.5">
+                <div className="rounded-2xl border border-[#2DD4BF]/20 bg-[#2DD4BF]/10 px-4 py-3.5">
                   <div className="flex items-center gap-2.5">
-                    <UserPlus className="h-4 w-4 shrink-0 text-purple-300" />
-                    <span className="font-cairo text-[13px] font-bold text-neutral-300">تبديل السمية</span>
+                    <UserPlus className="h-4 w-4 shrink-0 text-[#2DD4BF]" />
+                    <span className="font-cairo text-[13px] font-bold text-[#FFF7E8]">تبديل السمية</span>
                   </div>
                   {me?.username && (
-                    <p className="mt-1.5 font-cairo text-[11px] text-neutral-500">
-                      اسم الكونط الأصلي: <span className="font-bold text-neutral-400">{me.username}</span>
+                    <p className="mt-1.5 font-cairo text-[11px] text-[#B8C4D8]">
+                      اسم الكونط الأصلي: <span className="font-bold text-[#FFF7E8]">{me.username}</span>
                       {me.email ? ` (${me.email})` : ''}
                     </p>
                   )}
@@ -1138,18 +939,18 @@ function LobbyContent() {
                       maxLength={30}
                       disabled={nameBusy || (me?.canChangeName === false)}
                       placeholder="السمية الجديدة…"
-                      className="w-full min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-neutral-200 placeholder:text-neutral-600 outline-none transition focus:border-purple-400/50 disabled:opacity-40"
+                      className="w-full min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-[#2DD4BF]/50 disabled:opacity-40"
                     />
                     <button
                       onClick={() => void saveName()}
                       disabled={nameBusy || (me?.canChangeName === false)}
-                      className="btn-chunk btn-amber shrink-0 px-4 py-2.5 text-[12px] disabled:opacity-40"
+                      className="bg-[#F5B942] text-[#0B1F3A] font-bold rounded-xl shrink-0 px-4 py-2.5 text-[12px] disabled:opacity-40"
                     >
                       {nameBusy ? '…' : 'حفظ'}
                     </button>
                   </div>
                   {me?.canChangeName === false && me?.nextNameChangeAt && (
-                    <p className="mt-2 flex items-center gap-1.5 font-cairo text-[11px] font-bold text-purple-300/80">
+                    <p className="mt-2 flex items-center gap-1.5 font-cairo text-[11px] font-bold text-[#2DD4BF]/80">
                       <Clock className="h-3.5 w-3.5" />
                       تقدر تبدل من بعد {new Date(me.nextNameChangeAt).toLocaleDateString('ar-MA')}
                     </p>
@@ -1167,10 +968,10 @@ function LobbyContent() {
                 <div className="rounded-2xl border border-emerald-400/15 bg-emerald-950/10 px-4 py-3.5">
                   <div className="flex items-center gap-2.5">
                     <ShieldCheck className="h-4 w-4 shrink-0 text-emerald-300" />
-                    <span className="font-cairo text-[13px] font-bold text-neutral-300">تبديل الباسورد</span>
+                    <span className="font-cairo text-[13px] font-bold text-[#FFF7E8]">تبديل الباسورد</span>
                   </div>
                   {me?.hasPassword === false && (
-                    <p className="mt-1.5 font-cairo text-[11px] text-neutral-500">
+                    <p className="mt-1.5 font-cairo text-[11px] text-[#B8C4D8]">
                       هاد الحساب تسجل بجوجل — الباسورد ماشي مربوط بيه.
                     </p>
                   )}
@@ -1181,7 +982,7 @@ function LobbyContent() {
                       onChange={(e) => { setPwDraft((p) => ({ ...p, cur: e.target.value })); setPwMsg(null); }}
                       disabled={pwBusy || me?.hasPassword === false}
                       placeholder="الباسورد الحالي"
-                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-neutral-200 placeholder:text-neutral-600 outline-none transition focus:border-emerald-400/50 disabled:opacity-40"
+                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-emerald-400/50 disabled:opacity-40"
                     />
                     <input
                       type="password"
@@ -1189,7 +990,7 @@ function LobbyContent() {
                       onChange={(e) => { setPwDraft((p) => ({ ...p, n1: e.target.value })); setPwMsg(null); }}
                       disabled={pwBusy || me?.hasPassword === false}
                       placeholder="الباسورد الجديد"
-                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-neutral-200 placeholder:text-neutral-600 outline-none transition focus:border-emerald-400/50 disabled:opacity-40"
+                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-emerald-400/50 disabled:opacity-40"
                     />
                     <input
                       type="password"
@@ -1197,12 +998,12 @@ function LobbyContent() {
                       onChange={(e) => { setPwDraft((p) => ({ ...p, n2: e.target.value })); setPwMsg(null); }}
                       disabled={pwBusy || me?.hasPassword === false}
                       placeholder="عاود اكتب الباسورد الجديد"
-                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-neutral-200 placeholder:text-neutral-600 outline-none transition focus:border-emerald-400/50 disabled:opacity-40"
+                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-emerald-400/50 disabled:opacity-40"
                     />
                     <button
                       onClick={() => void savePassword()}
                       disabled={pwBusy || me?.hasPassword === false}
-                      className="btn-chunk btn-amber py-2.5 text-[12px] disabled:opacity-40"
+                      className="bg-[#F5B942] text-[#0B1F3A] font-bold rounded-xl py-2.5 text-[12px] disabled:opacity-40"
                     >
                       {pwBusy ? '…' : 'بدل الباسورد'}
                     </button>
@@ -1218,10 +1019,10 @@ function LobbyContent() {
               {/* Guest CTA */}
               {!isAuthed && (
                 <>
-                  <Link href="/login" className="btn-chunk btn-amber mt-1 w-full py-3.5 text-[15px]">
+                  <Link href="/login" className="bg-[#F5B942] text-[#0B1F3A] font-bold rounded-xl flex items-center justify-center gap-2 mt-1 w-full py-3.5 text-[15px]">
                     <LogIn className="h-5 w-5" /> دخول
                   </Link>
-                  <Link href="/register" className="btn-chunk btn-ghost-hollow w-full py-3.5 text-[14px]">
+                  <Link href="/register" className="bg-white/10 text-[#FFF7E8] font-bold rounded-xl flex items-center justify-center gap-2 border border-white/20 w-full py-3.5 text-[14px]">
                     <UserPlus className="h-5 w-5" /> صاوب كونط — فابور
                   </Link>
                 </>
