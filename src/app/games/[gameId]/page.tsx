@@ -140,25 +140,21 @@ export default function GamePage({
   }
 
   return (
-    <div className="relative h-dvh w-full overflow-hidden bg-[#080b14]">
+    <div className="relative h-dvh w-full overflow-hidden bg-[#030812]">
 
       {/* iframe loading screen */}
       {!iframeLoaded && (
-        <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-6 bg-[#080b14]">
+        <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-6 bg-[#030812]">
           <div className="pointer-events-none absolute inset-0">
-            <div className="cyber-grid opacity-20 absolute inset-0" />
+            <div className="cyber-grid opacity-30 absolute inset-0" />
             <div
               className="absolute inset-0"
               style={{
-                background: `radial-gradient(ellipse 60% 55% at 50% 50%, ${
-                  game?.isMafia ? 'rgba(220,38,38,.20)' : 'rgba(0,229,255,.13)'
+                background: `radial-gradient(ellipse 55% 55% at 50% 50%, ${
+                  game?.isMafia ? 'rgba(220,38,38,.18)' : 'rgba(0,217,255,.12)'
                 }, transparent 65%)`,
               }}
             />
-            {/* corner glow orbs */}
-            <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full opacity-15 blur-3xl"
-              style={{ background: game?.isMafia ? '#ff2d55' : '#00e5ff' }} />
-            <div className="absolute -bottom-20 -left-20 h-56 w-56 rounded-full opacity-10 blur-3xl bg-[#9b59f8]" />
           </div>
 
           <div className="relative z-10 flex flex-col items-center gap-5">
@@ -169,7 +165,7 @@ export default function GamePage({
                   key={i}
                   className="launch-ring absolute inset-0"
                   style={{
-                    color: game?.isMafia ? 'rgba(239,68,68,.5)' : 'rgba(0,229,255,.5)',
+                    color: game?.isMafia ? 'rgba(239,68,68,.5)' : 'rgba(0,217,255,.5)',
                     animationDelay: `${i * 0.45}s`,
                   }}
                 />
@@ -178,29 +174,29 @@ export default function GamePage({
             </div>
 
             <div className="text-center">
-              <p className="font-grit text-[10px] uppercase tracking-[0.22em] text-[#00e5ff]/50">
+              <p className="font-grit text-[10px] uppercase tracking-[0.2em] text-cyan-400/60">
                 LOADING GAME
               </p>
               <p
                 className="mt-1 font-lalezar text-2xl"
-                style={{ color: game?.starAccent ?? '#f5c842', textShadow: `0 0 24px ${game?.starAccent ?? '#f5c842'}80` }}
+                style={{ color: game?.starAccent ?? '#f2b23d', textShadow: `0 0 20px ${game?.starAccent ?? '#f2b23d'}70` }}
               >
                 {game?.darijaTitle ?? resolvedParams.gameId}
               </p>
             </div>
 
-            <div className="h-0.5 w-52 overflow-hidden rounded-full bg-white/[0.07]">
+            <div className="h-0.5 w-48 overflow-hidden rounded-full bg-white/[0.06]">
               <div
                 className="launch-progress h-full rounded-full"
                 style={{
                   background: game?.isMafia
-                    ? 'linear-gradient(90deg, #ff2d55, #f5c842)'
-                    : 'linear-gradient(90deg, #00e5ff, #9b59f8)',
+                    ? 'linear-gradient(90deg, #ff2d55, #f2b23d)'
+                    : 'linear-gradient(90deg, #00d9ff, #a855f7)',
                 }}
               />
             </div>
 
-            <p className="text-blink font-cairo text-xs font-bold text-neutral-600">
+            <p className="text-blink font-cairo text-xs font-bold text-neutral-500">
               اللعبة كتشارجا...
             </p>
           </div>
@@ -235,36 +231,22 @@ export default function GamePage({
       {/* Game Over modal */}
       {gameOver && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/90 backdrop-blur-md" />
-          <div
-            className="bounce-in relative w-full max-w-xs overflow-hidden rounded-3xl border p-6 text-center shadow-[0_40px_100px_-20px_rgba(0,0,0,.95)]"
-            style={{
-              background: 'linear-gradient(160deg,#101828 0%,#080f1c 100%)',
-              borderColor: 'rgba(245,200,66,0.25)',
-              boxShadow: '0 0 0 1px rgba(245,200,66,0.12), 0 40px 100px -20px rgba(0,0,0,.95)',
-            }}
-          >
-            {/* Ambient glow behind trophy */}
-            <div className="pointer-events-none absolute -top-10 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full opacity-30 blur-3xl bg-amber-400" />
-
-            <div className="relative mb-4 flex justify-center">
-              <div className="win-glow grid h-16 w-16 place-items-center rounded-2xl border border-amber-400/30 bg-amber-950/30">
-                <Trophy className="h-9 w-9 text-amber-400 drop-shadow-[0_0_18px_rgba(245,200,66,.7)]" />
-              </div>
+          <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" />
+          <div className="bounce-in relative w-full max-w-xs rounded-2xl border border-cyan-400/20 bg-[#060c1a] p-6 text-center shadow-2xl">
+            <div className="mb-3 flex justify-center">
+              <Trophy className="h-12 w-12 text-amber-400 drop-shadow-[0_0_18px_rgba(251,191,36,.6)]" />
             </div>
-            <h2 className="font-lalezar text-[1.8rem] leading-tight text-neutral-50">اللعبة سالات!</h2>
-            <p className="mt-1 font-cairo text-[13px] font-semibold text-neutral-500">
-              شكرا حيت لعبتي معانا 🎮
+            <h2 className="font-lalezar text-2xl text-neutral-50">اللعبة سالات!</h2>
+            <p className="mt-1 font-cairo text-[13px] font-semibold text-neutral-400">
+              شكرا حيت لعبتي معانا
             </p>
-
             {coins !== null && (
-              <div className="mt-4 flex items-center justify-center gap-2 rounded-2xl border border-[#00e5ff]/15 bg-[#00e5ff]/[0.05] px-4 py-3">
+              <div className="mt-4 flex items-center justify-center gap-2 rounded-xl border border-cyan-400/12 bg-cyan-400/[0.05] px-4 py-3">
                 <Coins className="h-5 w-5 text-amber-400" />
-                <span className="font-lalezar text-xl text-amber-300">{coins.toLocaleString()}</span>
-                <span className="font-cairo text-sm font-semibold text-neutral-500">كوين مازالين</span>
+                <span className="font-lalezar text-xl text-amber-300">{coins}</span>
+                <span className="font-cairo text-sm font-semibold text-neutral-400">مازالا جولة</span>
               </div>
             )}
-
             <div className="mt-5 flex flex-col gap-2">
               <button
                 onClick={async () => { setGameOver(false); await handlePlayAgain(); }}
@@ -274,7 +256,7 @@ export default function GamePage({
                 {replaying ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
                 عاود لعب
               </button>
-              <Link href="/?from=game" className="btn-chunk btn-ghost-hollow w-full py-3 text-[13px]">
+              <Link href="/?from=game" className="btn-chunk btn-blood w-full py-3 text-[13px]">
                 <ArrowRight className="h-4 w-4 rtl:rotate-180" />
                 رجع للساحة
               </Link>
@@ -286,17 +268,10 @@ export default function GamePage({
       {/* Exit confirm modal */}
       {exitConfirm && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setExitConfirm(false)} />
-          <div
-            className="bounce-in relative w-full max-w-xs overflow-hidden rounded-3xl border p-6 text-center shadow-2xl"
-            style={{
-              background: 'linear-gradient(160deg,#101828 0%,#080f1c 100%)',
-              borderColor: 'rgba(0,229,255,0.15)',
-              boxShadow: '0 0 0 1px rgba(0,229,255,0.07), 0 30px 80px -20px rgba(0,0,0,.9)',
-            }}
-          >
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setExitConfirm(false)} />
+          <div className="bounce-in relative w-full max-w-xs rounded-2xl border border-cyan-400/15 bg-[#060c1a] p-6 text-center shadow-2xl">
             <h2 className="font-lalezar text-2xl text-neutral-50">واش بغيتي تخرج من اللعبة؟</h2>
-            <p className="mt-1.5 font-cairo text-[13px] font-semibold text-neutral-500">
+            <p className="mt-1.5 font-cairo text-[13px] font-semibold text-neutral-400">
               التقدم ديالك فهاد الجولة غادي يضيع.
             </p>
             <div className="mt-5 flex flex-col gap-2">

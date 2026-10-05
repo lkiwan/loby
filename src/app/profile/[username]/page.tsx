@@ -146,14 +146,14 @@ export default function ProfilePage({
           {/* Stats grid */}
           <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
-              { label: 'كوينز',             val: profile.coins.toLocaleString(),  color: 'text-amber-400',  border: 'border-amber-400/20',  bg: 'bg-amber-950/10' },
-              { label: 'ڭلسات',             val: String(profile.gamesPlayed),     color: 'text-cyan-400',   border: 'border-cyan-400/20',   bg: 'bg-cyan-950/10'  },
-              { label: 'الستريك ديال دابا', val: `${profile.streakCount} 🔥`,     color: 'text-red-400',    border: 'border-red-500/20',    bg: 'bg-red-950/10'   },
-              { label: 'أطول ستريك',        val: `${profile.longestStreak} يوم`, color: 'text-orange-400', border: 'border-orange-400/20', bg: 'bg-orange-950/10'},
+              { label: 'كوينز',       val: profile.coins.toLocaleString(),   color: 'text-amber-400',  icon: '🪙' },
+              { label: 'ڭلسات',       val: profile.gamesPlayed,               color: 'text-cyan-400',   icon: '🎮' },
+              { label: 'الستريك ديال دابا', val: `${profile.streakCount} 🔥`,       color: 'text-red-400',    icon: '' },
+              { label: 'أطول ستريك',  val: `${profile.longestStreak} يوم`,    color: 'text-orange-400', icon: '' },
             ].map((s) => (
               <div
                 key={s.label}
-                className={`rounded-xl border ${s.border} ${s.bg} p-4 text-center transition hover:scale-[1.03]`}
+                className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 text-center"
               >
                 <div className={`font-lalezar text-2xl leading-none ${s.color}`}>{s.val}</div>
                 <div className="mt-1 font-cairo text-[11px] text-neutral-500">{s.label}</div>

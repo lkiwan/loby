@@ -135,35 +135,6 @@ export const Sounds = {
     const t = ac.currentTime;
     tone(ac, 900, 'sine', t, 0.03, 0.04);
   },
-
-  /* Game win — ascending major fanfare C4→E4→G4→C5 + sparkle */
-  win() {
-    const ac = getCtx(); if (!ac || _muted) return;
-    const t = ac.currentTime;
-    ([261.63, 329.63, 392, 523.25] as const).forEach((freq, i) => {
-      tone(ac, freq, 'triangle', t + i * 0.09, 0.55 - i * 0.04, 0.28 - i * 0.02);
-    });
-    tone(ac, 1046.5, 'sine', t + 0.42, 0.40, 0.14);
-    tone(ac, 1318.5, 'sine', t + 0.52, 0.30, 0.12);
-  },
-
-  /* Game lose — descending minor drop */
-  lose() {
-    const ac = getCtx(); if (!ac || _muted) return;
-    const t = ac.currentTime;
-    ([440, 392, 349.23, 293.66] as const).forEach((freq, i) => {
-      tone(ac, freq, 'sawtooth', t + i * 0.11, 0.28, 0.15 - i * 0.02);
-    });
-    tone(ac, 220, 'sawtooth', t + 0.50, 0.30, 0.12);
-  },
-
-  /* Page navigate — quick soft chime */
-  navigate() {
-    const ac = getCtx(); if (!ac || _muted) return;
-    const t = ac.currentTime;
-    tone(ac, 659, 'sine', t,        0.08, 0.09);
-    tone(ac, 880, 'sine', t + 0.06, 0.10, 0.07);
-  },
 };
 
 /* ── Music mute state (persisted separately from SFX) ── */
