@@ -8,10 +8,6 @@ import { GameMetaRow } from "@/components/GameMeta";
 import { GameTags } from "@/components/GameTag";
 import Star from "@/components/Star";
 
-/* ─────────────────────────────────────────────────────────────
-   Props — no expanded/onToggle: content is always fully visible.
-   The old mobile-accordion has been removed.
-───────────────────────────────────────────────────────────── */
 export type GameCardProps = {
   game: Game;
   coins: number;
@@ -21,7 +17,6 @@ export type GameCardProps = {
   onWatchAd: () => void;
 };
 
-/* ── Ripple effect on button press ── */
 function useRipple() {
   return useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
     const btn  = e.currentTarget;
@@ -35,80 +30,62 @@ function useRipple() {
   }, []);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Thumbnail — renders once, handles all game art variants.
-   Mafia: full horror treatment (drips, glow, "FEATURED" badge).
-   keyArt games: photo with accent colour glows.
-   Fallback: animated star emoji.
-───────────────────────────────────────────────────────────── */
-function GameThumbnail({ game }: { game: Game }) {
+/* ── Game art (top panel of card) ── */
+function GameArt({ game }: { game: Game }) {
   const src = game.isMafia ? MAFIA_ART : game.keyArt;
 
   if (!src) {
     return (
-      <div className="relative h-full w-full overflow-hidden bg-[#050910]">
-        <div className="absolute -end-8 -top-6 h-36 w-36 rounded-full opacity-50 blur-2xl"
+      <div className="relative h-full w-full overflow-hidden"
+        style={{ background: `radial-gradient(ellipse at 55% 35%, ${game.glowAccent}35, transparent 65%), #090d28` }}>
+        <div className="absolute -end-6 -top-4 h-44 w-44 rounded-full blur-3xl opacity-50"
           style={{ background: game.glowAccent }} />
-        <div className="absolute -bottom-10 -start-8 h-32 w-32 rounded-full opacity-45 blur-2xl"
+        <div className="absolute -bottom-8 -start-5 h-36 w-36 rounded-full blur-3xl opacity-40"
           style={{ background: game.starAccent }} />
         <div className="absolute inset-0 grid place-items-center">
-          <Star emoji={game.emoji} accent={game.starAccent} size={88} spin />
+          <Star emoji={game.emoji} accent={game.starAccent} size={80} spin />
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`relative h-full w-full overflow-hidden ${game.isMafia ? "bg-[#0a0010]" : "bg-[#050910]"}`}>
-      {/* accent glows behind the photo (non-Mafia only) */}
+    <div className="relative h-full w-full overflow-hidden bg-[#06091e]">
       {!game.isMafia && (
         <>
-          <div className="absolute -end-6 -top-4 h-40 w-40 rounded-full opacity-60 blur-2xl transition-opacity duration-500 group-hover:opacity-90"
+          <div className="absolute -end-5 -top-3 h-44 w-44 rounded-full blur-3xl opacity-50 transition-opacity duration-500 group-hover:opacity-75"
             style={{ background: game.glowAccent }} />
-          <div className="absolute -bottom-8 -start-6 h-36 w-36 rounded-full opacity-50 blur-2xl transition-opacity duration-500 group-hover:opacity-85"
+          <div className="absolute -bottom-6 -start-4 h-36 w-36 rounded-full blur-3xl opacity-40 transition-opacity duration-500 group-hover:opacity-65"
             style={{ background: game.starAccent }} />
         </>
       )}
-
-      {/* Mafia horror effects */}
       {game.isMafia && (
         <>
-          <div className="glow-pulse absolute -bottom-6 start-1/2 h-24 w-3/4 -translate-x-1/2 rounded-[50%] bg-red-700/55 blur-2xl" />
-          <span className="drip" style={{ left: "10%",  height: 26 }} />
-          <span className="drip" style={{ left: "47%",  height: 38, animationDelay: "1.3s" }} />
-          <span className="drip" style={{ right: "12%", height: 22, animationDelay: "2.4s" }} />
-          <span className="absolute start-4 top-4 z-10 rounded-full border border-red-500/45 bg-black/60 px-3 py-1 font-cairo text-[10px] font-black tracking-wide text-red-400 backdrop-blur-sm">
-            ★ FEATURED
-          </span>
+          <div className="absolute -bottom-4 start-1/2 h-20 w-3/4 -translate-x-1/2 rounded-[50%] bg-red-800/50 blur-2xl" />
+          <span className="drip" style={{ left: "12%",  height: 28 }} />
+          <span className="drip" style={{ left: "48%",  height: 40, animationDelay: "1.3s" }} />
+          <span className="drip" style={{ right: "14%", height: 24, animationDelay: "2.5s" }} />
         </>
       )}
-
       <Image
         src={src}
         alt={game.darijaTitle}
         fill
         priority={game.isMafia}
         sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 25vw"
-        className="object-cover transition-transform duration-700 group-hover:scale-110"
+        className="object-cover transition-transform duration-600 group-hover:scale-105"
       />
-
-      {/* bottom fade so the card border shows cleanly */}
-      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#080d1a] to-transparent" />
+      {/* subtle vignette at the bottom of the image */}
+      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#0a0e26] to-transparent" />
     </div>
   );
 }
 
-/* ─────────────────────────────────────────────────────────────
-   GameCard — ONE component for ALL games.
-
-   Layout rules (via Tailwind responsive classes, no JS):
-     • Regular games  → always flex-col (vertical card)
-     • Mafia          → flex-col on mobile, flex-row on lg+
-       (handled by the wrapper col-span in page.tsx + game.isMafia
-        flag below)
-
-   Content renders ONCE — no hidden duplicates, no accordion.
-───────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════
+   GameCard V2 — glass morphism
+   Layout: image (top) + glass content panel (bottom)
+   Portrait for regular games, wide horizontal for Mafia
+═══════════════════════════════════════════════ */
 export default function GameCard({
   game, coins, loadingAction, isBusy, onPlay, onWatchAd,
 }: GameCardProps) {
@@ -116,125 +93,122 @@ export default function GameCard({
   const ripple    = useRipple();
   const accent    = game.starAccent;
 
-  /* Primary button gradient derived from the game's own palette */
-  const btnBg = game.isMafia
-    ? "linear-gradient(180deg,#ef4444 0%,#dc2626 55%,#991b1b 130%)"
-    : `linear-gradient(135deg,${game.glowAccent} 0%,${accent} 100%)`;
-  const btnShadow = canAfford
+  /* Primary button style derived from game palette */
+  const playBg = game.isMafia
+    ? "linear-gradient(135deg, #dc2626 0%, #ef4444 55%, #fca5a5 130%)"
+    : `linear-gradient(135deg, ${game.glowAccent} 0%, ${accent} 100%)`;
+  const playShadow = canAfford
     ? game.isMafia
-      ? "0 5px 0 #450a0a, 0 14px 28px rgba(220,38,38,.4)"
-      : `0 5px 0 ${accent}88, 0 12px 24px ${accent}28`
+      ? "0 0 20px rgba(239,68,68,0.30), 0 4px 12px rgba(0,0,0,0.40)"
+      : `0 0 18px ${accent}50, 0 4px 12px rgba(0,0,0,0.40)`
     : "none";
 
   return (
     <div className={[
-      "group game-card-v2 holo-shimmer flex overflow-hidden",
-      /* Mafia: side-by-side on large screens */
-      game.isMafia
-        ? "card-mafia spinning-border flex-col lg:flex-row"
-        : "flex-col",
+      "group game-card-v2 holo-shimmer flex flex-col overflow-hidden",
+      game.isMafia ? "card-mafia spinning-border" : "",
     ].join(" ")}>
 
-      {/* ── per-game accent top border ── */}
-      <div className="absolute inset-x-0 top-0 z-10 h-[2px]"
+      {/* ── per-game accent line at top ── */}
+      <div className="absolute inset-x-0 top-0 z-10 h-[1.5px]"
         style={{
-          background: `linear-gradient(90deg,transparent,${accent}90,${accent},${accent}90,transparent)`,
-          boxShadow:  `0 0 14px ${accent}65`,
+          background: `linear-gradient(90deg, transparent, ${accent}80, ${accent}, ${accent}80, transparent)`,
+          boxShadow:  `0 0 10px ${accent}50`,
         }} />
 
-      {/* ══════════════════════
-          THUMBNAIL (once)
-      ══════════════════════ */}
+      {/* ── Mafia FEATURED badge ── */}
+      {game.isMafia && (
+        <div className="absolute start-3.5 top-3.5 z-20 flex items-center gap-1.5 rounded-full border border-red-500/30 bg-black/65 px-3 py-1 backdrop-blur-sm">
+          <span className="h-1.5 w-1.5 rounded-full bg-red-400 shadow-[0_0_6px_#f87171]" />
+          <span className="font-grit text-[9px] uppercase tracking-widest text-red-300">FEATURED</span>
+        </div>
+      )}
+
+      {/* ── GAME ART ── */}
       <div className={[
         "relative flex-shrink-0 overflow-hidden",
         game.isMafia
-          /* mobile: wide banner; desktop: auto height filling the row */
-          ? "aspect-[16/9] sm:aspect-[21/9] lg:aspect-auto lg:w-[52%]"
+          ? "aspect-[16/9] sm:aspect-[21/9] lg:aspect-[32/11]"
           : "aspect-[16/10]",
       ].join(" ")}>
-        <GameThumbnail game={game} />
+        <GameArt game={game} />
+
+        {/* cost chip — floats over image, top-end corner */}
+        <div className="absolute end-3 top-3 z-20 flex items-center gap-1 rounded-full border border-amber-400/30 bg-black/70 px-2.5 py-1 backdrop-blur-sm">
+          <Coins className="h-3 w-3 text-amber-400" />
+          <span className="font-cairo text-[11px] font-black leading-none text-amber-300">{game.cost}</span>
+        </div>
       </div>
 
-      {/* ══════════════════════
-          CONTENT (once)
-      ══════════════════════ */}
-      <div className="flex flex-1 flex-col gap-2.5 p-4 pt-3.5">
+      {/* ── GLASS CONTENT PANEL ── */}
+      <div className="flex flex-1 flex-col gap-2.5 border-t border-white/[0.05] bg-[rgba(10,14,38,0.95)] p-4 pt-3.5">
 
-        {/* Title */}
+        {/* title */}
         <div>
           <h3 className={[
             "font-lalezar leading-tight",
-            game.isMafia ? "text-[1.65rem]" : "text-[1.35rem]",
+            game.isMafia ? "text-[1.55rem]" : "text-[1.3rem]",
           ].join(" ")}
-            style={{ color: accent, textShadow: `0 0 20px ${accent}60` }}>
+            style={{ color: accent, textShadow: `0 0 18px ${accent}45` }}>
             {game.darijaTitle}
           </h3>
-          <p className="mt-0.5 font-grit text-[8px] uppercase tracking-[0.18em] text-neutral-600">
+          <p className="mt-0.5 font-grit text-[8px] uppercase tracking-[0.18em] text-neutral-700">
             {game.latinTitle}
           </p>
         </div>
 
-        {/* Metadata: players · duration · difficulty */}
+        {/* meta */}
         <GameMetaRow game={game} />
 
-        {/* Description */}
+        {/* desc */}
         <p className="font-cairo text-[11.5px] font-semibold leading-relaxed text-neutral-500 line-clamp-2">
           {game.desc}
         </p>
 
-        {/* Category tags */}
+        {/* tags */}
         <GameTags game={game} />
 
-        {/* Thin accent divider */}
+        {/* thin accent divider */}
         <div className="h-px w-full"
-          style={{ background: `linear-gradient(90deg,transparent,${accent}30,transparent)` }} />
+          style={{ background: `linear-gradient(90deg, transparent, ${accent}22, transparent)` }} />
 
-        {/* ── CTAs (each renders exactly ONCE) ── */}
+        {/* ── CTAs ── */}
         <div className="mt-auto flex flex-col gap-1.5">
 
-          {/* PRIMARY — لعب دابا */}
+          {/* PRIMARY */}
           <button
             onClick={(e) => { ripple(e); onPlay(e); }}
             disabled={isBusy || !canAfford}
-            className="btn-chunk relative w-full overflow-hidden py-[11px] text-[14px]"
+            className="btn-chunk relative w-full overflow-hidden py-[10px] text-[13px]"
             style={{
-              background:  btnBg,
-              color:       "#fff",
-              textShadow:  "0 1px 3px rgba(0,0,0,.4)",
-              boxShadow:   btnShadow,
-              opacity:     !canAfford ? 0.42 : 1,
+              background:  canAfford ? playBg : "rgba(255,255,255,0.04)",
+              color:       canAfford ? (game.isMafia ? "#fff" : "#03080e") : "#475569",
+              fontWeight:  "900",
+              boxShadow:   playShadow,
+              border:      canAfford ? "none" : "1px solid rgba(255,255,255,0.08)",
             }}
           >
-            {/* play icon zone */}
-            <span className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-xl bg-white/15 shadow-inner">
+            <span className="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-xl bg-black/20">
               {isBusy && loadingAction === "coins"
-                ? <Loader2 className="h-[15px] w-[15px] animate-spin" />
-                : <Play className="h-[15px] w-[15px] fill-current" />}
+                ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                : <Play className="h-3.5 w-3.5 fill-current" />}
             </span>
-            لعب دابا
-            {/* coin cost badge */}
-            <span className="ms-auto flex items-center gap-1 rounded-full border border-amber-400/45 bg-amber-400/10 px-2 py-[4px] font-cairo text-[10px] font-black leading-none text-amber-300">
-              <span className="flex h-[14px] w-[14px] shrink-0 items-center justify-center rounded-full bg-amber-400/25">
-                <Coins className="h-2.5 w-2.5 text-amber-400" />
-              </span>
-              {game.cost}
-            </span>
+            {canAfford ? "لعب دابا" : "ماكاينش كوينز"}
           </button>
 
-          {/* SECONDARY — شاهد إعلان ثم العب */}
+          {/* SECONDARY */}
           <button
             onClick={onWatchAd}
             disabled={isBusy}
-            className="btn-chunk btn-ghost-hollow relative w-full overflow-hidden py-[9px] text-[11.5px] text-neutral-300"
+            className="btn-chunk btn-ghost-hollow relative w-full overflow-hidden py-[8px] text-[11px]"
           >
-            {/* video icon zone */}
-            <span className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-lg bg-fuchsia-400/15">
+            <span className="flex h-[24px] w-[24px] shrink-0 items-center justify-center rounded-lg bg-violet-400/12">
               {isBusy && loadingAction === "ad"
-                ? <Loader2 className="h-[13px] w-[13px] animate-spin text-fuchsia-300" />
-                : <Video className="h-[13px] w-[13px] text-fuchsia-300" />}
+                ? <Loader2 className="h-3 w-3 animate-spin text-violet-300" />
+                : <Video className="h-3 w-3 text-violet-300" />}
             </span>
             شاهد إعلان ثم العب
-            <span className="ms-auto rounded-full border border-white/10 bg-white/[0.05] px-2 py-0.5 font-cairo text-[9px] font-black leading-none text-neutral-500">
+            <span className="ms-auto rounded-full border border-white/8 bg-white/[0.04] px-2 py-0.5 font-cairo text-[9px] font-black leading-none text-neutral-600">
               بدون كوين
             </span>
           </button>
