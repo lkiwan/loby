@@ -27,6 +27,7 @@ import { Sounds, isMuted, setMuted, musicPlayer, isMusicMuted, unlockAudio } fro
 import dynamic from 'next/dynamic';
 
 const MissionsPanel  = dynamic(() => import('@/components/MissionsPanel'),  { ssr: false });
+const FriendsPanel   = dynamic(() => import('@/components/FriendsPanel'),   { ssr: false });
 
 const TICKER_ITEMS = [
   '🔥 الصداع د الحومة كاين من بكري',
@@ -171,6 +172,7 @@ function LobbyContent() {
   const cardsRef = useRef<HTMLDivElement>(null);
   const [xpData, setXpData] = useState<{ xp: number; level: number; gamesPlayed: number; streak: number; referralCode?: string } | null>(null);
   const [missionsOpen, setMissionsOpen] = useState(false);
+  const [friendsOpen, setFriendsOpen] = useState(false);
   const [referralCopied, setReferralCopied] = useState(false);
   const [authSheetOpen, setAuthSheetOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -214,6 +216,18 @@ function LobbyContent() {
   const openSettings = () => {
     setSettingsOpen(true);
     if (isAuthed) void fetchMe();
+  };
+
+  const openFriends = () => {
+    if (!isAuthed) {
+      if (typeof window !== 'undefined' && window.matchMedia('(min-width: 640px)').matches) {
+        router.push('/login');
+      } else {
+        setAuthSheetOpen(true);
+      }
+      return;
+    }
+    setFriendsOpen(true);
   };
 
   const saveName = async () => {
@@ -734,10 +748,10 @@ function LobbyContent() {
           <Home className="h-5 w-5" />
           <span className="font-cairo text-[10px] font-bold">الرئيسية</span>
         </div>
-        <div className="bottom-tab-bar-item flex flex-col items-center gap-1 text-[#B8C4D8]">
+        <button onClick={openFriends} className="bottom-tab-bar-item flex flex-col items-center gap-1 text-[#B8C4D8]">
           <Users className="h-5 w-5" />
           <span className="font-cairo text-[10px] font-bold">الصحاب</span>
-        </div>
+        </button>
         <div className="bottom-tab-bar-item flex flex-col items-center gap-1 text-[#B8C4D8]">
           <Gamepad2 className="h-5 w-5" />
           <span className="font-cairo text-[10px] font-bold">اللعاب</span>
@@ -758,6 +772,11 @@ function LobbyContent() {
             showToast('ok', `مبروك! ربحتي +${reward} 🪙 على المهمة 🎯`);
           }}
         />
+      )}
+
+      {/* ═══════════════ FRIENDS PANEL ═══════════════ */}
+      {friendsOpen && (
+        <FriendsPanel onClose={() => setFriendsOpen(false)} />
       )}
 
       {/* ═══════════════ AD MODAL ═══════════════ */}
