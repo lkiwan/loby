@@ -552,7 +552,7 @@ function LobbyContent() {
           )}
         </div>
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/images/logo-playm3ana.png" alt="PlayM3ana" width={32} height={32} className="rounded-full" />
+          <Image src="/images/logo-playm3ana-new.png" alt="PlayM3ana" width={39} height={32} className="h-8 w-auto object-contain" />
           <span className="text-gradient-gold-teal font-grit text-lg font-bold tracking-tight">PLAYM3ANA</span>
         </Link>
       </header>
