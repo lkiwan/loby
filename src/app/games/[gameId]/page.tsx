@@ -1,6 +1,7 @@
 'use client';
 
 import { use, useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, Loader2, RefreshCw, X, Coins, Trophy, Zap } from 'lucide-react';
@@ -299,7 +300,13 @@ export default function GamePage({
       {/* top HUD bar */}
       <div className="absolute inset-x-0 top-0 z-50 flex items-center justify-between gap-2 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-2">
         <span className="pointer-events-none flex min-w-0 items-center gap-2 rounded-full border border-cyan-400/12 bg-[#030812]/70 px-3 py-1.5 backdrop-blur-md">
-          <StarMark size={18} />
+          <Image
+            src="/images/logo-playm3ana-new.png"
+            alt="PlayM3ana"
+            width={24}
+            height={20}
+            className="h-5 w-auto shrink-0 object-contain"
+          />
           <span className="truncate font-grit text-[11px] uppercase tracking-wide text-neutral-300">
             {game?.latinTitle ?? gameId}
           </span>
