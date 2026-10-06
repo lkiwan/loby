@@ -374,3 +374,14 @@ Setting a custom Cache-Control header can break Next.js development behavior.
  GET /games/paint-followers?token=b0690a34-30cb-4d76-a1b5-2b466ba8f116 200 in 253ms (next.js: 98ms, proxy.ts: 8ms, application-code: 147ms)
  GET / 200 in 119ms (next.js: 38ms, application-code: 81ms)
  GET / 200 in 64ms (next.js: 6ms, application-code: 58ms)
+[browser] Uncaught ReferenceError: GameRosterBar is not defined
+    at GamePage (src/app/games/[gameId]/page.tsx:336:33)
+  334 |           <div className="bounce-in relative w-full max-w-xs rounded-2xl border border-cyan-400/20 bg-[#060c1a] p-6 text-center shadow-2xl">
+  335 |             <div className="mb-3 flex justify-center">
+> 336 |               <Trophy className="h-12 w-12 text-amber-400 drop-shadow-[0_0_18px_rgba(251,191,36,.6)]" />
+      |                                 ^
+  337 |             </div>
+  338 |             <h2 className="font-lalezar text-2xl text-neutral-50">اللعبة سالات!</h2>
+  339 |             <p className="mt-1 font-cairo text-[13px] font-semibold text-neutral-400">
+ GET / 200 in 49ms (next.js: 6ms, application-code: 42ms)
+ GET / 200 in 54ms (next.js: 4ms, application-code: 50ms)
