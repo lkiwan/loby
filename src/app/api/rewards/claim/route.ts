@@ -4,6 +4,7 @@ import { authOptions } from '../../auth/[...nextauth]/route';
 import { prisma } from '@/lib/prisma';
 import { creditBalance, addXp } from '@/lib/ledger';
 import { checkRate } from '@/lib/rateLimit';
+import { bumpMission } from '@/lib/missions';
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
@@ -15,7 +16,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
   }
 
-  const { assignmentId } = await req.json();
+  const { assignmentId, adWatched } = await req.json();
   if (!assignmentId) {
     return NextResponse.json({ error: 'Missing assignmentId' }, { status: 400 });
   }
@@ -38,7 +39,15 @@ export async function POST(req: Request) {
   }
 
   if (assignment.progress < assignment.template.target) {
-    return NextResponse.json({ error: 'Mission not complete' }, { status: 400 });
+    if (!adWatched) {
+      return NextResponse.json({ error: 'Mission not complete' }, { status: 400 });
+    }
+    // Ad-watch path: bump WATCH_N_ADS missions normally; force-complete everything else
+    await bumpMission(assignment.userId, 'WATCH_N_ADS', 1);
+    await prisma.missionAssignment.update({
+      where: { id: assignment.id },
+      data: { progress: assignment.template.target },
+    });
   }
 
   const key = `mission:${assignment.userId}:${assignment.templateId}:${assignment.periodKey}`;

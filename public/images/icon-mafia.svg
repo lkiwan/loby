@@ -1,0 +1,250 @@
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <!-- ═══ MASTER GOLD GRADIENT (identical in all 5) ═══ -->
+  <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%"   stop-color="#5A3A00"/>
+    <stop offset="22%"  stop-color="#C8900A"/>
+    <stop offset="45%"  stop-color="#F5D060"/>
+    <stop offset="55%"  stop-color="#FFE580"/>
+    <stop offset="78%"  stop-color="#C8900A"/>
+    <stop offset="100%" stop-color="#5A3A00"/>
+  </linearGradient>
+  <linearGradient id="gGoldV" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%"   stop-color="#F5D060"/>
+    <stop offset="50%"  stop-color="#C8900A"/>
+    <stop offset="100%" stop-color="#7A5500"/>
+  </linearGradient>
+
+  <!-- ═══ MASTER ARCH CLIP (identical in all 5) ═══ -->
+  <clipPath id="aClip">
+    <path d="M 44,400 L 44,232 C 44,102 130,38 200,38 C 270,38 356,102 356,232 L 356,400 Z"/>
+  </clipPath>
+
+  <!-- ═══ MASTER FILTERS (identical in all 5) ═══ -->
+  <filter id="fGlow" x="-40%" y="-40%" width="180%" height="180%">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="fSoft" x="-30%" y="-30%" width="160%" height="160%">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="fBlur5"><feGaussianBlur stdDeviation="5"/></filter>
+  <filter id="fBlur10"><feGaussianBlur stdDeviation="10"/></filter>
+  <filter id="fBlur16"><feGaussianBlur stdDeviation="16"/></filter>
+
+  <!-- ═══ GAME-SPECIFIC ═══ -->
+  <radialGradient id="gBg" cx="50%" cy="42%" r="68%">
+    <stop offset="0%"   stop-color="#350010"/>
+    <stop offset="50%"  stop-color="#1A0008"/>
+    <stop offset="100%" stop-color="#07000A"/>
+  </radialGradient>
+  <radialGradient id="gCenter" cx="50%" cy="50%" r="50%">
+    <stop offset="0%"   stop-color="#AA1111" stop-opacity="0.7"/>
+    <stop offset="100%" stop-color="#AA1111" stop-opacity="0"/>
+  </radialGradient>
+  <pattern id="zel" x="0" y="0" width="22" height="22" patternUnits="userSpaceOnUse">
+    <polygon points="11,0 22,11 11,22 0,11" fill="none" stroke="#6A0010" stroke-width="0.6" opacity="0.4"/>
+    <polygon points="11,4 18,11 11,18 4,11" fill="none" stroke="#6A0010" stroke-width="0.4" opacity="0.22"/>
+  </pattern>
+</defs>
+
+<!-- ═══════════════════════════════
+     MASTER TEMPLATE — CARD BODY
+     ═══════════════════════════════ -->
+<rect width="400" height="400" rx="24" fill="#08000C"/>
+
+<!-- Master corner ornaments (identical in all 5) -->
+<g opacity="0.75">
+  <rect x="8" y="8" width="34" height="34" rx="7" fill="none" stroke="#C8900A" stroke-width="1.8"/>
+  <rect x="13" y="13" width="24" height="24" rx="4" fill="none" stroke="#F5D060" stroke-width="1" opacity="0.7"/>
+  <polygon points="20,8 27,15 20,22 13,15" fill="#C8900A" opacity="0.55"/>
+  <circle cx="20" cy="15" r="2.5" fill="#F5D060" opacity="0.8"/>
+
+  <rect x="358" y="8" width="34" height="34" rx="7" fill="none" stroke="#C8900A" stroke-width="1.8"/>
+  <rect x="363" y="13" width="24" height="24" rx="4" fill="none" stroke="#F5D060" stroke-width="1" opacity="0.7"/>
+  <polygon points="380,8 387,15 380,22 373,15" fill="#C8900A" opacity="0.55"/>
+  <circle cx="380" cy="15" r="2.5" fill="#F5D060" opacity="0.8"/>
+
+  <rect x="8" y="358" width="34" height="34" rx="7" fill="none" stroke="#C8900A" stroke-width="1.8"/>
+  <rect x="13" y="363" width="24" height="24" rx="4" fill="none" stroke="#F5D060" stroke-width="1" opacity="0.7"/>
+  <polygon points="20,358 27,365 20,372 13,365" fill="#C8900A" opacity="0.55"/>
+  <circle cx="20" cy="365" r="2.5" fill="#F5D060" opacity="0.8"/>
+
+  <rect x="358" y="358" width="34" height="34" rx="7" fill="none" stroke="#C8900A" stroke-width="1.8"/>
+  <rect x="363" y="363" width="24" height="24" rx="4" fill="none" stroke="#F5D060" stroke-width="1" opacity="0.7"/>
+  <polygon points="380,358 387,365 380,372 373,365" fill="#C8900A" opacity="0.55"/>
+  <circle cx="380" cy="365" r="2.5" fill="#F5D060" opacity="0.8"/>
+</g>
+
+<!-- ═══════════════════════════════
+     GAME SCENE (clipped to arch)
+     ═══════════════════════════════ -->
+<g clip-path="url(#aClip)">
+  <!-- Background -->
+  <rect width="400" height="400" fill="url(#gBg)"/>
+  <rect width="400" height="400" fill="url(#zel)"/>
+
+  <!-- Deep background riad arches -->
+  <path d="M 110,400 L 110,295 Q 110,248 200,240 Q 290,248 290,295 L 290,400" fill="none" stroke="#4A0015" stroke-width="3" opacity="0.55"/>
+  <path d="M 130,400 L 130,298 Q 130,258 200,252 Q 270,258 270,298 L 270,400" fill="none" stroke="#3A0010" stroke-width="2" opacity="0.4"/>
+
+  <!-- Atmospheric center glow -->
+  <ellipse cx="200" cy="210" rx="100" ry="110" fill="url(#gCenter)" opacity="0.9" filter="url(#fBlur10)"/>
+  <ellipse cx="200" cy="210" rx="55" ry="60" fill="#CC0000" opacity="0.3" filter="url(#fBlur5)"/>
+
+  <!-- Left lantern with glow -->
+  <ellipse cx="80" cy="148" rx="28" ry="38" fill="#880000" opacity="0.4" filter="url(#fBlur10)"/>
+  <g transform="translate(80,142)">
+    <rect x="-9" y="-36" width="18" height="4" rx="2" fill="#C8900A"/>
+    <line x1="0" y1="-32" x2="0" y2="-16" stroke="#C8900A" stroke-width="1.8"/>
+    <ellipse cx="0" cy="0" rx="13" ry="21" fill="#7A0000"/>
+    <ellipse cx="0" cy="0" rx="13" ry="21" fill="none" stroke="#C8900A" stroke-width="2"/>
+    <line x1="-13" y1="-8" x2="13" y2="-8" stroke="#C8900A" stroke-width="1" opacity="0.7"/>
+    <line x1="-13" y1="0" x2="13" y2="0" stroke="#C8900A" stroke-width="1" opacity="0.7"/>
+    <line x1="-13" y1="8" x2="13" y2="8" stroke="#C8900A" stroke-width="1" opacity="0.7"/>
+    <ellipse cx="0" cy="-2" rx="6" ry="11" fill="#FF3333" opacity="0.7"/>
+    <ellipse cx="0" cy="-4" rx="3" ry="5" fill="#FFAAAA" opacity="0.65"/>
+  </g>
+
+  <!-- Right lantern -->
+  <ellipse cx="318" cy="130" rx="24" ry="32" fill="#880000" opacity="0.35" filter="url(#fBlur10)"/>
+  <g transform="translate(320,125)">
+    <rect x="-8" y="-32" width="16" height="3.5" rx="1.5" fill="#C8900A"/>
+    <line x1="0" y1="-28" x2="0" y2="-14" stroke="#C8900A" stroke-width="1.8"/>
+    <ellipse cx="0" cy="0" rx="11" ry="18" fill="#7A0000"/>
+    <ellipse cx="0" cy="0" rx="11" ry="18" fill="none" stroke="#C8900A" stroke-width="2"/>
+    <line x1="-11" y1="-7" x2="11" y2="-7" stroke="#C8900A" stroke-width="1" opacity="0.7"/>
+    <line x1="-11" y1="0" x2="11" y2="0" stroke="#C8900A" stroke-width="1" opacity="0.7"/>
+    <line x1="-11" y1="7" x2="11" y2="7" stroke="#C8900A" stroke-width="1" opacity="0.7"/>
+    <ellipse cx="0" cy="-2" rx="5" ry="9" fill="#FF3333" opacity="0.7"/>
+  </g>
+
+  <!-- Mysterious silhouette — large central figure -->
+  <g transform="translate(200,235)" filter="url(#fSoft)">
+    <!-- Body/cloak -->
+    <path d="M -55,80 Q -70,20 -55,-30 Q -40,-80 0,-90 Q 40,-80 55,-30 Q 70,20 55,80 Z" fill="#0A0005" opacity="0.95"/>
+    <!-- Head with fez-like shape -->
+    <ellipse cx="0" cy="-95" rx="28" ry="22" fill="#1A0008" opacity="0.95"/>
+    <rect x="-20" y="-117" width="40" height="24" rx="3" fill="#AA1111" opacity="0.9"/>
+    <!-- Glowing eyes -->
+    <ellipse cx="-10" cy="-94" rx="6" ry="5" fill="#FF1111" opacity="0.9" filter="url(#fGlow)"/>
+    <ellipse cx="10" cy="-94" rx="6" ry="5" fill="#FF1111" opacity="0.9" filter="url(#fGlow)"/>
+    <ellipse cx="-10" cy="-94" rx="3" ry="2.5" fill="#FF6666"/>
+    <ellipse cx="10" cy="-94" rx="3" ry="2.5" fill="#FF6666"/>
+    <!-- Finger to lips hint -->
+    <rect x="-2" y="-75" width="4" height="16" rx="2" fill="#C8900A" opacity="0.6"/>
+    <!-- Cloak detail -->
+    <line x1="-55" y1="80" x2="0" y2="-30" stroke="#2A0010" stroke-width="2" opacity="0.5"/>
+    <line x1="55" y1="80" x2="0" y2="-30" stroke="#2A0010" stroke-width="2" opacity="0.5"/>
+  </g>
+
+  <!-- Playing cards (fan) -->
+  <g transform="translate(200,340)">
+    <g transform="rotate(-30,0,0)">
+      <rect x="-22" y="-60" width="44" height="60" rx="5" fill="#1A0005" stroke="#C8900A" stroke-width="1.5"/>
+      <text x="-12" y="-38" font-size="16" fill="#AA0000" font-family="serif">♠</text>
+    </g>
+    <g transform="rotate(-10,0,0)">
+      <rect x="-22" y="-60" width="44" height="60" rx="5" fill="#220008" stroke="#C8900A" stroke-width="2"/>
+      <text x="-10" y="-36" font-size="18" fill="#CC0000" font-family="serif">♥</text>
+    </g>
+    <g transform="rotate(12,0,0)">
+      <rect x="-22" y="-60" width="44" height="60" rx="5" fill="#1A0005" stroke="#C8900A" stroke-width="1.5"/>
+      <text x="-12" y="-38" font-size="16" fill="#AA0000" font-family="serif">♣</text>
+    </g>
+  </g>
+
+  <!-- Magnifying glass -->
+  <g transform="translate(138,210)" filter="url(#fSoft)">
+    <circle cx="0" cy="0" r="28" fill="none" stroke="#C8900A" stroke-width="4"/>
+    <circle cx="0" cy="0" r="23" fill="#330008" opacity="0.6"/>
+    <circle cx="0" cy="0" r="23" fill="none" stroke="#C8900A" stroke-width="1.5" opacity="0.4"/>
+    <path d="M -12,-12 Q -6,-17 0,-14" stroke="white" stroke-width="2" fill="none" opacity="0.4"/>
+    <line x1="19" y1="19" x2="36" y2="36" stroke="#C8900A" stroke-width="6" stroke-linecap="round"/>
+    <line x1="34" y1="34" x2="42" y2="42" stroke="#8A6000" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <!-- Crystal ball glow -->
+  <circle cx="272" cy="255" r="30" fill="#440020" opacity="0.6" filter="url(#fBlur5)"/>
+  <circle cx="272" cy="255" r="24" fill="#220010"/>
+  <circle cx="272" cy="255" r="24" fill="none" stroke="#C8900A" stroke-width="1.5"/>
+  <circle cx="272" cy="255" r="18" fill="#880033" opacity="0.5"/>
+  <ellipse cx="264" cy="248" rx="6" ry="4" fill="white" opacity="0.3" transform="rotate(-30,264,248)"/>
+
+  <!-- Table surface -->
+  <ellipse cx="200" cy="368" rx="160" ry="22" fill="#120006" opacity="0.95"/>
+</g>
+
+<!-- ═══════════════════════════════
+     MASTER ARCH FRAME (identical in all 5)
+     ═══════════════════════════════ -->
+
+<!-- Arch warm glow (blurred behind frame) -->
+<path d="M 28,400 L 28,226 C 28,86 122,22 200,22 C 278,22 372,86 372,226 L 372,400" fill="none" stroke="#E8A020" stroke-width="18" opacity="0.18" filter="url(#fBlur10)"/>
+
+<!-- Outer arch stroke (thick gold) -->
+<path d="M 28,400 L 28,226 C 28,86 122,22 200,22 C 278,22 372,86 372,226 L 372,400" fill="none" stroke="url(#gGold)" stroke-width="6.5" stroke-linecap="round"/>
+
+<!-- Second arch line -->
+<path d="M 44,400 L 44,232 C 44,102 130,38 200,38 C 270,38 356,102 356,232 L 356,400" fill="none" stroke="#C8900A" stroke-width="2" stroke-dasharray="7 10" opacity="0.5"/>
+
+<!-- Third arch line -->
+<path d="M 56,400 L 56,237 C 56,112 136,52 200,52 C 264,52 344,112 344,237 L 344,400" fill="none" stroke="#C8900A" stroke-width="1" opacity="0.28"/>
+
+<!-- Fourth arch line (innermost) -->
+<path d="M 66,400 L 66,241 C 66,120 140,62 200,62 C 260,62 334,120 334,241 L 334,400" fill="none" stroke="#F5D060" stroke-width="0.6" opacity="0.18"/>
+
+<!-- Keystone gem -->
+<polygon points="186,18 200,2 214,18 210,38 190,38" fill="#8A6000"/>
+<polygon points="188,20 200,6 212,20 208,36 192,36" fill="url(#gGoldV)"/>
+<circle cx="200" cy="26" r="7" fill="#AA0000" filter="url(#fSoft)"/>
+<circle cx="200" cy="26" r="5" fill="#FF3333"/>
+<circle cx="200" cy="26" r="2.5" fill="white" opacity="0.65"/>
+
+<!-- Spring point circles -->
+<circle cx="28" cy="226" r="9" fill="#8A6000" opacity="0.7"/>
+<circle cx="28" cy="226" r="6" fill="#F5D060" opacity="0.85"/>
+<circle cx="28" cy="226" r="2.5" fill="white" opacity="0.55"/>
+<circle cx="372" cy="226" r="9" fill="#8A6000" opacity="0.7"/>
+<circle cx="372" cy="226" r="6" fill="#F5D060" opacity="0.85"/>
+<circle cx="372" cy="226" r="2.5" fill="white" opacity="0.55"/>
+
+<!-- Left column zellige diamonds -->
+<polygon points="28,248 37,239 46,248 37,257" fill="#C8900A" opacity="0.65"/>
+<polygon points="28,270 37,261 46,270 37,279" fill="#F5D060" opacity="0.45"/>
+<polygon points="28,292 37,283 46,292 37,301" fill="#C8900A" opacity="0.55"/>
+<polygon points="28,314 37,305 46,314 37,323" fill="#F5D060" opacity="0.35"/>
+<polygon points="28,336 37,327 46,336 37,345" fill="#C8900A" opacity="0.45"/>
+<polygon points="28,358 37,349 46,358 37,367" fill="#F5D060" opacity="0.28"/>
+
+<!-- Right column zellige diamonds -->
+<polygon points="354,248 363,239 372,248 363,257" fill="#C8900A" opacity="0.65"/>
+<polygon points="354,270 363,261 372,270 363,279" fill="#F5D060" opacity="0.45"/>
+<polygon points="354,292 363,283 372,292 363,301" fill="#C8900A" opacity="0.55"/>
+<polygon points="354,314 363,305 372,314 363,323" fill="#F5D060" opacity="0.35"/>
+<polygon points="354,336 363,327 372,336 363,345" fill="#C8900A" opacity="0.45"/>
+<polygon points="354,358 363,349 372,358 363,367" fill="#F5D060" opacity="0.28"/>
+
+<!-- Arch ornament dots (follow arch curve) -->
+<circle cx="146" cy="48" r="3.5" fill="#C8900A" opacity="0.55"/>
+<circle cx="254" cy="48" r="3.5" fill="#C8900A" opacity="0.55"/>
+<circle cx="108" cy="80" r="3" fill="#C8900A" opacity="0.45"/>
+<circle cx="292" cy="80" r="3" fill="#C8900A" opacity="0.45"/>
+<circle cx="76" cy="122" r="2.5" fill="#C8900A" opacity="0.38"/>
+<circle cx="324" cy="122" r="2.5" fill="#C8900A" opacity="0.38"/>
+<circle cx="54" cy="172" r="2" fill="#C8900A" opacity="0.3"/>
+<circle cx="346" cy="172" r="2" fill="#C8900A" opacity="0.3"/>
+
+<!-- Column bases -->
+<rect x="17" y="386" width="22" height="11" rx="3.5" fill="#C8900A" opacity="0.65"/>
+<rect x="361" y="386" width="22" height="11" rx="3.5" fill="#C8900A" opacity="0.65"/>
+
+<!-- Bottom sill -->
+<line x1="17" y1="398" x2="383" y2="398" stroke="#C8900A" stroke-width="2.2" opacity="0.38"/>
+<circle cx="29" cy="393" r="3.5" fill="#C8900A" opacity="0.5"/>
+<circle cx="371" cy="393" r="3.5" fill="#C8900A" opacity="0.5"/>
+<polygon points="196,398 200,392 204,398" fill="#C8900A" opacity="0.6"/>
+<polygon points="185,398 189,393 193,398" fill="#C8900A" opacity="0.35"/>
+<polygon points="207,398 211,393 215,398" fill="#C8900A" opacity="0.35"/>
+</svg>

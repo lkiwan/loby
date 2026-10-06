@@ -4,6 +4,23 @@ import { casablancaDay, casablancaWeek, casablancaDateAt, shiftCasablanca } from
 import { updateGamesLevel } from '@/lib/ledger';
 import type { MissionKind, Prisma } from '@prisma/client';
 
+const DEFAULT_TEMPLATES = [
+  { key: 'play_n_games_daily',    kind: 'PLAY_N_GAMES'    as const, titleAr: 'إلعب 3 لعبات اليوم',             target: 3, rewardCoins: 20,  rewardXp: 10, cadence: 'DAILY'  as const, weight: 100 },
+  { key: 'watch_n_ads_daily',     kind: 'WATCH_N_ADS'     as const, titleAr: 'تفرج ف جوج إشهارات اليوم',      target: 2, rewardCoins: 20,  rewardXp: 10, cadence: 'DAILY'  as const, weight: 90  },
+  { key: 'play_specific_daily',   kind: 'PLAY_SPECIFIC_GAME' as const, titleAr: 'جرب لعبة جديدة اليوم',       target: 1, rewardCoins: 30,  rewardXp: 15, cadence: 'DAILY'  as const, weight: 80  },
+  { key: 'play_n_games_weekly',   kind: 'PLAY_N_GAMES'    as const, titleAr: 'إلعب 10 لعبات فالأسبوع',         target: 10, rewardCoins: 150, rewardXp: 50, cadence: 'WEEKLY' as const, weight: 100 },
+  { key: 'watch_n_ads_weekly',    kind: 'WATCH_N_ADS'     as const, titleAr: 'تفرج ف 5 إشهارات هاد الأسبوع', target: 5, rewardCoins: 80,  rewardXp: 30, cadence: 'WEEKLY' as const, weight: 80  },
+];
+
+async function ensureDefaultTemplates(): Promise<void> {
+  const count = await prisma.missionTemplate.count({ where: { isActive: true } });
+  if (count > 0) return;
+  await prisma.missionTemplate.createMany({
+    data: DEFAULT_TEMPLATES,
+    skipDuplicates: true,
+  });
+}
+
 async function weightedPick<T extends { id: string; weight: number }>(items: T[]): Promise<T | null> {
   if (items.length === 0) return null;
   const total = items.reduce((s, i) => s + Math.max(1, i.weight), 0);
@@ -16,6 +33,7 @@ async function weightedPick<T extends { id: string; weight: number }>(items: T[]
 }
 
 export async function ensureAssignments(userId: string): Promise<number> {
+  await ensureDefaultTemplates();
   const cfg = await getConfig();
   const dailyKey = casablancaDay();
   const weeklyKey = casablancaWeek();
