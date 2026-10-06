@@ -2,40 +2,66 @@
    All sounds are generated programmatically so they play instantly. */
 
 let _ctx: AudioContext | null = null;
+let _gestureSeen = false;
+
+/* Browsers refuse to start an AudioContext created before any user gesture and
+   log "The AudioContext was not allowed to start". Construction is therefore
+   gated on a real gesture; everything else waits for the first
+   pointerdown/click/keydown (see the gesture wiring below). */
+function hasGesture(): boolean {
+  if (_gestureSeen) return true;
+  try {
+    const ua = (navigator as Navigator & { userActivation?: { hasBeenActive?: boolean } })
+      .userActivation;
+    return ua?.hasBeenActive === true;
+  } catch {
+    return false;
+  }
+}
+
+function createCtx(): AudioContext | null {
+  try {
+    const Ctor =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!Ctor) return null;
+    _ctx = new Ctor();
+    /* If the browser suspends again (tab switch / OS policy) and later resumes,
+       release anything still waiting for audible playback. */
+    _ctx.onstatechange = () => { if (_ctx && _ctx.state === 'running') fireReady(); };
+    return _ctx;
+  } catch {
+    _ctx = null;
+    return null;
+  }
+}
 
 function getCtx(): AudioContext | null {
   if (typeof window === 'undefined') return null;
-  try {
-    if (!_ctx) {
-      _ctx = new (window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
-    }
-    if (_ctx.state === 'suspended') _ctx.resume().catch(() => {});
-    return _ctx;
-  } catch {
-    return null;
-  }
+  const ctx = _ctx ?? (hasGesture() ? createCtx() : null);
+  if (!ctx) return null;
+  if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+  return ctx;
 }
 
 /* ── Autoplay unlock manager ──
    Browsers block audible playback until a user gesture (and on iOS until the
    page has been interacted with). Strategy:
-     1. Try immediately on load — succeeds on desktop with media engagement
-        and on repeat visits to the origin.
-     2. Stay subscribed to every early gesture so the very first tap/keypress
-        anywhere starts audio.
-     3. Retry on tab focus / visibility, since some browsers only lift the
-        suspension then.                                                              */
+      1. Construct the AudioContext lazily — only once a gesture has happened —
+         so no console warning and nothing to unlock on load.
+      2. Stay subscribed to every gesture so the very first tap/keypress
+         anywhere creates + resumes the context (and re-resumes it if the
+         browser suspends it again).
+      3. Retry on tab focus / visibility, since some browsers only lift the
+         suspension then.                                                              */
 
 const _readyCbs = new Set<() => void>();
-let _readyFired = false;
 
 function fireReady() {
-  if (_readyFired) return;
-  if (!_ctx || _ctx.state !== 'running') return;
-  _readyFired = true;
-  _readyCbs.forEach((cb) => { try { cb(); } catch {} });
+  if (!_ctx || _ctx.state !== 'running' || _readyCbs.size === 0) return;
+  const cbs = Array.from(_readyCbs);
   _readyCbs.clear();
+  cbs.forEach((cb) => { try { cb(); } catch {} });
 }
 
 /** True when the shared AudioContext is actually producing sound. */
@@ -43,14 +69,24 @@ export function isAudioRunning() {
   return !!_ctx && _ctx.state === 'running';
 }
 
-/** Kick the context out of suspension. Safe to call at any time. */
+/** Kick the context out of suspension. Safe to call at any time — it only
+    constructs the AudioContext once a user gesture has already happened. */
 export function unlockAudio() {
   getCtx();
-  if (_ctx && _ctx.state === 'suspended') _ctx.resume().then(fireReady).catch(() => {});
+  if (!_ctx) return;
+  if (_ctx.state === 'suspended') _ctx.resume().then(fireReady).catch(() => {});
   else fireReady();
 }
 
-/** Run cb as soon as audio is running (now, or on the first gesture). */
+/** Re-resume an existing context from non-gesture events (focus/visibility);
+    never constructs one, so those events can't trigger the autoplay warning. */
+function resumeExisting() {
+  if (!_ctx) return;
+  if (_ctx.state === 'suspended') _ctx.resume().then(fireReady).catch(() => {});
+  else fireReady();
+}
+
+/** Run cb as soon as audio is running (now, or after the next unlock). */
 export function onAudioReady(cb: () => void): () => void {
   _readyCbs.add(cb);
   if (isAudioRunning()) fireReady();
@@ -62,14 +98,17 @@ if (typeof window !== 'undefined') {
     'pointerdown', 'pointerup', 'touchstart', 'touchend',
     'click', 'keydown', 'keyup', 'wheel', 'scroll',
   ];
+  const onGesture = () => {
+    _gestureSeen = true;
+    unlockAudio();
+  };
   gestures.forEach((evt) =>
-    window.addEventListener(evt, () => unlockAudio(), { capture: true, passive: true }),
+    window.addEventListener(evt, onGesture, { capture: true, passive: true }),
   );
-  window.addEventListener('focus', () => unlockAudio());
+  window.addEventListener('focus', resumeExisting);
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) unlockAudio();
+    if (!document.hidden) resumeExisting();
   });
-  unlockAudio();
 }
 
 /* ── Mute state (persisted in localStorage) ── */
@@ -326,8 +365,14 @@ class MusicPlayer {
   }
 
   private _doStart() {
-    const ac = this._ctx!;
-    if (ac.state !== 'running') { this._pending = true; return; }
+    const ac = this._ac();
+    if (!ac || ac.state !== 'running') {
+      /* Audio isn't allowed yet (no gesture, still suspended). Park as pending
+         and wait for the next unlock — the gesture listeners will re-fire us. */
+      this._pending = true;
+      this._subscribe();
+      return;
+    }
     this._pending = false;
     this._playing = true;
     this._step = 0;
@@ -343,24 +388,28 @@ class MusicPlayer {
   private _pending = false;
   private _unsubscribe: (() => void) | null = null;
 
-  /** Idempotent — safe to call on mount and on every gesture. */
+  /** Subscribe once for "audio became runnable"; handles onAudioReady firing
+      synchronously (context already running) so we never leak a stale
+      unsubscribe handle. */
+  private _subscribe() {
+    if (this._unsubscribe) return;
+    let firedSync = false;
+    const unsub = onAudioReady(() => {
+      firedSync = true;
+      this._unsubscribe = null;
+      if (this._pending) this._doStart();
+    });
+    if (!firedSync) this._unsubscribe = unsub;
+  }
+
+  /** Idempotent — safe to call on mount (before any gesture) and on gestures. */
   start() {
-    if (this._playing || this._pending) return;
-    const ac = this._ac();
-    if (!ac) return;
-    if (ac.state !== 'running') {
-      this._pending = true;
-      unlockAudio();
-      if (!this._unsubscribe) {
-        this._unsubscribe = onAudioReady(() => {
-          this._unsubscribe?.();
-          this._unsubscribe = null;
-          if (this._pending) this._doStart();
-        });
-      }
-      return;
-    }
-    this._doStart();
+    if (this._playing) return;
+    this._pending = true;
+    this._subscribe();
+    /* Creates the AudioContext only if a gesture already happened, otherwise
+       the gesture listeners above start the music on the first tap/click. */
+    unlockAudio();
   }
 
   stop() {
@@ -387,3 +436,14 @@ class MusicPlayer {
 }
 
 export const musicPlayer = new MusicPlayer();
+
+/* Dev-only hook so automated checks can assert the context really resumed
+   after a gesture (ctx.state === 'running'). Stripped from production builds. */
+if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
+  (window as unknown as {
+    __audioDebug?: { contextState: () => string; musicPlaying: () => boolean };
+  }).__audioDebug = {
+    contextState: () => _ctx?.state ?? 'none',
+    musicPlaying: () => musicPlayer.isPlaying,
+  };
+}
