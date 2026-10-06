@@ -236,19 +236,31 @@ export function setMusicMuted(v: boolean) {
   try { localStorage.setItem('music_muted', v ? '1' : '0'); } catch {}
 }
 
-/* ── Background music sequencer (A minor, 128 BPM) ── */
-const _MBPM  = 128;
-const _MSTEP = 60 / _MBPM / 4; // 16th-note duration ≈ 0.117 s
+/* ── Background music sequencer (D Bayati maqam, 116 BPM) ──────────────────
+   D Bayati scale (equal-tempered approximation): D · Eb · F · G · A · Bb · C · D
+   Moroccan / North African game-lobby sound palette:
+     doum  — deep resonant kick  (guembri / bendir bass hit)
+     tak   — sharp bright snap   (darbuka tak)
+     sagat — metallic ring       (finger cymbal, zagat)
+     oud   — plucked string bass (sawtooth + triangle blend, pluck envelope)
+     kanun — plucked melody      (triangle + bandpass, bright attack)
+     pad   — Dm7 drone           (D F A C, warm sine / triangle blend)
+──────────────────────────────────────────────────────────────────────────── */
+const _MBPM  = 116;
+const _MSTEP = 60 / _MBPM / 4;  // 16th-note ≈ 0.129 s
 
-const _BASS_FREQS = [110, 130.81, 146.83, 164.81, 196, 220];  // A2 C3 D3 E3 G3 A3
-const _LEAD_FREQS = [440, 523.25, 659.25, 784, 880, 1046.5];  // A4 C5 E5 G5 A5 C6
+// D Bayati: D    Eb     F      G      A      Bb     C      D(oct)
+const _BASS_FREQS = [146.83, 155.56, 174.61, 196.00, 220.00, 233.08, 261.63, 293.66]; // D3–D4
+const _LEAD_FREQS = [293.66, 311.13, 349.23, 392.00, 440.00, 466.16, 523.25, 587.33]; // D4–D5
 
-// 16-step patterns (1 = hit, 0 = rest, -1 = rest for note lanes)
-const _MKICK  = [1,0,0,0, 1,0,0,1, 1,0,0,0, 1,0,1,0];
-const _MSNARE = [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0];
-const _MHIHAT = [0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,0,1];
-const _MBASS  = [0,-1,-1,-1, 0,-1,-1,3, 0,-1,1,-1, 4,-1,3,-1];
-const _MLEAD  = [0,-1,1,-1, 2,-1,3,-1, 4,-1,3,-1, 2,-1,1,-1];
+// 32-step patterns (2 bars, 16th-note grid)
+const _MKICK  = [1,0,0,0, 0,0,0,0, 1,0,1,0, 0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,1,0, 1,0,0,1];
+const _MSNARE = [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,1, 1,0,0,0];
+const _MSAGAT = [0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,1,1, 0,1,0,1, 0,1,0,1, 0,1,1,1, 0,1,0,1];
+// Bass: D..F G..F | A..G F..D (root motion in D Bayati)
+const _MBASS  = [0,-1,-1,-1, -1,2,-1,-1, 3,-1,-1,-1, 2,-1,-1,-1, 4,-1,-1,-1, -1,3,-1,-1, 2,-1,-1,-1, 0,-1,-1,-1];
+// Melody: silence | A→G→F→Eb→D (classic Bayati descending phrase)
+const _MLEAD  = [-1,-1,-1,-1, 4,-1,-1,-1, 3,-1,-1,-1, 2,-1,-1,-1, 1,-1,-1,-1, 0,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1];
 
 class MusicPlayer {
   private _ctx: AudioContext | null = null;
@@ -271,69 +283,86 @@ class MusicPlayer {
     return ac;
   }
 
+  // Doum — deep resonant kick (guembri / bendir bass drum)
   private _kick(t: number) {
     const ac = this._ctx!, g = ac.createGain(), osc = ac.createOscillator();
-    osc.frequency.setValueAtTime(160, t);
-    osc.frequency.exponentialRampToValueAtTime(0.01, t + 0.28);
-    g.gain.setValueAtTime(1.4, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+    osc.frequency.setValueAtTime(220, t);
+    osc.frequency.exponentialRampToValueAtTime(0.01, t + 0.32);
+    g.gain.setValueAtTime(1.6, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.32);
     osc.connect(g); g.connect(this._master!);
-    osc.start(t); osc.stop(t + 0.3);
+    osc.start(t); osc.stop(t + 0.35);
   }
 
+  // Tak — sharp darbuka snap
   private _snare(t: number) {
     const ac = this._ctx!;
-    const buf = ac.createBuffer(1, Math.ceil(ac.sampleRate * 0.12), ac.sampleRate);
+    const buf = ac.createBuffer(1, Math.ceil(ac.sampleRate * 0.10), ac.sampleRate);
     const d = buf.getChannelData(0);
     for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
     const src = ac.createBufferSource(), flt = ac.createBiquadFilter(), g = ac.createGain();
-    src.buffer = buf; flt.type = 'bandpass'; flt.frequency.value = 2500; flt.Q.value = 0.7;
-    g.gain.setValueAtTime(0.65, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+    src.buffer = buf; flt.type = 'bandpass'; flt.frequency.value = 3800; flt.Q.value = 1.2;
+    g.gain.setValueAtTime(0.70, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.10);
     src.connect(flt); flt.connect(g); g.connect(this._master!);
-    src.start(t); src.stop(t + 0.13);
+    src.start(t); src.stop(t + 0.11);
   }
 
-  private _hihat(t: number) {
+  // Sagat — metallic finger-cymbal ring (inharmonic sine cluster)
+  private _sagat(t: number) {
     const ac = this._ctx!;
-    const buf = ac.createBuffer(1, Math.ceil(ac.sampleRate * 0.04), ac.sampleRate);
-    const d = buf.getChannelData(0);
-    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-    const src = ac.createBufferSource(), flt = ac.createBiquadFilter(), g = ac.createGain();
-    src.buffer = buf; flt.type = 'highpass'; flt.frequency.value = 9000;
-    g.gain.setValueAtTime(0.18, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
-    src.connect(flt); flt.connect(g); g.connect(this._master!);
-    src.start(t); src.stop(t + 0.05);
+    [1760, 2640, 3520].forEach((freq, i) => {
+      const osc = ac.createOscillator(), g = ac.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq * (1 + i * 0.008);
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.065 - i * 0.018, t + 0.002);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.05 + i * 0.015);
+      osc.connect(g); g.connect(this._master!);
+      osc.start(t); osc.stop(t + 0.09);
+    });
   }
 
+  // Oud bass — plucked string, sawtooth + triangle blend with filter sweep
   private _bass(freq: number, t: number) {
-    const ac = this._ctx!, osc = ac.createOscillator(), flt = ac.createBiquadFilter(), g = ac.createGain();
-    osc.type = 'sawtooth'; osc.frequency.value = freq;
-    flt.type = 'lowpass';
-    flt.frequency.setValueAtTime(480, t); flt.frequency.exponentialRampToValueAtTime(180, t + _MSTEP * 3.5);
-    g.gain.setValueAtTime(0.55, t); g.gain.exponentialRampToValueAtTime(0.001, t + _MSTEP * 3.8);
-    osc.connect(flt); flt.connect(g); g.connect(this._master!);
-    osc.start(t); osc.stop(t + _MSTEP * 4);
+    const ac = this._ctx!;
+    (['sawtooth', 'triangle'] as OscillatorType[]).forEach((type, i) => {
+      const osc = ac.createOscillator(), flt = ac.createBiquadFilter(), g = ac.createGain();
+      osc.type = type; osc.frequency.value = freq;
+      flt.type = 'lowpass';
+      flt.frequency.setValueAtTime(1400, t);
+      flt.frequency.exponentialRampToValueAtTime(220, t + _MSTEP * 2.8);
+      const pk = i === 0 ? 0.26 : 0.38;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(pk, t + 0.009);
+      g.gain.exponentialRampToValueAtTime(0.001, t + _MSTEP * 3.6);
+      osc.connect(flt); flt.connect(g); g.connect(this._master!);
+      osc.start(t); osc.stop(t + _MSTEP * 4);
+    });
   }
 
+  // Kanun melody — bright plucked string, bandpass resonance
   private _lead(freq: number, t: number) {
     const ac = this._ctx!, osc = ac.createOscillator(), flt = ac.createBiquadFilter(), g = ac.createGain();
-    osc.type = 'square'; osc.frequency.value = freq;
-    flt.type = 'lowpass';
-    flt.frequency.setValueAtTime(1600, t); flt.frequency.exponentialRampToValueAtTime(500, t + _MSTEP * 1.8);
-    g.gain.setValueAtTime(0.16, t); g.gain.exponentialRampToValueAtTime(0.001, t + _MSTEP * 2);
+    osc.type = 'triangle'; osc.frequency.value = freq;
+    flt.type = 'bandpass';
+    flt.frequency.value = freq * 3.2; flt.Q.value = 3.5;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.24, t + 0.007);
+    g.gain.exponentialRampToValueAtTime(0.001, t + _MSTEP * 2.6);
     osc.connect(flt); flt.connect(g); g.connect(this._master!);
-    osc.start(t); osc.stop(t + _MSTEP * 2.1);
+    osc.start(t); osc.stop(t + _MSTEP * 3);
   }
 
-  /* Atmospheric Am pad drone (A3, C4, E4) */
+  // Dm7 atmospheric pad: D3 F3 A3 C4
   private _startPad() {
     const ac = this._ctx!;
-    [220, 261.63, 329.63].forEach((freq) => {
+    [146.83, 174.61, 220.00, 261.63].forEach((freq, i) => {
       const osc = ac.createOscillator(), flt = ac.createBiquadFilter(), g = ac.createGain();
-      osc.type = 'sine'; osc.frequency.value = freq;
-      flt.type = 'lowpass'; flt.frequency.value = 380; flt.Q.value = 0.5;
+      osc.type = i < 2 ? 'sine' : 'triangle';
+      osc.frequency.value = freq;
+      flt.type = 'lowpass'; flt.frequency.value = 420; flt.Q.value = 0.5;
       g.gain.setValueAtTime(0, ac.currentTime);
-      g.gain.linearRampToValueAtTime(0.07, ac.currentTime + 3.5);
+      g.gain.linearRampToValueAtTime(0.048 - i * 0.009, ac.currentTime + 5);
       osc.connect(flt); flt.connect(g); g.connect(this._master!);
       osc.start();
       this._pads.push(osc);
@@ -350,7 +379,7 @@ class MusicPlayer {
   private _scheduleStep(s: number, t: number) {
     if (_MKICK[s])              this._kick(t);
     if (_MSNARE[s])             this._snare(t);
-    if (_MHIHAT[s])             this._hihat(t);
+    if (_MSAGAT[s])             this._sagat(t);
     const bi = _MBASS[s]; if (bi >= 0) this._bass(_BASS_FREQS[bi], t);
     const li = _MLEAD[s]; if (li >= 0) this._lead(_LEAD_FREQS[li], t);
   }
@@ -360,15 +389,13 @@ class MusicPlayer {
     while (this._next < ac.currentTime + 0.15) {
       this._scheduleStep(this._step, this._next);
       this._next += _MSTEP;
-      this._step = (this._step + 1) % 16;
+      this._step = (this._step + 1) % 32;
     }
   }
 
   private _doStart() {
     const ac = this._ac();
     if (!ac || ac.state !== 'running') {
-      /* Audio isn't allowed yet (no gesture, still suspended). Park as pending
-         and wait for the next unlock — the gesture listeners will re-fire us. */
       this._pending = true;
       this._subscribe();
       return;
@@ -379,7 +406,7 @@ class MusicPlayer {
     this._next = ac.currentTime + 0.05;
     this._master!.gain.setValueAtTime(0, ac.currentTime);
     if (!_musicMuted) {
-      this._master!.gain.linearRampToValueAtTime(0.38, ac.currentTime + 2.5);
+      this._master!.gain.linearRampToValueAtTime(0.40, ac.currentTime + 2.8);
     }
     this._startPad();
     this._timer = setInterval(() => this._tick(), 30);
@@ -388,9 +415,6 @@ class MusicPlayer {
   private _pending = false;
   private _unsubscribe: (() => void) | null = null;
 
-  /** Subscribe once for "audio became runnable"; handles onAudioReady firing
-      synchronously (context already running) so we never leak a stale
-      unsubscribe handle. */
   private _subscribe() {
     if (this._unsubscribe) return;
     let firedSync = false;
@@ -402,13 +426,10 @@ class MusicPlayer {
     if (!firedSync) this._unsubscribe = unsub;
   }
 
-  /** Idempotent — safe to call on mount (before any gesture) and on gestures. */
   start() {
     if (this._playing) return;
     this._pending = true;
     this._subscribe();
-    /* Creates the AudioContext only if a gesture already happened, otherwise
-       the gesture listeners above start the music on the first tap/click. */
     unlockAudio();
   }
 
@@ -428,7 +449,7 @@ class MusicPlayer {
   setVolume(muted: boolean) {
     setMusicMuted(muted);
     if (this._master && this._ctx) {
-      this._master.gain.setTargetAtTime(muted ? 0 : 0.38, this._ctx.currentTime, 0.15);
+      this._master.gain.setTargetAtTime(muted ? 0 : 0.40, this._ctx.currentTime, 0.15);
     }
   }
 

@@ -311,12 +311,15 @@ function LobbyContent() {
   };
 
   const [musicMuted, setMusicMutedState] = useState(false);
+  const [showMusicHint, setShowMusicHint] = useState(false);
   useEffect(() => { setMusicMutedState(isMusicMuted()); }, []);
 
   useEffect(() => {
     if (isMusicMuted()) return;
     musicPlayer.start();
-    return () => { musicPlayer.stop(); };
+    setShowMusicHint(true);
+    const t = setTimeout(() => setShowMusicHint(false), 5800);
+    return () => { musicPlayer.stop(); clearTimeout(t); };
   }, []);
 
   const toggleMusic = () => {
@@ -995,6 +998,22 @@ function LobbyContent() {
 
       {/* ═══════════════ DAILY MISSION FLOATING BUTTONS ═══════════════ */}
       {isAuthed && <DailyMissionButtons />}
+
+      {/* Music auto-start hint — fades in/out once via CSS animation */}
+      {showMusicHint && !musicMuted && (
+        <div
+          className="fixed bottom-[78px] sm:bottom-10 inset-x-0 flex justify-center z-[43] pointer-events-none select-none"
+          style={{ animation: 'musicHint 5.5s ease forwards' }}
+        >
+          <div
+            className="flex items-center gap-1.5 rounded-full px-3 py-1.5 backdrop-blur-sm"
+            style={{ background: 'rgba(6,8,16,0.88)', border: '1px solid rgba(232,180,48,0.28)', color: '#E8B430' }}
+          >
+            <Music className="h-3 w-3" />
+            <span className="font-cairo text-[10.5px] font-bold">المسّ أو اضغط لتشغيل الموسيقى 🎵</span>
+          </div>
+        </div>
+      )}
 
       {/* ═══════════════ AD MODAL ═══════════════ */}
       {adModalOpen && (
