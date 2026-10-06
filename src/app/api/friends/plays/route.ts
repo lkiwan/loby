@@ -60,7 +60,10 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ ok: true, counted: count });
-  } catch {
-    return NextResponse.json({ ok: true, counted: 0 });
+  } catch (error) {
+    /* honest failure: the frontend treats a non-ok response as a failed
+       count, so never mask a real error behind { ok: true, counted: 0 } */
+    console.error('[friends/plays] count failed:', error);
+    return NextResponse.json({ error: 'ما قدرناش نسجلو اللعبات.' }, { status: 500 });
   }
 }
