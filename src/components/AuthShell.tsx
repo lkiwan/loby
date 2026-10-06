@@ -2,29 +2,26 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { StarMark } from '@/components/Star';
 
 export default function AuthShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="scene relative min-h-dvh bg-[#030812] text-[#f1e7d6]">
+    <div className="relative min-h-dvh bg-[#07111F] text-white">
+      {/* Background glows */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-6%,rgba(242,178,61,.14),transparent_42%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_88%_14%,rgba(0,217,255,.08),transparent_36%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_80%,rgba(168,85,247,.07),transparent_36%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_115%,rgba(0,0,0,.9),transparent_58%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(216,166,42,0.09),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_90%_20%,rgba(109,60,207,0.07),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_10%_80%,rgba(199,91,57,0.05),transparent_50%)]" />
       </div>
 
       <div className="relative z-10 flex min-h-dvh flex-col items-center justify-center px-4 py-10">
-        <Link href="/" className="anim-fadeup mb-6 flex items-center gap-2.5">
-          <StarMark size={38} />
-          <span className="flex flex-col leading-none">
-            <span className="font-grit text-base uppercase tracking-tight">
-              <span className="text-gold-sheen">PLAY</span>{' '}
-              <span className="text-[#7a9bd6]">M3ANA</span>
-            </span>
-            <span className="mt-0.5 font-cairo text-[9px] font-bold text-neutral-500">
-              ساحة اللعب
-            </span>
+        {/* Logo */}
+        <Link href="/" className="anim-fadeup mb-6 flex items-center gap-2">
+          <Image src="/images/logo-playm3ana-new.png" alt="PlayM3ana" width={38} height={32} className="h-8 w-auto object-contain" />
+          <span className="font-cairo font-black text-[17px] tracking-tight">
+            <span className="text-white">PLAY</span>
+            <span style={{ color: '#D8A62A' }}>M3ANA</span>
           </span>
         </Link>
         {children}
@@ -40,14 +37,26 @@ export function AuthCardShell({
   children: React.ReactNode;
   accent?: 'amber' | 'teal';
 }) {
+  const accentColor = accent === 'teal' ? '#1aad84' : '#D8A62A';
+  const accentRgb   = accent === 'teal' ? '26,173,132' : '216,166,42';
+
   return (
-    <div className="anim-fadeup d1 relative w-full max-w-sm overflow-hidden rounded-2xl border border-[#00d9ff]/15 bg-[#080d1a] p-6 shadow-[0_30px_80px_-30px_rgba(0,0,0,.9)] sm:p-7"
-      style={{ boxShadow: '0 0 0 1px rgba(0,217,255,.08), 0 30px 80px -30px rgba(0,0,0,.9)' }}>
-      <div
-        className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full opacity-30 blur-3xl"
-        style={{ background: accent !== 'teal' ? '#f2b23d' : '#3fba9a' }}
-      />
-      <div className="pointer-events-none absolute -left-16 -bottom-16 h-36 w-36 rounded-full opacity-20 blur-3xl bg-cyan-400" />
+    <div
+      className="anim-fadeup d1 relative w-full max-w-sm overflow-hidden rounded-[22px] p-6 sm:p-7"
+      style={{
+        background: 'rgba(9,22,40,0.97)',
+        border: `1px solid rgba(${accentRgb},0.22)`,
+        boxShadow: `0 0 0 1px rgba(${accentRgb},0.08), 0 30px 80px -20px rgba(0,0,0,0.9), 0 0 60px rgba(${accentRgb},0.06)`,
+      }}
+    >
+      {/* Top arch bar */}
+      <div className="absolute inset-x-0 top-0 h-[3px] rounded-t-[22px]"
+        style={{ background: `linear-gradient(90deg,transparent,rgba(${accentRgb},0.7),${accentColor},rgba(${accentRgb},0.7),transparent)`, boxShadow: `0 0 16px rgba(${accentRgb},0.5)` }} />
+      {/* Corner glow */}
+      <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full opacity-25 blur-3xl"
+        style={{ background: accentColor }} />
+      <div className="pointer-events-none absolute -left-12 -bottom-12 h-32 w-32 rounded-full opacity-15 blur-3xl"
+        style={{ background: '#6D3CCF' }} />
       {children}
     </div>
   );
