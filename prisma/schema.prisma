@@ -164,8 +164,12 @@ model Friend {
 
   createdAt DateTime @default(now())
 
+  plays       Int       @default(0)
+  lastPlayedAt DateTime?
+
   @@unique([userId, name])
   @@index([userId])
+  @@index([userId, plays(sort: Desc)])
 }
 
 model Account {

@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useState, useEffect, useCallback, useMemo } from 'react';
+import { use, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, Loader2, RefreshCw, X, Coins, Trophy, Zap } from 'lucide-react';
@@ -8,8 +8,18 @@ import { useRewardedAd } from '@/lib/useRewardedAd';
 import { rememberPayMethod, getRememberedPayMethod } from '@/lib/payMethod';
 import { StarMark } from '@/components/Star';
 import GameIcon from '@/components/GameIcon';
+import GameRosterBar, { type RosterFriend } from '@/components/GameRosterBar';
 import { GAMES } from '@/lib/games';
-import { encodeRoster } from '@/lib/roster';
+import {
+  ROSTER_PARAM,
+  clearSessionRoster,
+  encodeRoster,
+  loadSessionRoster,
+  nameKey,
+  rosterForGame,
+  saveSessionRoster,
+  sanitizeRoster,
+} from '@/lib/roster';
 
 const EXTERNAL_GAMES: Record<string, string> = {
   'paint-followers': '/game-files/paint-followers/index.html',
@@ -28,41 +38,125 @@ export default function GamePage({
 }) {
   const resolvedParams  = use(params);
   const { token }       = use(searchParams);
-  const baseUrl         = EXTERNAL_GAMES[resolvedParams.gameId];
-  const [rosterParam, setRosterParam] = useState<string | null>(null);
+  const gameId         = resolvedParams.gameId;
+  const baseUrl         = EXTERNAL_GAMES[gameId];
+  const game            = GAMES.find((g) => g.id === gameId);
+
+  /* saved = the account list, session = this visit's edits on top of it */
+  const [saved, setSaved]             = useState<RosterFriend[]>([]);
+  const [session, setSession]         = useState<string[] | null>(null);
+  const [rosterReady, setRosterReady] = useState(false);
+
+  const iframeRef  = useRef<HTMLIFrameElement | null>(null);
+  const appliedRef = useRef<string[]>([]);
+  const rosterRef  = useRef<string[]>([]);
+  const countedRef = useRef<string | null>(null);
+
+  const accountNames = useMemo(() => saved.map((f) => f.name), [saved]);
+  const rosterNames  = useMemo(() => (session ?? accountNames), [session, accountNames]);
 
   useEffect(() => {
     let alive = true;
+    setRosterReady(false);
+    appliedRef.current = [];
+    /* read the session override before the account list so a returning player
+       gets the same table they were just playing */
+    const stored = loadSessionRoster();
+    if (alive) setSession(stored);
     fetch('/api/friends', { cache: 'no-store' })
       .then((r) => (r.ok ? r.json() : { friends: [] }))
-      .then((d: { friends?: { name: string }[] }) => {
+      .then((d: { friends?: { name: string; plays?: number }[] }) => {
         if (!alive) return;
-        setRosterParam(encodeRoster((d.friends ?? []).map((x: any) => x.name), resolvedParams.gameId));
+        setSaved(
+          (d.friends ?? []).map((x: { name: string; plays?: number }) => ({
+            id: nameKey(x.name),
+            name: x.name,
+            plays: x.plays ?? 0,
+          })),
+        );
       })
-      .catch(() => {
-        if (alive) setRosterParam('');
-      });
+      .catch(() => { /* keep the empty account list */ })
+      .finally(() => { if (alive) setRosterReady(true); });
     return () => {
       alive = false;
     };
-  }, [resolvedParams.gameId]);
+  }, [gameId]);
+
+  useEffect(() => {
+    rosterRef.current = rosterNames;
+  }, [rosterNames]);
+
+  const applyRoster = useCallback((next: string[]) => {
+    const clean = sanitizeRoster(next);
+    saveSessionRoster(clean);
+    setSession(clean);
+    appliedRef.current = [];
+  }, []);
+
+  const resetRoster = useCallback(() => {
+    clearSessionRoster();
+    setSession(null);
+    appliedRef.current = [];
+  }, []);
+
+  const saveAsFriends = useCallback(async (names: string[]) => {
+    const res = await fetch('/api/friends', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ names }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (data.friends) {
+      setSaved(
+        data.friends.map((f: { name: string; plays: number }) => ({
+          id: nameKey(f.name),
+          name: f.name,
+          plays: f.plays ?? 0,
+        })),
+      );
+    }
+    return Array.isArray(data.saved) ? data.saved : [];
+  }, []);
+
+  const rosterValue = useMemo(
+    () => (rosterReady ? encodeRoster(rosterForGame(rosterNames, gameId), gameId) : null),
+    [rosterReady, rosterNames, gameId],
+  );
 
   const externalUrl = useMemo(() => {
     if (!baseUrl) return undefined;
-    const qs: string[] = [];
-    if (token) qs.push(`token=${encodeURIComponent(token)}`);
-    if (rosterParam) qs.push(`p=${rosterParam}`);
-    return qs.length ? `${baseUrl}?${qs.join('&')}` : baseUrl;
-  }, [baseUrl, token, rosterParam]);
+    const qs = new URLSearchParams();
+    if (token) qs.set('token', token);
+    if (rosterValue) qs.set(ROSTER_PARAM, rosterValue);
+    const q = qs.toString();
+    return q ? `${baseUrl}?${q}` : baseUrl;
+  }, [baseUrl, token, rosterValue]);
 
   const [exitConfirm, setExitConfirm]       = useState(false);
   const [replaying, setReplaying]           = useState(false);
   const [gameOver, setGameOver]             = useState(false);
   const [coins, setCoins]                   = useState<number | null>(null);
   const [iframeLoaded, setIframeLoaded]     = useState(false);
-  const game = GAMES.find((g) => g.id === resolvedParams.gameId);
   const router = useRouter();
   const { show: showRewardedAd } = useRewardedAd();
+
+  const countPlay = useCallback(() => {
+    if (!externalUrl || countedRef.current === externalUrl) return;
+    countedRef.current = externalUrl;
+    const names = appliedRef.current.length ? appliedRef.current : rosterRef.current;
+    if (!names.length) return;
+    fetch('/api/friends/plays', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ gameId, names }),
+      keepalive: true,
+    }).catch(() => { /* the round still counts as played locally */ });
+  }, [externalUrl, gameId]);
+
+  const leave = useCallback(() => {
+    countPlay();
+    router.push('/');
+  }, [countPlay, router]);
 
   /* Eagerly fetch the game's HTML so the browser starts parsing its
      sub-resources (JS bundle, CSS) as early as possible. */
@@ -84,10 +178,10 @@ export default function GamePage({
 
   /* Force-hide the loading screen after 3 seconds if onLoad never fires */
   useEffect(() => {
-    if (iframeLoaded || rosterParam === null) return;
+    if (iframeLoaded || rosterValue === null) return;
     const t = setTimeout(() => setIframeLoaded(true), 3000);
     return () => clearTimeout(t);
-  }, [iframeLoaded, rosterParam]);
+  }, [iframeLoaded, rosterValue]);
 
   const fetchCoins = useCallback(async () => {
     try {
@@ -101,14 +195,23 @@ export default function GamePage({
 
   useEffect(() => {
     const handler = (e: MessageEvent) => {
-      if (e.data?.type === 'game-over' || e.data?.type === 'replay-requested') {
+      const data = e.data as { type?: string; names?: unknown } | null;
+      if (!data || typeof data.type !== 'string') return;
+      /* games are same-origin, but only trust our own frame's roster report */
+      if (e.source !== iframeRef.current?.contentWindow) return;
+      if (data.type === 'roster-applied' && Array.isArray(data.names)) {
+        appliedRef.current = data.names.filter((n): n is string => typeof n === 'string');
+        return;
+      }
+      if (data.type === 'game-over' || data.type === 'replay-requested') {
+        countPlay();
         setGameOver(true);
         fetchCoins();
       }
     };
     window.addEventListener('message', handler);
     return () => window.removeEventListener('message', handler);
-  }, [fetchCoins]);
+  }, [countPlay, fetchCoins]);
 
   const handlePlayAgain = async () => {
     setReplaying(true);
@@ -116,9 +219,10 @@ export default function GamePage({
       /* Reuse the last payment method so replay is one tap — ad path falls
          back to coins when the ad can't fill. */
       if (getRememberedPayMethod() === 'ad') {
-        const result = await showRewardedAd('continue', resolvedParams.gameId);
+        const result = await showRewardedAd('continue', gameId);
         if (result.ok && result.payload.redirectUrl) {
           rememberPayMethod('ad');
+          countPlay();
           router.replace(result.payload.redirectUrl);
           return;
         }
@@ -127,11 +231,12 @@ export default function GamePage({
       const res = await fetch('/api/games/unlock', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Idempotency-Key': crypto.randomUUID() },
-        body: JSON.stringify({ gameId: resolvedParams.gameId, paymentMethod: 'coins' }),
+        body: JSON.stringify({ gameId, paymentMethod: 'coins' }),
       });
       if (res.ok) {
         rememberPayMethod('coins');
         const { redirectUrl } = await res.json();
+        countPlay();
         router.replace(redirectUrl);
       } else {
         router.replace('/?from=game');
@@ -164,7 +269,7 @@ export default function GamePage({
     <div className="relative h-dvh w-full overflow-hidden bg-[#030812]">
 
       {/* iframe loading screen */}
-      {(!iframeLoaded || rosterParam === null) && (
+      {(!iframeLoaded || rosterValue === null) && (
         <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-6 bg-[#030812]">
           <div className="pointer-events-none absolute inset-0">
             <div className="cyber-grid opacity-30 absolute inset-0" />
@@ -202,7 +307,7 @@ export default function GamePage({
                 className="mt-1 font-lalezar text-2xl"
                 style={{ color: game?.starAccent ?? '#f2b23d', textShadow: `0 0 20px ${game?.starAccent ?? '#f2b23d'}70` }}
               >
-                {game?.darijaTitle ?? resolvedParams.gameId}
+                {game?.darijaTitle ?? gameId}
               </p>
             </div>
 
@@ -225,29 +330,41 @@ export default function GamePage({
       )}
 
       {/* top HUD bar */}
-      <div className="absolute inset-x-0 top-0 z-50 flex items-center justify-between px-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-2">
-        <span className="pointer-events-none flex items-center gap-2 rounded-full border border-cyan-400/12 bg-[#030812]/70 px-3 py-1.5 backdrop-blur-md">
+      <div className="absolute inset-x-0 top-0 z-50 flex items-center justify-between gap-2 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-2">
+        <span className="pointer-events-none flex min-w-0 items-center gap-2 rounded-full border border-cyan-400/12 bg-[#030812]/70 px-3 py-1.5 backdrop-blur-md">
           <StarMark size={18} />
-          <span className="font-grit text-[11px] uppercase tracking-wide text-neutral-300">
-            {game?.latinTitle ?? resolvedParams.gameId}
+          <span className="truncate font-grit text-[11px] uppercase tracking-wide text-neutral-300">
+            {game?.latinTitle ?? gameId}
           </span>
         </span>
-        <button
-          onClick={() => setExitConfirm(true)}
-          className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-[#030812]/70 text-white shadow-lg backdrop-blur-md transition hover:border-red-500/40 hover:text-red-400 active:scale-90"
-          aria-label="خرج من اللعبة"
-        >
-          <X className="h-5 w-5" />
-        </button>
+        <div className="flex shrink-0 items-center gap-2">
+          <GameRosterBar
+            gameId={gameId}
+            saved={saved}
+            names={rosterNames}
+            isSession={session !== null}
+            onChange={applyRoster}
+            onSaveAsFriends={saveAsFriends}
+            onReset={resetRoster}
+          />
+          <button
+            onClick={() => setExitConfirm(true)}
+            className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-[#030812]/70 text-white shadow-lg backdrop-blur-md transition hover:border-red-500/40 hover:text-red-400 active:scale-90"
+            aria-label="خرج من اللعبة"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
       </div>
 
-      {rosterParam !== null && (
+      {rosterValue !== null && (
         <iframe
+          ref={iframeRef}
           key={externalUrl}
           src={externalUrl}
           className="h-full w-full border-0"
           allow="autoplay; fullscreen; clipboard-write"
-          title={`Game: ${resolvedParams.gameId}`}
+          title={`Game: ${gameId}`}
           onLoad={() => setIframeLoaded(true)}
         />
       )}
@@ -280,10 +397,10 @@ export default function GamePage({
                 {replaying ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
                 عاود لعب
               </button>
-              <Link href="/?from=game" className="btn-chunk btn-blood w-full py-3 text-[13px]">
+              <button onClick={leave} className="btn-chunk btn-blood w-full py-3 text-[13px]">
                 <ArrowRight className="h-4 w-4 rtl:rotate-180" />
                 رجع للساحة
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -311,10 +428,10 @@ export default function GamePage({
                 <button onClick={() => setExitConfirm(false)} className="btn-chunk btn-ghost-hollow px-3 py-3 text-[13px]">
                   كمل اللعب
                 </button>
-                <Link href="/?from=game" className="btn-chunk btn-blood px-3 py-3 text-[13px]">
-                  <ArrowRight className="h-4 w-4 rtl:rotate-180" />
-                  خروج
-                </Link>
+<button onClick={leave} className="btn-chunk btn-blood px-3 py-3 text-[13px]">
+                    <ArrowRight className="h-4 w-4 rtl:rotate-180" />
+                    خروج
+                  </button>
               </div>
             </div>
           </div>

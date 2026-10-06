@@ -2,34 +2,57 @@
   'use strict';
   var GAME = document.currentScript && document.currentScript.dataset.game || '';
 
-  var NAMES = [];
-  try {
-    var sp = new URLSearchParams(location.search);
-    var raw = sp.get('p');
-    if (raw) {
-      var arr = JSON.parse(decodeURIComponent(raw));
-      if (Array.isArray(arr)) {
-        var seen = Object.create(null);
-        for (var i = 0; i < arr.length; i++) {
-          var n = String(arr[i] == null ? '' : arr[i]).replace(/\s+/g, ' ').trim().slice(0, 14);
-          if (!n) continue;
-          var k = n.toLowerCase();
-          if (seen[k]) continue;
-          seen[k] = 1;
-          NAMES.push(n);
-        }
+  var MIN = { mafia: 6, paint: 3, hazr: 2, bara: 3, sowl: 3 };
+  var MAX = { mafia: 14, paint: 15, hazr: 15, bara: 15, sowl: 8 };
+
+  function parseList(raw) {
+    var arr = null;
+    try {
+      arr = JSON.parse(raw);
+    } catch (e) {
+      try {
+        arr = JSON.parse(decodeURIComponent(raw));
+      } catch (e2) {
+        arr = null;
       }
     }
+    if (!Array.isArray(arr)) return [];
+    var seen = Object.create(null);
+    var out = [];
+    for (var i = 0; i < arr.length; i++) {
+      var n = String(arr[i] == null ? '' : arr[i]).replace(/\s+/g, ' ').trim().slice(0, 14);
+      if (!n) continue;
+      var k = n.toLowerCase();
+      if (seen[k]) continue;
+      seen[k] = 1;
+      out.push(n);
+    }
+    return out;
+  }
+
+  function report(names, ok) {
+    try {
+      parent.postMessage(
+        { type: 'roster-applied', game: GAME, names: names, ok: !!ok },
+        '*'
+      );
+    } catch (e) {}
+  }
+
+  var NAMES = [];
+  try {
+    NAMES = parseList(new URLSearchParams(location.search).get('p'));
   } catch (e) {
     NAMES = [];
   }
 
+  /* Seed the saved setup before padding so the game's own save shape is
+     untouched: it expects `players` to be the array of names. */
   if (GAME === 'hazr') {
     try {
       if (NAMES.length) {
         localStorage.setItem('hazer-fzer-save-v1', JSON.stringify({
-          players: NAMES.length,
-          names: NAMES.slice(),
+          players: NAMES.slice(),
           imposters: 1,
           timer: 120,
           savedAt: Date.now(),
@@ -39,12 +62,17 @@
       }
     } catch (e) {}
   }
-  if (!NAMES.length) return;
 
-  var MIN = { mafia: 6, paint: 3, hazr: 2, bara: 3, sowl: 3 };
-  var MAX = { mafia: 14, paint: 15, hazr: 15, bara: 15, sowl: 8 };
-  var need = Math.min(MAX[GAME], Math.max(NAMES.length, MIN[GAME] || 0));
+  try { Object.defineProperty(window, '__roster', { value: NAMES.slice(), configurable: true }); } catch (e) {}
+
+  if (!NAMES.length) {
+    report(NAMES, false);
+    return;
+  }
+
+  var need = Math.min(MAX[GAME] || 15, Math.max(NAMES.length, MIN[GAME] || 0));
   while (NAMES.length < need) NAMES.push('لاعب ' + (NAMES.length + 1));
+  try { Object.defineProperty(window, '__roster', { value: NAMES.slice(), configurable: true }); } catch (e) {}
 
   function waitFor(fn, ms) {
     return new Promise(function (res) {
@@ -175,5 +203,26 @@
       await sleep(90);
     }
   };
-  (PLAN[GAME] || function () {})();
+  var plan = PLAN[GAME];
+  if (!plan) {
+    report(NAMES, false);
+    return;
+  }
+  /* Each plan returns early when the game's setup screen never appears, so
+     surface what actually landed in the inputs rather than what we asked for. */
+  Promise.resolve(plan())
+    .then(function () { report(readFilled(), true); })
+    .catch(function () { report(readFilled(), false); });
+
+  function readFilled() {
+    var out = [];
+    var fields = document.querySelectorAll(
+      '#names input, .player-inputs input.player-input, input[placeholder]:not(.count-input)'
+    );
+    for (var i = 0; i < fields.length; i++) {
+      var v = String(fields[i].value || '').trim();
+      if (v) out.push(v);
+    }
+    return out.length ? out : NAMES.slice();
+  }
 })();

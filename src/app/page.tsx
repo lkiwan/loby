@@ -22,6 +22,7 @@ import { GAMES, type Game } from '@/lib/games';
 import AdBanner from '@/components/AdBanner';
 import AdNativeBanner from '@/components/AdNativeBanner';
 import { rememberPayMethod } from '@/lib/payMethod';
+import { clearSessionRoster } from '@/lib/roster';
 import { trackDevice } from '@/lib/device';
 import { Sounds, isMuted, setMuted, musicPlayer, isMusicMuted, unlockAudio } from '@/lib/sounds';
 import dynamic from 'next/dynamic';
@@ -173,6 +174,7 @@ function LobbyContent() {
   const [xpData, setXpData] = useState<{ xp: number; level: number; gamesPlayed: number; streak: number; referralCode?: string } | null>(null);
   const [missionsOpen, setMissionsOpen] = useState(false);
   const [friendsOpen, setFriendsOpen] = useState(false);
+  const [friendCount, setFriendCount] = useState(0);
   const [referralCopied, setReferralCopied] = useState(false);
   const [authSheetOpen, setAuthSheetOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -227,6 +229,9 @@ function LobbyContent() {
       }
       return;
     }
+    /* Back in the lobby: drop the in-game edits so the panel shows exactly the
+       names saved in the account, never the temporary round roster. */
+    clearSessionRoster();
     setFriendsOpen(true);
   };
 
@@ -776,7 +781,7 @@ function LobbyContent() {
 
       {/* ═══════════════ FRIENDS PANEL ═══════════════ */}
       {friendsOpen && (
-        <FriendsPanel onClose={() => setFriendsOpen(false)} />
+        <FriendsPanel onClose={() => setFriendsOpen(false)} onCountChange={setFriendCount} />
       )}
 
       {/* ═══════════════ AD MODAL ═══════════════ */}

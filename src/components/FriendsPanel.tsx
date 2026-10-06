@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { X, Users, Loader2, Trash2, UserPlus, Gamepad2 } from 'lucide-react';
 import { Sounds } from '@/lib/sounds';
 
-type Friend = { id: string; name: string };
+type Friend = { id: string; name: string; plays: number; lastPlayedAt: string | null };
 
 const MAX_FRIENDS = 15;
 
@@ -178,8 +178,15 @@ export default function FriendsPanel({
                     >
                       {f.name.trim()[0]?.toUpperCase() ?? '؟'}
                     </div>
-                    <span className="flex-1 min-w-0 truncate font-cairo text-[13px] font-bold text-[#FFF7E8]">
-                      {f.name}
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate font-cairo text-[13px] font-bold text-[#FFF7E8]">
+                        {f.name}
+                      </span>
+                      {f.plays > 0 && (
+                        <span className="block font-cairo text-[10px] font-bold text-[#B8C4D8]/70">
+                          لعبتو معاك {f.plays} مرة
+                        </span>
+                      )}
                     </span>
                     <button
                       onClick={() => void removeFriend(f.id)}
