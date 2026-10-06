@@ -8,17 +8,12 @@ import { useRewardedAd } from '@/lib/useRewardedAd';
 import { rememberPayMethod, getRememberedPayMethod } from '@/lib/payMethod';
 import { StarMark } from '@/components/Star';
 import GameIcon from '@/components/GameIcon';
-import GameRosterBar, { type RosterFriend } from '@/components/GameRosterBar';
 import { GAMES } from '@/lib/games';
 import {
   ROSTER_PARAM,
-  clearSessionRoster,
   encodeRoster,
   loadSessionRoster,
-  nameKey,
   rosterForGame,
-  saveSessionRoster,
-  sanitizeRoster,
 } from '@/lib/roster';
 
 const EXTERNAL_GAMES: Record<string, string> = {
@@ -42,8 +37,8 @@ export default function GamePage({
   const baseUrl         = EXTERNAL_GAMES[gameId];
   const game            = GAMES.find((g) => g.id === gameId);
 
-  /* saved = the account list, session = this visit's edits on top of it */
-  const [saved, setSaved]             = useState<RosterFriend[]>([]);
+  /* accountNames = the saved list, session = this visit's override on top of it */
+  const [accountNames, setAccountNames] = useState<string[]>([]);
   const [session, setSession]         = useState<string[] | null>(null);
   /* derived: false again while a new game's account list is still loading */
   const [readyGameId, setReadyGameId] = useState<string | null>(null);
@@ -53,7 +48,6 @@ export default function GamePage({
   const rosterRef  = useRef<string[]>([]);
   const countedRef = useRef<string | null>(null);
 
-  const accountNames = useMemo(() => saved.map((f) => f.name), [saved]);
   const rosterNames  = useMemo(() => (session ?? accountNames), [session, accountNames]);
 
   useEffect(() => {
@@ -69,15 +63,9 @@ export default function GamePage({
     });
     fetch('/api/friends', { cache: 'no-store' })
       .then((r) => (r.ok ? r.json() : { friends: [] }))
-      .then((d: { friends?: { name: string; plays?: number }[] }) => {
+      .then((d: { friends?: { name: string }[] }) => {
         if (!alive) return;
-        setSaved(
-          (d.friends ?? []).map((x: { name: string; plays?: number }) => ({
-            id: nameKey(x.name),
-            name: x.name,
-            plays: x.plays ?? 0,
-          })),
-        );
+        setAccountNames((d.friends ?? []).map((x: { name: string }) => x.name));
       })
       .catch(() => { /* keep the empty account list */ })
       .finally(() => { if (alive) setReadyGameId(gameId); });
@@ -89,54 +77,6 @@ export default function GamePage({
   useEffect(() => {
     rosterRef.current = rosterNames;
   }, [rosterNames]);
-
-  const applyRoster = useCallback((next: string[]) => {
-    const clean = sanitizeRoster(next);
-    saveSessionRoster(clean);
-    setSession(clean);
-    appliedRef.current = [];
-  }, []);
-
-  const resetRoster = useCallback(() => {
-    clearSessionRoster();
-    setSession(null);
-    appliedRef.current = [];
-  }, []);
-
-  const saveAsFriends = useCallback(async (names: string[]) => {
-    let res: Response;
-    try {
-      res = await fetch('/api/friends', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ names }),
-      });
-    } catch {
-      throw new Error('مشكلة في الاتصال. عاود جرب.');
-    }
-    const data = await res.json().catch(() => ({}));
-    /* even a 409 (limit / already saved) returns the current account list */
-    if (Array.isArray(data.friends)) {
-      setSaved(
-        data.friends.map((f: { name: string; plays?: number }) => ({
-          id: nameKey(f.name),
-          name: f.name,
-          plays: f.plays ?? 0,
-        })),
-      );
-    }
-    if (!res.ok) {
-      if (res.status === 401) {
-        throw new Error('دخل للحساب ديالك باش تقدر تسجل الصحاب.');
-      }
-      throw new Error(
-        typeof data.error === 'string' && data.error
-          ? data.error
-          : 'ما قدرناش نسجلو الصحاب ديالك — عاود جرب.',
-      );
-    }
-    return Array.isArray(data.saved) ? data.saved : [];
-  }, []);
 
   const rosterValue = useMemo(
     () =>
@@ -365,15 +305,6 @@ export default function GamePage({
           </span>
         </span>
         <div className="flex shrink-0 items-center gap-2">
-          <GameRosterBar
-            gameId={gameId}
-            saved={saved}
-            names={rosterNames}
-            isSession={session !== null}
-            onChange={applyRoster}
-            onSaveAsFriends={saveAsFriends}
-            onReset={resetRoster}
-          />
           <button
             onClick={() => setExitConfirm(true)}
             className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-[#030812]/70 text-white shadow-lg backdrop-blur-md transition hover:border-red-500/40 hover:text-red-400 active:scale-90"
