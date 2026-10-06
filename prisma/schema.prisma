@@ -297,13 +297,13 @@ model LeaderboardSnapshot {
 }
 
 model friend {
-  id        String   @id
-  userid    String
+  id        String   @id @default(cuid())
+  userId    String   @map("userid")
   name      String
-  createdat DateTime @default(now()) @db.Timestamp(6)
+  createdAt DateTime @default(now()) @db.Timestamp(6) @map("createdat")
 
-  @@unique([userid, name])
-  @@index([userid])
+  @@unique([userId, name])
+  @@index([userId])
 }
 
 enum Role {
