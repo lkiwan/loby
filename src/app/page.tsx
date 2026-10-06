@@ -600,6 +600,17 @@ function LobbyContent() {
           >
             {muted ? <VolumeX className="h-3.5 w-3.5 text-white/42" /> : <Volume2 className="h-3.5 w-3.5 text-white/42" />}
           </button>
+          <button
+            onClick={toggleMusic}
+            title={musicMuted ? 'تشغيل الموسيقى' : 'إيقاف الموسيقى'}
+            className="h-8 w-8 grid place-items-center rounded-full transition-all"
+            style={{
+              background: musicMuted ? 'rgba(255,255,255,0.05)' : 'rgba(232,180,48,0.12)',
+              border: musicMuted ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(232,180,48,0.35)',
+            }}
+          >
+            <Music className="h-3.5 w-3.5" style={{ color: musicMuted ? 'rgba(255,255,255,0.35)' : '#E8B430' }} />
+          </button>
           {isAuthed ? (
             <a
               href="#most-played"
