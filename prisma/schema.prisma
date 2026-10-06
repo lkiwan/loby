@@ -43,6 +43,7 @@ model User {
   referredBy    User?               @relation("Ref", fields: [referredById], references: [id])
   referrals     User[]              @relation("Ref")
   items         UserItem[]
+  friends       Friend[]
 
   @@index([lastSeenAt])
   @@index([coins])
@@ -296,14 +297,20 @@ model LeaderboardSnapshot {
   @@index([gameId, periodKey, rank])
 }
 
-model friend {
-  id        String   @id @default(cuid())
-  userId    String   @map("userid")
-  name      String
-  createdAt DateTime @default(now()) @db.Timestamp(6) @map("createdat")
+model Friend {
+  id           String    @id @default(cuid())
+  userId       String
+  name         String
+  plays        Int       @default(0)
+  lastPlayedAt DateTime?
+  createdAt    DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@unique([userId, name])
   @@index([userId])
+  @@index([userId, plays(sort: Desc)], map: "Friend_userId_plays_sort_Desc_idx")
+  @@map("Friend")
 }
 
 enum Role {

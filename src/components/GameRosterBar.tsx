@@ -36,7 +36,6 @@ export default function GameRosterBar({
 }) {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState('');
-  const [busy, setBusy] = useState(false);
   const [removing, setRemoving] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
@@ -93,8 +92,8 @@ export default function GameRosterBar({
         setNotice('ما لقينا والو جديد — ممكن وصلتي للحد.');
         Sounds.error();
       }
-    } catch {
-      setNotice('مشكلة ف الاتصال. عاود جرب.');
+    } catch (e) {
+      setNotice(e instanceof Error && e.message ? e.message : 'مشكلة في الاتصال. عاود جرب.');
       Sounds.error();
     } finally {
       setSaving(false);

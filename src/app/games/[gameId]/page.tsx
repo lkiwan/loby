@@ -45,7 +45,8 @@ export default function GamePage({
   /* saved = the account list, session = this visit's edits on top of it */
   const [saved, setSaved]             = useState<RosterFriend[]>([]);
   const [session, setSession]         = useState<string[] | null>(null);
-  const [rosterReady, setRosterReady] = useState(false);
+  /* derived: false again while a new game's account list is still loading */
+  const [readyGameId, setReadyGameId] = useState<string | null>(null);
 
   const iframeRef  = useRef<HTMLIFrameElement | null>(null);
   const appliedRef = useRef<string[]>([]);
@@ -57,12 +58,15 @@ export default function GamePage({
 
   useEffect(() => {
     let alive = true;
-    setRosterReady(false);
     appliedRef.current = [];
     /* read the session override before the account list so a returning player
-       gets the same table they were just playing */
+       gets the same table they were just playing. Deferred one microtask so no
+       state is written synchronously inside the effect
+       (react-hooks/set-state-in-effect). */
     const stored = loadSessionRoster();
-    if (alive) setSession(stored);
+    Promise.resolve().then(() => {
+      if (alive) setSession(stored);
+    });
     fetch('/api/friends', { cache: 'no-store' })
       .then((r) => (r.ok ? r.json() : { friends: [] }))
       .then((d: { friends?: { name: string; plays?: number }[] }) => {
@@ -76,7 +80,7 @@ export default function GamePage({
         );
       })
       .catch(() => { /* keep the empty account list */ })
-      .finally(() => { if (alive) setRosterReady(true); });
+      .finally(() => { if (alive) setReadyGameId(gameId); });
     return () => {
       alive = false;
     };
@@ -100,27 +104,46 @@ export default function GamePage({
   }, []);
 
   const saveAsFriends = useCallback(async (names: string[]) => {
-    const res = await fetch('/api/friends', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ names }),
-    });
+    let res: Response;
+    try {
+      res = await fetch('/api/friends', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ names }),
+      });
+    } catch {
+      throw new Error('مشكلة في الاتصال. عاود جرب.');
+    }
     const data = await res.json().catch(() => ({}));
-    if (data.friends) {
+    /* even a 409 (limit / already saved) returns the current account list */
+    if (Array.isArray(data.friends)) {
       setSaved(
-        data.friends.map((f: { name: string; plays: number }) => ({
+        data.friends.map((f: { name: string; plays?: number }) => ({
           id: nameKey(f.name),
           name: f.name,
           plays: f.plays ?? 0,
         })),
       );
     }
+    if (!res.ok) {
+      if (res.status === 401) {
+        throw new Error('دخل للحساب ديالك باش تقدر تسجل الصحاب.');
+      }
+      throw new Error(
+        typeof data.error === 'string' && data.error
+          ? data.error
+          : 'ما قدرناش نسجلو الصحاب ديالك — عاود جرب.',
+      );
+    }
     return Array.isArray(data.saved) ? data.saved : [];
   }, []);
 
   const rosterValue = useMemo(
-    () => (rosterReady ? encodeRoster(rosterForGame(rosterNames, gameId), gameId) : null),
-    [rosterReady, rosterNames, gameId],
+    () =>
+      readyGameId === gameId
+        ? encodeRoster(rosterForGame(rosterNames, gameId), gameId)
+        : null,
+    [readyGameId, rosterNames, gameId],
   );
 
   const externalUrl = useMemo(() => {
@@ -137,6 +160,21 @@ export default function GamePage({
   const [gameOver, setGameOver]             = useState(false);
   const [coins, setCoins]                   = useState<number | null>(null);
   const [iframeLoaded, setIframeLoaded]     = useState(false);
+
+  /* Reset all per-round state when the URL changes (new play session via
+     play-again). router.replace with the same pathname keeps the component
+     mounted, so we adjust during render instead of in an effect — the
+     documented "adjusting state when a prop changes" pattern. */
+  const [prevExternalUrl, setPrevExternalUrl] = useState(externalUrl);
+  if (prevExternalUrl !== externalUrl) {
+    setPrevExternalUrl(externalUrl);
+    setIframeLoaded(false);
+    setExitConfirm(false);
+    setGameOver(false);
+    setReplaying(false);
+    setCoins(null);
+  }
+
   const router = useRouter();
   const { show: showRewardedAd } = useRewardedAd();
 
@@ -164,17 +202,6 @@ export default function GamePage({
     if (!baseUrl) return;
     fetch(baseUrl, { priority: 'high' } as RequestInit).catch(() => {});
   }, [baseUrl]);
-
-  /* Reset all state when the URL changes (new play session via play-again).
-     router.replace with the same pathname keeps the component mounted,
-     so we must reset manually when externalUrl changes. */
-  useEffect(() => {
-    setIframeLoaded(false);
-    setExitConfirm(false);
-    setGameOver(false);
-    setReplaying(false);
-    setCoins(null);
-  }, [externalUrl]);
 
   /* Force-hide the loading screen after 3 seconds if onLoad never fires */
   useEffect(() => {

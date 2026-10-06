@@ -1,9 +1,11 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import { X, Users, Loader2, Trash2, UserPlus, Gamepad2 } from 'lucide-react';
+import { X, Users, Loader2, Trash2, UserPlus, Gamepad2, RefreshCw } from 'lucide-react';
 import { Sounds } from '@/lib/sounds';
 
 type Friend = { id: string; name: string; plays: number; lastPlayedAt: string | null };
+
+const LOAD_FAILED = 'ما قدرناش نجيبو الصحاب ديالك — كاين مشكل فالخادم.';
 
 const MAX_FRIENDS = 15;
 
@@ -12,37 +14,47 @@ const AVATAR_COLORS = [
   '#3b82f6', '#ec4899', '#22c55e', '#f97316',
 ];
 
-export default function FriendsPanel({
-  onClose,
-  onCountChange,
-}: {
-  onClose: () => void;
-  onCountChange?: (count: number) => void;
-}) {
+export default function FriendsPanel({ onClose }: { onClose: () => void }) {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [removingId, setRemovingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
-  const fetchFriends = useCallback(async () => {
-    try {
-      const res = await fetch('/api/friends');
-      if (res.ok) {
-        const data = await res.json();
+  /* All setState calls live in promise callbacks so nothing is written
+     synchronously from the effect itself (react-hooks/set-state-in-effect). */
+  const loadFriends = useCallback(() => {
+    return fetch('/api/friends')
+      .then((res) => {
+        if (!res.ok) {
+          setLoadError(
+            res.status === 401
+              ? 'دخل للحساب ديالك باش تشوف الصحاب ديالك.'
+              : LOAD_FAILED,
+          );
+          return null;
+        }
+        return res.json();
+      })
+      .then((data: { friends?: Friend[] } | null) => {
+        if (!data) return;
         const list: Friend[] = data.friends ?? [];
         setFriends(list);
-        onCountChange?.(list.length);
-      }
-    } catch {
-      /* keep last known list */
-    } finally {
-      setLoading(false);
-    }
-  }, [onCountChange]);
+        setLoadError(null);
+      })
+      .catch(() => setLoadError(LOAD_FAILED))
+      .finally(() => setLoading(false));
+  }, []);
 
-  useEffect(() => { void fetchFriends(); }, [fetchFriends]);
+  useEffect(() => { loadFriends(); }, [loadFriends]);
+
+  const retry = () => {
+    setLoading(true);
+    setLoadError(null);
+    loadFriends();
+  };
 
   const addFriend = async () => {
     const clean = name.trim().replace(/\s+/g, ' ');
@@ -59,7 +71,7 @@ export default function FriendsPanel({
       if (res.ok) {
         Sounds.ok();
         setName('');
-        await fetchFriends();
+        await loadFriends();
       } else {
         Sounds.error();
         setError(data.error ?? 'ما قدرناش نزيدو الصاحبي.');
@@ -80,7 +92,7 @@ export default function FriendsPanel({
       const res = await fetch(`/api/friends/${id}`, { method: 'DELETE' });
       if (res.ok) {
         Sounds.click();
-        await fetchFriends();
+        await loadFriends();
       } else {
         const data = await res.json().catch(() => ({}));
         Sounds.error();
@@ -156,6 +168,18 @@ export default function FriendsPanel({
             {loading ? (
               <div className="flex justify-center py-10">
                 <Loader2 className="h-6 w-6 animate-spin text-[#2DD4BF]" />
+              </div>
+            ) : loadError ? (
+              <div className="py-10 text-center">
+                <p className="mb-3 text-4xl">⚠️</p>
+                <p className="font-cairo text-sm font-bold text-[#F97066]">{loadError}</p>
+                <button
+                  onClick={retry}
+                  className="mt-4 inline-flex items-center gap-1.5 rounded-xl border border-[#2DD4BF]/30 bg-[#2DD4BF]/10 px-4 py-2 font-cairo text-[12px] font-bold text-[#2DD4BF] transition hover:bg-[#2DD4BF]/20 active:scale-95"
+                >
+                  <RefreshCw className="h-3.5 w-3.5" />
+                  عاود جرب
+                </button>
               </div>
             ) : friends.length === 0 ? (
               <div className="py-10 text-center">

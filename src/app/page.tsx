@@ -174,7 +174,6 @@ function LobbyContent() {
   const [xpData, setXpData] = useState<{ xp: number; level: number; gamesPlayed: number; streak: number; referralCode?: string } | null>(null);
   const [missionsOpen, setMissionsOpen] = useState(false);
   const [friendsOpen, setFriendsOpen] = useState(false);
-  const [friendCount, setFriendCount] = useState(0);
   const [referralCopied, setReferralCopied] = useState(false);
   const [authSheetOpen, setAuthSheetOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -781,7 +780,7 @@ function LobbyContent() {
 
       {/* ═══════════════ FRIENDS PANEL ═══════════════ */}
       {friendsOpen && (
-        <FriendsPanel onClose={() => setFriendsOpen(false)} onCountChange={setFriendCount} />
+        <FriendsPanel onClose={() => setFriendsOpen(false)} />
       )}
 
       {/* ═══════════════ AD MODAL ═══════════════ */}

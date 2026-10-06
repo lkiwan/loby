@@ -1,0 +1,49 @@
+
+> loby@0.1.0 dev
+> next dev
+
+▲ Next.js 16.3.5 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.66:3000
+- Environments: .env.local, .env
+✓ Ready in 1467ms
+⚠ Warning: Next.js ignored package-lock.json in C:\Users\arhou because it is outside the current Git repository (C:\Users\arhou\OneDrive\Bureau\projet omar\colab\loby).
+ To use this directory, set `turbopack.root` in your Next.js config.
+
+✓ Running next.config.ts took 216ms
+Warning: Custom Cache-Control headers detected for the following routes:
+  - /_next/static/:path*
+
+Setting a custom Cache-Control header can break Next.js development behavior.
+- Experiments (use with caution):
+  · optimizePackageImports
+
+ GET / 200 in 1967ms (next.js: 1501ms, application-code: 466ms)
+ GET /api/auth/session 200 in 2.9s (next.js: 2.7s, application-code: 283ms)
+ GET /api/auth/session 200 in 154ms (next.js: 120ms, application-code: 34ms)
+ GET /api/economy/balance 200 in 370ms (next.js: 80ms, application-code: 290ms)
+ POST /api/rewards/checkin 200 in 394ms (next.js: 184ms, application-code: 210ms)
+ POST /api/devices/track 200 in 287ms (next.js: 92ms, application-code: 196ms)
+✓ Compiled in 406ms
+ GET /api/friends 401 in 93ms (next.js: 64ms, application-code: 30ms)
+✓ Compiled in 305ms
+✓ Compiled in 332ms
+✓ Compiled in 274ms
+✓ Compiled in 538ms
+ GET / 200 in 63ms (next.js: 27ms, application-code: 36ms)
+ GET / 200 in 58ms (next.js: 11ms, application-code: 47ms)
+ GET / 200 in 56ms (next.js: 10ms, application-code: 45ms)
+ GET / 200 in 57ms (next.js: 8ms, application-code: 49ms)
+ GET / 200 in 41ms (next.js: 8ms, application-code: 33ms)
+ GET / 200 in 43ms (next.js: 6ms, application-code: 37ms)
+ GET / 200 in 51ms (next.js: 10ms, application-code: 40ms)
+ GET / 200 in 78ms (next.js: 11ms, application-code: 67ms)
+✓ Compiled in 2.2s
+ GET / 200 in 1147ms (next.js: 1058ms, application-code: 89ms)
+ POST /api/rewards/checkin 200 in 81ms (next.js: 17ms, application-code: 64ms)
+ GET /api/economy/balance 200 in 99ms (next.js: 8ms, application-code: 91ms)
+ POST /api/devices/track 200 in 67ms (next.js: 10ms, application-code: 56ms)
+ GET /api/economy/balance 200 in 35ms (next.js: 6ms, application-code: 28ms)
+ GET / 200 in 53ms (next.js: 10ms, application-code: 44ms)
+ GET / 200 in 147ms (next.js: 26ms, application-code: 121ms)
+ GET / 200 in 55ms (next.js: 5ms, application-code: 49ms)
