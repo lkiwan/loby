@@ -959,3 +959,11 @@ body.ad-playing { pointer-events: none; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 
 
+.error-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #060810;
+  color: #F5E7CE;
+}
