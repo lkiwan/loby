@@ -98,6 +98,13 @@ body.ad-playing { pointer-events: none; }
 @keyframes musicHint { 0% { opacity: 0; transform: translateY(10px); } 14% { opacity: 1; transform: translateY(0); } 74% { opacity: 1; } 100% { opacity: 0; transform: translateY(4px); } }
 @keyframes popIn { 0% { opacity: 0; transform: scale(0.86) rotate(-2deg); } 70% { transform: scale(1.04) rotate(0.6deg); } 100% { opacity: 1; transform: scale(1) rotate(0); } }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+/* RTL ticker: content flows rightward so new items emerge from the left edge.
+   Pair with TWO identical `flex shrink-0 gap-8 pe-8` groups inside a `w-max`
+   track; +50% then equals exactly one group (padding included) -> seamless. */
+@keyframes marqueeRtl { from { transform: translateX(0); } to { transform: translateX(50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .ticker-marquee { animation: none !important; }
+}
 @keyframes glowPulse { 0%, 100% { opacity: 0.45; transform: scale(1); } 50% { opacity: 0.95; transform: scale(1.05); } }
 @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 @keyframes shakeX { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-7px); } 40% { transform: translateX(7px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(4px); } }

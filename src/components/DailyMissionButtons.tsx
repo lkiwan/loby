@@ -15,7 +15,7 @@ type Mission = {
 
 export default function DailyMissionButtons() {
   const [missions, setMissions] = useState<Mission[]>([]);
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
   const [adTarget, setAdTarget] = useState<Mission | null>(null);
   const [adCountdown, setAdCountdown] = useState(5);
   const [adClaiming, setAdClaiming] = useState(false);
@@ -84,13 +84,16 @@ export default function DailyMissionButtons() {
 
   return (
     <>
-      {/* ── Floating widget — bottom-left (end = physical left in RTL) ── */}
-      <div className="fixed end-3 bottom-[74px] sm:bottom-6 z-[45] flex flex-col items-end gap-2">
+      {/* ── Floating widget — bottom-left (end = physical left in RTL) ──
+          Bottom offset = safe-area + 78px, which clears the fixed bottom tab
+          nav (≈58px chrome + its own safe-area padding) with margin to spare,
+          and z-[55] paints above the nav's z-50 if anything ever overlaps. */}
+      <div className="fixed end-3 bottom-[calc(env(safe-area-inset-bottom)_+_78px)] sm:bottom-6 z-[55] flex flex-col items-end gap-2">
 
-        {/* Expanded panel */}
+        {/* Expanded panel — opens UPWARD from the toggle, scrollable if tall */}
         {expanded && (
           <div
-            className="w-[214px] rounded-2xl overflow-hidden"
+            className="w-[214px] max-h-[min(58dvh,440px)] rounded-2xl overflow-hidden overflow-y-auto"
             style={{ background: '#09101F', border: '1px solid rgba(232,180,48,0.22)', boxShadow: '0 12px 40px rgba(0,0,0,0.65)' }}
           >
             {/* Panel header */}
@@ -236,7 +239,7 @@ export default function DailyMissionButtons() {
           )}
           <ChevronDown
             className="h-3 w-3 transition-transform"
-            style={{ transform: expanded ? 'rotate(0deg)' : 'rotate(180deg)' }}
+            style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
           />
         </button>
       </div>

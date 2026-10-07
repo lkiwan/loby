@@ -763,15 +763,6 @@ function LobbyContent() {
         {/* FIRST → visual RIGHT */}
         <div className="flex items-center gap-1.5">
           <button
-            className="h-8 w-8 grid place-items-center rounded-full"
-            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
-          >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-              <circle cx="6" cy="6" r="4.5" stroke="rgba(255,255,255,0.42)" strokeWidth="1.5" />
-              <line x1="9.5" y1="9.5" x2="13" y2="13" stroke="rgba(255,255,255,0.42)" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          </button>
-          <button
             onClick={toggleMute}
             className="h-8 w-8 grid place-items-center rounded-full"
             style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
@@ -789,25 +780,6 @@ function LobbyContent() {
           >
             <Music className="h-3.5 w-3.5" style={{ color: musicMuted ? 'rgba(255,255,255,0.35)' : '#E8B430' }} />
           </button>
-          {isAuthed ? (
-            <a
-              href="#most-played"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-cairo font-black text-[12px]"
-              style={{ background: 'linear-gradient(135deg,#F5CC6B,#E8B430)', color: '#060810', boxShadow: '0 2px 12px rgba(232,180,48,0.4)' }}
-            >
-              <Gamepad2 className="h-3.5 w-3.5" />
-              لعب دايا
-            </a>
-          ) : (
-            <Link
-              href="/login"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-cairo font-black text-[12px]"
-              style={{ background: 'linear-gradient(135deg,#F5CC6B,#E8B430)', color: '#060810', boxShadow: '0 2px 12px rgba(232,180,48,0.4)' }}
-            >
-              <Gamepad2 className="h-3.5 w-3.5" />
-              لعب دايا
-            </Link>
-          )}
         </div>
 
         {/* CENTER: Logo */}
@@ -940,12 +912,19 @@ function LobbyContent() {
       >
         <div className="pointer-events-none absolute inset-y-0 right-0 w-14 z-10" style={{ background: 'linear-gradient(to left, #060810, transparent)' }} />
         <div className="pointer-events-none absolute inset-y-0 left-0 w-14 z-10" style={{ background: 'linear-gradient(to right, #060810, transparent)' }} />
-        <div className="flex gap-8 whitespace-nowrap" style={{ animation: 'marquee 28s linear infinite' }}>
-          {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
-            <span key={i} className="font-cairo text-[11px] font-bold shrink-0" style={{ color: 'rgba(255,255,255,0.52)' }}>
-              {item}
-              <span className="mx-4" style={{ color: 'rgba(232,180,48,0.45)' }}>◆</span>
-            </span>
+        <div
+          className="ticker-marquee flex w-max whitespace-nowrap"
+          style={{ animation: 'marqueeRtl 28s linear infinite', willChange: 'transform' }}
+        >
+          {[0, 1].map((g) => (
+            <div key={g} className="flex shrink-0 gap-8 pe-8" aria-hidden={g === 1 ? true : undefined}>
+              {TICKER_ITEMS.map((item, i) => (
+                <span key={`${g}-${i}`} className="font-cairo text-[11px] font-bold shrink-0" style={{ color: 'rgba(255,255,255,0.52)' }}>
+                  {item}
+                  <span className="mx-4" style={{ color: 'rgba(232,180,48,0.45)' }}>◆</span>
+                </span>
+              ))}
+            </div>
           ))}
         </div>
       </div>
@@ -994,8 +973,10 @@ function LobbyContent() {
             const rankBg  = ['#E8B430','#A855F7','#C2341A','#EF4444','#10A07A'][i];
             const rankClr = i === 0 ? '#060810' : '#fff';
             return (
-              /* Wrapper fixe 150px — GameCard se dimensionne à l'intérieur */
-              <div key={game.id} className="snap-center shrink-0 relative" style={{ width: 150 }}>
+              /* Wrapper ~1.3 cartes visibles par écran :
+                 76.92% (= 100 / 1.3) de la largeur utile du strip − le gap (gap-3 = 12px)
+                 → visible / (carte + gap) ≈ 1.3 sur mobile ; le strip est masqué dès sm: */
+              <div key={game.id} className="snap-center shrink-0 relative w-[calc(76.92%_-_12px)]">
                 <GameCard
                   game={game}
                   coins={coins}
