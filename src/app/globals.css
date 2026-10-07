@@ -1131,8 +1131,3 @@ body.ad-playing { pointer-events: none; }
     width: 100%;
   }
 }
-
-.error-button:focus-visible {
-  outline: 2px solid var(--dp-gold);
-  outline-offset: 4px;
-}
