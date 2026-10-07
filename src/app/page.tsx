@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback, Suspense } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, useCallback, Suspense } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -43,6 +43,29 @@ const TICKER_ITEMS = [
 
 const TITLE_WORDS_1 = ['فضح', 'صاحبك'];
 const TITLE_WORDS_2 = ['قبل', 'ما', 'يفضحك'];
+
+/* ── Bottom tab bar item styles ── */
+/* `relative` keeps the buttons painted above the absolutely-positioned liquid pill.
+   الرئيسية ↔ الألعاب share ONE fixed box (same padding + label weight in both
+   states — only colors swap), so the pill lerps between two static boxes and
+   cannot jump when the active label flips at the scroll midpoint. */
+const NAV_TAB_PRIMARY = 'relative flex flex-col items-center gap-0.5 px-5 py-1.5 rounded-full transition active:scale-95';
+const NAV_TAB_IDLE = 'relative flex flex-col items-center gap-0.5 px-3 py-1 rounded-full transition hover:bg-white/[0.06] active:scale-95';
+const NAV_TAB_ACTIVE_STYLE: React.CSSProperties = { background: 'rgba(194,52,26,0.9)', boxShadow: '0 2px 14px rgba(194,52,26,0.5)' };
+
+/* ── Liquid indicator (shared pill for الرئيسية ↔ الألعاب) ──
+   The pill's POSITION has no transition at all: it is re-lerped from scroll
+   progress on every scroll frame, so it flows in real time with the finger.
+   These constants only tune the decorative squash/stretch morph on the inner
+   blob while the pill travels. */
+const LIQUID_SCROLL_MS = 520; /* scroll flip: slow, visibly flowing */
+const LIQUID_CLICK_MS = 210;  /* tap: quick hop */
+const LIQUID_SCROLL_EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';   /* fluid ease-in-out */
+const LIQUID_CLICK_EASE = 'cubic-bezier(0.22, 0.61, 0.36, 1)'; /* snappy ease-out */
+const LIQUID_ARM_MS = 800;    /* no morph while the page load / scroll restore settles */
+
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ── Coin burst particles on button click ── */
 function spawnCoins(x: number, y: number) {
@@ -234,6 +257,161 @@ function LobbyContent() {
     clearSessionRoster();
     setFriendsOpen(true);
   };
+
+  /* ── Bottom tab bar: scroll targets + active tab tracking ── */
+  /* The pill position never waits for this state: it follows scroll progress
+     continuously. `activeTab` only drives aria-current / the active label,
+     which flips at the midpoint (progress 0.5) of the scroll range. */
+  const [activeTab, setActiveTab] = useState<'home' | 'games'>('home');
+
+  /* Reduced motion: snap the page instantly, so the pill snaps with it. */
+  const scrollToTop = () =>
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+
+  const scrollToGames = () =>
+    document.getElementById('most-played')?.scrollIntoView({
+      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+      block: 'start',
+    });
+
+  /* ── Liquid indicator: ONE shared pill that flows between الرئيسية ↔ الألعاب ──
+     Source of truth = scroll progress p ∈ [0,1]: 0 = page top, 1 = the games
+     section snapped to the viewport top (exactly where a tab click lands).
+     Every scroll frame re-lerps the pill's box between the two button boxes,
+     so the liquid physically flows toward الألعاب while the user scrolls and
+     arrives exactly when the section does — zero perceived delay. */
+  const navRef = useRef<HTMLElement>(null);
+  const homeTabRef = useRef<HTMLButtonElement>(null);
+  const gamesTabRef = useRef<HTMLButtonElement>(null);
+  const liquidRef = useRef<HTMLDivElement>(null);
+  const liquidBlobRef = useRef<HTMLDivElement>(null);
+  const activeTabRef = useRef<'home' | 'games'>('home');
+  const liquidTrigger = useRef<'scroll' | 'click'>('scroll');
+  const liquidClickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const morphArmed = useRef(false);
+
+  const readProgress = useCallback(() => {
+    /* The click target and the mapping target are the same element; fall back
+       to the desktop section, then to the maximum scroll, if neither is laid
+       out (loading screen / hidden at the current breakpoint). */
+    const mobile = document.getElementById('most-played');
+    const desktop = document.getElementById('games-section');
+    const target = mobile?.offsetHeight ? mobile : desktop?.offsetHeight ? desktop : null;
+    const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    const end = target
+      ? Math.min(target.getBoundingClientRect().top + window.scrollY, maxScroll)
+      : maxScroll;
+    if (end <= 1) return window.scrollY > 0 ? 1 : 0;
+    return Math.min(1, Math.max(0, window.scrollY / end));
+  }, []);
+
+  /* Writes the pill's box for a progress value. Deliberately NO CSS transition:
+     the scroll itself is the animation, so there is nothing to catch up with.
+     offset* are layout boxes (immune to the buttons' active:scale-95 mid-press)
+     and translateX takes physical px, so RTL needs no sign flip. */
+  const placeLiquid = useCallback((progress: number) => {
+    const liquid = liquidRef.current;
+    const home = homeTabRef.current;
+    const games = gamesTabRef.current;
+    if (!liquid || !home || !games) return;
+    if (home.offsetWidth === 0 || games.offsetWidth === 0) return; /* bar is hidden at sm+ */
+    const lerp = (a: number, b: number) => a + (b - a) * progress;
+    /* Same-value writes are skipped: the fallback tick below re-runs this while
+       idle, and there is no reason to dirty the style with identical strings. */
+    const write = (prop: 'width' | 'height' | 'top' | 'transform', value: string) => {
+      if (liquid.style[prop] !== value) liquid.style[prop] = value;
+    };
+    write('width', `${lerp(home.offsetWidth, games.offsetWidth)}px`);
+    write('height', `${lerp(home.offsetHeight, games.offsetHeight)}px`);
+    write('top', `${lerp(home.offsetTop, games.offsetTop)}px`);
+    write('transform', `translateX(${lerp(home.offsetLeft, games.offsetLeft)}px)`);
+  }, []);
+
+  /* rAF-throttled sync: one pill write + the label flip per scroll frame. */
+  const syncLiquid = useCallback(() => {
+    const progress = readProgress();
+    placeLiquid(progress);
+    const next = progress >= 0.5 ? 'games' : 'home';
+    if (next !== activeTabRef.current) {
+      activeTabRef.current = next;
+      setActiveTab(next);
+    }
+  }, [readProgress, placeLiquid]);
+
+  /* Mount: seat the pill BEFORE the browser paints — a fresh top load shows it
+     on الرئيسية with no animation and no flash, while a restored mid-page
+     scroll resolves instantly (0ms) to the position/tab it belongs to.
+     Listeners + one early rAF reconcile the label and catch any scroll the
+     browser restores after this effect, plus resizes and webfont swaps. */
+  useLayoutEffect(() => {
+    if (status === 'loading') return;
+    let rafId = 0;
+    const schedule = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        syncLiquid();
+      });
+    };
+
+    placeLiquid(readProgress());
+    morphArmed.current = false;
+    const armTimer = window.setTimeout(() => { morphArmed.current = true; }, LIQUID_ARM_MS);
+    schedule();
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    /* Fallback tick: scroll events are coalesced (and rAF stalls) whenever the
+       renderer suspends frames — background/occluded/headless tabs — which can
+       leave the pill behind an already-moved scroll position. A cheap synchronous
+       sync keeps the DOM correct even with nothing painting; on an active tab the
+       scroll path above still delivers the same-frame, zero-delay updates. */
+    const fallbackId = window.setInterval(() => syncLiquid(), 33);
+    document.fonts.ready.then(schedule).catch(() => {});
+    return () => {
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      window.clearInterval(fallbackId);
+      if (rafId) cancelAnimationFrame(rafId);
+      window.clearTimeout(armTimer);
+      if (liquidClickTimer.current) {
+        clearTimeout(liquidClickTimer.current);
+        liquidClickTimer.current = null;
+      }
+    };
+  }, [status, placeLiquid, readProgress, syncLiquid]);
+
+  /* Midpoint flip: the active/idle classes just swapped the two buttons'
+     boxes, so re-seat the pill on the new geometry (continuous position stays
+     the source of truth) and play the squash/stretch morph — decoration only.
+     The morph is suppressed during the load/restore window so a refresh never
+     animates the first paint, and under prefers-reduced-motion it never runs. */
+  useEffect(() => {
+    if (status === 'loading') return;
+    activeTabRef.current = activeTab;
+    placeLiquid(readProgress());
+    const clicked = liquidTrigger.current === 'click';
+    liquidTrigger.current = 'scroll';
+    if (!morphArmed.current) return;
+    const blob = liquidBlobRef.current;
+    if (!blob || prefersReducedMotion()) return;
+    const duration = clicked ? LIQUID_CLICK_MS : LIQUID_SCROLL_MS;
+    const ease = clicked ? LIQUID_CLICK_EASE : LIQUID_SCROLL_EASE;
+    blob.style.animation = 'none';
+    void blob.offsetWidth; /* restart the keyframes */
+    blob.style.animation = `navLiquidMorph ${duration}ms ${ease}`;
+  }, [activeTab, status, placeLiquid, readProgress]);
+
+  /* A tap on the already-active tab never flips activeTab — drop the fast
+     timing shortly after so a later scroll still flows at the slow pace. */
+  const markLiquidClick = () => {
+    liquidTrigger.current = 'click';
+    if (liquidClickTimer.current) clearTimeout(liquidClickTimer.current);
+    liquidClickTimer.current = setTimeout(() => { liquidTrigger.current = 'scroll'; }, LIQUID_CLICK_MS + 700);
+  };
+
+  const goHome = () => { markLiquidClick(); scrollToTop(); };
+  const goGames = () => { markLiquidClick(); scrollToGames(); };
 
   const saveName = async () => {
     const v = nameDraft.trim().replace(/\s+/g, ' ');
@@ -956,35 +1134,58 @@ function LobbyContent() {
       ══════════════════════════════════════════ */}
       {/* RTL: first DOM child → visual RIGHT */}
       <nav
+        ref={navRef}
+        aria-label="التنقل الرئيسي"
         className="fixed bottom-0 inset-x-0 z-50 flex items-center justify-around pt-1.5 pb-[max(0.6rem,env(safe-area-inset-bottom))] sm:hidden"
         style={{ background: '#060810', borderTop: '1px solid rgba(232,180,48,0.1)' }}
       >
+        {/* Liquid pill — the single active highlight shared by الرئيسية ↔ الألعاب.
+            Sits behind the buttons; position/size are written from JS on every
+            scroll frame with NO transition (scroll = animation), and the inner
+            blob carries the color + the squash/stretch morph while travelling. */}
+        <div
+          ref={liquidRef}
+          data-nav-liquid
+          aria-hidden="true"
+          className="pointer-events-none absolute left-0 top-0"
+          style={{ willChange: 'transform, width, height' }}
+        >
+          <div ref={liquidBlobRef} className="nav-liquid-blob absolute inset-0 rounded-full" style={NAV_TAB_ACTIVE_STYLE} />
+        </div>
         {/* الرئيسية — visual RIGHT (DOM first in RTL) */}
-        <button className="flex flex-col items-center gap-0.5 px-3 py-1">
-          <Home className="h-[22px] w-[22px] text-white/35" />
-          <span className="font-cairo text-[10px] text-white/35">الرئيسية</span>
+        <button
+          ref={homeTabRef}
+          onClick={goHome}
+          aria-label="الرئيسية"
+          aria-current={activeTab === 'home' ? 'page' : undefined}
+          className={`${NAV_TAB_PRIMARY}${activeTab === 'home' ? '' : ' hover:bg-white/[0.06]'}`}
+        >
+          <Home className={`h-[22px] w-[22px] ${activeTab === 'home' ? 'text-white' : 'text-white/35'}`} />
+          <span className={`font-cairo text-[10px] font-black ${activeTab === 'home' ? 'text-white' : 'text-white/35'}`}>الرئيسية</span>
         </button>
-        {/* التصنيفات */}
-        <button onClick={openFriends} className="flex flex-col items-center gap-0.5 px-3 py-1">
+        {/* الألعاب — يهبط لقسم #most-played */}
+        <button
+          ref={gamesTabRef}
+          onClick={goGames}
+          aria-label="الألعاب"
+          aria-current={activeTab === 'games' ? 'page' : undefined}
+          className={`${NAV_TAB_PRIMARY}${activeTab === 'games' ? '' : ' hover:bg-white/[0.06]'}`}
+        >
+          <Gamepad2 className={`h-[22px] w-[22px] ${activeTab === 'games' ? 'text-white' : 'text-white/35'}`} />
+          <span className={`font-cairo text-[10px] font-black ${activeTab === 'games' ? 'text-white' : 'text-white/35'}`}>الألعاب</span>
+        </button>
+        {/* الصحاب — يفتح لوحة الصحاب (أو ورقة الدخول للضيوف) */}
+        <button onClick={openFriends} aria-label="الصحاب" className={NAV_TAB_IDLE}>
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
             <rect x="3" y="4" width="6" height="6" rx="1.5" fill="rgba(255,255,255,0.33)" />
             <rect x="13" y="4" width="6" height="6" rx="1.5" fill="rgba(255,255,255,0.33)" />
             <rect x="3" y="13" width="6" height="6" rx="1.5" fill="rgba(255,255,255,0.33)" />
             <rect x="13" y="13" width="6" height="6" rx="1.5" fill="rgba(255,255,255,0.33)" />
           </svg>
-          <span className="font-cairo text-[10px] text-white/35">التصنيفات</span>
+          <span className="font-cairo text-[10px] text-white/35">الصحاب</span>
         </button>
-        {/* الألعاب — ACTIVE */}
-        <a
-          href="#most-played"
-          className="flex flex-col items-center gap-0.5 px-5 py-1.5 rounded-full"
-          style={{ background: 'rgba(194,52,26,0.9)', boxShadow: '0 2px 14px rgba(194,52,26,0.5)' }}
-        >
-          <Gamepad2 className="h-[22px] w-[22px] text-white" />
-          <span className="font-cairo text-[10px] font-black text-white">الألعاب</span>
-        </a>
         {/* حسابي — visual LEFT (DOM last in RTL) */}
-        <button onClick={openSettings} className="flex flex-col items-center gap-0.5 px-3 py-1">
+        <button onClick={openSettings} aria-label="حسابي" className={NAV_TAB_IDLE}>
           <User className="h-[22px] w-[22px] text-white/35" />
           <span className="font-cairo text-[10px] text-white/35">حسابي</span>
         </button>

@@ -1,0 +1,1753 @@
+⚠ Warning: Next.js ignored package-lock.json in C:\Users\arhou because it is outside the current Git repository (C:\Users\arhou\OneDrive\Bureau\projet omar\colab\loby).
+ To use this directory, set `turbopack.root` in your Next.js config.
+
+Warning: Custom Cache-Control headers detected for the following routes:
+  - /_next/static/:path*
+
+Setting a custom Cache-Control header can break Next.js development behavior.
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+⨯ Error: aborted
+    at ignore-listed frames {
+  code: 'ECONNRESET'
+}
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/images/logo-mafia.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+[browser] Image with src "/images/logo-7azr-fazr.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+[browser] Image with src "/images/logo-bara-salfa.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+[browser] Image with src "/images/logo-mafia.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+[browser] Image with src "/images/logo-bara-salfa.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/images/logo-7azr-fazr.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+[browser] Image with src "/images/logo-sowl.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Archivo+Black:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Lalezar:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: next/font: warning:
+Failed to download Archivo Black from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: next/font: warning:
+Failed to download Cairo from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: next/font: warning:
+Failed to download Geist from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: next/font: warning:
+Failed to download Geist Mono from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: next/font: warning:
+Failed to download Lalezar from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Archivo+Black:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Lalezar:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: next/font: warning:
+Failed to download Archivo Black from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: next/font: warning:
+Failed to download Cairo from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: next/font: warning:
+Failed to download Geist from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: next/font: warning:
+Failed to download Geist Mono from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: next/font: warning:
+Failed to download Lalezar from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Archivo+Black:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Lalezar:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: next/font: warning:
+Failed to download Archivo Black from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: next/font: warning:
+Failed to download Cairo from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: next/font: warning:
+Failed to download Geist from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: next/font: warning:
+Failed to download Geist Mono from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: next/font: warning:
+Failed to download Lalezar from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Archivo+Black:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Lalezar:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: next/font: warning:
+Failed to download Archivo Black from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: next/font: warning:
+Failed to download Cairo from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: next/font: warning:
+Failed to download Geist from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: next/font: warning:
+Failed to download Geist Mono from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: next/font: warning:
+Failed to download Lalezar from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Archivo+Black:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Lalezar:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: next/font: warning:
+Failed to download Archivo Black from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: next/font: warning:
+Failed to download Cairo from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: next/font: warning:
+Failed to download Geist from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: next/font: warning:
+Failed to download Geist Mono from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: next/font: warning:
+Failed to download Lalezar from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Archivo+Black:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Lalezar:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: next/font: warning:
+Failed to download Archivo Black from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: next/font: warning:
+Failed to download Cairo from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: next/font: warning:
+Failed to download Geist from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: next/font: warning:
+Failed to download Geist Mono from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: next/font: warning:
+Failed to download Lalezar from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Archivo+Black:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Lalezar:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: next/font: warning:
+Failed to download Archivo Black from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: next/font: warning:
+Failed to download Cairo from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: next/font: warning:
+Failed to download Geist from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: next/font: warning:
+Failed to download Geist Mono from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: next/font: warning:
+Failed to download Lalezar from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Archivo+Black:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Lalezar:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: next/font: warning:
+Failed to download Archivo Black from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: next/font: warning:
+Failed to download Cairo from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: next/font: warning:
+Failed to download Geist from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: next/font: warning:
+Failed to download Geist Mono from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: next/font: warning:
+Failed to download Lalezar from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Archivo+Black:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Lalezar:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: next/font: warning:
+Failed to download Archivo Black from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: next/font: warning:
+Failed to download Cairo from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: next/font: warning:
+Failed to download Geist from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: next/font: warning:
+Failed to download Geist Mono from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: next/font: warning:
+Failed to download Lalezar from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Archivo+Black:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Lalezar:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: next/font: warning:
+Failed to download Archivo Black from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: next/font: warning:
+Failed to download Cairo from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: next/font: warning:
+Failed to download Geist from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: next/font: warning:
+Failed to download Geist Mono from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: next/font: warning:
+Failed to download Lalezar from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Archivo+Black:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Lalezar:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: next/font: warning:
+Failed to download Archivo Black from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: next/font: warning:
+Failed to download Cairo from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: next/font: warning:
+Failed to download Geist from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: next/font: warning:
+Failed to download Geist Mono from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: next/font: warning:
+Failed to download Lalezar from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+[browser] Image with src "/images/logo-mafia.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/images/logo-bara-salfa.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+[browser] Image with src "/images/logo-7azr-fazr.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+[browser] Image with src "/images/logo-sowl.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Archivo+Black:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Lalezar:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: next/font: warning:
+Failed to download Archivo Black from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: next/font: warning:
+Failed to download Cairo from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: next/font: warning:
+Failed to download Geist from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: next/font: warning:
+Failed to download Geist Mono from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: next/font: warning:
+Failed to download Lalezar from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Archivo+Black:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Lalezar:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: next/font: warning:
+Failed to download Archivo Black from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: next/font: warning:
+Failed to download Cairo from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: next/font: warning:
+Failed to download Geist from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: next/font: warning:
+Failed to download Geist Mono from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: next/font: warning:
+Failed to download Lalezar from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Archivo+Black:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Lalezar:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: next/font: warning:
+Failed to download Archivo Black from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: next/font: warning:
+Failed to download Cairo from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: next/font: warning:
+Failed to download Geist from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: next/font: warning:
+Failed to download Geist Mono from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: next/font: warning:
+Failed to download Lalezar from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Archivo+Black:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Lalezar:wght@400&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/archivo_black_5b585c6d.module.css
+Warning: next/font: warning:
+Failed to download Archivo Black from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/archivo_black_5b585c6d.module.css
+    [next]/internal/font/google/archivo_black_5b585c6d.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/cairo_96a72921.module.css
+Warning: next/font: warning:
+Failed to download Cairo from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/cairo_96a72921.module.css
+    [next]/internal/font/google/cairo_96a72921.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_967664a6.module.css
+Warning: next/font: warning:
+Failed to download Geist from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_967664a6.module.css
+    [next]/internal/font/google/geist_967664a6.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+Warning: next/font: warning:
+Failed to download Geist Mono from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/geist_mono_5ce8c3f.module.css
+    [next]/internal/font/google/geist_mono_5ce8c3f.js
+    ./src/app/layout.tsx
+
+
+⚠ [next]/internal/font/google/lalezar_88e938b7.module.css
+Warning: next/font: warning:
+Failed to download Lalezar from Google Fonts. Using a fallback font instead.
+If you are offline or behind a proxy, self-host the font with next/font/local, or set HTTP_PROXY/HTTPS_PROXY so Next.js can reach fonts.googleapis.com.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/lalezar_88e938b7.module.css
+    [next]/internal/font/google/lalezar_88e938b7.js
+    ./src/app/layout.tsx
+
+
