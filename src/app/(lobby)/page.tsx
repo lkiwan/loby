@@ -42,7 +42,6 @@ import GameCard from "@/components/GameCard";
 import GameIcon from "@/components/GameIcon";
 import GuestNotice from "@/components/landing/GuestNotice";
 import ComingSoon from "@/components/landing/ComingSoon";
-import LeaderboardTeaser from "@/components/landing/LeaderboardTeaser";
 import LobbyFooter from "@/components/landing/LobbyFooter";
 import { GAMES, type Game } from "@/lib/games";
 import AdBanner from "@/components/AdBanner";
@@ -135,100 +134,7 @@ function spawnCoins(x: number, y: number) {
   }
 }
 
-/* ── Launch overlay component ── */
-function LaunchOverlay({ game }: { game: Game }) {
-  return (
-    <div className="launch-overlay fixed inset-0 z-[120] flex flex-col items-center justify-center overflow-hidden bg-[#030812]">
-      {/* Background */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="cyber-grid opacity-35 absolute inset-0" />
-        <div
-          className="absolute inset-0"
-          style={{
-            background: `radial-gradient(ellipse 65% 65% at 50% 50%, ${
-              game.isMafia ? "rgba(220,38,38,.22)" : "rgba(0,217,255,.16)"
-            }, transparent 65%)`,
-          }}
-        />
-        {/* Floating particles */}
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="data-line"
-            style={{
-              left: `${5 + i * 13}%`,
-              height: `${50 + (i % 4) * 30}px`,
-              animationDuration: `${2.5 + (i % 4) * 0.7}s`,
-              animationDelay: `${i * 0.3}s`,
-            }}
-          />
-        ))}
-      </div>
 
-      <div className="relative z-10 flex flex-col items-center gap-7 px-6 text-center">
-        {/* Pulse rings + emoji */}
-        <div className="relative grid h-32 w-32 place-items-center">
-          {[0, 1, 2].map((i) => (
-            <div
-              key={i}
-              className="launch-ring absolute inset-0"
-              style={{
-                color: game.isMafia
-                  ? "rgba(239,68,68,.55)"
-                  : "rgba(0,217,255,.55)",
-                animationDelay: `${i * 0.45}s`,
-              }}
-            />
-          ))}
-          <GameIcon game={game} size={116} />
-        </div>
-
-        {/* Labels */}
-        <div>
-          <p
-            className="font-grit text-[11px] uppercase tracking-[0.22em]"
-            style={{
-              color: game.isMafia ? "rgba(239,68,68,.7)" : "rgba(0,217,255,.7)",
-            }}
-          >
-            LAUNCHING GAME
-          </p>
-          <h2
-            className="font-lalezar mt-1 text-4xl"
-            style={{
-              color: game.starAccent,
-              textShadow: `0 0 24px ${game.starAccent}80`,
-            }}
-          >
-            {game.darijaTitle}
-          </h2>
-          <p className="mt-1 font-grit text-[10px] uppercase tracking-widest text-neutral-600">
-            {game.latinTitle}
-          </p>
-        </div>
-
-        {/* Progress bar */}
-        <div className="h-1 w-64 overflow-hidden rounded-full bg-white/[0.06]">
-          <div
-            className="launch-progress h-full rounded-full"
-            style={{
-              background: game.isMafia
-                ? "linear-gradient(90deg, #ff2d55, #f2b23d)"
-                : "linear-gradient(90deg, #00d9ff, #a855f7)",
-              boxShadow: game.isMafia
-                ? "0 0 10px rgba(255,45,85,.6)"
-                : "0 0 10px rgba(0,217,255,.6)",
-            }}
-          />
-        </div>
-
-        <p className="text-blink font-cairo text-sm font-bold text-neutral-500">
-          كنوجدو الطبلة…
-        </p>
-      </div>
-    </div>
-  );
-}
 
 function LobbyContent() {
   const { data: session, status, update } = useSession();
@@ -249,7 +155,7 @@ function LobbyContent() {
     text: string;
   } | null>(null);
   const [coinPop, setCoinPop] = useState(false);
-  const [launching, setLaunching] = useState<Game | null>(null);
+
   const [cardsVisible, setCardsVisible] = useState(true);
   const cardsRef = useRef<HTMLDivElement>(null);
   const [xpData, setXpData] = useState<{
@@ -786,7 +692,7 @@ function LobbyContent() {
 
     setBusyId(gameId);
     setBusyAction("coins");
-    setLaunching(game);
+
 
     try {
       const res = await fetch("/api/games/unlock", {
@@ -804,12 +710,12 @@ function LobbyContent() {
         Sounds.launch();
         router.replace(redirectUrl);
       } else {
-        setLaunching(null);
+
         const err = await res.json().catch(() => ({}));
         showToast("error", err.error ?? "اللعبة ماخدماتش، عاود جرب");
       }
     } catch {
-      setLaunching(null);
+
       showToast("error", "مشكل فالكونيكسيون — عاود جرب");
     } finally {
       setBusyId(null);
@@ -879,7 +785,7 @@ function LobbyContent() {
             if (payload.redirectUrl) {
               rememberPayMethod("ad");
               const game = GAMES.find((g) => g.id === gameId);
-              if (game) setLaunching(game);
+
               router.replace(payload.redirectUrl);
               return;
             }
@@ -929,7 +835,7 @@ function LobbyContent() {
       className="relative min-h-dvh overflow-x-hidden bg-[#060810] text-white"
       style={{ paddingBottom: "max(5rem, env(safe-area-inset-bottom))" }}
     >
-      {launching && <LaunchOverlay game={launching} />}
+
 
       {/* ══════════════════════════════════════════
           HEADER — sticky dark bar
@@ -1736,13 +1642,14 @@ function LobbyContent() {
             onClick={() => setAdModalOpen(false)}
           />
           <div
-            className="bounce-in relative w-full max-w-md overflow-hidden rounded-2xl p-6 shadow-xl"
+            className="bounce-in relative z-10 w-full max-w-md overflow-hidden rounded-2xl p-6 shadow-xl"
             style={{
               background: "#0D1828",
               border: "1px solid rgba(232,180,48,0.2)",
             }}
           >
             <button
+              type="button"
               onClick={() => setAdModalOpen(false)}
               className="absolute start-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/10 text-[#B8C4D8] transition hover:border-red-500/40 hover:text-red-400"
               aria-label="close"
@@ -1766,13 +1673,18 @@ function LobbyContent() {
                   تكتيك 😅
                 </p>
                 <button
+                  type="button"
                   onClick={startRewardedAd}
                   className="bg-[#E8B430] text-[#060810] font-bold rounded-xl flex items-center justify-center gap-2 mt-6 w-full py-4 text-[15px]"
                 >
                   <Play className="h-5 w-5" /> تفرج على الإشهار — وعيني عينك
                 </button>
                 <button
-                  onClick={() => setAdModalOpen(false)}
+                  type="button"
+                  onClick={(e) => {
+                    setAdModalOpen(false);
+                    if (selectedGame) playWithCoins(selectedGame, e);
+                  }}
                   className="mt-2.5 w-full py-2 text-center font-cairo text-[12.5px] font-bold text-[#B8C4D8] transition hover:text-[#FFF7E8]"
                 >
                   لا شكرا، غانخلص بالكوينز

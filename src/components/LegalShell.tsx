@@ -1,6 +1,7 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
-import { StarMark } from '@/components/Star';
+
 
 export default function LegalShell({
   title,
@@ -27,11 +28,20 @@ export default function LegalShell({
           >
             <ArrowRight className="h-4 w-4" />
           </Link>
-          <StarMark size={26} />
-          <span className="font-grit text-[0.9rem] uppercase tracking-tight text-[#f1e7d6]">
-            <span className="text-gold-sheen">PLAY</span>
-            <span className="text-[#7a9bd6]">M3ANA</span>
-          </span>
+          <div className="flex items-center gap-2">
+            <Image
+              alt="PlayM3ana"
+              loading="lazy"
+              width={34}
+              height={28}
+              className="h-7 w-auto object-contain"
+              src="/images/logo-playm3ana-new.png"
+            />
+            <span className="font-cairo font-black text-[15px] tracking-tight">
+              <span className="text-white">PLAY</span>
+              <span style={{ color: "rgb(232, 180, 48)" }}>M3ANA</span>
+            </span>
+          </div>
         </div>
       </header>
 

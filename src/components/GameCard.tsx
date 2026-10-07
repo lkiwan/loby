@@ -258,7 +258,10 @@ export default function GameCard({
       )}
 
       {/* ── ARCH IMAGE ZONE ── */}
-      <div className="door-img-zone">
+      <div 
+        className="door-img-zone cursor-pointer"
+        onClick={onWatchAd}
+      >
         <GameThumbnail game={game} />
         <MoroccanArchFrame accent={accent} glow={glow} isMafia={game.isMafia} />
       </div>

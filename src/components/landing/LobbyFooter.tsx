@@ -47,12 +47,6 @@ export default function LobbyFooter({
 
       {/* Navigation links */}
       <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mb-4">
-        <Link
-          href="/leaderboard"
-          className="font-cairo text-[12px] font-bold text-white/40 transition hover:text-[#D8A62A]"
-        >
-          الكلاسمون
-        </Link>
         {isAuthed && username && (
           <Link
             href={`/profile/${username}`}

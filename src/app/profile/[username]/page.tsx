@@ -1,6 +1,7 @@
 'use client';
 import { use, useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, Loader2, Copy, Check, Zap, Coins } from 'lucide-react';
 import { StarMark } from '@/components/Star';
 import GameIcon from '@/components/GameIcon';
@@ -93,7 +94,20 @@ export default function ProfilePage({
             رجع
           </Link>
           <span className="font-lalezar text-[17px] text-white">{username}</span>
-          <StarMark size={26} />
+          <div className="flex items-center gap-2">
+            <Image
+              alt="PlayM3ana"
+              loading="lazy"
+              width={34}
+              height={28}
+              className="h-7 w-auto object-contain"
+              src="/images/logo-playm3ana-new.png"
+            />
+            <span className="font-cairo font-black text-[15px] tracking-tight">
+              <span className="text-white">PLAY</span>
+              <span style={{ color: "rgb(232, 180, 48)" }}>M3ANA</span>
+            </span>
+          </div>
         </div>
       </header>
 
