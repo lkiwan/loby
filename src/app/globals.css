@@ -506,6 +506,31 @@ body.ad-playing { pointer-events: none; }
   padding: 14px 16px 16px;
 }
 
+/* ── Collapsible "details" region inside a door card ──
+   grid-template-rows 0fr → 1fr animates the height smoothly.
+   visibility flips discretely but stays `visible` for the whole
+   transition (CSS visibility interpolation rule), so the region is
+   only hidden once fully collapsed → out of the tab order & a11y tree. */
+.door-details {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows 0.32s ease, visibility 0.32s ease;
+}
+.door-details.is-open {
+  grid-template-rows: 1fr;
+  visibility: visible;
+}
+.door-details-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .door-details {
+    transition: none;
+  }
+}
+
 /* ── Mobile door mini cards ── */
 .door-card-mini {
   position: relative;

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useLayoutEffect, useRef, useState, useCallback, Suspense } from 'react';
 import { useSession, signOut } from 'next-auth/react';
@@ -32,28 +32,28 @@ const FriendsPanel         = dynamic(() => import('@/components/FriendsPanel'), 
 const DailyMissionButtons  = dynamic(() => import('@/components/DailyMissionButtons'),  { ssr: false });
 
 const TICKER_ITEMS = [
-  '🔥 الصداع د الحومة كاين من بكري',
-  '🇲🇦 تحداو بعضياتكم بالدارجة',
-  '🕹️ كلشي بالدارجة — حتى الكدوب والمعاودة',
-  '🎲 تيليفون واحد = بزاف د الشوهة',
-  '🤫 واحد فيكم كيكدب — مرحبا بيك فالحومة',
-  '💰 تفرج فإشهار — ماشي خسارة، هادا تكتيك',
-  '💔 الليلة تولي جريمة فالطبلة، والجيران شاهدين',
+  'ðŸ”¥ Ø§Ù„ØµØ¯Ø§Ø¹ Ø¯ Ø§Ù„Ø­ÙˆÙ…Ø© ÙƒØ§ÙŠÙ† Ù…Ù† Ø¨ÙƒØ±ÙŠ',
+  'ðŸ‡²ðŸ‡¦ ØªØ­Ø¯Ø§Ùˆ Ø¨Ø¹Ø¶ÙŠØ§ØªÙƒÙ… Ø¨Ø§Ù„Ø¯Ø§Ø±Ø¬Ø©',
+  'ðŸ•¹ï¸ ÙƒÙ„Ø´ÙŠ Ø¨Ø§Ù„Ø¯Ø§Ø±Ø¬Ø© â€” Ø­ØªÙ‰ Ø§Ù„ÙƒØ¯ÙˆØ¨ ÙˆØ§Ù„Ù…Ø¹Ø§ÙˆØ¯Ø©',
+  'ðŸŽ² ØªÙŠÙ„ÙŠÙÙˆÙ† ÙˆØ§Ø­Ø¯ = Ø¨Ø²Ø§Ù Ø¯ Ø§Ù„Ø´ÙˆÙ‡Ø©',
+  'ðŸ¤« ÙˆØ§Ø­Ø¯ ÙÙŠÙƒÙ… ÙƒÙŠÙƒØ¯Ø¨ â€” Ù…Ø±Ø­Ø¨Ø§ Ø¨ÙŠÙƒ ÙØ§Ù„Ø­ÙˆÙ…Ø©',
+  'ðŸ’° ØªÙØ±Ø¬ ÙØ¥Ø´Ù‡Ø§Ø± â€” Ù…Ø§Ø´ÙŠ Ø®Ø³Ø§Ø±Ø©ØŒ Ù‡Ø§Ø¯Ø§ ØªÙƒØªÙŠÙƒ',
+  'ðŸ’” Ø§Ù„Ù„ÙŠÙ„Ø© ØªÙˆÙ„ÙŠ Ø¬Ø±ÙŠÙ…Ø© ÙØ§Ù„Ø·Ø¨Ù„Ø©ØŒ ÙˆØ§Ù„Ø¬ÙŠØ±Ø§Ù† Ø´Ø§Ù‡Ø¯ÙŠÙ†',
 ];
 
-const TITLE_WORDS_1 = ['فضح', 'صاحبك'];
-const TITLE_WORDS_2 = ['قبل', 'ما', 'يفضحك'];
+const TITLE_WORDS_1 = ['ÙØ¶Ø­', 'ØµØ§Ø­Ø¨Ùƒ'];
+const TITLE_WORDS_2 = ['Ù‚Ø¨Ù„', 'Ù…Ø§', 'ÙŠÙØ¶Ø­Ùƒ'];
 
-/* ── Bottom tab bar item styles ── */
+/* â”€â”€ Bottom tab bar item styles â”€â”€ */
 /* `relative` keeps the buttons painted above the absolutely-positioned liquid pill.
-   الرئيسية ↔ الألعاب share ONE fixed box (same padding + label weight in both
-   states — only colors swap), so the pill lerps between two static boxes and
+   Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© â†” Ø§Ù„Ø£Ù„Ø¹Ø§Ø¨ share ONE fixed box (same padding + label weight in both
+   states â€” only colors swap), so the pill lerps between two static boxes and
    cannot jump when the active label flips at the scroll midpoint. */
 const NAV_TAB_PRIMARY = 'relative flex flex-col items-center gap-0.5 px-5 py-1.5 rounded-full transition active:scale-95';
 const NAV_TAB_IDLE = 'relative flex flex-col items-center gap-0.5 px-3 py-1 rounded-full transition hover:bg-white/[0.06] active:scale-95';
 const NAV_TAB_ACTIVE_STYLE: React.CSSProperties = { background: 'rgba(194,52,26,0.9)', boxShadow: '0 2px 14px rgba(194,52,26,0.5)' };
 
-/* ── Liquid indicator (shared pill for الرئيسية ↔ الألعاب) ──
+/* â”€â”€ Liquid indicator (shared pill for Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© â†” Ø§Ù„Ø£Ù„Ø¹Ø§Ø¨) â”€â”€
    The pill's POSITION has no transition at all: it is re-lerped from scroll
    progress on every scroll frame, so it flows in real time with the finger.
    These constants only tune the decorative squash/stretch morph on the inner
@@ -67,13 +67,13 @@ const LIQUID_ARM_MS = 800;    /* no morph while the page load / scroll restore s
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* ── Coin burst particles on button click ── */
+/* â”€â”€ Coin burst particles on button click â”€â”€ */
 function spawnCoins(x: number, y: number) {
   const container = document.body;
   for (let i = 0; i < 7; i++) {
     const el = document.createElement('div');
     el.className = 'coin-float';
-    el.textContent = '🪙';
+    el.textContent = 'ðŸª™';
     el.style.left = `${x - 12}px`;
     el.style.top  = `${y - 12}px`;
     const angle = (Math.PI * 2 * i) / 7;
@@ -87,7 +87,7 @@ function spawnCoins(x: number, y: number) {
   }
 }
 
-/* ── Launch overlay component ── */
+/* â”€â”€ Launch overlay component â”€â”€ */
 function LaunchOverlay({ game }: { game: Game }) {
   return (
     <div className="launch-overlay fixed inset-0 z-[120] flex flex-col items-center justify-center overflow-hidden bg-[#030812]">
@@ -171,7 +171,7 @@ function LaunchOverlay({ game }: { game: Game }) {
         </div>
 
         <p className="text-blink font-cairo text-sm font-bold text-neutral-500">
-          كنوجدو الطبلة…
+          ÙƒÙ†ÙˆØ¬Ø¯Ùˆ Ø§Ù„Ø·Ø¨Ù„Ø©â€¦
         </p>
       </div>
     </div>
@@ -202,7 +202,7 @@ function LobbyContent() {
   const [authSheetOpen, setAuthSheetOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
-  /* ── Settings: name + password ── */
+  /* â”€â”€ Settings: name + password â”€â”€ */
   const [me, setMe] = useState<{
     username?: string | null;
     displayName?: string | null;
@@ -258,7 +258,7 @@ function LobbyContent() {
     setFriendsOpen(true);
   };
 
-  /* ── Bottom tab bar: scroll targets + active tab tracking ── */
+  /* â”€â”€ Bottom tab bar: scroll targets + active tab tracking â”€â”€ */
   /* The pill position never waits for this state: it follows scroll progress
      continuously. `activeTab` only drives aria-current / the active label,
      which flips at the midpoint (progress 0.5) of the scroll range. */
@@ -274,12 +274,12 @@ function LobbyContent() {
       block: 'start',
     });
 
-  /* ── Liquid indicator: ONE shared pill that flows between الرئيسية ↔ الألعاب ──
-     Source of truth = scroll progress p ∈ [0,1]: 0 = page top, 1 = the games
+  /* â”€â”€ Liquid indicator: ONE shared pill that flows between Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© â†” Ø§Ù„Ø£Ù„Ø¹Ø§Ø¨ â”€â”€
+     Source of truth = scroll progress p âˆˆ [0,1]: 0 = page top, 1 = the games
      section snapped to the viewport top (exactly where a tab click lands).
      Every scroll frame re-lerps the pill's box between the two button boxes,
-     so the liquid physically flows toward الألعاب while the user scrolls and
-     arrives exactly when the section does — zero perceived delay. */
+     so the liquid physically flows toward Ø§Ù„Ø£Ù„Ø¹Ø§Ø¨ while the user scrolls and
+     arrives exactly when the section does â€” zero perceived delay. */
   const navRef = useRef<HTMLElement>(null);
   const homeTabRef = useRef<HTMLButtonElement>(null);
   const gamesTabRef = useRef<HTMLButtonElement>(null);
@@ -338,8 +338,8 @@ function LobbyContent() {
     }
   }, [readProgress, placeLiquid]);
 
-  /* Mount: seat the pill BEFORE the browser paints — a fresh top load shows it
-     on الرئيسية with no animation and no flash, while a restored mid-page
+  /* Mount: seat the pill BEFORE the browser paints â€” a fresh top load shows it
+     on Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© with no animation and no flash, while a restored mid-page
      scroll resolves instantly (0ms) to the position/tab it belongs to.
      Listeners + one early rAF reconcile the label and catch any scroll the
      browser restores after this effect, plus resizes and webfont swaps. */
@@ -362,7 +362,7 @@ function LobbyContent() {
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
     /* Fallback tick: scroll events are coalesced (and rAF stalls) whenever the
-       renderer suspends frames — background/occluded/headless tabs — which can
+       renderer suspends frames â€” background/occluded/headless tabs â€” which can
        leave the pill behind an already-moved scroll position. A cheap synchronous
        sync keeps the DOM correct even with nothing painting; on an active tab the
        scroll path above still delivers the same-frame, zero-delay updates. */
@@ -383,7 +383,7 @@ function LobbyContent() {
 
   /* Midpoint flip: the active/idle classes just swapped the two buttons'
      boxes, so re-seat the pill on the new geometry (continuous position stays
-     the source of truth) and play the squash/stretch morph — decoration only.
+     the source of truth) and play the squash/stretch morph â€” decoration only.
      The morph is suppressed during the load/restore window so a refresh never
      animates the first paint, and under prefers-reduced-motion it never runs. */
   useEffect(() => {
@@ -402,7 +402,7 @@ function LobbyContent() {
     blob.style.animation = `navLiquidMorph ${duration}ms ${ease}`;
   }, [activeTab, status, placeLiquid, readProgress]);
 
-  /* A tap on the already-active tab never flips activeTab — drop the fast
+  /* A tap on the already-active tab never flips activeTab â€” drop the fast
      timing shortly after so a later scroll still flows at the slow pace. */
   const markLiquidClick = () => {
     liquidTrigger.current = 'click';
@@ -416,7 +416,7 @@ function LobbyContent() {
   const saveName = async () => {
     const v = nameDraft.trim().replace(/\s+/g, ' ');
     if (v.length < 2 || v.length > 30) {
-      setNameMsg({ kind: 'err', text: 'السمية خاص تكون بين 2 و 30 حرف.' });
+      setNameMsg({ kind: 'err', text: 'Ø§Ù„Ø³Ù…ÙŠØ© Ø®Ø§Øµ ØªÙƒÙˆÙ† Ø¨ÙŠÙ† 2 Ùˆ 30 Ø­Ø±Ù.' });
       return;
     }
     setNameBusy(true);
@@ -435,23 +435,23 @@ function LobbyContent() {
             ? { ...prev, displayName: data.displayName, nextNameChangeAt: data.nextNameChangeAt ?? null, canChangeName: false }
             : prev
         );
-        setNameMsg({ kind: 'ok', text: 'تبدلات السمية بنجاح. غادي تبدل مرة أخرى من بعد 7 أيام.' });
+        setNameMsg({ kind: 'ok', text: 'ØªØ¨Ø¯Ù„Ø§Øª Ø§Ù„Ø³Ù…ÙŠØ© Ø¨Ù†Ø¬Ø§Ø­. ØºØ§Ø¯ÙŠ ØªØ¨Ø¯Ù„ Ù…Ø±Ø© Ø£Ø®Ø±Ù‰ Ù…Ù† Ø¨Ø¹Ø¯ 7 Ø£ÙŠØ§Ù….' });
       } else {
-        setNameMsg({ kind: 'err', text: data.error || 'صاب مشكل. عاود جرب.' });
+        setNameMsg({ kind: 'err', text: data.error || 'ØµØ§Ø¨ Ù…Ø´ÙƒÙ„. Ø¹Ø§ÙˆØ¯ Ø¬Ø±Ø¨.' });
       }
     } catch {
-      setNameMsg({ kind: 'err', text: 'صاب مشكل فالخادم. عاود جرب.' });
+      setNameMsg({ kind: 'err', text: 'ØµØ§Ø¨ Ù…Ø´ÙƒÙ„ ÙØ§Ù„Ø®Ø§Ø¯Ù…. Ø¹Ø§ÙˆØ¯ Ø¬Ø±Ø¨.' });
     }
     setNameBusy(false);
   };
 
   const savePassword = async () => {
     if (pwDraft.n1.length < 6) {
-      setPwMsg({ kind: 'err', text: 'الباسورد الجديد خاص يكون فيه 6 حروف على الأقل.' });
+      setPwMsg({ kind: 'err', text: 'Ø§Ù„Ø¨Ø§Ø³ÙˆØ±Ø¯ Ø§Ù„Ø¬Ø¯ÙŠØ¯ Ø®Ø§Øµ ÙŠÙƒÙˆÙ† ÙÙŠÙ‡ 6 Ø­Ø±ÙˆÙ Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„.' });
       return;
     }
     if (pwDraft.n1 !== pwDraft.n2) {
-      setPwMsg({ kind: 'err', text: 'الباسورد الجديد ماشي كيف كيف فالتأكيد.' });
+      setPwMsg({ kind: 'err', text: 'Ø§Ù„Ø¨Ø§Ø³ÙˆØ±Ø¯ Ø§Ù„Ø¬Ø¯ÙŠØ¯ Ù…Ø§Ø´ÙŠ ÙƒÙŠÙ ÙƒÙŠÙ ÙØ§Ù„ØªØ£ÙƒÙŠØ¯.' });
       return;
     }
     setPwBusy(true);
@@ -469,12 +469,12 @@ function LobbyContent() {
       const data = (await res.json()) as { success?: boolean; error?: string };
       if (res.ok && data.success) {
         setPwDraft({ cur: '', n1: '', n2: '' });
-        setPwMsg({ kind: 'ok', text: 'تبدل الباسورد بنجاح.' });
+        setPwMsg({ kind: 'ok', text: 'ØªØ¨Ø¯Ù„ Ø§Ù„Ø¨Ø§Ø³ÙˆØ±Ø¯ Ø¨Ù†Ø¬Ø§Ø­.' });
       } else {
-        setPwMsg({ kind: 'err', text: data.error || 'صاب مشكل. عاود جرب.' });
+        setPwMsg({ kind: 'err', text: data.error || 'ØµØ§Ø¨ Ù…Ø´ÙƒÙ„. Ø¹Ø§ÙˆØ¯ Ø¬Ø±Ø¨.' });
       }
     } catch {
-      setPwMsg({ kind: 'err', text: 'صاب مشكل فالخادم. عاود جرب.' });
+      setPwMsg({ kind: 'err', text: 'ØµØ§Ø¨ Ù…Ø´ÙƒÙ„ ÙØ§Ù„Ø®Ø§Ø¯Ù…. Ø¹Ø§ÙˆØ¯ Ø¬Ø±Ø¨.' });
     }
     setPwBusy(false);
   };
@@ -549,7 +549,7 @@ function LobbyContent() {
           await update();
           setCoinPop(true); setTimeout(() => setCoinPop(false), 600);
           Sounds.checkin();
-          showToast('ok', `كادو د اليوم: +${data.reward} 🪙 (نهار${data.streak ?? 1})`);
+          showToast('ok', `ÙƒØ§Ø¯Ùˆ Ø¯ Ø§Ù„ÙŠÙˆÙ…: +${data.reward} ðŸª™ (Ù†Ù‡Ø§Ø±${data.streak ?? 1})`);
         }
       } catch { /* best-effort */ }
     })();
@@ -566,7 +566,7 @@ function LobbyContent() {
         if (typeof data.coins === 'number') {
           await update({ coins: data.coins });
           setCoinPop(true); setTimeout(() => setCoinPop(false), 600);
-          showToast('ok', `مرحبا بك! عندك ${data.coins} 🪙`);
+          showToast('ok', `Ù…Ø±Ø­Ø¨Ø§ Ø¨Ùƒ! Ø¹Ù†Ø¯Ùƒ ${data.coins} ðŸª™`);
         }
       } catch { await update(); }
     })();
@@ -591,7 +591,7 @@ function LobbyContent() {
     if (!game) return;
     const coins = session?.user?.coins ?? 0;
     if (coins < game.cost) {
-      showToast('error', `ماعندكش كوينز كافيين — تفرج فإشهار باش تزيدهم 🔁 (${coins}/${game.cost})`);
+      showToast('error', `Ù…Ø§Ø¹Ù†Ø¯ÙƒØ´ ÙƒÙˆÙŠÙ†Ø² ÙƒØ§ÙÙŠÙŠÙ† â€” ØªÙØ±Ø¬ ÙØ¥Ø´Ù‡Ø§Ø± Ø¨Ø§Ø´ ØªØ²ÙŠØ¯Ù‡Ù… ðŸ” (${coins}/${game.cost})`);
       return;
     }
 
@@ -615,11 +615,11 @@ function LobbyContent() {
       } else {
         setLaunching(null);
         const err = await res.json().catch(() => ({}));
-        showToast('error', err.error ?? 'اللعبة ماخدماتش، عاود جرب');
+        showToast('error', err.error ?? 'Ø§Ù„Ù„Ø¹Ø¨Ø© Ù…Ø§Ø®Ø¯Ù…Ø§ØªØ´ØŒ Ø¹Ø§ÙˆØ¯ Ø¬Ø±Ø¨');
       }
     } catch {
       setLaunching(null);
-      showToast('error', 'مشكل فالكونيكسيون — عاود جرب');
+      showToast('error', 'Ù…Ø´ÙƒÙ„ ÙØ§Ù„ÙƒÙˆÙ†ÙŠÙƒØ³ÙŠÙˆÙ† â€” Ø¹Ø§ÙˆØ¯ Ø¬Ø±Ø¨');
     } finally {
       setBusyId(null); setBusyAction(null);
     }
@@ -641,12 +641,12 @@ function LobbyContent() {
       });
       if (startRes.status === 429) {
         setAdModalOpen(false);
-        showToast('error', 'عاود جرب من بعد شوية');
+        showToast('error', 'Ø¹Ø§ÙˆØ¯ Ø¬Ø±Ø¨ Ù…Ù† Ø¨Ø¹Ø¯ Ø´ÙˆÙŠØ©');
         return;
       }
       if (!startRes.ok) {
         setAdModalOpen(false);
-        showToast('error', 'مشكل فالإشهار — عاود جرب');
+        showToast('error', 'Ù…Ø´ÙƒÙ„ ÙØ§Ù„Ø¥Ø´Ù‡Ø§Ø± â€” Ø¹Ø§ÙˆØ¯ Ø¬Ø±Ø¨');
         return;
       }
       const { nonce } = (await startRes.json()) as { nonce: string };
@@ -666,7 +666,7 @@ function LobbyContent() {
               headers: { 'Content-Type': 'application/json', 'Idempotency-Key': nonce },
               body: JSON.stringify({ nonce }),
             });
-            if (!r.ok) { setAdModalOpen(false); showToast('error', 'مشكل فالإشهار — عاود جرب'); return; }
+            if (!r.ok) { setAdModalOpen(false); showToast('error', 'Ù…Ø´ÙƒÙ„ ÙØ§Ù„Ø¥Ø´Ù‡Ø§Ø± â€” Ø¹Ø§ÙˆØ¯ Ø¬Ø±Ø¨'); return; }
             const payload = (await r.json()) as { redirectUrl?: string; newBalance?: number; awarded?: number };
             if (payload.redirectUrl) {
               rememberPayMethod('ad');
@@ -676,17 +676,17 @@ function LobbyContent() {
               return;
             }
             if (typeof payload.newBalance === 'number') await update({ coins: payload.newBalance });
-            showToast('ok', `+${payload.awarded ?? 0} كوينز كادو! 🎁`);
+            showToast('ok', `+${payload.awarded ?? 0} ÙƒÙˆÙŠÙ†Ø² ÙƒØ§Ø¯Ùˆ! ðŸŽ`);
             setAdModalOpen(false);
           } catch {
             setAdModalOpen(false);
-            showToast('error', 'مشكل فالإشهار — عاود جرب');
+            showToast('error', 'Ù…Ø´ÙƒÙ„ ÙØ§Ù„Ø¥Ø´Ù‡Ø§Ø± â€” Ø¹Ø§ÙˆØ¯ Ø¬Ø±Ø¨');
           }
         })();
       }, 1000);
     } catch {
       setAdModalOpen(false);
-      showToast('error', 'مشكل فالإشهار — عاود جرب');
+      showToast('error', 'Ù…Ø´ÙƒÙ„ ÙØ§Ù„Ø¥Ø´Ù‡Ø§Ø± â€” Ø¹Ø§ÙˆØ¯ Ø¬Ø±Ø¨');
     }
   };
 
@@ -738,7 +738,7 @@ function LobbyContent() {
           <div className="pulse-glow-ring h-10 w-10 rounded-full border-2 border-[#D8A62A]/40 grid place-items-center">
             <Loader2 className="h-4 w-4 animate-spin text-[#D8A62A]" />
           </div>
-          <p className="font-lalezar text-2xl text-[#F5E7CE] text-glow-gold">كنوجدو الكراسا…</p>
+          <p className="font-lalezar text-2xl text-[#F5E7CE] text-glow-gold">ÙƒÙ†ÙˆØ¬Ø¯Ùˆ Ø§Ù„ÙƒØ±Ø§Ø³Ø§â€¦</p>
         </div>
       </div>
     );
@@ -752,15 +752,15 @@ function LobbyContent() {
       style={{ paddingBottom: 'max(5rem, env(safe-area-inset-bottom))' }}>
       {launching && <LaunchOverlay game={launching} />}
 
-      {/* ══════════════════════════════════════════
-          HEADER — sticky dark bar
-      ══════════════════════════════════════════ */}
-      {/* RTL: first child → visual RIGHT, last child → visual LEFT */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          HEADER â€” sticky dark bar
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+      {/* RTL: first child â†’ visual RIGHT, last child â†’ visual LEFT */}
       <header
         className="sticky top-0 z-30 flex items-center justify-between px-4 h-[54px]"
         style={{ background: 'rgba(6,8,16,0.55)', backdropFilter: 'blur(16px) saturate(160%)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
       >
-        {/* FIRST → visual RIGHT */}
+        {/* FIRST â†’ visual RIGHT */}
         <div className="flex items-center gap-1.5">
           <button
             onClick={toggleMute}
@@ -771,7 +771,7 @@ function LobbyContent() {
           </button>
           <button
             onClick={toggleMusic}
-            title={musicMuted ? 'تشغيل الموسيقى' : 'إيقاف الموسيقى'}
+            title={musicMuted ? 'ØªØ´ØºÙŠÙ„ Ø§Ù„Ù…ÙˆØ³ÙŠÙ‚Ù‰' : 'Ø¥ÙŠÙ‚Ø§Ù Ø§Ù„Ù…ÙˆØ³ÙŠÙ‚Ù‰'}
             className="h-8 w-8 grid place-items-center rounded-full transition-all"
             style={{
               background: musicMuted ? 'rgba(255,255,255,0.05)' : 'rgba(232,180,48,0.12)',
@@ -782,8 +782,8 @@ function LobbyContent() {
           </button>
         </div>
 
-        {/* CENTER: Logo */}
-        <Link href="/" className="flex items-center gap-2">
+        {/* CENTER/NEAR LEFT: Logo â€” moved a little to the left, next to menu button */}
+        <div className="flex items-center gap-2.5"><Link href="/" className="flex items-center gap-2">
           <Image src="/images/logo-playm3ana-new.png" alt="PlayM3ana" width={34} height={28} className="h-7 w-auto object-contain" />
           <span className="font-cairo font-black text-[15px] tracking-tight">
             <span className="text-white">PLAY</span>
@@ -791,7 +791,7 @@ function LobbyContent() {
           </span>
         </Link>
 
-        {/* LAST → visual LEFT: hamburger */}
+        {/* LAST â†’ visual LEFT: hamburger */}
         <button
           onClick={openSettings}
           className="h-9 w-9 grid place-items-center rounded-xl transition hover:bg-white/10"
@@ -803,6 +803,7 @@ function LobbyContent() {
             <rect y="10.8" width="17" height="2.2" rx="1.1" fill="rgba(255,255,255,0.8)" />
           </svg>
         </button>
+        </div>
       </header>
 
       {/* Coins pill */}
@@ -816,7 +817,7 @@ function LobbyContent() {
         </div>
       )}
 
-      {/* Level pill — mirrored on start side (visual right in RTL) */}
+      {/* Level pill â€” mirrored on start side (visual right in RTL) */}
       {isAuthed && xpData && (
         <div
           className="fixed start-4 top-[62px] z-[55] flex select-none items-center gap-1.5 rounded-full border px-3 py-1 pointer-events-none backdrop-blur-sm"
@@ -835,16 +836,16 @@ function LobbyContent() {
         </div>
       )}
 
-      {/* ══════════════════════════════════════════
-          HERO — image complète + contenu superposé
-      ══════════════════════════════════════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          HERO â€” image complÃ¨te + contenu superposÃ©
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
       <section className="relative w-full" style={{ background: '#060810' }}>
 
-        {/* IMAGE — aspect ratio exact 1672/941, object-contain = photo complète visible */}
+        {/* IMAGE â€” aspect ratio exact 1672/941, object-contain = photo complÃ¨te visible */}
         <div className="relative w-full" style={{ aspectRatio: '1672 / 941' }}>
           <Image
             src="/images/moroccan-hero-full.png"
-            alt="PLAYM3ANA — ساحة الألعاب المغربية"
+            alt="PLAYM3ANA â€” Ø³Ø§Ø­Ø© Ø§Ù„Ø£Ù„Ø¹Ø§Ø¨ Ø§Ù„Ù…ØºØ±Ø¨ÙŠØ©"
             fill
             className="object-contain object-center"
             priority
@@ -852,7 +853,7 @@ function LobbyContent() {
           />
         </div>
 
-        {/* GRADIENT OVERLAY — fondu du bas vers le haut, couvre ~55% inférieur */}
+        {/* GRADIENT OVERLAY â€” fondu du bas vers le haut, couvre ~55% infÃ©rieur */}
         <div
           className="absolute inset-x-0 bottom-0 pointer-events-none"
           style={{
@@ -861,7 +862,7 @@ function LobbyContent() {
           }}
         />
 
-        {/* CONTENU — superposé en bas de l'image */}
+        {/* CONTENU â€” superposÃ© en bas de l'image */}
         <div className="absolute inset-x-0 bottom-0 px-5 pb-5 flex flex-col gap-3">
 
           {/* LIVE badge */}
@@ -874,11 +875,11 @@ function LobbyContent() {
           </div>
 
           <h1 className="font-lalezar leading-[1.08]" style={{ fontSize: 'clamp(1.75rem,7.5vw,2.4rem)', textShadow: '0 2px 16px rgba(0,0,0,0.9)' }}>
-            <span className="text-white">اللعب كيزيد</span><br />
+            <span className="text-white">Ø§Ù„Ù„Ø¹Ø¨ ÙƒÙŠØ²ÙŠØ¯</span><br />
             <span style={{
               background: 'linear-gradient(135deg,#F5CC6B 0%,#E8B430 45%,#C2341A 100%)',
               WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent',
-            }}>الحلا مع صحابك</span>
+            }}>Ø§Ù„Ø­Ù„Ø§ Ù…Ø¹ ØµØ­Ø§Ø¨Ùƒ</span>
           </h1>
 
           <div className="flex items-center gap-2.5">
@@ -888,7 +889,7 @@ function LobbyContent() {
               style={{ background: 'rgba(194,52,26,0.95)', border: '1px solid rgba(220,80,40,0.55)', color: 'white', boxShadow: '0 4px 20px rgba(194,52,26,0.6)' }}
             >
               <Gamepad2 className="h-4 w-4" />
-              لعب دايا
+              Ù„Ø¹Ø¨ Ø¯Ø§ÙŠØ§
             </a>
             {!isAuthed && (
               <Link
@@ -896,16 +897,16 @@ function LobbyContent() {
                 className="inline-flex items-center gap-2 px-4 py-3 rounded-[14px] font-cairo font-black text-[12px]"
                 style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.16)', color: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(4px)' }}
               >
-                صاوب كونط
+                ØµØ§ÙˆØ¨ ÙƒÙˆÙ†Ø·
               </Link>
             )}
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════
-          LIVE TICKER — activity strip
-      ══════════════════════════════════════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          LIVE TICKER â€” activity strip
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
       <div
         className="relative overflow-hidden py-2.5"
         style={{ background: 'rgba(194,52,26,0.1)', borderTop: '1px solid rgba(194,52,26,0.22)', borderBottom: '1px solid rgba(194,52,26,0.12)' }}
@@ -921,7 +922,7 @@ function LobbyContent() {
               {TICKER_ITEMS.map((item, i) => (
                 <span key={`${g}-${i}`} className="font-cairo text-[11px] font-bold shrink-0" style={{ color: 'rgba(255,255,255,0.52)' }}>
                   {item}
-                  <span className="mx-4" style={{ color: 'rgba(232,180,48,0.45)' }}>◆</span>
+                  <span className="mx-4" style={{ color: 'rgba(232,180,48,0.45)' }}>â—†</span>
                 </span>
               ))}
             </div>
@@ -929,17 +930,17 @@ function LobbyContent() {
         </div>
       </div>
 
-      {/* ══════════════════════════════════════════
-          STATS — 3 community numbers
-      ══════════════════════════════════════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          STATS â€” 3 community numbers
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
       <div
         className="grid grid-cols-3"
         style={{ background: 'rgba(6,8,16,0.98)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}
       >
         {[
-          { emoji: '🎮', num: '+50',   label: 'لعبة مختلفة',     color: '#E8B430' },
-          { emoji: '🏆', num: '+100K', label: 'لاعب نشيط',        color: '#10A07A' },
-          { emoji: '⭐', num: '4.8',   label: 'تقييم المستخدمين', color: '#F5CC6B' },
+          { emoji: 'ðŸŽ®', num: '+50',   label: 'Ù„Ø¹Ø¨Ø© Ù…Ø®ØªÙ„ÙØ©',     color: '#E8B430' },
+          { emoji: 'ðŸ†', num: '+100K', label: 'Ù„Ø§Ø¹Ø¨ Ù†Ø´ÙŠØ·',        color: '#10A07A' },
+          { emoji: 'â­', num: '4.8',   label: 'ØªÙ‚ÙŠÙŠÙ… Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ†', color: '#F5CC6B' },
         ].map((s, i) => (
           <div
             key={i}
@@ -953,29 +954,29 @@ function LobbyContent() {
         ))}
       </div>
 
-      {/* ══════════════════════════════════════════
-          أبواب المدينة — GAME DOORS (mobile carousel)
-      ══════════════════════════════════════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          Ø£Ø¨ÙˆØ§Ø¨ Ø§Ù„Ù…Ø¯ÙŠÙ†Ø© â€” GAME DOORS (mobile carousel)
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
       <section id="most-played" className="pt-5 pb-4 sm:hidden">
         <div className="flex items-center justify-between px-4 mb-4">
           <a href="#most-played" className="font-cairo text-[11px] font-bold" style={{ color: 'rgba(255,255,255,0.3)' }}>
-            عرض الكل
+            Ø¹Ø±Ø¶ Ø§Ù„ÙƒÙ„
           </a>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rotate-45 flex-shrink-0" style={{ background: '#E8B430', opacity: 0.65 }} />
-            <h2 className="font-lalezar text-[19px] text-white">أبواب المدينة</h2>
+            <h2 className="font-lalezar text-[19px] text-white">Ø£Ø¨ÙˆØ§Ø¨ Ø§Ù„Ù…Ø¯ÙŠÙ†Ø©</h2>
             <div className="w-2 h-2 rotate-45 flex-shrink-0" style={{ background: '#E8B430', opacity: 0.65 }} />
           </div>
         </div>
 
-        <div className="flex overflow-x-auto gap-3 pb-3 -mx-4 px-4 scrollbar-hide snap-x snap-mandatory">
+        <div className="flex items-start overflow-x-auto gap-3 pb-3 -mx-4 px-4 scrollbar-hide snap-x snap-mandatory">
           {GAMES.map((game, i) => {
             const rankBg  = ['#E8B430','#A855F7','#C2341A','#EF4444','#10A07A'][i];
             const rankClr = i === 0 ? '#060810' : '#fff';
             return (
-              /* Wrapper ~1.3 cartes visibles par écran :
-                 76.92% (= 100 / 1.3) de la largeur utile du strip − le gap (gap-3 = 12px)
-                 → visible / (carte + gap) ≈ 1.3 sur mobile ; le strip est masqué dès sm: */
+              /* Wrapper ~1.3 cartes visibles par Ã©cran :
+                 76.92% (= 100 / 1.3) de la largeur utile du strip âˆ’ le gap (gap-3 = 12px)
+                 â†’ visible / (carte + gap) â‰ˆ 1.3 sur mobile ; le strip est masquÃ© dÃ¨s sm: */
               <div key={game.id} className="snap-center shrink-0 relative w-[calc(76.92%_-_12px)]">
                 <GameCard
                   game={game}
@@ -985,7 +986,7 @@ function LobbyContent() {
                   onPlay={(e) => playWithCoins(game.id, e)}
                   onWatchAd={() => watchAdToPlay(game.id)}
                 />
-                {/* Rank badge superposé sur la card */}
+                {/* Rank badge superposÃ© sur la card */}
                 <div
                   className="absolute top-3 end-3 z-20 h-6 w-6 rounded-full grid place-items-center font-cairo text-[10px] font-black pointer-events-none"
                   style={{ background: rankBg, color: rankClr, boxShadow: `0 2px 8px ${rankBg}70` }}
@@ -1002,10 +1003,10 @@ function LobbyContent() {
       <section id="games-section" className="hidden sm:block px-6 pb-8 max-w-6xl mx-auto">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-2.5 h-2.5 rotate-45 flex-shrink-0" style={{ background: '#E8B430', opacity: 0.7 }} />
-          <h2 className="font-lalezar text-[22px] text-white">أبواب المدينة</h2>
+          <h2 className="font-lalezar text-[22px] text-white">Ø£Ø¨ÙˆØ§Ø¨ Ø§Ù„Ù…Ø¯ÙŠÙ†Ø©</h2>
           <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg,rgba(232,180,48,0.3),transparent)' }} />
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        <div className="grid items-start sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
           {GAMES.map((game) => (
             <GameCard
               key={game.id}
@@ -1020,33 +1021,11 @@ function LobbyContent() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════
-          CATEGORIES — filter by type
-      ══════════════════════════════════════════ */}
-      <div className="px-4 pt-2 pb-3">
-        <div className="flex overflow-x-auto gap-2 pb-1 scrollbar-hide">
-          {([
-            { id: 'g', icon: '👥', label: 'الألعاب الجماعية', bg: 'rgba(72,42,155,0.85)',  border: 'rgba(105,65,210,0.55)', color: '#C4A8FF' },
-            { id: 'd', icon: '🎨', label: 'الكتف مع الرسم',   bg: 'rgba(12,75,95,0.85)',   border: 'rgba(40,175,200,0.55)', color: '#6DE6F5' },
-            { id: 'm', icon: '🧠', label: 'ألعاب ذكاء',        bg: 'rgba(8,68,42,0.85)',    border: 'rgba(22,165,95,0.55)',  color: '#4DDD9A' },
-            { id: 's', icon: '⚡', label: 'ألعاب سريعة',       bg: 'rgba(80,52,4,0.85)',    border: 'rgba(235,175,35,0.55)', color: '#F5D060' },
-            { id: 'f', icon: '⚽', label: 'كرة القدم',         bg: 'rgba(6,58,28,0.85)',    border: 'rgba(30,190,88,0.55)',  color: '#86EFAC' },
-          ] as const).map((cat) => (
-            <button
-              key={cat.id}
-              className="shrink-0 flex flex-col items-center gap-1 px-3 py-2.5 rounded-[14px] min-w-[68px] transition-transform hover:scale-105 active:scale-95"
-              style={{ background: cat.bg, border: `1px solid ${cat.border}` }}
-            >
-              <span className="text-[22px] leading-none">{cat.icon}</span>
-              <span className="font-cairo text-[8.5px] font-black text-center" style={{ color: cat.color, whiteSpace: 'nowrap' }}>{cat.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
 
-      {/* ══════ MISSIONS — floating buttons (DailyMissionButtons, bottom-left) ══════ */}
 
-      {/* ══════ GUEST CTA ══════ */}
+      {/* â•â•â•â•â•â• MISSIONS â€” floating buttons (DailyMissionButtons, bottom-left) â•â•â•â•â•â• */}
+
+      {/* â•â•â•â•â•â• GUEST CTA â•â•â•â•â•â• */}
       {!isAuthed && (
         <section className="px-4 pb-4">
           <div
@@ -1055,37 +1034,37 @@ function LobbyContent() {
           >
             <div className="absolute top-0 inset-x-0 h-[3px] rounded-t-[20px]"
               style={{ background: 'linear-gradient(90deg,transparent,rgba(232,180,48,0.7),#E8B430,rgba(232,180,48,0.7),transparent)' }} />
-            <p className="font-lalezar text-[19px] text-white mb-1">دخل وبدا تلعب مجاناً 🎮</p>
-            <p className="font-cairo text-[11px] text-white/38 mb-4">عندك 100 كوين باش تبدا الشوهة</p>
+            <p className="font-lalezar text-[19px] text-white mb-1">Ø¯Ø®Ù„ ÙˆØ¨Ø¯Ø§ ØªÙ„Ø¹Ø¨ Ù…Ø¬Ø§Ù†Ø§Ù‹ ðŸŽ®</p>
+            <p className="font-cairo text-[11px] text-white/38 mb-4">Ø¹Ù†Ø¯Ùƒ 100 ÙƒÙˆÙŠÙ† Ø¨Ø§Ø´ ØªØ¨Ø¯Ø§ Ø§Ù„Ø´ÙˆÙ‡Ø©</p>
             <div className="flex gap-2.5">
               <Link
                 href="/register"
                 className="flex-1 py-3 rounded-[14px] font-cairo font-black text-[14px] text-center"
                 style={{ background: 'linear-gradient(135deg,#F5CC6B,#E8B430)', color: '#060810' }}
               >
-                صاوب كونط
+                ØµØ§ÙˆØ¨ ÙƒÙˆÙ†Ø·
               </Link>
               <Link
                 href="/login"
                 className="flex-1 py-3 rounded-[14px] font-cairo font-black text-[14px] text-center"
                 style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.14)', color: 'white' }}
               >
-                دخول
+                Ø¯Ø®ÙˆÙ„
               </Link>
             </div>
           </div>
         </section>
       )}
 
-      {/* ══════ REFERRAL ══════ */}
+      {/* â•â•â•â•â•â• REFERRAL â•â•â•â•â•â• */}
       {isAuthed && xpData?.referralCode && (
         <section className="px-4 pb-4">
           <div className="rounded-[18px] p-4" style={{ background: 'rgba(232,180,48,0.06)', border: '1px solid rgba(232,180,48,0.18)' }}>
             <div className="flex items-center gap-2 mb-2">
               <Zap className="h-4 w-4" style={{ color: '#E8B430' }} />
-              <span className="font-lalezar text-[17px]" style={{ color: '#E8B430' }}>عرض على صاحبك</span>
+              <span className="font-lalezar text-[17px]" style={{ color: '#E8B430' }}>Ø¹Ø±Ø¶ Ø¹Ù„Ù‰ ØµØ§Ø­Ø¨Ùƒ</span>
             </div>
-            <p className="font-cairo text-[11px] text-white/42 mb-3">بارطاجي الكود — بجوج غاتربحو كوينز فابور 🎁</p>
+            <p className="font-cairo text-[11px] text-white/42 mb-3">Ø¨Ø§Ø±Ø·Ø§Ø¬ÙŠ Ø§Ù„ÙƒÙˆØ¯ â€” Ø¨Ø¬ÙˆØ¬ ØºØ§ØªØ±Ø¨Ø­Ùˆ ÙƒÙˆÙŠÙ†Ø² ÙØ§Ø¨ÙˆØ± ðŸŽ</p>
             <div className="flex items-center gap-2.5">
               <code
                 className="flex-1 rounded-xl px-3 py-2.5 font-mono text-[13px] tracking-widest text-white"
@@ -1099,7 +1078,7 @@ function LobbyContent() {
                 style={{ background: 'rgba(232,180,48,0.12)', border: '1px solid rgba(232,180,48,0.28)', color: '#E8B430' }}
               >
                 {referralCopied ? <Check className="h-4 w-4" /> : <Zap className="h-4 w-4" />}
-                {referralCopied ? 'تم!' : 'كوپي'}
+                {referralCopied ? 'ØªÙ…!' : 'ÙƒÙˆÙ¾ÙŠ'}
               </button>
             </div>
           </div>
@@ -1110,17 +1089,17 @@ function LobbyContent() {
       <div className="px-4 pb-4"><AdBanner /></div>
       <div className="px-4"><LobbyFooter isAuthed={isAuthed} username={session?.user?.username} /></div>
 
-      {/* ══════════════════════════════════════════
-          BOTTOM NAV — 4 tabs, mobile only
-      ══════════════════════════════════════════ */}
-      {/* RTL: first DOM child → visual RIGHT */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          BOTTOM NAV â€” 4 tabs, mobile only
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+      {/* RTL: first DOM child â†’ visual RIGHT */}
       <nav
         ref={navRef}
-        aria-label="التنقل الرئيسي"
+        aria-label="Ø§Ù„ØªÙ†Ù‚Ù„ Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠ"
         className="fixed bottom-0 inset-x-0 z-50 flex items-center justify-around pt-1.5 pb-[max(0.6rem,env(safe-area-inset-bottom))] sm:hidden"
         style={{ background: '#060810', borderTop: '1px solid rgba(232,180,48,0.1)' }}
       >
-        {/* Liquid pill — the single active highlight shared by الرئيسية ↔ الألعاب.
+        {/* Liquid pill â€” the single active highlight shared by Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© â†” Ø§Ù„Ø£Ù„Ø¹Ø§Ø¨.
             Sits behind the buttons; position/size are written from JS on every
             scroll frame with NO transition (scroll = animation), and the inner
             blob carries the color + the squash/stretch morph while travelling. */}
@@ -1133,42 +1112,42 @@ function LobbyContent() {
         >
           <div ref={liquidBlobRef} className="nav-liquid-blob absolute inset-0 rounded-full" style={NAV_TAB_ACTIVE_STYLE} />
         </div>
-        {/* الرئيسية — visual RIGHT (DOM first in RTL) */}
+        {/* Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© â€” visual RIGHT (DOM first in RTL) */}
         <button
           ref={homeTabRef}
           onClick={goHome}
-          aria-label="الرئيسية"
+          aria-label="Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©"
           aria-current={activeTab === 'home' ? 'page' : undefined}
           className={`${NAV_TAB_PRIMARY}${activeTab === 'home' ? '' : ' hover:bg-white/[0.06]'}`}
         >
           <Home className={`h-[22px] w-[22px] ${activeTab === 'home' ? 'text-white' : 'text-white/35'}`} />
-          <span className={`font-cairo text-[10px] font-black ${activeTab === 'home' ? 'text-white' : 'text-white/35'}`}>الرئيسية</span>
+          <span className={`font-cairo text-[10px] font-black ${activeTab === 'home' ? 'text-white' : 'text-white/35'}`}>Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©</span>
         </button>
-        {/* الألعاب — يهبط لقسم #most-played */}
+        {/* Ø§Ù„Ø£Ù„Ø¹Ø§Ø¨ â€” ÙŠÙ‡Ø¨Ø· Ù„Ù‚Ø³Ù… #most-played */}
         <button
           ref={gamesTabRef}
           onClick={goGames}
-          aria-label="الألعاب"
+          aria-label="Ø§Ù„Ø£Ù„Ø¹Ø§Ø¨"
           aria-current={activeTab === 'games' ? 'page' : undefined}
           className={`${NAV_TAB_PRIMARY}${activeTab === 'games' ? '' : ' hover:bg-white/[0.06]'}`}
         >
           <Gamepad2 className={`h-[22px] w-[22px] ${activeTab === 'games' ? 'text-white' : 'text-white/35'}`} />
-          <span className={`font-cairo text-[10px] font-black ${activeTab === 'games' ? 'text-white' : 'text-white/35'}`}>الألعاب</span>
+          <span className={`font-cairo text-[10px] font-black ${activeTab === 'games' ? 'text-white' : 'text-white/35'}`}>Ø§Ù„Ø£Ù„Ø¹Ø§Ø¨</span>
         </button>
-        {/* الصحاب — يفتح لوحة الصحاب (أو ورقة الدخول للضيوف) */}
-        <button onClick={openFriends} aria-label="الصحاب" className={NAV_TAB_IDLE}>
+        {/* Ø§Ù„ØµØ­Ø§Ø¨ â€” ÙŠÙØªØ­ Ù„ÙˆØ­Ø© Ø§Ù„ØµØ­Ø§Ø¨ (Ø£Ùˆ ÙˆØ±Ù‚Ø© Ø§Ù„Ø¯Ø®ÙˆÙ„ Ù„Ù„Ø¶ÙŠÙˆÙ) */}
+        <button onClick={openFriends} aria-label="Ø§Ù„ØµØ­Ø§Ø¨" className={NAV_TAB_IDLE}>
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
             <rect x="3" y="4" width="6" height="6" rx="1.5" fill="rgba(255,255,255,0.33)" />
             <rect x="13" y="4" width="6" height="6" rx="1.5" fill="rgba(255,255,255,0.33)" />
             <rect x="3" y="13" width="6" height="6" rx="1.5" fill="rgba(255,255,255,0.33)" />
             <rect x="13" y="13" width="6" height="6" rx="1.5" fill="rgba(255,255,255,0.33)" />
           </svg>
-          <span className="font-cairo text-[10px] text-white/35">الصحاب</span>
+          <span className="font-cairo text-[10px] text-white/35">Ø§Ù„ØµØ­Ø§Ø¨</span>
         </button>
-        {/* حسابي — visual LEFT (DOM last in RTL) */}
-        <button onClick={openSettings} aria-label="حسابي" className={NAV_TAB_IDLE}>
+        {/* Ø­Ø³Ø§Ø¨ÙŠ â€” visual LEFT (DOM last in RTL) */}
+        <button onClick={openSettings} aria-label="Ø­Ø³Ø§Ø¨ÙŠ" className={NAV_TAB_IDLE}>
           <User className="h-[22px] w-[22px] text-white/35" />
-          <span className="font-cairo text-[10px] text-white/35">حسابي</span>
+          <span className="font-cairo text-[10px] text-white/35">Ø­Ø³Ø§Ø¨ÙŠ</span>
         </button>
       </nav>
 
@@ -1179,20 +1158,20 @@ function LobbyContent() {
           onClaim={(reward) => {
             void update();
             setMissionsOpen(false);
-            showToast('ok', `مبروك! ربحتي +${reward} 🪙 على المهمة 🎯`);
+            showToast('ok', `Ù…Ø¨Ø±ÙˆÙƒ! Ø±Ø¨Ø­ØªÙŠ +${reward} ðŸª™ Ø¹Ù„Ù‰ Ø§Ù„Ù…Ù‡Ù…Ø© ðŸŽ¯`);
           }}
         />
       )}
 
-      {/* ═══════════════ FRIENDS PANEL ═══════════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• FRIENDS PANEL â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
       {friendsOpen && (
         <FriendsPanel onClose={() => setFriendsOpen(false)} />
       )}
 
-      {/* ═══════════════ DAILY MISSION FLOATING BUTTONS ═══════════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• DAILY MISSION FLOATING BUTTONS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
       {isAuthed && <DailyMissionButtons />}
 
-      {/* Music auto-start hint — fades in/out once via CSS animation */}
+      {/* Music auto-start hint â€” fades in/out once via CSS animation */}
       {showMusicHint && !musicMuted && (
         <div
           className="fixed bottom-[78px] sm:bottom-10 inset-x-0 flex justify-center z-[43] pointer-events-none select-none"
@@ -1203,12 +1182,12 @@ function LobbyContent() {
             style={{ background: 'rgba(6,8,16,0.88)', border: '1px solid rgba(232,180,48,0.28)', color: '#E8B430' }}
           >
             <Music className="h-3 w-3" />
-            <span className="font-cairo text-[10.5px] font-bold">المسّ أو اضغط لتشغيل الموسيقى 🎵</span>
+            <span className="font-cairo text-[10.5px] font-bold">Ø§Ù„Ù…Ø³Ù‘ Ø£Ùˆ Ø§Ø¶ØºØ· Ù„ØªØ´ØºÙŠÙ„ Ø§Ù„Ù…ÙˆØ³ÙŠÙ‚Ù‰ ðŸŽµ</span>
           </div>
         </div>
       )}
 
-      {/* ═══════════════ AD MODAL ═══════════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• AD MODAL â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
       {adModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={() => setAdModalOpen(false)} />
@@ -1222,22 +1201,22 @@ function LobbyContent() {
             </button>
             <div className="flex items-center gap-2">
               <StarMark size={26} />
-              <p className="font-cairo text-[13px] font-black text-[#FFF7E8]">إشهار باش تلعب</p>
+              <p className="font-cairo text-[13px] font-black text-[#FFF7E8]">Ø¥Ø´Ù‡Ø§Ø± Ø¨Ø§Ø´ ØªÙ„Ø¹Ø¨</p>
             </div>
             {adStatus === 'idle' && (
               <>
-                <h3 className="mt-5 font-lalezar text-2xl text-[#FFF7E8]">ثواني من وقتك مقابل الليلة كاملة</h3>
+                <h3 className="mt-5 font-lalezar text-2xl text-[#FFF7E8]">Ø«ÙˆØ§Ù†ÙŠ Ù…Ù† ÙˆÙ‚ØªÙƒ Ù…Ù‚Ø§Ø¨Ù„ Ø§Ù„Ù„ÙŠÙ„Ø© ÙƒØ§Ù…Ù„Ø©</h3>
                 <p className="mt-1.5 font-cairo text-[13px] font-semibold leading-relaxed text-[#B8C4D8]">
-                  شاهد الإعلان وغادي نفتح ليك الطاولة <b className="text-[#F5B942]">فابور</b> — ماشي هزيمة، هذا تكتيك 😅
+                  Ø´Ø§Ù‡Ø¯ Ø§Ù„Ø¥Ø¹Ù„Ø§Ù† ÙˆØºØ§Ø¯ÙŠ Ù†ÙØªØ­ Ù„ÙŠÙƒ Ø§Ù„Ø·Ø§ÙˆÙ„Ø© <b className="text-[#F5B942]">ÙØ§Ø¨ÙˆØ±</b> â€” Ù…Ø§Ø´ÙŠ Ù‡Ø²ÙŠÙ…Ø©ØŒ Ù‡Ø°Ø§ ØªÙƒØªÙŠÙƒ ðŸ˜…
                 </p>
                 <button onClick={startRewardedAd} className="bg-[#E8B430] text-[#060810] font-bold rounded-xl flex items-center justify-center gap-2 mt-6 w-full py-4 text-[15px]">
-                  <Play className="h-5 w-5" /> تفرج على الإشهار — وعيني عينك
+                  <Play className="h-5 w-5" /> ØªÙØ±Ø¬ Ø¹Ù„Ù‰ Ø§Ù„Ø¥Ø´Ù‡Ø§Ø± â€” ÙˆØ¹ÙŠÙ†ÙŠ Ø¹ÙŠÙ†Ùƒ
                 </button>
                 <button
                   onClick={() => setAdModalOpen(false)}
                   className="mt-2.5 w-full py-2 text-center font-cairo text-[12.5px] font-bold text-[#B8C4D8] transition hover:text-[#FFF7E8]"
                 >
-                  لا شكرا، غانخلص بالكوينز
+                  Ù„Ø§ Ø´ÙƒØ±Ø§ØŒ ØºØ§Ù†Ø®Ù„Øµ Ø¨Ø§Ù„ÙƒÙˆÙŠÙ†Ø²
                 </button>
               </>
             )}
@@ -1250,9 +1229,9 @@ function LobbyContent() {
                     <span className="relative font-lalezar text-2xl text-[#2DD4BF]">{countdown}</span>
                   </div>
                   <div>
-                    <p className="font-cairo text-[13px] font-black text-[#2DD4BF]">صبر على الإشهار…</p>
+                    <p className="font-cairo text-[13px] font-black text-[#2DD4BF]">ØµØ¨Ø± Ø¹Ù„Ù‰ Ø§Ù„Ø¥Ø´Ù‡Ø§Ø±â€¦</p>
                     <p className="font-cairo text-[11px] font-semibold text-[#B8C4D8]">
-                      غادي تدخل للطبلة من بعد {countdown} {countdown === 1 ? 'ثانية' : 'ثواني'}
+                      ØºØ§Ø¯ÙŠ ØªØ¯Ø®Ù„ Ù„Ù„Ø·Ø¨Ù„Ø© Ù…Ù† Ø¨Ø¹Ø¯ {countdown} {countdown === 1 ? 'Ø«Ø§Ù†ÙŠØ©' : 'Ø«ÙˆØ§Ù†ÙŠ'}
                     </p>
                   </div>
                 </div>
@@ -1263,15 +1242,15 @@ function LobbyContent() {
                 <div className="grid h-14 w-14 place-items-center rounded-full border-2 border-emerald-400/40 bg-emerald-400/10">
                   <Check className="h-7 w-7 text-emerald-400" />
                 </div>
-                <p className="font-cairo text-[14px] font-black text-emerald-300">كنتأكدو بلي ماتفرجتيش ف الإشهار وعينيك مسدودين…</p>
-                <p className="font-cairo text-[12px] font-semibold text-emerald-100/70">تقدر تعيط لصحابك باش توجدو 🫡</p>
+                <p className="font-cairo text-[14px] font-black text-emerald-300">ÙƒÙ†ØªØ£ÙƒØ¯Ùˆ Ø¨Ù„ÙŠ Ù…Ø§ØªÙØ±Ø¬ØªÙŠØ´ Ù Ø§Ù„Ø¥Ø´Ù‡Ø§Ø± ÙˆØ¹ÙŠÙ†ÙŠÙƒ Ù…Ø³Ø¯ÙˆØ¯ÙŠÙ†â€¦</p>
+                <p className="font-cairo text-[12px] font-semibold text-emerald-100/70">ØªÙ‚Ø¯Ø± ØªØ¹ÙŠØ· Ù„ØµØ­Ø§Ø¨Ùƒ Ø¨Ø§Ø´ ØªÙˆØ¬Ø¯Ùˆ ðŸ«¡</p>
               </div>
             )}
           </div>
         </div>
       )}
 
-      {/* ═══════════════ GUEST AUTH SHEET ═══════════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• GUEST AUTH SHEET â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
       {authSheetOpen && (
         <div className="fixed inset-0 z-[65] sm:flex sm:items-center sm:justify-center sm:p-4">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setAuthSheetOpen(false)} />
@@ -1285,31 +1264,31 @@ function LobbyContent() {
             </button>
             <div className="flex items-center gap-2">
               <StarMark size={26} />
-              <p className="font-cairo text-[13px] font-black text-[#FFF7E8]">التهاليب محجوزين للعضاء</p>
+              <p className="font-cairo text-[13px] font-black text-[#FFF7E8]">Ø§Ù„ØªÙ‡Ø§Ù„ÙŠØ¨ Ù…Ø­Ø¬ÙˆØ²ÙŠÙ† Ù„Ù„Ø¹Ø¶Ø§Ø¡</p>
             </div>
-            <h3 className="mt-4 font-lalezar text-2xl text-[#FFF7E8]">دخول في 5 ثواني باش تفرش الطبلة</h3>
+            <h3 className="mt-4 font-lalezar text-2xl text-[#FFF7E8]">Ø¯Ø®ÙˆÙ„ ÙÙŠ 5 Ø«ÙˆØ§Ù†ÙŠ Ø¨Ø§Ø´ ØªÙØ±Ø´ Ø§Ù„Ø·Ø¨Ù„Ø©</h3>
             <p className="mt-1.5 font-cairo text-[13px] font-semibold leading-relaxed text-[#B8C4D8]">
-              دخل ولا صاوب كونط فابور — وعندك 100 كوين باش تبدا الشوهة فابور 🪙
+              Ø¯Ø®Ù„ ÙˆÙ„Ø§ ØµØ§ÙˆØ¨ ÙƒÙˆÙ†Ø· ÙØ§Ø¨ÙˆØ± â€” ÙˆØ¹Ù†Ø¯Ùƒ 100 ÙƒÙˆÙŠÙ† Ø¨Ø§Ø´ ØªØ¨Ø¯Ø§ Ø§Ù„Ø´ÙˆÙ‡Ø© ÙØ§Ø¨ÙˆØ± ðŸª™
             </p>
             <div className="mt-6 flex flex-col gap-2.5">
               <Link href="/login" className="bg-[#E8B430] text-[#060810] font-bold rounded-xl flex items-center justify-center gap-2 w-full py-3.5 text-[15px]">
-                <LogIn className="h-5 w-5" /> دخول
+                <LogIn className="h-5 w-5" /> Ø¯Ø®ÙˆÙ„
               </Link>
               <Link href="/register" className="bg-white/10 text-[#FFF7E8] font-bold rounded-xl flex items-center justify-center gap-2 border border-white/20 w-full py-3.5 text-[14px]">
-                <UserPlus className="h-5 w-5" /> صاوب كونط — فابور
+                <UserPlus className="h-5 w-5" /> ØµØ§ÙˆØ¨ ÙƒÙˆÙ†Ø· â€” ÙØ§Ø¨ÙˆØ±
               </Link>
             </div>
             <button
               onClick={() => setAuthSheetOpen(false)}
               className="mt-3 w-full py-2 text-center font-cairo text-[12.5px] font-bold text-[#B8C4D8] transition hover:text-[#FFF7E8]"
             >
-              شوف الطبلات — من بعد ندير الحساب
+              Ø´ÙˆÙ Ø§Ù„Ø·Ø¨Ù„Ø§Øª â€” Ù…Ù† Ø¨Ø¹Ø¯ Ù†Ø¯ÙŠØ± Ø§Ù„Ø­Ø³Ø§Ø¨
             </button>
           </div>
         </div>
       )}
 
-      {/* ═══════════════ SETTINGS SHEET ═══════════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• SETTINGS SHEET â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
       {settingsOpen && (
         <div className="fixed inset-0 z-[66] sm:flex sm:items-center sm:justify-center sm:p-4">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setSettingsOpen(false)} />
@@ -1323,14 +1302,14 @@ function LobbyContent() {
             </button>
             <div className="flex items-center gap-2">
               <Settings className="h-5 w-5 text-[#2DD4BF]" />
-              <p className="font-cairo text-[14px] font-black text-[#FFF7E8]">الإعدادات</p>
+              <p className="font-cairo text-[14px] font-black text-[#FFF7E8]">Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª</p>
             </div>
 
             <div className="mt-5 flex flex-col gap-2.5">
               {/* Coins */}
               {isAuthed && (
                 <div className="flex items-center justify-between rounded-2xl border border-[#F5B942]/20 bg-[#F5B942]/10 px-4 py-3">
-                  <span className="font-cairo text-[13px] font-bold text-[#FFF7E8]">الكوينز ديالك</span>
+                  <span className="font-cairo text-[13px] font-bold text-[#FFF7E8]">Ø§Ù„ÙƒÙˆÙŠÙ†Ø² Ø¯ÙŠØ§Ù„Ùƒ</span>
                   <span className="flex items-center gap-1.5 font-cairo text-[15px] font-black tabular-nums text-[#F5B942]">
                     <Coins className="h-4 w-4" /> {coins}
                   </span>
@@ -1346,7 +1325,7 @@ function LobbyContent() {
                   {muted
                     ? <VolumeX className="h-4 w-4 text-[#B8C4D8]" />
                     : <Volume2 className="h-4 w-4 text-[#2DD4BF]" />}
-                  الصوت
+                  Ø§Ù„ØµÙˆØª
                 </span>
                 <span className={`relative h-6 w-11 rounded-full transition-colors ${muted ? 'bg-white/10' : 'bg-[#2DD4BF]/40'}`}>
                   <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${muted ? 'start-0.5' : 'start-[1.375rem]'}`} />
@@ -1360,7 +1339,7 @@ function LobbyContent() {
               >
                 <span className="flex items-center gap-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8]">
                   <Music className={`h-4 w-4 ${musicMuted ? 'text-[#B8C4D8]' : 'text-[#2DD4BF]'}`} />
-                  الموسيقى
+                  Ø§Ù„Ù…ÙˆØ³ÙŠÙ‚Ù‰
                 </span>
                 <span className={`relative h-6 w-11 rounded-full transition-colors ${musicMuted ? 'bg-white/10' : 'bg-[#2DD4BF]/40'}`}>
                   <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${musicMuted ? 'start-0.5' : 'start-[1.375rem]'}`} />
@@ -1372,11 +1351,11 @@ function LobbyContent() {
                 <div className="rounded-2xl border border-[#2DD4BF]/20 bg-[#2DD4BF]/10 px-4 py-3.5">
                   <div className="flex items-center gap-2.5">
                     <UserPlus className="h-4 w-4 shrink-0 text-[#2DD4BF]" />
-                    <span className="font-cairo text-[13px] font-bold text-[#FFF7E8]">تبديل السمية</span>
+                    <span className="font-cairo text-[13px] font-bold text-[#FFF7E8]">ØªØ¨Ø¯ÙŠÙ„ Ø§Ù„Ø³Ù…ÙŠØ©</span>
                   </div>
                   {me?.username && (
                     <p className="mt-1.5 font-cairo text-[11px] text-[#B8C4D8]">
-                      اسم الكونط الأصلي: <span className="font-bold text-[#FFF7E8]">{me.username}</span>
+                      Ø§Ø³Ù… Ø§Ù„ÙƒÙˆÙ†Ø· Ø§Ù„Ø£ØµÙ„ÙŠ: <span className="font-bold text-[#FFF7E8]">{me.username}</span>
                       {me.email ? ` (${me.email})` : ''}
                     </p>
                   )}
@@ -1386,7 +1365,7 @@ function LobbyContent() {
                       onChange={(e) => { setNameDraft(e.target.value); setNameMsg(null); }}
                       maxLength={30}
                       disabled={nameBusy || (me?.canChangeName === false)}
-                      placeholder="السمية الجديدة…"
+                      placeholder="Ø§Ù„Ø³Ù…ÙŠØ© Ø§Ù„Ø¬Ø¯ÙŠØ¯Ø©â€¦"
                       className="w-full min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-[#2DD4BF]/50 disabled:opacity-40"
                     />
                     <button
@@ -1394,13 +1373,13 @@ function LobbyContent() {
                       disabled={nameBusy || (me?.canChangeName === false)}
                       className="bg-[#E8B430] text-[#060810] font-bold rounded-xl shrink-0 px-4 py-2.5 text-[12px] disabled:opacity-40"
                     >
-                      {nameBusy ? '…' : 'حفظ'}
+                      {nameBusy ? 'â€¦' : 'Ø­ÙØ¸'}
                     </button>
                   </div>
                   {me?.canChangeName === false && me?.nextNameChangeAt && (
                     <p className="mt-2 flex items-center gap-1.5 font-cairo text-[11px] font-bold text-[#2DD4BF]/80">
                       <Clock className="h-3.5 w-3.5" />
-                      تقدر تبدل من بعد {new Date(me.nextNameChangeAt).toLocaleDateString('ar-MA')}
+                      ØªÙ‚Ø¯Ø± ØªØ¨Ø¯Ù„ Ù…Ù† Ø¨Ø¹Ø¯ {new Date(me.nextNameChangeAt).toLocaleDateString('ar-MA')}
                     </p>
                   )}
                   {nameMsg && (
@@ -1416,11 +1395,11 @@ function LobbyContent() {
                 <div className="rounded-2xl border border-emerald-400/15 bg-emerald-950/10 px-4 py-3.5">
                   <div className="flex items-center gap-2.5">
                     <ShieldCheck className="h-4 w-4 shrink-0 text-emerald-300" />
-                    <span className="font-cairo text-[13px] font-bold text-[#FFF7E8]">تبديل الباسورد</span>
+                    <span className="font-cairo text-[13px] font-bold text-[#FFF7E8]">ØªØ¨Ø¯ÙŠÙ„ Ø§Ù„Ø¨Ø§Ø³ÙˆØ±Ø¯</span>
                   </div>
                   {me?.hasPassword === false && (
                     <p className="mt-1.5 font-cairo text-[11px] text-[#B8C4D8]">
-                      هاد الحساب تسجل بجوجل — الباسورد ماشي مربوط بيه.
+                      Ù‡Ø§Ø¯ Ø§Ù„Ø­Ø³Ø§Ø¨ ØªØ³Ø¬Ù„ Ø¨Ø¬ÙˆØ¬Ù„ â€” Ø§Ù„Ø¨Ø§Ø³ÙˆØ±Ø¯ Ù…Ø§Ø´ÙŠ Ù…Ø±Ø¨ÙˆØ· Ø¨ÙŠÙ‡.
                     </p>
                   )}
                   <div className="mt-2.5 flex flex-col gap-2">
@@ -1429,7 +1408,7 @@ function LobbyContent() {
                       value={pwDraft.cur}
                       onChange={(e) => { setPwDraft((p) => ({ ...p, cur: e.target.value })); setPwMsg(null); }}
                       disabled={pwBusy || me?.hasPassword === false}
-                      placeholder="الباسورد الحالي"
+                      placeholder="Ø§Ù„Ø¨Ø§Ø³ÙˆØ±Ø¯ Ø§Ù„Ø­Ø§Ù„ÙŠ"
                       className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-emerald-400/50 disabled:opacity-40"
                     />
                     <input
@@ -1437,7 +1416,7 @@ function LobbyContent() {
                       value={pwDraft.n1}
                       onChange={(e) => { setPwDraft((p) => ({ ...p, n1: e.target.value })); setPwMsg(null); }}
                       disabled={pwBusy || me?.hasPassword === false}
-                      placeholder="الباسورد الجديد"
+                      placeholder="Ø§Ù„Ø¨Ø§Ø³ÙˆØ±Ø¯ Ø§Ù„Ø¬Ø¯ÙŠØ¯"
                       className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-emerald-400/50 disabled:opacity-40"
                     />
                     <input
@@ -1445,7 +1424,7 @@ function LobbyContent() {
                       value={pwDraft.n2}
                       onChange={(e) => { setPwDraft((p) => ({ ...p, n2: e.target.value })); setPwMsg(null); }}
                       disabled={pwBusy || me?.hasPassword === false}
-                      placeholder="عاود اكتب الباسورد الجديد"
+                      placeholder="Ø¹Ø§ÙˆØ¯ Ø§ÙƒØªØ¨ Ø§Ù„Ø¨Ø§Ø³ÙˆØ±Ø¯ Ø§Ù„Ø¬Ø¯ÙŠØ¯"
                       className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-emerald-400/50 disabled:opacity-40"
                     />
                     <button
@@ -1453,7 +1432,7 @@ function LobbyContent() {
                       disabled={pwBusy || me?.hasPassword === false}
                       className="bg-[#E8B430] text-[#060810] font-bold rounded-xl py-2.5 text-[12px] disabled:opacity-40"
                     >
-                      {pwBusy ? '…' : 'بدل الباسورد'}
+                      {pwBusy ? 'â€¦' : 'Ø¨Ø¯Ù„ Ø§Ù„Ø¨Ø§Ø³ÙˆØ±Ø¯'}
                     </button>
                   </div>
                   {pwMsg && (
@@ -1468,10 +1447,10 @@ function LobbyContent() {
               {!isAuthed && (
                 <>
                   <Link href="/login" className="bg-[#E8B430] text-[#060810] font-bold rounded-xl flex items-center justify-center gap-2 mt-1 w-full py-3.5 text-[15px]">
-                    <LogIn className="h-5 w-5" /> دخول
+                    <LogIn className="h-5 w-5" /> Ø¯Ø®ÙˆÙ„
                   </Link>
                   <Link href="/register" className="bg-white/10 text-[#FFF7E8] font-bold rounded-xl flex items-center justify-center gap-2 border border-white/20 w-full py-3.5 text-[14px]">
-                    <UserPlus className="h-5 w-5" /> صاوب كونط — فابور
+                    <UserPlus className="h-5 w-5" /> ØµØ§ÙˆØ¨ ÙƒÙˆÙ†Ø· â€” ÙØ§Ø¨ÙˆØ±
                   </Link>
                 </>
               )}
@@ -1482,7 +1461,7 @@ function LobbyContent() {
                   onClick={() => { void handleLogout(); }}
                   className="mt-1 flex w-full items-center justify-center gap-2 rounded-2xl border border-red-500/20 bg-red-950/20 py-3.5 font-cairo text-[13px] font-black text-red-300"
                 >
-                  <LogOut className="h-4 w-4" /> خروج
+                  <LogOut className="h-4 w-4" /> Ø®Ø±ÙˆØ¬
                 </button>
               )}
             </div>
@@ -1490,7 +1469,7 @@ function LobbyContent() {
         </div>
       )}
 
-      {/* ═══════════════ TOAST ═══════════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• TOAST â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
       {toast && (
         <div className="fixed inset-x-0 bottom-[max(1.25rem,env(safe-area-inset-bottom))] z-[60] flex justify-center px-4">
           <div className={`bounce-in flex items-center gap-2.5 rounded-2xl border px-4 py-3 shadow-2xl backdrop-blur-xl ${

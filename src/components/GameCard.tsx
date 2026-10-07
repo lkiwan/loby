@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useId, useState } from "react";
 import Image from "next/image";
-import { Loader2, Play } from "lucide-react";
+import { ChevronDown, Loader2, Play } from "lucide-react";
 import { MAFIA_ART, type Game, GAMES } from "@/lib/games";
 import { GameMetaRow } from "@/components/GameMeta";
 import { GameTags } from "@/components/GameTag";
@@ -218,6 +218,10 @@ export default function GameCard({
   const accent    = game.starAccent;
   const glow      = game.glowAccent;
 
+  /* Per-card details disclosure — every card keeps its own state */
+  const [showDetails, setShowDetails] = useState(false);
+  const detailsId = useId();
+
   return (
     <div
       className="group game-door"
@@ -278,55 +282,90 @@ export default function GameCard({
           </p>
         </div>
 
-        {/* Meta row */}
-        <GameMetaRow game={game} />
-
-        {/* Description block — tagline + body */}
-        <div
-          className="rounded-[10px] px-3 py-2.5 space-y-1"
+        {/* Details toggle — collapsed body = title + toggle + 2 CTAs */}
+        <button
+          type="button"
+          onClick={() => setShowDetails((v) => !v)}
+          aria-expanded={showDetails}
+          aria-controls={detailsId}
+          className="flex w-full items-center justify-center gap-1.5 rounded-[10px] border py-[7px] font-cairo text-[11px] font-black leading-none transition active:scale-[0.98]"
           style={{
-            background:        `${accent}0A`,
-            borderInlineStart: `2px solid ${accent}55`,
+            borderColor: `${accent}33`,
+            background:  `${accent}0F`,
+            color:       accent,
           }}
         >
-          <p
-            className="font-cairo text-[12px] font-black leading-snug"
-            style={{ color: accent }}
-          >
-            {game.tagline}
-          </p>
-          <p className="font-cairo text-[11px] font-semibold leading-relaxed text-white/58 line-clamp-2">
-            {game.desc}
-          </p>
+          التفاصيل
+          <ChevronDown
+            aria-hidden="true"
+            strokeWidth={3}
+            className={`h-3.5 w-3.5 transition-transform duration-300 motion-reduce:transition-none ${
+              showDetails ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+
+        {/* ── COLLAPSIBLE DETAILS (stats + description + tags + divider) ──
+            Height animates 0fr → 1fr; visibility:hidden keeps the closed
+            region out of the tab order and off-screen readers. */}
+        <div
+          id={detailsId}
+          className={`door-details${showDetails ? " is-open" : ""}`}
+        >
+          <div className="door-details-inner">
+            <div className="flex flex-col gap-2">
+              {/* Meta row */}
+              <GameMetaRow game={game} />
+
+              {/* Description block — tagline + body */}
+              <div
+                className="rounded-[10px] px-3 py-2.5 space-y-1"
+                style={{
+                  background:        `${accent}0A`,
+                  borderInlineStart: `2px solid ${accent}55`,
+                }}
+              >
+                <p
+                  className="font-cairo text-[12px] font-black leading-snug"
+                  style={{ color: accent }}
+                >
+                  {game.tagline}
+                </p>
+                <p className="font-cairo text-[11px] font-semibold leading-relaxed text-white/58 line-clamp-2">
+                  {game.desc}
+                </p>
+              </div>
+
+              {/* Tags */}
+              <GameTags game={game} />
+
+              {/* Zellige ornamental divider */}
+              <div className="relative flex items-center gap-2 my-0.5">
+                <div
+                  className="h-px flex-1"
+                  style={{ background: `linear-gradient(90deg, transparent, ${accent}40)` }}
+                />
+                <div
+                  className="w-1.5 h-1.5 rotate-45 flex-shrink-0"
+                  style={{ background: accent, opacity: 0.6 }}
+                />
+                <div
+                  className="h-px flex-1"
+                  style={{ background: `linear-gradient(90deg, ${accent}40, transparent)` }}
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Tags */}
-        <GameTags game={game} />
-
-        {/* Zellige ornamental divider */}
-        <div className="relative flex items-center gap-2 my-0.5">
-          <div
-            className="h-px flex-1"
-            style={{ background: `linear-gradient(90deg, transparent, ${accent}40)` }}
-          />
-          <div
-            className="w-1.5 h-1.5 rotate-45 flex-shrink-0"
-            style={{ background: accent, opacity: 0.6 }}
-          />
-          <div
-            className="h-px flex-1"
-            style={{ background: `linear-gradient(90deg, ${accent}40, transparent)` }}
-          />
-        </div>
-
-        {/* ── CTA BUTTONS ── */}
-        <div className="mt-auto flex flex-col gap-1.5">
+        {/* ── CTA BUTTONS — side by side in one row ── */}
+        <div className="mt-auto flex gap-2">
 
           {/* PRIMARY — لعب دايا (solid red matching reference) */}
           <button
             onClick={(e) => { ripple(e); onPlay(e); }}
             disabled={isBusy || !canAfford}
-            className="btn-chunk relative w-full overflow-hidden py-[11px] text-[14px] rounded-[16px] font-cairo font-black"
+            className="btn-chunk relative flex-1 min-w-0 overflow-hidden whitespace-nowrap py-[11px] px-1 text-[14px] rounded-[16px] font-cairo font-black"
             style={{
               background:  "rgba(194,52,26,0.95)",
               border:      "1px solid rgba(220,80,40,0.6)",
@@ -350,10 +389,13 @@ export default function GameCard({
           <button
             onClick={onWatchAd}
             disabled={isBusy}
-            className="btn-chunk relative w-full overflow-hidden py-[8px] rounded-[14px] font-cairo font-black flex items-center justify-center gap-2"
+            className="btn-chunk relative flex-1 min-w-0 overflow-hidden whitespace-nowrap py-[8px] px-1 rounded-[14px] font-cairo font-black flex items-center justify-center"
             style={{
               background: "rgba(232,180,48,0.1)",
               border:     "1px solid rgba(232,180,48,0.32)",
+              /* .btn-chunk (unlayered) sets gap:.5rem — shrink inline so the
+                 label fits the half-width button without wrapping */
+              gap:        "6px",
             }}
           >
             <span
@@ -362,7 +404,7 @@ export default function GameCard({
             >
               AD
             </span>
-            <span className="font-cairo text-[11.5px] font-black" style={{ color: "#E8B430" }}>
+            <span className="font-cairo text-[10.5px] font-black" style={{ color: "#E8B430" }}>
               {isBusy && loadingAction === "ad"
                 ? <Loader2 className="h-3 w-3 animate-spin inline" />
                 : "تفرج على الإشهار"}
