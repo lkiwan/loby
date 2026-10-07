@@ -12,6 +12,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import LoadingPage from "@/components/LoadingPage";
 import {
   AlertTriangle,
   Check,
@@ -917,55 +918,7 @@ function LobbyContent() {
   }, [status, searchParams, router]);
 
   if (status === "loading") {
-    return (
-      <div className="relative flex min-h-dvh flex-col items-center justify-center gap-6 bg-[#07111F] overflow-hidden zellige-bg">
-        <div className="pointer-events-none fixed inset-0 overflow-hidden">
-          <div className="absolute inset-0 bg-[#07111F]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-[#D8A62A]/6 blur-3xl" />
-          <div className="absolute top-1/3 left-1/4 h-64 w-64 rounded-full bg-[#6D3CCF]/8 blur-3xl" />
-        </div>
-        <div className="relative z-10 flex flex-col items-center gap-5">
-          {/* Moroccan arch loading frame */}
-          <div className="relative">
-            <svg
-              width="120"
-              height="100"
-              viewBox="0 0 120 100"
-              fill="none"
-              aria-hidden="true"
-            >
-              <defs>
-                <linearGradient id="loadGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="transparent" />
-                  <stop offset="50%" stopColor="#D8A62A" />
-                  <stop offset="100%" stopColor="transparent" />
-                </linearGradient>
-              </defs>
-              <path
-                d="M 8,100 L 8,44 Q 8,4 60,4 Q 112,4 112,44 L 112,100"
-                stroke="url(#loadGrad)"
-                strokeWidth="2"
-                opacity="0.8"
-              />
-              <polygon
-                points="55,4 60,0 65,4 63,10 57,10"
-                fill="#D8A62A"
-                opacity="0.9"
-              />
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center pt-4">
-              <StarMark size={52} />
-            </div>
-          </div>
-          <div className="pulse-glow-ring h-10 w-10 rounded-full border-2 border-[#D8A62A]/40 grid place-items-center">
-            <Loader2 className="h-4 w-4 animate-spin text-[#D8A62A]" />
-          </div>
-          <p className="font-lalezar text-2xl text-[#F5E7CE] text-glow-gold">
-            كنوجدو الكراسا…
-          </p>
-        </div>
-      </div>
-    );
+    return <LoadingPage title="كنوجدو الكراسا…" description="" status="" />;
   }
 
   const isAuthed = status === "authenticated";
@@ -1028,30 +981,30 @@ function LobbyContent() {
           </button>
         </div>
 
-        {/* CENTER: Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <Image
-            src="/images/logo-playm3ana-new.png"
-            alt="PlayM3ana"
-            width={34}
-            height={28}
-            className="h-7 w-auto object-contain"
-          />
-          <span className="font-cairo font-black text-[15px] tracking-tight">
-            <span className="text-white">PLAY</span>
-            <span style={{ color: "#E8B430" }}>M3ANA</span>
-          </span>
-        </Link>
+        {/* LAST → visual LEFT: Logo + hamburger */}
+        <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/images/logo-playm3ana-new.png"
+              alt="PlayM3ana"
+              width={34}
+              height={28}
+              className="h-7 w-auto object-contain"
+            />
+            <span className="font-cairo font-black text-[15px] tracking-tight">
+              <span className="text-white">PLAY</span>
+              <span style={{ color: "#E8B430" }}>M3ANA</span>
+            </span>
+          </Link>
 
-        {/* LAST → visual LEFT: hamburger */}
-        <button
-          onClick={openSettings}
-          className="h-9 w-9 grid place-items-center rounded-xl transition hover:bg-white/10"
-          style={{
-            border: "1px solid rgba(255,255,255,0.1)",
-            background: "rgba(255,255,255,0.04)",
-          }}
-        >
+          <button
+            onClick={openSettings}
+            className="h-9 w-9 grid place-items-center rounded-xl transition hover:bg-white/10"
+            style={{
+              border: "1px solid rgba(255,255,255,0.1)",
+              background: "rgba(255,255,255,0.04)",
+            }}
+          >
           <svg
             width="17"
             height="13"
@@ -1080,7 +1033,8 @@ function LobbyContent() {
               fill="rgba(255,255,255,0.8)"
             />
           </svg>
-        </button>
+          </button>
+        </div>
       </header>
 
       {/* Coins pill */}
@@ -2193,3 +2147,5 @@ export default function LobbyPage() {
     </Suspense>
   );
 }
+
+// Trigger HMR

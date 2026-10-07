@@ -1,4 +1,4 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
 /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    PLAYM3ANA 2.0 â€” DESIGN SYSTEM
@@ -1131,3 +1131,210 @@ body.ad-playing { pointer-events: none; }
     width: 100%;
   }
 }
+
+
+/* =========================================================================
+   LOADING PAGE COMPONENT
+   ========================================================================= */
+
+.loading-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--dp-navy, #060810);
+  color: var(--dp-cream, #f9fafb);
+}
+
+.loading-page--fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(6, 8, 16, 0.95);
+  backdrop-filter: blur(8px);
+}
+
+.loading-card {
+  width: min(100%, 480px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 28px;
+  text-align: center;
+  background: var(--dp-navy-2, #0d1222);
+  border: 1px solid rgba(232, 180, 48, 0.15);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(232, 180, 48, 0.05);
+}
+
+.loading-card h1 {
+  margin: 36px 0 10px;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  line-height: 1.2;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.loading-card p {
+  max-width: 340px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.6;
+}
+
+.loading-status {
+  margin-top: 16px;
+  color: var(--dp-gold, #E8B430);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* =========================================================================
+   ANIMATED 5-SQUARE LOADER (Uiverse Reference)
+   ========================================================================= */
+
+.loading-spinner {
+  --square: 26px;
+  --offset: 30px;
+  --duration: 2.4s;
+  --delay: 0.2s;
+  --loader-color: var(--dp-gold, #E8B430);
+
+  position: relative;
+  width: calc(3 * var(--offset) + var(--square));
+  height: calc(2 * var(--offset) + var(--square));
+  margin: 10px auto;
+}
+
+.loading-spinner div {
+  position: absolute;
+  width: var(--square);
+  height: var(--square);
+  border-radius: 4px;
+  background: var(--loader-color);
+  box-shadow: 0 2px 8px rgba(232, 180, 48, 0.3);
+  animation-fill-mode: both;
+}
+
+.loading-spinner #square1 {
+  left: 0;
+  top: 0;
+  animation: 
+    squarefadein 0.4s 0.1s ease-out both,
+    square1 var(--duration) var(--delay) ease-in-out infinite;
+}
+
+.loading-spinner #square2 {
+  left: 0;
+  top: var(--offset);
+  animation: 
+    squarefadein 0.4s 0.2s ease-out both,
+    square2 var(--duration) var(--delay) ease-in-out infinite;
+}
+
+.loading-spinner #square3 {
+  left: var(--offset);
+  top: var(--offset);
+  animation: 
+    squarefadein 0.4s 0.3s ease-out both,
+    square3 var(--duration) var(--delay) ease-in-out infinite;
+}
+
+.loading-spinner #square4 {
+  left: calc(2 * var(--offset));
+  top: var(--offset);
+  animation: 
+    squarefadein 0.4s 0.4s ease-out both,
+    square4 var(--duration) var(--delay) ease-in-out infinite;
+}
+
+.loading-spinner #square5 {
+  left: calc(3 * var(--offset));
+  top: var(--offset);
+  animation: 
+    squarefadein 0.4s 0.5s ease-out both,
+    square5 var(--duration) var(--delay) ease-in-out infinite;
+}
+
+@keyframes square1 {
+  0% { left: 0; top: 0; }
+  8.333% { left: 0; top: var(--offset); }
+  100% { left: 0; top: var(--offset); }
+}
+
+@keyframes square2 {
+  0% { left: 0; top: var(--offset); }
+  8.333% { left: 0; top: calc(2 * var(--offset)); }
+  16.67% { left: var(--offset); top: calc(2 * var(--offset)); }
+  25.00% { left: var(--offset); top: var(--offset); }
+  83.33% { left: var(--offset); top: var(--offset); }
+  91.67% { left: var(--offset); top: 0; }
+  100% { left: 0; top: 0; }
+}
+
+@keyframes square3 {
+  0%, 100% { left: var(--offset); top: var(--offset); }
+  16.67% { left: var(--offset); top: var(--offset); }
+  25.00% { left: var(--offset); top: 0; }
+  33.33% { left: calc(2 * var(--offset)); top: 0; }
+  41.67% { left: calc(2 * var(--offset)); top: var(--offset); }
+  66.67% { left: calc(2 * var(--offset)); top: var(--offset); }
+  75.00% { left: calc(2 * var(--offset)); top: calc(2 * var(--offset)); }
+  83.33% { left: var(--offset); top: calc(2 * var(--offset)); }
+  91.67% { left: var(--offset); top: var(--offset); }
+}
+
+@keyframes square4 {
+  0% { left: calc(2 * var(--offset)); top: var(--offset); }
+  33.33% { left: calc(2 * var(--offset)); top: var(--offset); }
+  41.67% { left: calc(2 * var(--offset)); top: calc(2 * var(--offset)); }
+  50.00% { left: calc(3 * var(--offset)); top: calc(2 * var(--offset)); }
+  58.33% { left: calc(3 * var(--offset)); top: var(--offset); }
+  100% { left: calc(3 * var(--offset)); top: var(--offset); }
+}
+
+@keyframes square5 {
+  0% { left: calc(3 * var(--offset)); top: var(--offset); }
+  50.00% { left: calc(3 * var(--offset)); top: var(--offset); }
+  58.33% { left: calc(3 * var(--offset)); top: 0; }
+  66.67% { left: calc(2 * var(--offset)); top: 0; }
+  75.00% { left: calc(2 * var(--offset)); top: var(--offset); }
+  100% { left: calc(2 * var(--offset)); top: var(--offset); }
+}
+
+@keyframes squarefadein {
+  from { opacity: 0; transform: scale(0.7); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.loading-status::after {
+  content: "";
+  display: inline-block;
+  width: 1.2em;
+  text-align: left;
+  animation: loadingDots 1.4s steps(4, end) infinite;
+}
+
+@keyframes loadingDots {
+  0% { content: ""; }
+  25% { content: "."; }
+  50% { content: ".."; }
+  75%, 100% { content: "..."; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner div,
+  .loading-status::after {
+    animation: none !important;
+  }
+  .loading-spinner div {
+    opacity: 1;
+  }
+  .loading-status::after {
+    content: "...";
+  }
+}
+
