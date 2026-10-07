@@ -74,3 +74,225 @@ Setting a custom Cache-Control header can break Next.js development behavior.
  GET /api/auth/session 200 in 40ms (next.js: 26ms, application-code: 14ms)
  GET /api/auth/session 200 in 16ms (next.js: 3ms, application-code: 13ms)
 [browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /api/auth/session 200 in 72ms (next.js: 30ms, application-code: 41ms)
+ GET /api/auth/session 200 in 25ms (next.js: 6ms, application-code: 20ms)
+ GET /api/economy/balance 200 in 72ms (next.js: 8ms, application-code: 64ms)
+ POST /api/devices/track 200 in 103ms (next.js: 14ms, application-code: 89ms)
+ POST /api/rewards/checkin 200 in 107ms (next.js: 7ms, application-code: 100ms)
+ GET /api/rewards/missions 200 in 126ms (next.js: 19ms, application-code: 107ms)
+ GET /api/rewards/missions 200 in 47ms (next.js: 3ms, application-code: 44ms)
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET / 200 in 70ms (next.js: 6ms, application-code: 65ms)
+[browser] Uncaught Error: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HTTPAccessFallbackBoundary notFound={{...}} forbidden={undefined} unauthorized={undefined}>
+      <HTTPAccessFallbackErrorBoundary pathname="/" notFound={{...}} forbidden={undefined} unauthorized={undefined} ...>
+        <RedirectBoundary>
+          <RedirectErrorBoundary router={{...}}>
+            <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} segmentPath={[...]} ...>
+              <SegmentViewNode type="page" pagePath="page.tsx">
+                <SegmentTrieNode>
+                <ClientPageRoot Component={function LobbyPage} serverProvidedParams={{...}}>
+                  <LobbyPage params={Promise} searchParams={Promise}>
+                    <Suspense fallback={null}>
+                      <LobbyContent>
+                        <div className="relative f...">
+                          <div>
+                          <div className="relative z...">
+                            <div>
+                            <div>
+                            <p className="font-lalezar text-2xl text-[#F5E7CE] text-glow-gold">
++                             كنوجدو الكراسا…
+-                             ÙƒÙ†ÙˆØ¬Ø¯Ùˆ Ø§Ù„ÙƒØ±Ø§Ø³Ø§â€¦
+              ...
+            ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at p (<anonymous>)
+    at LobbyContent (src/app/page.tsx:741:11)
+    at LobbyPage (src/components/AdBanner.tsx:33:76)
+  739 |             <Loader2 className="h-4 w-4 animate-spin text-[#D8A62A]" />
+  740 |           </div>
+> 741 |           <p className="font-lalezar text-2xl text-[#F5E7CE] text-glow-gold">ÙƒÙ†ÙˆØ¬Ø¯Ùˆ Ø§Ù„ÙƒØ±Ø§Ø³Ø§â€¦</p>
+      |           ^
+  742 |         </div>
+  743 |       </div>
+  744 |     );
+ GET /api/auth/session 200 in 69ms (next.js: 43ms, application-code: 26ms)
+ GET /api/auth/session 200 in 44ms (next.js: 4ms, application-code: 40ms)
+ GET /api/economy/balance 200 in 62ms (next.js: 7ms, application-code: 55ms)
+ POST /api/rewards/checkin 200 in 43ms (next.js: 5ms, application-code: 38ms)
+ POST /api/devices/track 200 in 47ms (next.js: 11ms, application-code: 36ms)
+ GET /api/rewards/missions 200 in 50ms (next.js: 16ms, application-code: 34ms)
+ GET /api/rewards/missions 200 in 48ms (next.js: 6ms, application-code: 42ms)
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET / 200 in 58ms (next.js: 7ms, application-code: 52ms)
+[browser] Uncaught Error: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HTTPAccessFallbackBoundary notFound={{...}} forbidden={undefined} unauthorized={undefined}>
+      <HTTPAccessFallbackErrorBoundary pathname="/" notFound={{...}} forbidden={undefined} unauthorized={undefined} ...>
+        <RedirectBoundary>
+          <RedirectErrorBoundary router={{...}}>
+            <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} segmentPath={[...]} ...>
+              <SegmentViewNode type="page" pagePath="page.tsx">
+                <SegmentTrieNode>
+                <ClientPageRoot Component={function LobbyPage} serverProvidedParams={{...}}>
+                  <LobbyPage params={Promise} searchParams={Promise}>
+                    <Suspense fallback={null}>
+                      <LobbyContent>
+                        <div className="relative f...">
+                          <div>
+                          <div className="relative z...">
+                            <div>
+                            <div>
+                            <p className="font-lalezar text-2xl text-[#F5E7CE] text-glow-gold">
++                             كنوجدو الكراسا…
+-                             ÙƒÙ†ÙˆØ¬Ø¯Ùˆ Ø§Ù„ÙƒØ±Ø§Ø³Ø§â€¦
+              ...
+            ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at p (<anonymous>)
+    at LobbyContent (src/app/page.tsx:741:11)
+    at LobbyPage (src/components/AdBanner.tsx:33:76)
+  739 |             <Loader2 className="h-4 w-4 animate-spin text-[#D8A62A]" />
+  740 |           </div>
+> 741 |           <p className="font-lalezar text-2xl text-[#F5E7CE] text-glow-gold">ÙƒÙ†ÙˆØ¬Ø¯Ùˆ Ø§Ù„ÙƒØ±Ø§Ø³Ø§â€¦</p>
+      |           ^
+  742 |         </div>
+  743 |       </div>
+  744 |     );
+ GET /api/auth/session 200 in 57ms (next.js: 35ms, application-code: 22ms)
+ GET /api/auth/session 200 in 20ms (next.js: 4ms, application-code: 16ms)
+ POST /api/rewards/checkin 200 in 89ms (next.js: 3ms, application-code: 85ms)
+ GET /api/economy/balance 200 in 59ms (next.js: 19ms, application-code: 40ms)
+ POST /api/devices/track 200 in 72ms (next.js: 9ms, application-code: 63ms)
+ GET /api/rewards/missions 200 in 79ms (next.js: 32ms, application-code: 47ms)
+ GET /api/rewards/missions 200 in 72ms (next.js: 6ms, application-code: 66ms)
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET / 200 in 49ms (next.js: 4ms, application-code: 45ms)
+ GET /api/auth/session 200 in 54ms (next.js: 31ms, application-code: 23ms)
+ GET /api/auth/session 200 in 58ms (next.js: 40ms, application-code: 18ms)
+ GET /api/economy/balance 200 in 39ms (next.js: 6ms, application-code: 33ms)
+ POST /api/rewards/checkin 200 in 41ms (next.js: 5ms, application-code: 36ms)
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ POST /api/devices/track 200 in 53ms (next.js: 4ms, application-code: 49ms)
+ GET /api/rewards/missions 200 in 56ms (next.js: 4ms, application-code: 52ms)
+ GET /api/rewards/missions 200 in 60ms (next.js: 5ms, application-code: 55ms)
+ GET / 200 in 56ms (next.js: 5ms, application-code: 51ms)
+ GET /api/auth/session 200 in 49ms (next.js: 24ms, application-code: 25ms)
+ GET /api/auth/session 200 in 28ms (next.js: 3ms, application-code: 24ms)
+ GET /api/economy/balance 200 in 47ms (next.js: 4ms, application-code: 44ms)
+ POST /api/rewards/checkin 200 in 38ms (next.js: 3ms, application-code: 35ms)
+ POST /api/devices/track 200 in 31ms (next.js: 4ms, application-code: 27ms)
+ GET /api/rewards/missions 200 in 29ms (next.js: 4ms, application-code: 25ms)
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /api/rewards/missions 200 in 28ms (next.js: 4ms, application-code: 24ms)
+ GET / 200 in 54ms (next.js: 4ms, application-code: 50ms)
+ GET /api/auth/session 200 in 41ms (next.js: 31ms, application-code: 11ms)
+ GET /api/auth/session 200 in 25ms (next.js: 3ms, application-code: 22ms)
+ POST /api/rewards/checkin 200 in 31ms (next.js: 5ms, application-code: 26ms)
+ GET /api/economy/balance 200 in 22ms (next.js: 4ms, application-code: 18ms)
+ GET /api/rewards/missions 200 in 53ms (next.js: 11ms, application-code: 42ms)
+ POST /api/devices/track 200 in 60ms (next.js: 21ms, application-code: 39ms)
+ GET /api/rewards/missions 200 in 42ms (next.js: 3ms, application-code: 39ms)
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET / 200 in 51ms (next.js: 4ms, application-code: 47ms)
+ GET /api/auth/session 200 in 57ms (next.js: 39ms, application-code: 18ms)
+ GET /api/auth/session 200 in 38ms (next.js: 3ms, application-code: 35ms)
+ GET /api/economy/balance 200 in 33ms (next.js: 5ms, application-code: 28ms)
+ POST /api/rewards/checkin 200 in 26ms (next.js: 4ms, application-code: 22ms)
+ POST /api/devices/track 200 in 35ms (next.js: 5ms, application-code: 30ms)
+ GET /api/rewards/missions 200 in 28ms (next.js: 4ms, application-code: 24ms)
+ GET /api/rewards/missions 200 in 29ms (next.js: 4ms, application-code: 26ms)
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET / 200 in 61ms (next.js: 4ms, application-code: 57ms)
+ GET /api/auth/session 200 in 47ms (next.js: 26ms, application-code: 22ms)
+ GET /api/auth/session 200 in 20ms (next.js: 4ms, application-code: 16ms)
+ GET /api/economy/balance 200 in 48ms (next.js: 4ms, application-code: 44ms)
+ POST /api/rewards/checkin 200 in 52ms (next.js: 6ms, application-code: 46ms)
+ POST /api/devices/track 200 in 66ms (next.js: 5ms, application-code: 60ms)
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /api/rewards/missions 200 in 46ms (next.js: 4ms, application-code: 42ms)
+ GET /api/rewards/missions 200 in 31ms (next.js: 3ms, application-code: 28ms)
+ GET / 200 in 46ms (next.js: 4ms, application-code: 42ms)
+ GET /api/auth/session 200 in 50ms (next.js: 26ms, application-code: 24ms)
+ GET /api/auth/session 200 in 16ms (next.js: 1.9ms, application-code: 14ms)
+ GET /api/economy/balance 200 in 51ms (next.js: 15ms, application-code: 36ms)
+ POST /api/rewards/checkin 200 in 52ms (next.js: 5ms, application-code: 47ms)
+ POST /api/devices/track 200 in 36ms (next.js: 4ms, application-code: 32ms)
+ GET /api/rewards/missions 200 in 30ms (next.js: 3ms, application-code: 27ms)
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /api/rewards/missions 200 in 34ms (next.js: 3ms, application-code: 31ms)
+ GET / 200 in 52ms (next.js: 5ms, application-code: 47ms)
+ GET / 200 in 43ms (next.js: 5ms, application-code: 38ms)
+ GET /api/auth/session 200 in 49ms (next.js: 21ms, application-code: 28ms)
+ GET /api/auth/session 200 in 26ms (next.js: 4ms, application-code: 22ms)
+ POST /api/rewards/checkin 200 in 57ms (next.js: 7ms, application-code: 50ms)
+ GET /api/economy/balance 200 in 47ms (next.js: 5ms, application-code: 42ms)
+ POST /api/devices/track 200 in 52ms (next.js: 10ms, application-code: 42ms)
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /api/rewards/missions 200 in 54ms (next.js: 3ms, application-code: 50ms)
+ GET /api/rewards/missions 200 in 31ms (next.js: 3ms, application-code: 27ms)
+[browser] Image with src "/images/logo-bara-salfa.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+[browser] Image with src "/images/logo-7azr-fazr.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+[browser] Image with src "/images/logo-rasm.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+[browser] Image with src "/images/logo-sowl.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+ GET / 200 in 100ms (next.js: 7ms, application-code: 93ms)
+ GET /api/auth/session 200 in 58ms (next.js: 35ms, application-code: 23ms)
+ GET /api/auth/session 200 in 31ms (next.js: 10ms, application-code: 21ms)
+ POST /api/rewards/checkin 200 in 35ms (next.js: 3ms, application-code: 32ms)
+ GET /api/economy/balance 200 in 25ms (next.js: 4ms, application-code: 21ms)
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ POST /api/devices/track 200 in 37ms (next.js: 4ms, application-code: 32ms)
+ GET /api/rewards/missions 200 in 29ms (next.js: 6ms, application-code: 23ms)
+ GET /api/rewards/missions 200 in 29ms (next.js: 3ms, application-code: 26ms)
+ GET / 200 in 48ms (next.js: 4ms, application-code: 44ms)
+ GET /api/auth/session 200 in 42ms (next.js: 29ms, application-code: 13ms)
+ GET /api/auth/session 200 in 45ms (next.js: 4ms, application-code: 40ms)
+ POST /api/rewards/checkin 200 in 50ms (next.js: 7ms, application-code: 43ms)
+ GET /api/economy/balance 200 in 72ms (next.js: 43ms, application-code: 29ms)
+ POST /api/devices/track 200 in 52ms (next.js: 11ms, application-code: 40ms)
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /api/rewards/missions 200 in 42ms (next.js: 4ms, application-code: 39ms)
+ GET /api/rewards/missions 200 in 36ms (next.js: 4ms, application-code: 32ms)
+ GET / 200 in 66ms (next.js: 5ms, application-code: 61ms)
+ GET /api/auth/session 200 in 49ms (next.js: 22ms, application-code: 27ms)
+ GET /api/auth/session 200 in 26ms (next.js: 3ms, application-code: 23ms)
+ POST /api/rewards/checkin 200 in 45ms (next.js: 7ms, application-code: 38ms)
+ GET /api/economy/balance 200 in 47ms (next.js: 12ms, application-code: 35ms)
+ POST /api/devices/track 200 in 29ms (next.js: 4ms, application-code: 24ms)
+[browser] Image with src "/images/logo-playm3ana-new.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /api/rewards/missions 200 in 35ms (next.js: 3ms, application-code: 32ms)
+ GET /api/rewards/missions 200 in 24ms (next.js: 4ms, application-code: 21ms)
+ GET /api/auth/session 200 in 43ms (next.js: 24ms, application-code: 19ms)
+✓ Compiled in 1416ms
+ GET / 200 in 70ms (next.js: 31ms, application-code: 39ms)
+ GET /api/economy/balance 200 in 127ms (next.js: 7ms, application-code: 121ms)
+ POST /api/rewards/checkin 200 in 113ms (next.js: 4ms, application-code: 109ms)
+ POST /api/devices/track 200 in 99ms (next.js: 4ms, application-code: 96ms)
+ GET /api/economy/balance 200 in 15ms (next.js: 3ms, application-code: 12ms)
+ GET /api/rewards/missions 200 in 61ms (next.js: 5ms, application-code: 56ms)
+ GET /api/rewards/missions 200 in 27ms (next.js: 3ms, application-code: 24ms)
