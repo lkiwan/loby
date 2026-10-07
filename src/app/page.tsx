@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   useEffect,
@@ -364,10 +364,13 @@ function LobbyContent() {
   const liquidClickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const morphArmed = useRef(false);
 
-  const readProgress = useCallback(() => {
-    /* The click target and the mapping target are the same element; fall back
-       to the desktop section, then to the maximum scroll, if neither is laid
-       out (loading screen / hidden at the current breakpoint). */
+  const cachedLayoutRef = useRef<{
+    end: number;
+    home: { w: number; h: number; t: number; l: number };
+    games: { w: number; h: number; t: number; l: number };
+  } | null>(null);
+
+  const updateCachedLayout = useCallback(() => {
     const mobile = document.getElementById("most-played");
     const desktop = document.getElementById("games-section");
     const target = mobile?.offsetHeight
@@ -382,9 +385,34 @@ function LobbyContent() {
     const end = target
       ? Math.min(target.getBoundingClientRect().top + window.scrollY, maxScroll)
       : maxScroll;
+
+    const home = homeTabRef.current;
+    const games = gamesTabRef.current;
+    if (home && games) {
+      cachedLayoutRef.current = {
+        end,
+        home: {
+          w: home.offsetWidth,
+          h: home.offsetHeight,
+          t: home.offsetTop,
+          l: home.offsetLeft,
+        },
+        games: {
+          w: games.offsetWidth,
+          h: games.offsetHeight,
+          t: games.offsetTop,
+          l: games.offsetLeft,
+        },
+      };
+    }
+  }, []);
+
+  const readProgress = useCallback(() => {
+    if (!cachedLayoutRef.current) updateCachedLayout();
+    const end = cachedLayoutRef.current?.end ?? 1;
     if (end <= 1) return window.scrollY > 0 ? 1 : 0;
     return Math.min(1, Math.max(0, window.scrollY / end));
-  }, []);
+  }, [updateCachedLayout]);
 
   /* Writes the pill's box for a progress value. Deliberately NO CSS transition:
      the scroll itself is the animation, so there is nothing to catch up with.
@@ -392,10 +420,10 @@ function LobbyContent() {
      and translateX takes physical px, so RTL needs no sign flip. */
   const placeLiquid = useCallback((progress: number) => {
     const liquid = liquidRef.current;
-    const home = homeTabRef.current;
-    const games = gamesTabRef.current;
-    if (!liquid || !home || !games) return;
-    if (home.offsetWidth === 0 || games.offsetWidth === 0)
+    const layout = cachedLayoutRef.current;
+    if (!liquid || !layout) return;
+    const { home, games } = layout;
+    if (home.w === 0 || games.w === 0)
       return; /* bar is hidden at sm+ */
     const lerp = (a: number, b: number) => a + (b - a) * progress;
     /* Same-value writes are skipped: the fallback tick below re-runs this while
@@ -406,12 +434,12 @@ function LobbyContent() {
     ) => {
       if (liquid.style[prop] !== value) liquid.style[prop] = value;
     };
-    write("width", `${lerp(home.offsetWidth, games.offsetWidth)}px`);
-    write("height", `${lerp(home.offsetHeight, games.offsetHeight)}px`);
-    write("top", `${lerp(home.offsetTop, games.offsetTop)}px`);
+    write("width", `${lerp(home.w, games.w)}px`);
+    write("height", `${lerp(home.h, games.h)}px`);
+    write("top", `${lerp(home.t, games.t)}px`);
     write(
       "transform",
-      `translateX(${lerp(home.offsetLeft, games.offsetLeft)}px)`,
+      `translateX(${lerp(home.l, games.l)}px)`,
     );
   }, []);
 
@@ -433,6 +461,7 @@ function LobbyContent() {
      browser restores after this effect, plus resizes and webfont swaps. */
   useLayoutEffect(() => {
     if (status === "loading") return;
+    updateCachedLayout();
     let rafId = 0;
     const schedule = () => {
       if (rafId) return;
@@ -449,18 +478,27 @@ function LobbyContent() {
     }, LIQUID_ARM_MS);
     schedule();
 
+    const handleResize = () => {
+      updateCachedLayout();
+      schedule();
+    };
+
     window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
+    window.addEventListener("resize", handleResize);
     /* Fallback tick: scroll events are coalesced (and rAF stalls) whenever the
        renderer suspends frames — background/occluded/headless tabs — which can
        leave the pill behind an already-moved scroll position. A cheap synchronous
        sync keeps the DOM correct even with nothing painting; on an active tab the
        scroll path above still delivers the same-frame, zero-delay updates. */
     const fallbackId = window.setInterval(() => syncLiquid(), 33);
-    document.fonts.ready.then(schedule).catch(() => {});
+    const handleFontsReady = () => {
+      updateCachedLayout();
+      schedule();
+    };
+    document.fonts.ready.then(handleFontsReady).catch(() => {});
     return () => {
       window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
+      window.removeEventListener("resize", handleResize);
       window.clearInterval(fallbackId);
       if (rafId) cancelAnimationFrame(rafId);
       window.clearTimeout(armTimer);
@@ -469,7 +507,7 @@ function LobbyContent() {
         liquidClickTimer.current = null;
       }
     };
-  }, [status, placeLiquid, readProgress, syncLiquid]);
+  }, [status, placeLiquid, readProgress, syncLiquid, updateCachedLayout]);
 
   /* Midpoint flip: the active/idle classes just swapped the two buttons'
      boxes, so re-seat the pill on the new geometry (continuous position stays
