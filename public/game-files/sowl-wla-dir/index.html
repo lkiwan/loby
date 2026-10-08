@@ -980,7 +980,10 @@ function startRoulette(){
       roulTimer = setTimeout(()=>{
         S.currentPlayer = winner;
         S.prevPlayerId  = winner.id;
-        go('chosen');
+        const type = Math.random() < 0.5 ? 'question' : 'action';
+        S.challengeType = type;
+        S.currentChallenge = getChallenge(type);
+        go('challenge');
       }, 750);
     }
   }
