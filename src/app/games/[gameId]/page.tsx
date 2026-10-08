@@ -302,11 +302,11 @@ export default function GamePage({
       <div className="absolute inset-x-0 top-0 z-50 flex items-center justify-between gap-2 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-2">
         <span className="pointer-events-none flex min-w-0 items-center gap-2 rounded-full border border-cyan-400/12 bg-[#030812]/70 px-3 py-1.5 backdrop-blur-md">
           <Image
-            src="/images/logo-playm3ana-new.png"
+            src="/icons/image.png"
             alt="PlayM3ana"
             width={24}
-            height={20}
-            className="h-5 w-auto shrink-0 object-contain"
+            height={24}
+            className="h-6 w-6 shrink-0 object-contain"
           />
           <span className="truncate font-grit text-[11px] uppercase tracking-wide text-neutral-300">
             {game?.latinTitle ?? gameId}

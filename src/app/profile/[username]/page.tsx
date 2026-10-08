@@ -97,19 +97,15 @@ export default function ProfilePage({
             رجع
           </Link>
           <span className="font-lalezar text-[17px] text-white">{username}</span>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center">
             <Image
               alt="PlayM3ana"
               loading="lazy"
-              width={34}
-              height={28}
-              className="h-7 w-auto object-contain"
-              src="/images/logo-playm3ana-new.png"
+              width={44}
+              height={44}
+              className="h-11 w-11 object-contain"
+              src="/icons/image.png"
             />
-            <span className="font-cairo font-black text-[15px] tracking-tight">
-              <span className="text-white">PLAY</span>
-              <span style={{ color: "rgb(232, 180, 48)" }}>M3ANA</span>
-            </span>
           </div>
         </div>
       </header>

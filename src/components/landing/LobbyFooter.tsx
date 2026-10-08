@@ -15,19 +15,14 @@ export default function LobbyFooter({
     <footer className="riad-footer">
       {/* Logo + tagline */}
       <div className="flex flex-col items-center gap-3 mb-6 text-center">
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center">
           <Image
-            src="/images/logo-playm3ana-new.png"
+            src="/icons/image.png"
             alt="PLAYM3ANA"
-            width={40}
-            height={32}
-            style={{ width: 'auto', height: '32px' }}
-            className="object-contain"
+            width={80}
+            height={80}
+            className="h-20 w-20 object-contain"
           />
-          <span className="font-cairo text-[15px] font-black lowercase tracking-tight">
-            <span style={{ color: '#D8A62A' }}>play</span>
-            <span style={{ color: 'rgba(245,231,206,0.7)' }}>m3ana</span>
-          </span>
         </div>
         <p className="font-cairo text-[12px] font-semibold text-white/35 max-w-[280px] leading-relaxed">
           ألعاب د القصارة بالدارجة فتيليفون واحد — والحومة كاملة شاهدة 🔥

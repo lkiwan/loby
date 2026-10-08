@@ -17,12 +17,8 @@ export default function AuthShell({ children }: { children: React.ReactNode }) {
 
       <div className="relative z-10 flex min-h-dvh flex-col items-center justify-center px-4 py-10">
         {/* Logo */}
-        <Link href="/" className="anim-fadeup mb-6 flex items-center gap-2">
-          <Image src="/images/logo-playm3ana-new.png" alt="PlayM3ana" width={38} height={32} className="h-8 w-auto object-contain" />
-          <span className="font-cairo font-black text-[17px] tracking-tight">
-            <span className="text-white">PLAY</span>
-            <span style={{ color: '#D8A62A' }}>M3ANA</span>
-          </span>
+        <Link href="/" className="anim-fadeup mb-6 flex items-center">
+          <Image src="/icons/image.png" alt="PlayM3ana" width={96} height={96} className="h-24 w-24 object-contain" />
         </Link>
         {children}
       </div>

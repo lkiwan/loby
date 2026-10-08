@@ -25,19 +25,14 @@ export default function LoadingPage({
         aria-label="Loading page"
       >
         <div className="flex flex-col items-center gap-6">
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center mb-2">
             <Image
-              src="/images/logo-playm3ana-new.png"
+              src="/icons/image.png"
               alt="PlayM3ana"
-              width={48}
-              height={40}
-              className="h-10 w-auto object-contain"
-              style={{ width: "auto" }}
+              width={112}
+              height={112}
+              className="h-28 w-28 object-contain"
             />
-            <span className="font-cairo font-black text-[22px] tracking-tight">
-              <span className="text-white">PLAY</span>
-              <span style={{ color: "#E8B430" }}>M3ANA</span>
-            </span>
           </div>
 
           <div className="loading-spinner" aria-hidden="true">
