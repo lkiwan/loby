@@ -32,6 +32,7 @@ export default function DailyMissionButtons({ onClaim }: { onClaim?: (coins: num
     } catch {}
   }, []);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { void fetchMissions(); }, [fetchMissions]);
   useEffect(() => () => { if (timerRef.current) clearInterval(timerRef.current); }, []);
 

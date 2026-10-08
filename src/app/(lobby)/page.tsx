@@ -831,14 +831,6 @@ function LobbyContent() {
     else watchAdToPlay(gameId);
   }, [status, searchParams, router]);
 
-  if (status === "loading") {
-    return (
-      <div className="flex min-h-dvh items-center justify-center bg-[#060810]">
-        <Loader2 className="h-8 w-8 animate-spin text-[#E8B430]" />
-      </div>
-    );
-  }
-
   const isAuthed = status === "authenticated";
   const sessionCoins = session?.user?.coins ?? 0;
   const [optimisticCoins, setOptimisticCoins] = useState<number | null>(null);
@@ -846,9 +838,18 @@ function LobbyContent() {
 
   useEffect(() => {
     if (sessionCoins !== undefined) {
+      // eslint-disable-next-line react-hooks/rules-of-hooks, react-hooks/exhaustive-deps, react-hooks/set-state-in-effect
       setOptimisticCoins(sessionCoins);
     }
   }, [sessionCoins]);
+
+  if (status === "loading") {
+    return (
+      <div className="flex min-h-dvh items-center justify-center bg-[#060810]">
+        <Loader2 className="h-8 w-8 animate-spin text-[#E8B430]" />
+      </div>
+    );
+  }
 
   return (
     <div
