@@ -9,6 +9,7 @@ import { useRewardedAd } from '@/lib/useRewardedAd';
 import { rememberPayMethod, getRememberedPayMethod } from '@/lib/payMethod';
 import { StarMark } from '@/components/Star';
 import GameIcon from '@/components/GameIcon';
+import GameAdOverlay from '@/components/GameAdOverlay';
 import { GAMES } from '@/lib/games';
 import {
   ROSTER_PARAM,
@@ -332,6 +333,11 @@ export default function GamePage({
           title={`Game: ${gameId}`}
           onLoad={() => setIframeLoaded(true)}
         />
+      )}
+
+      {/* Game Ad Overlay */}
+      {rosterValue !== null && iframeLoaded && !gameOver && (
+        <GameAdOverlay />
       )}
 
       {/* Game Over modal */}

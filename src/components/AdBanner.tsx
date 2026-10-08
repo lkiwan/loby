@@ -1,6 +1,6 @@
 'use client';
 
-export default function AdBanner() {
+export default function AdBanner({ className = "my-6 flex justify-center overflow-hidden" }: { className?: string }) {
   const html = `
     <!DOCTYPE html>
     <html>
@@ -23,7 +23,7 @@ export default function AdBanner() {
   `;
 
   return (
-    <div className="my-6 flex justify-center overflow-hidden">
+    <div className={className}>
       <iframe
         srcDoc={html}
         width="320"
