@@ -11,11 +11,24 @@ const DEFAULT_TEMPLATES = [
 ];
 
 async function ensureDefaultTemplates(): Promise<void> {
-  const count = await prisma.missionTemplate.count({ where: { isActive: true } });
-  if (count > 0) return;
-  await prisma.missionTemplate.createMany({
-    data: DEFAULT_TEMPLATES,
-    skipDuplicates: true,
+  for (const t of DEFAULT_TEMPLATES) {
+    await prisma.missionTemplate.upsert({
+      where: { key: t.key },
+      create: t,
+      update: {
+        titleAr: t.titleAr,
+        target: t.target,
+        rewardCoins: t.rewardCoins,
+        rewardXp: t.rewardXp,
+        isActive: true
+      },
+    });
+  }
+  
+  const defaultKeys = DEFAULT_TEMPLATES.map((t) => t.key);
+  await prisma.missionTemplate.updateMany({
+    where: { key: { notIn: defaultKeys } },
+    data: { isActive: false },
   });
 }
 

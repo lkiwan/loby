@@ -1,9 +1,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
+import LobbyFooter from '@/components/landing/LobbyFooter';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
-
-export default function LegalShell({
+export default async function LegalShell({
   title,
   subtitle,
   children,
@@ -12,6 +14,7 @@ export default function LegalShell({
   subtitle?: string;
   children: React.ReactNode;
 }) {
+  const session = await getServerSession(authOptions);
   return (
     <div className="scene min-h-dvh bg-[#0d0b08] text-[#f1e7d6]">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
@@ -30,16 +33,15 @@ export default function LegalShell({
           </Link>
           <div className="flex items-center gap-2">
             <Image
+              src="/images/logo-playm3ana-new.png"
               alt="PlayM3ana"
-              loading="lazy"
               width={34}
               height={28}
               className="h-7 w-auto object-contain"
-              src="/images/logo-playm3ana-new.png"
             />
             <span className="font-cairo font-black text-[15px] tracking-tight">
               <span className="text-white">PLAY</span>
-              <span style={{ color: "rgb(232, 180, 48)" }}>M3ANA</span>
+              <span style={{ color: "#E8B430" }}>M3ANA</span>
             </span>
           </div>
         </div>
@@ -56,9 +58,9 @@ export default function LegalShell({
           </div>
         </div>
 
-        <p className="mt-6 text-center font-cairo text-[11px] font-bold text-[#7a6a4d]">
-          PLAYM3ANA — مصنوعة بـ ❤️ فالمغرب 🇲🇦
-        </p>
+        <div className="mt-12">
+          <LobbyFooter isAuthed={!!session?.user} username={session?.user?.username} />
+        </div>
       </main>
     </div>
   );

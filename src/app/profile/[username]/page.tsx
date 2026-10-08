@@ -3,6 +3,8 @@ import { use, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Loader2, Copy, Check, Zap, Coins } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import LobbyFooter from '@/components/landing/LobbyFooter';
 import { StarMark } from '@/components/Star';
 import GameIcon from '@/components/GameIcon';
 import { GAMES } from '@/lib/games';
@@ -37,6 +39,7 @@ export default function ProfilePage({
   params: Promise<{ username: string }>;
 }) {
   const { username } = use(params);
+  const { data: session } = useSession();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -239,6 +242,10 @@ export default function ProfilePage({
           <p className="mt-8 text-center font-cairo text-[11px]" style={{ color: 'rgba(255,255,255,0.2)' }}>
             مقيد معانا من {new Date(profile.createdAt).toLocaleDateString('ar-MA')} 🇲🇦
           </p>
+
+          <div className="mt-12">
+            <LobbyFooter isAuthed={!!session?.user} username={session?.user?.username} />
+          </div>
         </main>
       ) : (
         <div className="flex justify-center pt-32">

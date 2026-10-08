@@ -730,8 +730,16 @@ function LobbyContent() {
     setAdModalOpen(true);
   };
 
-  const startRewardedAd = async () => {
-    const gameId = selectedGame;
+  const playAdDirectly = async (gameId: string) => {
+    if (!requireAuth(gameId, "ad")) return;
+    setSelectedGame(gameId);
+    setAdStatus("watching");
+    setAdModalOpen(true);
+    await startRewardedAd(gameId);
+  };
+
+  const startRewardedAd = async (directGameId?: string) => {
+    const gameId = directGameId || selectedGame;
     if (!gameId) return;
     try {
       const startRes = await fetch("/api/ads/start", {
@@ -824,11 +832,23 @@ function LobbyContent() {
   }, [status, searchParams, router]);
 
   if (status === "loading") {
-    return <LoadingPage title="كنوجدو الكراسا…" description="" status="" />;
+    return (
+      <div className="flex min-h-dvh items-center justify-center bg-[#060810]">
+        <Loader2 className="h-8 w-8 animate-spin text-[#E8B430]" />
+      </div>
+    );
   }
 
   const isAuthed = status === "authenticated";
-  const coins = session?.user?.coins ?? 0;
+  const sessionCoins = session?.user?.coins ?? 0;
+  const [optimisticCoins, setOptimisticCoins] = useState<number | null>(null);
+  const coins = optimisticCoins ?? sessionCoins;
+
+  useEffect(() => {
+    if (sessionCoins !== undefined) {
+      setOptimisticCoins(sessionCoins);
+    }
+  }, [sessionCoins]);
 
   return (
     <div
@@ -1235,6 +1255,7 @@ function LobbyContent() {
                   loadingAction={busyAction}
                   onPlay={(e) => playWithCoins(game.id, e)}
                   onWatchAd={() => watchAdToPlay(game.id)}
+                  onDirectAd={() => playAdDirectly(game.id)}
                 />
                 {/* Rank badge superposé sur la card */}
                 <div
@@ -1282,6 +1303,7 @@ function LobbyContent() {
               loadingAction={busyAction}
               onPlay={(e) => playWithCoins(game.id, e)}
               onWatchAd={() => watchAdToPlay(game.id)}
+              onDirectAd={() => playAdDirectly(game.id)}
             />
           ))}
         </div>
@@ -1599,9 +1621,10 @@ function LobbyContent() {
         <MissionsPanel
           onClose={() => setMissionsOpen(false)}
           onClaim={(reward) => {
+            setOptimisticCoins((prev) => (prev ?? coins) + reward);
             void update();
             setMissionsOpen(false);
-            showToast("ok", `مبروك! ربحتي +${reward} 🪙 على المهمة 🎯`);
+            showToast("success", `مبروك! ربحتي +${reward} 🪙 على المهمة 🎯`);
           }}
         />
       )}
@@ -1613,10 +1636,11 @@ function LobbyContent() {
       {isAuthed && (
         <DailyMissionButtons
           onClaim={(reward) => {
+            setOptimisticCoins((prev) => (prev ?? coins) + reward);
             void update();
             setCoinPop(true);
             setTimeout(() => setCoinPop(false), 600);
-            showToast("ok", `مبروك! ربحتي +${reward} 🪙 على المهمة 🎯`);
+            showToast("success", `مبروك! ربحتي +${reward} 🪙 على المهمة 🎯`);
           }}
         />
       )}

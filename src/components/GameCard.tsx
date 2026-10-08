@@ -15,6 +15,7 @@ export type GameCardProps = {
   isBusy: boolean;
   onPlay: (e: React.MouseEvent) => void;
   onWatchAd: () => void;
+  onDirectAd?: () => void;
 };
 
 function useRipple() {
@@ -211,7 +212,7 @@ function GameThumbnail({ game }: { game: Game }) {
    GAME DOOR — MOROCCAN DOOR COMPONENT 2.0
    ══════════════════════════════════════════════ */
 export default function GameCard({
-  game, coins, loadingAction, isBusy, onPlay, onWatchAd,
+  game, coins, loadingAction, isBusy, onPlay, onWatchAd, onDirectAd
 }: GameCardProps) {
   const canAfford = coins >= game.cost;
   const ripple    = useRipple();
@@ -260,7 +261,7 @@ export default function GameCard({
       {/* ── ARCH IMAGE ZONE ── */}
       <div 
         className="door-img-zone cursor-pointer"
-        onClick={onWatchAd}
+        onClick={onDirectAd || onWatchAd}
       >
         <GameThumbnail game={game} />
         <MoroccanArchFrame accent={accent} glow={glow} isMafia={game.isMafia} />
