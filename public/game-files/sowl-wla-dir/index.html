@@ -240,32 +240,53 @@ input::placeholder{color:var(--ink30);font-weight:600}
 /* ─── ROULETTE ────────────────────────────────────────────── */
 .roul-wrap{
   flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:20px;text-align:center;
+  gap:16px;text-align:center;width:100%;
 }
-.roul-ring{
-  position:relative;width:220px;height:220px;
-  display:grid;place-items:center;
-}
-.roul-ring-pulse{
-  position:absolute;inset:0;border-radius:50%;
-  border:3px solid var(--violet);
-  animation:ringPulse 1.2s ease-out infinite;
-}
-.roul-ring-pulse-2{animation-delay:.6s}
-.roul-name{
-  font-family:'Lalezar','Cairo',sans-serif;
-  font-size:clamp(32px,9vw,48px);
-  text-align:center;
-  background:linear-gradient(135deg,var(--pink),var(--violet));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-.roul-name.tick{animation:roulTick .12s cubic-bezier(.22,1,.36,1) both}
 .roul-label{font-size:14px;color:var(--ink50);font-weight:700}
 .roul-dots{display:flex;gap:8px;justify-content:center}
 .roul-dot{width:8px;height:8px;border-radius:50%;background:var(--ink15);animation:dotBlink 1.2s ease-in-out infinite}
 .roul-dot:nth-child(2){animation-delay:.4s}
 .roul-dot:nth-child(3){animation-delay:.8s}
+
+/* slot machine cards */
+.roul-slot{
+  width:100%;background:var(--card);
+  border:2px solid var(--border);border-radius:var(--r);
+  padding:14px 18px;display:flex;align-items:center;gap:12px;
+  min-height:70px;position:relative;overflow:hidden;
+}
+.roul-slot::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(168,85,247,.06),rgba(244,114,182,.06));
+  pointer-events:none;
+}
+.roul-slot-lbl{
+  font-size:11px;font-weight:900;color:var(--ink30);
+  letter-spacing:.8px;text-transform:uppercase;
+  writing-mode:vertical-rl;transform:rotate(180deg);
+  flex-shrink:0;
+}
+.roul-slot-val{
+  flex:1;
+  font-family:'Lalezar','Cairo',sans-serif;
+  font-size:clamp(26px,7vw,36px);
+  background:linear-gradient(135deg,var(--pink),var(--violet));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.roul-slot-val.tick{animation:roulTick .13s cubic-bezier(.22,1,.36,1) both}
+.roul-slot-type{
+  flex:1;font-size:clamp(22px,6vw,30px);font-weight:900;
+  overflow:hidden;white-space:nowrap;
+}
+.roul-slot-type.tick{animation:roulTick .13s cubic-bezier(.22,1,.36,1) both}
+
+/* pulse ring kept for decoration */
+.roul-ring{display:none}
+.roul-ring-pulse{display:none}
+.roul-ring-pulse-2{display:none}
+.roul-name{display:none}
+.roul-name.tick{}
 
 /* ─── CHOSEN ──────────────────────────────────────────────── */
 .chosen-wrap{
@@ -957,66 +978,64 @@ function startRoulette(){
   clearTimeout(roulTimer);
   let delay = 65;
   let count = 0;
-  const MAX = 22;
+  const MAX = 24;
   const TYPES = [
-    {label:'🔮 سول', bg:'rgba(139,92,246,0.35)', color:'#c4b5fd'},
-    {label:'💪 دير', bg:'rgba(236,72,153,0.35)',  color:'#f9a8d4'},
+    {label:'🔮 سول', color:'#c4b5fd'},
+    {label:'💪 دير', color:'#f9a8d4'},
   ];
 
-  function spinType(el){
-    const t = TYPES[Math.floor(Math.random()*2)];
-    el.textContent = t.label;
-    el.style.background = 'rgba(255,255,255,0.08)';
-    el.style.color = '#fff';
+  function animEl(el){
     el.classList.remove('tick');
     void el.offsetWidth;
     el.classList.add('tick');
   }
 
   function tick(){
-    const el = document.getElementById('roul-name');
-    if(!el) return;
-    const p = S.players[Math.floor(Math.random()*S.players.length)];
-    el.textContent = p.name;
-    el.classList.remove('tick');
-    void el.offsetWidth;
-    el.classList.add('tick');
-
+    const nameEl = document.getElementById('roul-name');
     const typeEl = document.getElementById('roul-type');
-    if(typeEl) spinType(typeEl);
+    if(!nameEl) return;
+
+    // spin player
+    const p = S.players[Math.floor(Math.random()*S.players.length)];
+    nameEl.textContent = p.name;
+    animEl(nameEl);
+
+    // spin type
+    if(typeEl){
+      const t = TYPES[Math.floor(Math.random()*2)];
+      typeEl.textContent = t.label;
+      typeEl.style.color = 'var(--ink70)';
+      animEl(typeEl);
+    }
 
     count++;
     if(count < MAX){
-      delay = Math.round(delay * 1.13);
-      roulTimer = setTimeout(tick, Math.min(delay, 700));
+      delay = Math.round(delay * 1.12);
+      roulTimer = setTimeout(tick, Math.min(delay, 650));
     } else {
+      // final result
       const winner = selectRandomPlayer();
       const type   = Math.random() < 0.5 ? 'question' : 'action';
       const isQ    = type === 'question';
-      const tStyle = isQ ? TYPES[0] : TYPES[1];
+      const tFinal = isQ ? TYPES[0] : TYPES[1];
 
-      el.textContent = winner.name;
-      el.classList.remove('tick');
-      void el.offsetWidth;
-      el.classList.add('tick');
+      nameEl.textContent = winner.name;
+      animEl(nameEl);
 
-      const typeEl = document.getElementById('roul-type');
       if(typeEl){
-        typeEl.textContent = tStyle.label;
-        typeEl.style.background = tStyle.bg;
-        typeEl.style.color = tStyle.color;
-        typeEl.classList.remove('tick');
-        void typeEl.offsetWidth;
-        typeEl.classList.add('tick');
+        typeEl.textContent = tFinal.label;
+        typeEl.style.color = tFinal.color;
+        typeEl.style.fontWeight = '900';
+        animEl(typeEl);
       }
 
       roulTimer = setTimeout(()=>{
-        S.currentPlayer = winner;
-        S.prevPlayerId  = winner.id;
-        S.challengeType = type;
+        S.currentPlayer    = winner;
+        S.prevPlayerId     = winner.id;
+        S.challengeType    = type;
         S.currentChallenge = getChallenge(type);
         go('challenge');
-      }, 1300);
+      }, 1400);
     }
   }
   roulTimer = setTimeout(tick, delay);
@@ -1202,15 +1221,18 @@ selecting: ()=>`
   </div>
 
   <div class="roul-wrap">
-    <div class="roul-ring">
-      <div class="roul-ring-pulse"></div>
-      <div class="roul-ring-pulse roul-ring-pulse-2"></div>
-      <span id="roul-name" class="roul-name">؟</span>
+    <p class="roul-label" style="font-size:16px;font-weight:900;color:var(--ink50)">🎰 الرولي كيدور…</p>
+
+    <div class="roul-slot anim-fadeup">
+      <span class="roul-slot-lbl">اللاعب</span>
+      <span id="roul-name" class="roul-slot-val">؟</span>
     </div>
-    <div style="margin-top:18px;display:flex;justify-content:center">
-      <span id="roul-type" style="font-size:19px;font-weight:900;padding:9px 28px;border-radius:999px;background:rgba(255,255,255,0.08);color:#fff;transition:background .2s,color .2s">⚡</span>
+
+    <div class="roul-slot anim-fadeup d2">
+      <span class="roul-slot-lbl">النوع</span>
+      <span id="roul-type" class="roul-slot-type">⚡</span>
     </div>
-    <p class="roul-label">الرولي كيدور…</p>
+
     <div class="roul-dots">
       <div class="roul-dot"></div>
       <div class="roul-dot"></div>
