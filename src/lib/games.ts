@@ -27,7 +27,7 @@ export const GAMES: Game[] = [
     starAccent: '#EAB308',
     glowAccent: '#DC2626',
     isMafia: true,
-    logo: '/images/logo-mafia.png',
+    logo: '/images/image.png',
     players: '6+',
     duration: '25 دقيقة',
     difficulty: 'متوسط',
@@ -115,7 +115,7 @@ export const GAMES: Game[] = [
   },
 ];
 
-export const MAFIA_ART = '/images/mafia.png';
+export const MAFIA_ART = '/images/image.png';
 
 export type ComingSoonGame = {
   id: string;
