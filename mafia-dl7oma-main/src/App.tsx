@@ -8,6 +8,7 @@ import DealScreen from './components/DealScreen'
 import PassPlayScreen from './components/PassPlayScreen'
 import DashboardScreen from './components/DashboardScreen'
 import GameOverScreen from './components/GameOverScreen'
+import AdBanner from './components/AdBanner'
 
 const SCREENS: Record<string, React.ComponentType> = {
   HOME: HomeScreen,
@@ -45,19 +46,25 @@ export default function App() {
       />
 
       {/* phone frame */}
-      <div className="relative h-full max-h-[100dvh] w-full max-w-[440px] overflow-hidden bg-night grain">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={phase === 'NIGHT_PHASE' || phase === 'DAY_PHASE' || phase === 'VOTING' ? `dash-${phase}` : phase}
-            className="h-full w-full"
-            initial={{ opacity: 0, scale: 1.02 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.98 }}
-            transition={{ duration: 0.35 }}
-          >
-            <Screen />
-          </motion.div>
-        </AnimatePresence>
+      <div className="relative flex h-full max-h-[100dvh] w-full max-w-[440px] flex-col overflow-hidden bg-night grain">
+        <div className="relative min-h-0 flex-1 overflow-hidden">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={phase === 'NIGHT_PHASE' || phase === 'DAY_PHASE' || phase === 'VOTING' ? `dash-${phase}` : phase}
+              className="h-full w-full"
+              initial={{ opacity: 0, scale: 1.02 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.35 }}
+            >
+              <Screen />
+            </motion.div>
+          </AnimatePresence>
+        </div>
+        {/* ad banner */}
+        <div className="flex shrink-0 items-center justify-center" style={{ height: 50 }}>
+          <AdBanner />
+        </div>
       </div>
 
       {/* rotate prompt */}

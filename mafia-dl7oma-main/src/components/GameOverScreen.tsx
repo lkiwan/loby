@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Trophy, Skull, PartyPopper, RotateCcw } from "lucide-react";
 import { useMafiaGame } from "../game/useMafiaGame";
@@ -6,12 +5,7 @@ import { ROLE_META } from "../game/types";
 
 export default function GameOverScreen() {
   const winner = useMafiaGame((s) => s.winner);
-
-  useEffect(() => {
-    window.parent.postMessage({ type: "game-over" }, "*");
-  }, []);
   const players = useMafiaGame((s) => s.players);
-  const resetGame = useMafiaGame((s) => s.resetGame);
 
   const mafiaWon = winner === "EISSABA";
   const deck = players.filter((p) => !p.isTeller);
@@ -100,7 +94,7 @@ export default function GameOverScreen() {
 
       <motion.button
         whileTap={{ scale: 0.97 }}
-        onClick={() => resetGame()}
+        onClick={() => window.parent.postMessage({ type: "replay-requested" }, "*")}
         className="btn-gold font-darija relative z-10 mt-5 w-full !py-5 text-lg"
       >
         <RotateCcw className="mr-2 inline h-5 w-5" /> العب عوض
