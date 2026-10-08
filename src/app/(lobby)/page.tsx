@@ -23,17 +23,14 @@ import {
   Loader2,
   LogIn,
   LogOut,
-  Music,
   Play,
   Settings,
   ShieldCheck,
   UserPlus,
-  Users,
   Volume2,
   VolumeX,
   X,
   Zap,
-  Bell,
   Home,
   User,
 } from "lucide-react";
@@ -53,9 +50,6 @@ import {
   Sounds,
   isMuted,
   setMuted,
-  musicPlayer,
-  isMusicMuted,
-  unlockAudio,
 } from "@/lib/sounds";
 import dynamic from "next/dynamic";
 
@@ -542,32 +536,6 @@ function LobbyContent() {
     if (!next) Sounds.click();
   };
 
-  const [musicMuted, setMusicMutedState] = useState(false);
-  const [showMusicHint, setShowMusicHint] = useState(false);
-  useEffect(() => {
-    setMusicMutedState(isMusicMuted());
-  }, []);
-
-  useEffect(() => {
-    if (isMusicMuted()) return;
-    musicPlayer.start();
-    setShowMusicHint(true);
-    const t = setTimeout(() => setShowMusicHint(false), 5800);
-    return () => {
-      musicPlayer.stop();
-      clearTimeout(t);
-    };
-  }, []);
-
-  const toggleMusic = () => {
-    const next = !musicMuted;
-    musicPlayer.setVolume(next);
-    setMusicMutedState(next);
-    if (!next) {
-      unlockAudio();
-      musicPlayer.start();
-    } else musicPlayer.stop();
-  };
   useEffect(() => {
     if (!adModalOpen && adTimerRef.current) {
       clearInterval(adTimerRef.current);
@@ -715,14 +683,12 @@ function LobbyContent() {
   };
 
   const watchAdToPlay = (gameId: string) => {
-    if (!requireAuth(gameId, "ad")) return;
     setSelectedGame(gameId);
     setAdStatus("idle");
     setAdModalOpen(true);
   };
 
   const playAdDirectly = async (gameId: string) => {
-    if (!requireAuth(gameId, "ad")) return;
     setSelectedGame(gameId);
     setAdStatus("watching");
     setAdModalOpen(true);
@@ -874,26 +840,6 @@ function LobbyContent() {
             ) : (
               <Volume2 className="h-3.5 w-3.5 text-white/42" />
             )}
-          </button>
-          <button
-            onClick={toggleMusic}
-            title={musicMuted ? "تشغيل الموسيقى" : "إيقاف الموسيقى"}
-            className="h-8 w-8 grid place-items-center rounded-full transition-all"
-            style={{
-              background: musicMuted
-                ? "rgba(255,255,255,0.05)"
-                : "rgba(232,180,48,0.12)",
-              border: musicMuted
-                ? "1px solid rgba(255,255,255,0.08)"
-                : "1px solid rgba(232,180,48,0.35)",
-            }}
-          >
-            <Music
-              className="h-3.5 w-3.5"
-              style={{
-                color: musicMuted ? "rgba(255,255,255,0.35)" : "#E8B430",
-              }}
-            />
           </button>
         </div>
 
@@ -1633,27 +1579,6 @@ function LobbyContent() {
         />
       )}
 
-      {/* Music auto-start hint — fades in/out once via CSS animation */}
-      {showMusicHint && !musicMuted && (
-        <div
-          className="fixed bottom-[78px] sm:bottom-10 inset-x-0 flex justify-center z-[43] pointer-events-none select-none"
-          style={{ animation: "musicHint 5.5s ease forwards" }}
-        >
-          <div
-            className="flex items-center gap-1.5 rounded-full px-3 py-1.5 backdrop-blur-sm"
-            style={{
-              background: "rgba(6,8,16,0.88)",
-              border: "1px solid rgba(232,180,48,0.28)",
-              color: "#E8B430",
-            }}
-          >
-            <Music className="h-3 w-3" />
-            <span className="font-cairo text-[10.5px] font-bold">
-              المسّ أو اضغط لتشغيل الموسيقى 🎵
-            </span>
-          </div>
-        </div>
-      )}
 
       {/* ═══════════════ AD MODAL ═══════════════ */}
       {adModalOpen && (
@@ -1700,16 +1625,29 @@ function LobbyContent() {
                 >
                   <Play className="h-5 w-5" /> تفرج فالإشهار — وعيني عينك
                 </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    setAdModalOpen(false);
-                    if (selectedGame) playWithCoins(selectedGame, e);
-                  }}
-                  className="mt-2.5 w-full py-2 text-center font-cairo text-[12.5px] font-bold text-[#B8C4D8] transition hover:text-[#FFF7E8]"
-                >
-                  لا شكرا، غانخلص بالكوينز
-                </button>
+                {isAuthed ? (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      setAdModalOpen(false);
+                      if (selectedGame) playWithCoins(selectedGame, e);
+                    }}
+                    className="mt-2.5 w-full py-2 text-center font-cairo text-[12.5px] font-bold text-[#B8C4D8] transition hover:text-[#FFF7E8]"
+                  >
+                    لا شكرا، غانخلص بالكوينز
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAdModalOpen(false);
+                      setAuthSheetOpen(true);
+                    }}
+                    className="mt-2.5 w-full py-2 text-center font-cairo text-[12.5px] font-bold text-[#B8C4D8] transition hover:text-[#FFF7E8]"
+                  >
+                    صاوب كونط — العب بالكوينز 🪙
+                  </button>
+                )}
               </>
             )}
             {adStatus === "watching" && (
@@ -1871,25 +1809,6 @@ function LobbyContent() {
                 </span>
               </button>
 
-              {/* Music toggle */}
-              <button
-                onClick={toggleMusic}
-                className="flex w-full items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5"
-              >
-                <span className="flex items-center gap-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8]">
-                  <Music
-                    className={`h-4 w-4 ${musicMuted ? "text-[#B8C4D8]" : "text-[#2DD4BF]"}`}
-                  />
-                  الموسيقى
-                </span>
-                <span
-                  className={`relative h-6 w-11 rounded-full transition-colors ${musicMuted ? "bg-white/10" : "bg-[#2DD4BF]/40"}`}
-                >
-                  <span
-                    className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${musicMuted ? "start-0.5" : "start-[1.375rem]"}`}
-                  />
-                </span>
-              </button>
 
               {/* Change name */}
               {isAuthed && (

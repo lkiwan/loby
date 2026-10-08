@@ -14,9 +14,6 @@ const REWARD_COINS: Record<string, number> = {
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
 
   const { nonce } = await req.json();
   if (!nonce) {
@@ -28,37 +25,55 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Invalid or used ad session' }, { status: 409 });
   }
 
-  const data = JSON.parse(raw) as { userId: string; gameId: string; placement: string; issuedAt: number };
-  if (data.userId !== session.user.id) {
+  const data = JSON.parse(raw) as {
+    userId: string;
+    gameId: string;
+    placement: string;
+    issuedAt: number;
+    isGuest?: boolean;
+  };
+
+  // For authenticated sessions, enforce user match
+  if (!data.isGuest && (!session?.user?.id || data.userId !== session.user.id)) {
     return NextResponse.json({ error: 'Ad session mismatch' }, { status: 403 });
   }
 
   const elapsed = Date.now() - data.issuedAt;
   if (elapsed < 5_000) {
-    await prisma.adImpression.updateMany({
-      where: { nonce, status: 'STARTED' },
-      data: { status: 'REJECTED' },
-    });
+    if (!data.isGuest) {
+      await prisma.adImpression.updateMany({
+        where: { nonce, status: 'STARTED' },
+        data: { status: 'REJECTED' },
+      });
+    }
     return NextResponse.json({ error: 'Claimed too fast' }, { status: 400 });
   }
   if (elapsed > 300_000) {
-    await prisma.adImpression.updateMany({
-      where: { nonce, status: 'STARTED' },
-      data: { status: 'EXPIRED' },
-    });
+    if (!data.isGuest) {
+      await prisma.adImpression.updateMany({
+        where: { nonce, status: 'STARTED' },
+        data: { status: 'EXPIRED' },
+      });
+    }
     return NextResponse.json({ error: 'Ad session expired' }, { status: 410 });
   }
 
-  await prisma.adImpression.updateMany({
-    where: { nonce, status: 'STARTED' },
-    data: { status: 'COMPLETED', completedAt: new Date() },
-  });
-
-  await bumpMission(data.userId, 'WATCH_N_ADS', 1);
+  if (!data.isGuest) {
+    await prisma.adImpression.updateMany({
+      where: { nonce, status: 'STARTED' },
+      data: { status: 'COMPLETED', completedAt: new Date() },
+    });
+    await bumpMission(data.userId, 'WATCH_N_ADS', 1);
+  }
 
   if (data.placement === 'unlock') {
     const token = await generateGameToken(data.userId, data.gameId);
     return NextResponse.json({ redirectUrl: `/games/${data.gameId}?token=${token}` });
+  }
+
+  // Non-unlock ad rewards (coins) require an authenticated account
+  if (data.isGuest) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const amount = REWARD_COINS[data.placement] ?? 25;
