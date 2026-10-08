@@ -134,8 +134,6 @@ function spawnCoins(x: number, y: number) {
   }
 }
 
-
-
 function LobbyContent() {
   const { data: session, status, update } = useSession();
   const router = useRouter();
@@ -330,8 +328,7 @@ function LobbyContent() {
     const layout = cachedLayoutRef.current;
     if (!liquid || !layout) return;
     const { home, games } = layout;
-    if (home.w === 0 || games.w === 0)
-      return; /* bar is hidden at sm+ */
+    if (home.w === 0 || games.w === 0) return; /* bar is hidden at sm+ */
     const lerp = (a: number, b: number) => a + (b - a) * progress;
     /* Same-value writes are skipped: the fallback tick below re-runs this while
        idle, and there is no reason to dirty the style with identical strings. */
@@ -344,10 +341,7 @@ function LobbyContent() {
     write("width", `${lerp(home.w, games.w)}px`);
     write("height", `${lerp(home.h, games.h)}px`);
     write("top", `${lerp(home.t, games.t)}px`);
-    write(
-      "transform",
-      `translateX(${lerp(home.l, games.l)}px)`,
-    );
+    write("transform", `translateX(${lerp(home.l, games.l)}px)`);
   }, []);
 
   /* rAF-throttled sync: one pill write + the label flip per scroll frame. */
@@ -693,7 +687,6 @@ function LobbyContent() {
     setBusyId(gameId);
     setBusyAction("coins");
 
-
     try {
       const res = await fetch("/api/games/unlock", {
         method: "POST",
@@ -710,12 +703,10 @@ function LobbyContent() {
         Sounds.launch();
         router.replace(redirectUrl);
       } else {
-
         const err = await res.json().catch(() => ({}));
         showToast("error", err.error ?? "اللعبة ماخدماتش، عاود جرب");
       }
     } catch {
-
       showToast("error", "مشكل فالكونيكسيون — عاود جرب");
     } finally {
       setBusyId(null);
@@ -856,8 +847,6 @@ function LobbyContent() {
       className="relative min-h-dvh overflow-x-hidden bg-[#060810] text-white"
       style={{ paddingBottom: "max(5rem, env(safe-area-inset-bottom))" }}
     >
-
-
       {/* ══════════════════════════════════════════
           HEADER — sticky dark bar
       ══════════════════════════════════════════ */}
@@ -932,34 +921,34 @@ function LobbyContent() {
               background: "rgba(255,255,255,0.04)",
             }}
           >
-          <svg
-            width="17"
-            height="13"
-            viewBox="0 0 17 13"
-            fill="none"
-            aria-hidden="true"
-          >
-            <rect
+            <svg
               width="17"
-              height="2.2"
-              rx="1.1"
-              fill="rgba(255,255,255,0.8)"
-            />
-            <rect
-              y="5.4"
-              width="11"
-              height="2.2"
-              rx="1.1"
-              fill="rgba(255,255,255,0.8)"
-            />
-            <rect
-              y="10.8"
-              width="17"
-              height="2.2"
-              rx="1.1"
-              fill="rgba(255,255,255,0.8)"
-            />
-          </svg>
+              height="13"
+              viewBox="0 0 17 13"
+              fill="none"
+              aria-hidden="true"
+            >
+              <rect
+                width="17"
+                height="2.2"
+                rx="1.1"
+                fill="rgba(255,255,255,0.8)"
+              />
+              <rect
+                y="5.4"
+                width="11"
+                height="2.2"
+                rx="1.1"
+                fill="rgba(255,255,255,0.8)"
+              />
+              <rect
+                y="10.8"
+                width="17"
+                height="2.2"
+                rx="1.1"
+                fill="rgba(255,255,255,0.8)"
+              />
+            </svg>
           </button>
         </div>
       </header>
@@ -1068,7 +1057,7 @@ function LobbyContent() {
                 color: "transparent",
               }}
             >
-              الحلا مع صحابك
+              يحلا مع صحابك
             </span>
           </h1>
 
@@ -1084,7 +1073,7 @@ function LobbyContent() {
               }}
             >
               <Gamepad2 className="h-4 w-4" />
-              لعب دايا
+              لعب دابا
             </a>
             {!isAuthed && (
               <Link
@@ -1213,9 +1202,7 @@ function LobbyContent() {
             href="#most-played"
             className="font-cairo text-[11px] font-bold"
             style={{ color: "rgba(255,255,255,0.3)" }}
-          >
-            عرض الكل
-          </a>
+          ></a>
           <div className="flex items-center gap-2">
             <div
               className="w-2 h-2 rotate-45 flex-shrink-0"
@@ -1711,7 +1698,7 @@ function LobbyContent() {
                   onClick={() => startRewardedAd()}
                   className="bg-[#E8B430] text-[#060810] font-bold rounded-xl flex items-center justify-center gap-2 mt-6 w-full py-4 text-[15px]"
                 >
-                  <Play className="h-5 w-5" /> تفرج على الإشهار — وعيني عينك
+                  <Play className="h-5 w-5" /> تفرج فالإشهار — وعيني عينك
                 </button>
                 <button
                   type="button"

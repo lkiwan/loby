@@ -20,20 +20,28 @@ export type GameCardProps = {
 
 function useRipple() {
   return useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-    const btn  = e.currentTarget;
+    const btn = e.currentTarget;
     const rect = btn.getBoundingClientRect();
-    const r    = document.createElement("span");
-    r.className  = "btn-ripple-wave";
+    const r = document.createElement("span");
+    r.className = "btn-ripple-wave";
     r.style.left = `${e.clientX - rect.left - rect.width / 2}px`;
-    r.style.top  = `${e.clientY - rect.top  - rect.height / 2}px`;
+    r.style.top = `${e.clientY - rect.top - rect.height / 2}px`;
     btn.appendChild(r);
     setTimeout(() => r.remove(), 560);
   }, []);
 }
 
 /* ── Elaborate Moroccan Arch Frame — 2.0 ── */
-function MoroccanArchFrame({ accent, glow, isMafia }: { accent: string; glow: string; isMafia: boolean }) {
-  const gradId = `archGrad_${accent.replace('#', '')}`;
+function MoroccanArchFrame({
+  accent,
+  glow,
+  isMafia,
+}: {
+  accent: string;
+  glow: string;
+  isMafia: boolean;
+}) {
+  const gradId = `archGrad_${accent.replace("#", "")}`;
 
   return (
     <svg
@@ -45,10 +53,10 @@ function MoroccanArchFrame({ accent, glow, isMafia }: { accent: string; glow: st
     >
       <defs>
         <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%"   stopColor="transparent" />
-          <stop offset="20%"  stopColor={accent} stopOpacity="0.5" />
-          <stop offset="50%"  stopColor={accent} stopOpacity="1" />
-          <stop offset="80%"  stopColor={accent} stopOpacity="0.5" />
+          <stop offset="0%" stopColor="transparent" />
+          <stop offset="20%" stopColor={accent} stopOpacity="0.5" />
+          <stop offset="50%" stopColor={accent} stopOpacity="1" />
+          <stop offset="80%" stopColor={accent} stopOpacity="0.5" />
           <stop offset="100%" stopColor="transparent" />
         </linearGradient>
       </defs>
@@ -81,52 +89,120 @@ function MoroccanArchFrame({ accent, glow, isMafia }: { accent: string; glow: st
       />
 
       {/* ── Keystone — apex gem ── */}
-      <path d="M 91,5 L 100,0 L 109,5 L 106,14 L 94,14 Z" fill={accent} opacity="0.95" />
-      <circle cx="100" cy="9"  r="2.5" fill={glow}   opacity="0.9" />
-      <circle cx="100" cy="9"  r="1.2" fill="white"   opacity="0.6" />
+      <path
+        d="M 91,5 L 100,0 L 109,5 L 106,14 L 94,14 Z"
+        fill={accent}
+        opacity="0.95"
+      />
+      <circle cx="100" cy="9" r="2.5" fill={glow} opacity="0.9" />
+      <circle cx="100" cy="9" r="1.2" fill="white" opacity="0.6" />
 
       {/* ── Springing point circles (left) ── */}
-      <circle cx="5" cy="70" r="5"   fill={accent} opacity="0.55" />
-      <circle cx="5" cy="70" r="2.8" fill={glow}   opacity="0.8" />
-      <circle cx="5" cy="70" r="1.2" fill="white"   opacity="0.5" />
+      <circle cx="5" cy="70" r="5" fill={accent} opacity="0.55" />
+      <circle cx="5" cy="70" r="2.8" fill={glow} opacity="0.8" />
+      <circle cx="5" cy="70" r="1.2" fill="white" opacity="0.5" />
 
       {/* ── Springing point circles (right) ── */}
-      <circle cx="195" cy="70" r="5"   fill={accent} opacity="0.55" />
-      <circle cx="195" cy="70" r="2.8" fill={glow}   opacity="0.8" />
-      <circle cx="195" cy="70" r="1.2" fill="white"   opacity="0.5" />
+      <circle cx="195" cy="70" r="5" fill={accent} opacity="0.55" />
+      <circle cx="195" cy="70" r="2.8" fill={glow} opacity="0.8" />
+      <circle cx="195" cy="70" r="1.2" fill="white" opacity="0.5" />
 
       {/* ── Left column zellige diamonds ── */}
-      <polygon points="5,88  9.5,84  14,88  9.5,92"  fill={accent} opacity="0.55" />
-      <polygon points="5,103 9.5,99  14,103 9.5,107" fill={glow}   opacity="0.38" />
-      <polygon points="5,118 9.5,114 14,118 9.5,122" fill={accent} opacity="0.45" />
-      <polygon points="5,133 9.5,129 14,133 9.5,137" fill={glow}   opacity="0.28" />
-      <polygon points="5,148 9.5,144 14,148 9.5,152" fill={accent} opacity="0.35" />
+      <polygon
+        points="5,88  9.5,84  14,88  9.5,92"
+        fill={accent}
+        opacity="0.55"
+      />
+      <polygon
+        points="5,103 9.5,99  14,103 9.5,107"
+        fill={glow}
+        opacity="0.38"
+      />
+      <polygon
+        points="5,118 9.5,114 14,118 9.5,122"
+        fill={accent}
+        opacity="0.45"
+      />
+      <polygon
+        points="5,133 9.5,129 14,133 9.5,137"
+        fill={glow}
+        opacity="0.28"
+      />
+      <polygon
+        points="5,148 9.5,144 14,148 9.5,152"
+        fill={accent}
+        opacity="0.35"
+      />
 
       {/* ── Right column zellige diamonds ── */}
-      <polygon points="186,88  190.5,84  195,88  190.5,92"  fill={accent} opacity="0.55" />
-      <polygon points="186,103 190.5,99  195,103 190.5,107" fill={glow}   opacity="0.38" />
-      <polygon points="186,118 190.5,114 195,118 190.5,122" fill={accent} opacity="0.45" />
-      <polygon points="186,133 190.5,129 195,133 190.5,137" fill={glow}   opacity="0.28" />
-      <polygon points="186,148 190.5,144 195,148 190.5,152" fill={accent} opacity="0.35" />
+      <polygon
+        points="186,88  190.5,84  195,88  190.5,92"
+        fill={accent}
+        opacity="0.55"
+      />
+      <polygon
+        points="186,103 190.5,99  195,103 190.5,107"
+        fill={glow}
+        opacity="0.38"
+      />
+      <polygon
+        points="186,118 190.5,114 195,118 190.5,122"
+        fill={accent}
+        opacity="0.45"
+      />
+      <polygon
+        points="186,133 190.5,129 195,133 190.5,137"
+        fill={glow}
+        opacity="0.28"
+      />
+      <polygon
+        points="186,148 190.5,144 195,148 190.5,152"
+        fill={accent}
+        opacity="0.35"
+      />
 
       {/* ── Arch ornament circles (muqarnas hint) ── */}
-      <circle cx="55"  cy="18" r="1.8" fill={glow}   opacity="0.45" />
-      <circle cx="145" cy="18" r="1.8" fill={glow}   opacity="0.45" />
-      <circle cx="33"  cy="33" r="1.4" fill={accent} opacity="0.32" />
+      <circle cx="55" cy="18" r="1.8" fill={glow} opacity="0.45" />
+      <circle cx="145" cy="18" r="1.8" fill={glow} opacity="0.45" />
+      <circle cx="33" cy="33" r="1.4" fill={accent} opacity="0.32" />
       <circle cx="167" cy="33" r="1.4" fill={accent} opacity="0.32" />
-      <circle cx="18"  cy="50" r="1.2" fill={glow}   opacity="0.28" />
-      <circle cx="182" cy="50" r="1.2" fill={glow}   opacity="0.28" />
+      <circle cx="18" cy="50" r="1.2" fill={glow} opacity="0.28" />
+      <circle cx="182" cy="50" r="1.2" fill={glow} opacity="0.28" />
 
       {/* ── Column base caps ── */}
-      <rect x="1"   y="192" width="14" height="8" rx="2.5" fill={accent} opacity="0.5" />
-      <rect x="185" y="192" width="14" height="8" rx="2.5" fill={accent} opacity="0.5" />
+      <rect
+        x="1"
+        y="192"
+        width="14"
+        height="8"
+        rx="2.5"
+        fill={accent}
+        opacity="0.5"
+      />
+      <rect
+        x="185"
+        y="192"
+        width="14"
+        height="8"
+        rx="2.5"
+        fill={accent}
+        opacity="0.5"
+      />
 
       {/* ── Horizontal sill ── */}
-      <line x1="1" y1="199" x2="199" y2="199" stroke={accent} strokeWidth="1.5" opacity="0.32" />
+      <line
+        x1="1"
+        y1="199"
+        x2="199"
+        y2="199"
+        stroke={accent}
+        strokeWidth="1.5"
+        opacity="0.32"
+      />
 
       {/* ── Sill ornaments ── */}
-      <circle cx="10"  cy="195" r="2" fill={glow}   opacity="0.4" />
-      <circle cx="190" cy="195" r="2" fill={glow}   opacity="0.4" />
+      <circle cx="10" cy="195" r="2" fill={glow} opacity="0.4" />
+      <circle cx="190" cy="195" r="2" fill={glow} opacity="0.4" />
       <polygon points="97,199 100,195 103,199" fill={accent} opacity="0.5" />
     </svg>
   );
@@ -179,9 +255,32 @@ function GameThumbnail({ game }: { game: Game }) {
             className="glow-pulse absolute -bottom-6 start-1/2 h-24 w-3/4 -translate-x-1/2 rounded-[50%] blur-2xl"
             style={{ backgroundColor: `${game.glowAccent}88` }}
           />
-          <span className="drip" style={{ left: "10%",  height: 26, backgroundColor: game.starAccent }} />
-          <span className="drip" style={{ left: "47%",  height: 38, animationDelay: "1.3s", backgroundColor: game.starAccent }} />
-          <span className="drip" style={{ right: "12%", height: 22, animationDelay: "2.4s", backgroundColor: game.starAccent }} />
+          <span
+            className="drip"
+            style={{
+              left: "10%",
+              height: 26,
+              backgroundColor: game.starAccent,
+            }}
+          />
+          <span
+            className="drip"
+            style={{
+              left: "47%",
+              height: 38,
+              animationDelay: "1.3s",
+              backgroundColor: game.starAccent,
+            }}
+          />
+          <span
+            className="drip"
+            style={{
+              right: "12%",
+              height: 22,
+              animationDelay: "2.4s",
+              backgroundColor: game.starAccent,
+            }}
+          />
         </>
       )}
 
@@ -212,12 +311,18 @@ function GameThumbnail({ game }: { game: Game }) {
    GAME DOOR — MOROCCAN DOOR COMPONENT 2.0
    ══════════════════════════════════════════════ */
 export default function GameCard({
-  game, coins, loadingAction, isBusy, onPlay, onWatchAd, onDirectAd
+  game,
+  coins,
+  loadingAction,
+  isBusy,
+  onPlay,
+  onWatchAd,
+  onDirectAd,
 }: GameCardProps) {
   const canAfford = coins >= game.cost;
-  const ripple    = useRipple();
-  const accent    = game.starAccent;
-  const glow      = game.glowAccent;
+  const ripple = useRipple();
+  const accent = game.starAccent;
+  const glow = game.glowAccent;
 
   /* Per-card details disclosure — every card keeps its own state */
   const [showDetails, setShowDetails] = useState(false);
@@ -227,9 +332,9 @@ export default function GameCard({
     <div
       className="group game-door"
       style={{
-        background: '#080C16',
-        border:     `1px solid ${accent}28`,
-        boxShadow:  `0 0 0 1px ${accent}08, 0 12px 44px rgba(0,0,0,0.65), inset 0 1px 0 ${accent}08`,
+        background: "#080C16",
+        border: `1px solid ${accent}28`,
+        boxShadow: `0 0 0 1px ${accent}08, 0 12px 44px rgba(0,0,0,0.65), inset 0 1px 0 ${accent}08`,
       }}
     >
       {/* ── Top zellige shimmer bar ── */}
@@ -237,8 +342,8 @@ export default function GameCard({
         className="door-top-bar"
         style={{
           background: `linear-gradient(90deg, transparent 0%, ${glow}70 20%, ${accent} 50%, ${glow}70 80%, transparent 100%)`,
-          boxShadow:  `0 0 16px ${accent}60`,
-          height: '4px',
+          boxShadow: `0 0 16px ${accent}60`,
+          height: "4px",
         }}
       />
 
@@ -247,19 +352,21 @@ export default function GameCard({
         <div
           className="door-featured-badge"
           style={{
-            borderColor:     `${accent}70`,
+            borderColor: `${accent}70`,
             backgroundColor: `rgba(7,17,31,0.88)`,
-            color:           accent,
-            border:          `1px solid ${accent}70`,
+            color: accent,
+            border: `1px solid ${accent}70`,
           }}
         >
           <span style={{ color: accent }}>★</span>
-          <span className="font-grit text-[9px] uppercase tracking-widest">FEATURED</span>
+          <span className="font-grit text-[9px] uppercase tracking-widest">
+            FEATURED
+          </span>
         </div>
       )}
 
       {/* ── ARCH IMAGE ZONE ── */}
-      <div 
+      <div
         className="door-img-zone cursor-pointer"
         onClick={onDirectAd || onWatchAd}
       >
@@ -269,13 +376,12 @@ export default function GameCard({
 
       {/* ── CARD CONTENT ── */}
       <div className="door-content">
-
         {/* Title block */}
         <div>
           <h3
             className="font-lalezar leading-tight text-[1.52rem]"
             style={{
-              color:      accent,
+              color: accent,
               textShadow: `0 0 20px ${accent}50`,
             }}
           >
@@ -295,8 +401,8 @@ export default function GameCard({
           className="flex w-full items-center justify-center gap-1.5 rounded-[10px] border py-[7px] font-cairo text-[11px] font-black leading-none transition active:scale-[0.98]"
           style={{
             borderColor: `${accent}33`,
-            background:  `${accent}0F`,
-            color:       accent,
+            background: `${accent}0F`,
+            color: accent,
           }}
         >
           التفاصيل
@@ -325,7 +431,7 @@ export default function GameCard({
               <div
                 className="rounded-[10px] px-3 py-2.5 space-y-1"
                 style={{
-                  background:        `${accent}0A`,
+                  background: `${accent}0A`,
                   borderInlineStart: `2px solid ${accent}55`,
                 }}
               >
@@ -347,7 +453,9 @@ export default function GameCard({
               <div className="relative flex items-center gap-2 my-0.5">
                 <div
                   className="h-px flex-1"
-                  style={{ background: `linear-gradient(90deg, transparent, ${accent}40)` }}
+                  style={{
+                    background: `linear-gradient(90deg, transparent, ${accent}40)`,
+                  }}
                 />
                 <div
                   className="w-1.5 h-1.5 rotate-45 flex-shrink-0"
@@ -355,7 +463,9 @@ export default function GameCard({
                 />
                 <div
                   className="h-px flex-1"
-                  style={{ background: `linear-gradient(90deg, ${accent}40, transparent)` }}
+                  style={{
+                    background: `linear-gradient(90deg, ${accent}40, transparent)`,
+                  }}
                 />
               </div>
             </div>
@@ -364,42 +474,46 @@ export default function GameCard({
 
         {/* ── CTA BUTTONS — side by side in one row ── */}
         <div className="mt-auto flex gap-2">
-
-          {/* PRIMARY — لعب دايا (solid red matching reference) */}
+          {/* PRIMARY — لعب دابا (solid red matching reference) */}
           <button
-            onClick={(e) => { ripple(e); onPlay(e); }}
+            onClick={(e) => {
+              ripple(e);
+              onPlay(e);
+            }}
             disabled={isBusy || !canAfford}
             className="btn-chunk relative flex-1 min-w-0 overflow-hidden whitespace-nowrap py-[11px] px-1 text-[14px] rounded-[16px] font-cairo font-black"
             style={{
-              background:  "rgba(194,52,26,0.95)",
-              border:      "1px solid rgba(220,80,40,0.6)",
-              color:       "#FFFFFF",
-              textShadow:  "0 1px 3px rgba(0,0,0,.5)",
-              boxShadow:   canAfford
+              background: "rgba(194,52,26,0.95)",
+              border: "1px solid rgba(220,80,40,0.6)",
+              color: "#FFFFFF",
+              textShadow: "0 1px 3px rgba(0,0,0,.5)",
+              boxShadow: canAfford
                 ? "0 4px 0 rgba(140,20,5,0.8), 0 10px 20px rgba(190,40,10,0.35)"
                 : "none",
-              opacity:     !canAfford ? 0.42 : 1,
+              opacity: !canAfford ? 0.42 : 1,
             }}
           >
             <span className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-xl bg-white/18 shadow-inner">
-              {isBusy && loadingAction === "coins"
-                ? <Loader2 className="h-[14px] w-[14px] animate-spin" />
-                : <Play className="h-[14px] w-[14px] fill-current" />}
+              {isBusy && loadingAction === "coins" ? (
+                <Loader2 className="h-[14px] w-[14px] animate-spin" />
+              ) : (
+                <Play className="h-[14px] w-[14px] fill-current" />
+              )}
             </span>
-            لعب دايا
+            لعب دابا
           </button>
 
-          {/* SECONDARY — AD | تفرج على الإشهار */}
+          {/* SECONDARY — AD | تفرج  فالإشهار */}
           <button
             onClick={onWatchAd}
             disabled={isBusy}
             className="btn-chunk relative flex-1 min-w-0 overflow-hidden whitespace-nowrap py-[8px] px-1 rounded-[14px] font-cairo font-black flex items-center justify-center"
             style={{
               background: "rgba(232,180,48,0.1)",
-              border:     "1px solid rgba(232,180,48,0.32)",
+              border: "1px solid rgba(232,180,48,0.32)",
               /* .btn-chunk (unlayered) sets gap:.5rem — shrink inline so the
                  label fits the half-width button without wrapping */
-              gap:        "6px",
+              gap: "6px",
             }}
           >
             <span
@@ -408,10 +522,15 @@ export default function GameCard({
             >
               AD
             </span>
-            <span className="font-cairo text-[10.5px] font-black" style={{ color: "#E8B430" }}>
-              {isBusy && loadingAction === "ad"
-                ? <Loader2 className="h-3 w-3 animate-spin inline" />
-                : "تفرج على الإشهار"}
+            <span
+              className="font-cairo text-[10.5px] font-black"
+              style={{ color: "#E8B430" }}
+            >
+              {isBusy && loadingAction === "ad" ? (
+                <Loader2 className="h-3 w-3 animate-spin inline" />
+              ) : (
+                "تفرج  فالإشهار"
+              )}
             </span>
           </button>
         </div>
