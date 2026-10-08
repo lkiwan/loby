@@ -1,0 +1,21 @@
+⚠ Port 3000 is in use by process 39988, using available port 3001 instead.
+▲ Next.js 16.3.5 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://172.20.144.1:3001
+- Environments: .env
+✓ Ready in 879ms
+✓ Running next.config.ts took 78ms
+Warning: Custom Cache-Control headers detected for the following routes:
+  - /_next/static/:path*
+
+Setting a custom Cache-Control header can break Next.js development behavior.
+⨯ Another next dev server is already running.
+
+- Local:        http://localhost:3000
+- PID:          39988
+- Dir:          C:\Users\walid\OneDrive\Bureau\Projet_Games\loby
+- Log:          .next\dev\logs\next-development.log
+
+You can access the existing server at http://localhost:3000,
+or run taskkill /PID 39988 /F to stop it and start a new one.
+[?25h

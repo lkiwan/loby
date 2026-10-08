@@ -1,0 +1,1470 @@
+Warning: Custom Cache-Control headers detected for the following routes:
+  - /_next/static/:path*
+
+Setting a custom Cache-Control header can break Next.js development behavior.
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] Uncaught ReferenceError: FeaturedGameCard is not defined
+    at <unknown> (src/app/page.tsx:802:18)
+    at Array.map (<anonymous>)
+    at LobbyContent (src/app/page.tsx:802:18)
+    at LobbyPage (src/components/GameCard.tsx:1:1)
+  800 |               horizontal (Mafia on lg+) layouts with responsive CSS.          */}
+  801 |           <div
+> 802 |             ref={cardsRef}
+      |                  ^
+  803 |             className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 lg:gap-6"
+  804 |           >
+  805 |             {GAMES.map((game, i) => (
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] Uncaught ReferenceError: FeaturedGameCard is not defined
+    at <unknown> (src/app/page.tsx:802:18)
+    at Array.map (<anonymous>)
+    at LobbyContent (src/app/page.tsx:802:18)
+    at LobbyPage (src/components/GameCard.tsx:1:1)
+  800 |               horizontal (Mafia on lg+) layouts with responsive CSS.          */}
+  801 |           <div
+> 802 |             ref={cardsRef}
+      |                  ^
+  803 |             className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 lg:gap-6"
+  804 |           >
+  805 |             {GAMES.map((game, i) => (
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] Uncaught ReferenceError: FeaturedGameCard is not defined
+    at <unknown> (src/app/page.tsx:802:18)
+    at Array.map (<anonymous>)
+    at LobbyContent (src/app/page.tsx:802:18)
+    at LobbyPage (src/components/GameCard.tsx:1:1)
+  800 |               horizontal (Mafia on lg+) layouts with responsive CSS.          */}
+  801 |           <div
+> 802 |             ref={cardsRef}
+      |                  ^
+  803 |             className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 lg:gap-6"
+  804 |           >
+  805 |             {GAMES.map((game, i) => (
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] Uncaught ReferenceError: Play is not defined
+    at GameCard (src/components/GameCard.tsx:212:18)
+    at <unknown> (src/app/page.tsx:814:17)
+    at Array.map (<anonymous>)
+    at LobbyContent (src/app/page.tsx:805:20)
+    at LobbyPage (src/app/page.tsx:1175:7)
+  210 |             {isBusy && loadingAction === "coins"
+  211 |               ? <Loader2 className="h-[18px] w-[18px] animate-spin" />
+> 212 |               : <Play className="h-[18px] w-[18px] fill-current" />}
+      |                  ^
+  213 |             لعب دابا
+  214 |             {/* coin cost badge */}
+  215 |             <span className="ms-auto flex items-center gap-1 rounded-full border border-amber-400/50 bg-amber-400/10 px-2.5 py-1 font-cairo text-[11px] font-black leading-none text-amber-300 shadow-[0_0_10px_rgba(245,158,11,.35)]">
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[browser] Uncaught Error: Module [project]/node_modules/lucide-react/dist/esm/icons/video.mjs [app-client] (ecmascript) <export default as Video> was instantiated because it was required from module [project]/src/components/GameCard.tsx [app-client] (ecmascript) <locals>, but the module factory is not available.
+This is often caused by a stale browser cache, misconfigured Cache-Control headers, or a service worker serving outdated responses.
+To fix this, make sure your Cache-Control headers allow revalidation of chunks and review your service worker configuration. As an immediate workaround, try hard-reloading the page, clearing the browser cache, or unregistering any service workers.
+    at module evaluation (src/components/GameCard.tsx:7:1)
+    at module evaluation (src/app/page.tsx:13:1)
+   5 | import { Coins, Loader2 } from "lucide-react";
+   6 | import { MAFIA_ART, type Game, GAMES } from "@/lib/games";
+>  7 | import { GameMetaRow } from "@/components/GameMeta";
+     | ^
+   8 | import { GameTags } from "@/components/GameTag";
+   9 | import Star from "@/components/Star";
+  10 |
+[browser] Uncaught Error: Module [project]/node_modules/lucide-react/dist/esm/icons/video.mjs [app-client] (ecmascript) <export default as Video> was instantiated because it was required from module [project]/src/components/GameCard.tsx [app-client] (ecmascript) <locals>, but the module factory is not available.
+This is often caused by a stale browser cache, misconfigured Cache-Control headers, or a service worker serving outdated responses.
+To fix this, make sure your Cache-Control headers allow revalidation of chunks and review your service worker configuration. As an immediate workaround, try hard-reloading the page, clearing the browser cache, or unregistering any service workers.
+    at module evaluation (src/components/GameCard.tsx:7:1)
+    at module evaluation (src/app/page.tsx:13:1)
+   5 | import { Coins, Loader2 } from "lucide-react";
+   6 | import { MAFIA_ART, type Game, GAMES } from "@/lib/games";
+>  7 | import { GameMetaRow } from "@/components/GameMeta";
+     | ^
+   8 | import { GameTags } from "@/components/GameTag";
+   9 | import Star from "@/components/Star";
+  10 |
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head headCacheNode={{rsc:{...}, ...}}>
+                    <__next_viewport_boundary__>
+                    <MetadataWrapper>
+                      <div
+                        hidden={true}
+-                       bis_skin_checked="1"
+                      >
+                    ...
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="ar" dir="rtl">
+                          <body
+                            className="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__var..."
+-                           __processed_518b8824-4bfc-4e10-8570-f39452e3a4b9__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                            <Script>
+                            <Script>
+                            <Providers>
+                            <ConsentBanner>
+                              <div
+                                className="fixed inset-x-0 bottom-0 z-[70] border-t-2 border-[#6b542e]/50 bg-[#171210]..."
+-                               bis_skin_checked="1"
+                              >
+                                <div
+                                  className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-ce..."
+-                                 bis_skin_checked="1"
+                                >
+                                  <p>
+                                  <div
+                                    className="flex shrink-0 items-center gap-2"
+-                                   bis_skin_checked="1"
+                                  >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+      <LoadingBoundary name="/" loading={null}>
+        <HTTPAccessFallbackBoundary notFound={{...}} forbidden={undefined} unauthorized={undefined}>
+          <HTTPAccessFallbackErrorBoundary pathname="/" notFound={{...}} forbidden={undefined} unauthorized={undefined} ...>
+            <RedirectBoundary>
+              <RedirectErrorBoundary router={{...}}>
+                <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} segmentPath={[...]} ...>
+                  <SegmentViewNode type="page" pagePath="page.tsx">
+                    <SegmentTrieNode>
+                    <ClientPageRoot Component={function LobbyPage} serverProvidedParams={{...}}>
+                      <LobbyPage params={Promise} searchParams={Promise}>
+                        <Suspense fallback={null}>
+                          <LobbyContent>
+                            <div
+                              className="relative flex min-h-dvh flex-col items-center justify-center gap-6 bg-[#03081..."
+-                             bis_skin_checked="1"
+                            >
+                              <div
+                                className="pointer-events-none fixed inset-0 overflow-hidden"
+-                               bis_skin_checked="1"
+                              >
+                                <LoadableComponent>
+                                <LoadableComponent>
+                                <div
+                                  className="absolute inset-0 bg-[radial-gradient(ellipse_85%_75%_at_50%_50%,transpare..."
+-                                 bis_skin_checked="1"
+                                >
+                              <div
+                                className="relative z-10 flex flex-col items-center gap-4"
+-                               bis_skin_checked="1"
+                              >
+                                <StarMark size={60}>
+                                  <div
+                                    className={"pointer-events-none relative inline-grid place-items-center "}
+                                    style={{width:60,height:60}}
+                                    aria-hidden={true}
+-                                   bis_skin_checked="1"
+                                  >
+                                <div
+                                  className="pulse-glow-ring h-12 w-12 rounded-full border-2 border-cyan-400/40 grid p..."
+-                                 bis_skin_checked="1"
+                                >
+                                ...
+                  ...
+                ...
+ 
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head headCacheNode={{rsc:{...}, ...}}>
+                    <__next_viewport_boundary__>
+                    <MetadataWrapper>
+                      <div
+                        hidden={true}
+-                       bis_skin_checked="1"
+                      >
+                    ...
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="ar" dir="rtl">
+                          <body
+                            className="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__var..."
+-                           __processed_57126041-7d80-4fa5-af6c-169df1be3805__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                            <Script>
+                            <Script>
+                            <Providers>
+                            <ConsentBanner>
+                              <div
+                                className="fixed inset-x-0 bottom-0 z-[70] border-t-2 border-[#6b542e]/50 bg-[#171210]..."
+-                               bis_skin_checked="1"
+                              >
+                                <div
+                                  className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-ce..."
+-                                 bis_skin_checked="1"
+                                >
+                                  <p>
+                                  <div
+                                    className="flex shrink-0 items-center gap-2"
+-                                   bis_skin_checked="1"
+                                  >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+      <LoadingBoundary name="/" loading={null}>
+        <HTTPAccessFallbackBoundary notFound={{...}} forbidden={undefined} unauthorized={undefined}>
+          <HTTPAccessFallbackErrorBoundary pathname="/" notFound={{...}} forbidden={undefined} unauthorized={undefined} ...>
+            <RedirectBoundary>
+              <RedirectErrorBoundary router={{...}}>
+                <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} segmentPath={[...]} ...>
+                  <SegmentViewNode type="page" pagePath="page.tsx">
+                    <SegmentTrieNode>
+                    <ClientPageRoot Component={function LobbyPage} serverProvidedParams={{...}}>
+                      <LobbyPage params={Promise} searchParams={Promise}>
+                        <Suspense fallback={null}>
+                          <LobbyContent>
+                            <div
+                              className="relative flex min-h-dvh flex-col items-center justify-center gap-6 bg-[#03081..."
+-                             bis_skin_checked="1"
+                            >
+                              <div
+                                className="pointer-events-none fixed inset-0 overflow-hidden"
+-                               bis_skin_checked="1"
+                              >
+                                <LoadableComponent>
+                                <LoadableComponent>
+                                <div
+                                  className="absolute inset-0 bg-[radial-gradient(ellipse_85%_75%_at_50%_50%,transpare..."
+-                                 bis_skin_checked="1"
+                                >
+                              <div
+                                className="relative z-10 flex flex-col items-center gap-4"
+-                               bis_skin_checked="1"
+                              >
+                                <StarMark size={60}>
+                                  <div
+                                    className={"pointer-events-none relative inline-grid place-items-center "}
+                                    style={{width:60,height:60}}
+                                    aria-hidden={true}
+-                                   bis_skin_checked="1"
+                                  >
+                                <div
+                                  className="pulse-glow-ring h-12 w-12 rounded-full border-2 border-cyan-400/40 grid p..."
+-                                 bis_skin_checked="1"
+                                >
+                                ...
+                  ...
+                ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head headCacheNode={{rsc:{...}, ...}}>
+                    <__next_viewport_boundary__>
+                    <MetadataWrapper>
+                      <div
+                        hidden={true}
+-                       bis_skin_checked="1"
+                      >
+                    ...
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="ar" dir="rtl">
+                          <body
+                            className="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__var..."
+-                           __processed_6dd40be7-0b6e-4a0c-8ed7-1cb2ecc55ba5__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                            <Script>
+                            <Script>
+                            <Providers>
+                            <ConsentBanner>
+                              <div
+                                className="fixed inset-x-0 bottom-0 z-[70] border-t-2 border-[#6b542e]/50 bg-[#171210]..."
+-                               bis_skin_checked="1"
+                              >
+                                <div
+                                  className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-ce..."
+-                                 bis_skin_checked="1"
+                                >
+                                  <p>
+                                  <div
+                                    className="flex shrink-0 items-center gap-2"
+-                                   bis_skin_checked="1"
+                                  >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+      <LoadingBoundary name="/" loading={null}>
+        <HTTPAccessFallbackBoundary notFound={{...}} forbidden={undefined} unauthorized={undefined}>
+          <HTTPAccessFallbackErrorBoundary pathname="/" notFound={{...}} forbidden={undefined} unauthorized={undefined} ...>
+            <RedirectBoundary>
+              <RedirectErrorBoundary router={{...}}>
+                <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} segmentPath={[...]} ...>
+                  <SegmentViewNode type="page" pagePath="page.tsx">
+                    <SegmentTrieNode>
+                    <ClientPageRoot Component={function LobbyPage} serverProvidedParams={{...}}>
+                      <LobbyPage params={Promise} searchParams={Promise}>
+                        <Suspense fallback={null}>
+                          <LobbyContent>
+                            <div
+                              className="relative flex min-h-dvh flex-col items-center justify-center gap-6 bg-[#03081..."
+-                             bis_skin_checked="1"
+                            >
+                              <div
+                                className="pointer-events-none fixed inset-0 overflow-hidden"
+-                               bis_skin_checked="1"
+                              >
+                                <LoadableComponent>
+                                <LoadableComponent>
+                                <div
+                                  className="absolute inset-0 bg-[radial-gradient(ellipse_85%_75%_at_50%_50%,transpare..."
+-                                 bis_skin_checked="1"
+                                >
+                              <div
+                                className="relative z-10 flex flex-col items-center gap-4"
+-                               bis_skin_checked="1"
+                              >
+                                <StarMark size={60}>
+                                  <div
+                                    className={"pointer-events-none relative inline-grid place-items-center "}
+                                    style={{width:60,height:60}}
+                                    aria-hidden={true}
+-                                   bis_skin_checked="1"
+                                  >
+                                <div
+                                  className="pulse-glow-ring h-12 w-12 rounded-full border-2 border-cyan-400/40 grid p..."
+-                                 bis_skin_checked="1"
+                                >
+                                ...
+                  ...
+                ...
+ 
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/leaderboard" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head headCacheNode={{rsc:{...}, ...}}>
+                    <__next_viewport_boundary__>
+                    <MetadataWrapper>
+                      <div
+                        hidden={true}
+-                       bis_skin_checked="1"
+                      >
+                    ...
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="ar" dir="rtl">
+                          <body
+                            className="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__var..."
+-                           __processed_a6c88de5-28e8-4263-bdd2-af0086fe980e__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                            <Script>
+                            <Script>
+                            ...
+                              <SegmentViewNode type="page" pagePath="leaderboar...">
+                                <SegmentTrieNode>
+                                <ClientPageRoot Component={function LeaderboardPage} serverProvidedParams={{...}}>
+                                  <LeaderboardPage params={Promise} searchParams={Promise}>
+                                    <div
+                                      className="relative min-h-dvh bg-[#030812] text-[#f1e7d6]"
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <LoadableComponent>
+                                        <div
+                                          className="absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_50%_30%,r..."
+-                                         bis_skin_checked="1"
+                                        >
+                                        <div
+                                          className="absolute inset-0 bg-[radial-gradient(ellipse_85%_75%_at_50%_50%,t..."
+-                                         bis_skin_checked="1"
+                                        >
+                                      <header className="glass-head...">
+                                        <div
+                                          className="mx-auto flex h-16 max-w-4xl items-center justify-between px-4 sm:..."
+-                                         bis_skin_checked="1"
+                                        >
+                                          <LinkComponent>
+                                          <div
+                                            className="flex items-center gap-2"
+-                                           bis_skin_checked="1"
+                                          >
+                                          <StarMark size={28}>
+                                            <div
+                                              className={"pointer-events-none relative inline-grid place-items-center "}
+                                              style={{width:28,height:28}}
+                                              aria-hidden={true}
+-                                             bis_skin_checked="1"
+                                            >
+                                      <main className="relative z...">
+                                        <div
+                                          className="mb-10 text-center"
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="section-label mb-3"
+-                                           bis_skin_checked="1"
+                                          >
++                                           🏆 طوپ اللعابة
+                                          ...
+                                        <div
+                                          className="flex justify-center py-20"
+-                                         bis_skin_checked="1"
+                                        >
+                            <ConsentBanner>
+                              <div
+                                className="fixed inset-x-0 bottom-0 z-[70] border-t-2 border-[#6b542e]/50 bg-[#171210]..."
+-                               bis_skin_checked="1"
+                              >
+                                <div
+                                  className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-ce..."
+-                                 bis_skin_checked="1"
+                                >
+                                  <p>
+                                  <div
+                                    className="flex shrink-0 items-center gap-2"
+-                                   bis_skin_checked="1"
+                                  >
+                  ...
+ 
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] Uncaught Error: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <InnerScrollHandlerNew focusAndScrollRef={{scrollRef:null, ...}} cacheNode={{rsc:{...}, ...}}>
+      <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+        <LoadingBoundary name="leaderboard/" loading={null}>
+          <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+            <RedirectBoundary>
+              <RedirectErrorBoundary router={{...}}>
+                <InnerLayoutRouter url="/leaderboard" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} ...>
+                  <SegmentViewNode type="page" pagePath="leaderboar...">
+                    <SegmentTrieNode>
+                    <ClientPageRoot Component={function LeaderboardPage} serverProvidedParams={{...}}>
+                      <LeaderboardPage params={Promise} searchParams={Promise}>
+                        <div className="relative m...">
+                          <div className="pointer-ev...">
+                            <LoadableComponent>
+                            <div
++                             className="absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_50%_30%,rgba(242,178,..."
+-                             className="absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_50%_30%,rgba(242,178,..."
+                            >
+                            ...
+                          <header className="glass-head...">
+                            <div className="mx-auto fl...">
+                              <LinkComponent>
+                              <div className="flex items...">
+                                <Trophy>
+                                <span className="font-lalezar text-xl text-neutral-100">
++                                 المتصدرون
+-                                 الكلاسمون
+                              ...
+                          ...
+                  ...
+                ...
+      ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at span (<anonymous>)
+    at LeaderboardPage (src/app/leaderboard/page.tsx:59:27)
+  57 |             <span className="font-lalezar text-xl text-neutral-100">الكلاسمون</span>
+  58 |           </div>
+> 59 |           <StarMark size={28} />
+     |                           ^
+  60 |         </div>
+  61 |       </header>
+  62 |
+[browser] AdSense head tag doesn't support data-nscript attribute. (https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7713392774673260:227:304)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head headCacheNode={{rsc:{...}, ...}}>
+                    <__next_viewport_boundary__>
+                    <MetadataWrapper>
+                      <div
+                        hidden={true}
+-                       bis_skin_checked="1"
+                      >
+                    ...
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="ar" dir="rtl">
+                          <body
+                            className="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__var..."
+-                           __processed_66ddbf56-96f9-42c9-8c6d-618bf7369872__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                            <Script>
+                            <Script>
+                            <Providers>
+                            <ConsentBanner>
+                              <div
+                                className="fixed inset-x-0 bottom-0 z-[70] border-t-2 border-[#6b542e]/50 bg-[#171210]..."
+-                               bis_skin_checked="1"
+                              >
+                                <div
+                                  className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-ce..."
+-                                 bis_skin_checked="1"
+                                >
+                                  <p>
+                                  <div
+                                    className="flex shrink-0 items-center gap-2"
+-                                   bis_skin_checked="1"
+                                  >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+      <LoadingBoundary name="/" loading={null}>
+        <HTTPAccessFallbackBoundary notFound={{...}} forbidden={undefined} unauthorized={undefined}>
+          <HTTPAccessFallbackErrorBoundary pathname="/" notFound={{...}} forbidden={undefined} unauthorized={undefined} ...>
+            <RedirectBoundary>
+              <RedirectErrorBoundary router={{...}}>
+                <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} segmentPath={[...]} ...>
+                  <SegmentViewNode type="page" pagePath="page.tsx">
+                    <SegmentTrieNode>
+                    <ClientPageRoot Component={function LobbyPage} serverProvidedParams={{...}}>
+                      <LobbyPage params={Promise} searchParams={Promise}>
+                        <Suspense fallback={null}>
+                          <LobbyContent>
+                            <div
+                              className="relative flex min-h-dvh flex-col items-center justify-center gap-6 bg-[#03081..."
+-                             bis_skin_checked="1"
+                            >
+                              <div
+                                className="pointer-events-none fixed inset-0 overflow-hidden"
+-                               bis_skin_checked="1"
+                              >
+                                <LoadableComponent>
+                                <LoadableComponent>
+                                <div
+                                  className="absolute inset-0 bg-[radial-gradient(ellipse_85%_75%_at_50%_50%,transpare..."
+-                                 bis_skin_checked="1"
+                                >
+                              <div
+                                className="relative z-10 flex flex-col items-center gap-4"
+-                               bis_skin_checked="1"
+                              >
+                                <StarMark size={60}>
+                                  <div
+                                    className={"pointer-events-none relative inline-grid place-items-center "}
+                                    style={{width:60,height:60}}
+                                    aria-hidden={true}
+-                                   bis_skin_checked="1"
+                                  >
+                                <div
+                                  className="pulse-glow-ring h-12 w-12 rounded-full border-2 border-cyan-400/40 grid p..."
+-                                 bis_skin_checked="1"
+                                >
+                                ...
+                  ...
+                ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head headCacheNode={{rsc:{...}, ...}}>
+                    <__next_viewport_boundary__>
+                    <MetadataWrapper>
+                      <div
+                        hidden={true}
+-                       bis_skin_checked="1"
+                      >
+                    ...
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="ar" dir="rtl">
+                          <body
+                            className="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__var..."
+-                           __processed_86f2ccbe-b5a2-4cda-9991-d9f86eaf0b9d__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                            <Script>
+                            <Script>
+                            <Providers>
+                            <ConsentBanner>
+                              <div
+                                className="fixed inset-x-0 bottom-0 z-[70] border-t-2 border-[#6b542e]/50 bg-[#171210]..."
+-                               bis_skin_checked="1"
+                              >
+                                <div
+                                  className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-ce..."
+-                                 bis_skin_checked="1"
+                                >
+                                  <p>
+                                  <div
+                                    className="flex shrink-0 items-center gap-2"
+-                                   bis_skin_checked="1"
+                                  >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+      <LoadingBoundary name="/" loading={null}>
+        <HTTPAccessFallbackBoundary notFound={{...}} forbidden={undefined} unauthorized={undefined}>
+          <HTTPAccessFallbackErrorBoundary pathname="/" notFound={{...}} forbidden={undefined} unauthorized={undefined} ...>
+            <RedirectBoundary>
+              <RedirectErrorBoundary router={{...}}>
+                <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} segmentPath={[...]} ...>
+                  <SegmentViewNode type="page" pagePath="page.tsx">
+                    <SegmentTrieNode>
+                    <ClientPageRoot Component={function LobbyPage} serverProvidedParams={{...}}>
+                      <LobbyPage params={Promise} searchParams={Promise}>
+                        <Suspense fallback={null}>
+                          <LobbyContent>
+                            <div
+                              className="relative flex min-h-dvh flex-col items-center justify-center gap-6 bg-[#03081..."
+-                             bis_skin_checked="1"
+                            >
+                              <div
+                                className="pointer-events-none fixed inset-0 overflow-hidden"
+-                               bis_skin_checked="1"
+                              >
+                                <LoadableComponent>
+                                <LoadableComponent>
+                                <div
+                                  className="absolute inset-0 bg-[radial-gradient(ellipse_85%_75%_at_50%_50%,transpare..."
+-                                 bis_skin_checked="1"
+                                >
+                              <div
+                                className="relative z-10 flex flex-col items-center gap-4"
+-                               bis_skin_checked="1"
+                              >
+                                <StarMark size={60}>
+                                  <div
+                                    className={"pointer-events-none relative inline-grid place-items-center "}
+                                    style={{width:60,height:60}}
+                                    aria-hidden={true}
+-                                   bis_skin_checked="1"
+                                  >
+                                <div
+                                  className="pulse-glow-ring h-12 w-12 rounded-full border-2 border-cyan-400/40 grid p..."
+-                                 bis_skin_checked="1"
+                                >
+                                ...
+                  ...
+                ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head headCacheNode={{rsc:{...}, ...}}>
+                    <__next_viewport_boundary__>
+                    <MetadataWrapper>
+                      <div
+                        hidden={true}
+-                       bis_skin_checked="1"
+                      >
+                    ...
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="ar" dir="rtl">
+                          <body
+                            className="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__var..."
+-                           __processed_e6b03500-afab-4a40-a69c-42843b3e9112__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                            <Script>
+                            <Script>
+                            <Providers>
+                            <ConsentBanner>
+                              <div
+                                className="fixed inset-x-0 bottom-0 z-[70] border-t-2 border-[#6b542e]/50 bg-[#171210]..."
+-                               bis_skin_checked="1"
+                              >
+                                <div
+                                  className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-ce..."
+-                                 bis_skin_checked="1"
+                                >
+                                  <p>
+                                  <div
+                                    className="flex shrink-0 items-center gap-2"
+-                                   bis_skin_checked="1"
+                                  >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+      <LoadingBoundary name="/" loading={null}>
+        <HTTPAccessFallbackBoundary notFound={{...}} forbidden={undefined} unauthorized={undefined}>
+          <HTTPAccessFallbackErrorBoundary pathname="/" notFound={{...}} forbidden={undefined} unauthorized={undefined} ...>
+            <RedirectBoundary>
+              <RedirectErrorBoundary router={{...}}>
+                <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} segmentPath={[...]} ...>
+                  <SegmentViewNode type="page" pagePath="page.tsx">
+                    <SegmentTrieNode>
+                    <ClientPageRoot Component={function LobbyPage} serverProvidedParams={{...}}>
+                      <LobbyPage params={Promise} searchParams={Promise}>
+                        <Suspense fallback={null}>
+                          <LobbyContent>
+                            <div
+                              className="relative flex min-h-dvh flex-col items-center justify-center gap-6 bg-[#03081..."
+-                             bis_skin_checked="1"
+                            >
+                              <div
+                                className="pointer-events-none fixed inset-0 overflow-hidden"
+-                               bis_skin_checked="1"
+                              >
+                                <LoadableComponent>
+                                <LoadableComponent>
+                                <div
+                                  className="absolute inset-0 bg-[radial-gradient(ellipse_85%_75%_at_50%_50%,transpare..."
+-                                 bis_skin_checked="1"
+                                >
+                              <div
+                                className="relative z-10 flex flex-col items-center gap-4"
+-                               bis_skin_checked="1"
+                              >
+                                <StarMark size={60}>
+                                  <div
+                                    className={"pointer-events-none relative inline-grid place-items-center "}
+                                    style={{width:60,height:60}}
+                                    aria-hidden={true}
+-                                   bis_skin_checked="1"
+                                  >
+                                <div
+                                  className="pulse-glow-ring h-12 w-12 rounded-full border-2 border-cyan-400/40 grid p..."
+-                                 bis_skin_checked="1"
+                                >
+                                ...
+                  ...
+                ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head headCacheNode={{rsc:{...}, ...}}>
+                    <__next_viewport_boundary__>
+                    <MetadataWrapper>
+                      <div
+                        hidden={true}
+-                       bis_skin_checked="1"
+                      >
+                    ...
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="ar" dir="rtl">
+                          <body
+                            className="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__var..."
+-                           __processed_97c7020b-3eb1-4c5e-b41c-e593f30e156a__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                            <Script>
+                            <Script>
+                            <Providers>
+                            <ConsentBanner>
+                              <div
+                                className="fixed inset-x-0 bottom-0 z-[70] border-t-2 border-[#6b542e]/50 bg-[#171210]..."
+-                               bis_skin_checked="1"
+                              >
+                                <div
+                                  className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-ce..."
+-                                 bis_skin_checked="1"
+                                >
+                                  <p>
+                                  <div
+                                    className="flex shrink-0 items-center gap-2"
+-                                   bis_skin_checked="1"
+                                  >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+      <LoadingBoundary name="/" loading={null}>
+        <HTTPAccessFallbackBoundary notFound={{...}} forbidden={undefined} unauthorized={undefined}>
+          <HTTPAccessFallbackErrorBoundary pathname="/" notFound={{...}} forbidden={undefined} unauthorized={undefined} ...>
+            <RedirectBoundary>
+              <RedirectErrorBoundary router={{...}}>
+                <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} segmentPath={[...]} ...>
+                  <SegmentViewNode type="page" pagePath="page.tsx">
+                    <SegmentTrieNode>
+                    <ClientPageRoot Component={function LobbyPage} serverProvidedParams={{...}}>
+                      <LobbyPage params={Promise} searchParams={Promise}>
+                        <Suspense fallback={null}>
+                          <LobbyContent>
+                            <div
+                              className="relative flex min-h-dvh flex-col items-center justify-center gap-6 bg-[#03081..."
+-                             bis_skin_checked="1"
+                            >
+                              <div
+                                className="pointer-events-none fixed inset-0 overflow-hidden"
+-                               bis_skin_checked="1"
+                              >
+                                <LoadableComponent>
+                                <LoadableComponent>
+                                <div
+                                  className="absolute inset-0 bg-[radial-gradient(ellipse_85%_75%_at_50%_50%,transpare..."
+-                                 bis_skin_checked="1"
+                                >
+                              <div
+                                className="relative z-10 flex flex-col items-center gap-4"
+-                               bis_skin_checked="1"
+                              >
+                                <StarMark size={60}>
+                                  <div
+                                    className={"pointer-events-none relative inline-grid place-items-center "}
+                                    style={{width:60,height:60}}
+                                    aria-hidden={true}
+-                                   bis_skin_checked="1"
+                                  >
+                                <div
+                                  className="pulse-glow-ring h-12 w-12 rounded-full border-2 border-cyan-400/40 grid p..."
+-                                 bis_skin_checked="1"
+                                >
+                                ...
+                  ...
+                ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head headCacheNode={{rsc:{...}, ...}}>
+                    <__next_viewport_boundary__>
+                    <MetadataWrapper>
+                      <div
+                        hidden={true}
+-                       bis_skin_checked="1"
+                      >
+                    ...
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="ar" dir="rtl">
+                          <body
+                            className="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__var..."
+-                           __processed_2198de9c-51fa-43b7-9b58-8617e18c7478__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                            <Script>
+                            <Script>
+                            <Providers>
+                            <ConsentBanner>
+                              <div
+                                className="fixed inset-x-0 bottom-0 z-[70] border-t-2 border-[#6b542e]/50 bg-[#171210]..."
+-                               bis_skin_checked="1"
+                              >
+                                <div
+                                  className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-ce..."
+-                                 bis_skin_checked="1"
+                                >
+                                  <p>
+                                  <div
+                                    className="flex shrink-0 items-center gap-2"
+-                                   bis_skin_checked="1"
+                                  >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+      <LoadingBoundary name="/" loading={null}>
+        <HTTPAccessFallbackBoundary notFound={{...}} forbidden={undefined} unauthorized={undefined}>
+          <HTTPAccessFallbackErrorBoundary pathname="/" notFound={{...}} forbidden={undefined} unauthorized={undefined} ...>
+            <RedirectBoundary>
+              <RedirectErrorBoundary router={{...}}>
+                <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} segmentPath={[...]} ...>
+                  <SegmentViewNode type="page" pagePath="page.tsx">
+                    <SegmentTrieNode>
+                    <ClientPageRoot Component={function LobbyPage} serverProvidedParams={{...}}>
+                      <LobbyPage params={Promise} searchParams={Promise}>
+                        <Suspense fallback={null}>
+                          <LobbyContent>
+                            <div
+                              className="relative flex min-h-dvh flex-col items-center justify-center gap-6 bg-[#03081..."
+-                             bis_skin_checked="1"
+                            >
+                              <div
+                                className="pointer-events-none fixed inset-0 overflow-hidden"
+-                               bis_skin_checked="1"
+                              >
+                                <LoadableComponent>
+                                <LoadableComponent>
+                                <div
+                                  className="absolute inset-0 bg-[radial-gradient(ellipse_85%_75%_at_50%_50%,transpare..."
+-                                 bis_skin_checked="1"
+                                >
+                              <div
+                                className="relative z-10 flex flex-col items-center gap-4"
+-                               bis_skin_checked="1"
+                              >
+                                <StarMark size={60}>
+                                  <div
+                                    className={"pointer-events-none relative inline-grid place-items-center "}
+                                    style={{width:60,height:60}}
+                                    aria-hidden={true}
+-                                   bis_skin_checked="1"
+                                  >
+                                <div
+                                  className="pulse-glow-ring h-12 w-12 rounded-full border-2 border-cyan-400/40 grid p..."
+-                                 bis_skin_checked="1"
+                                >
+                                ...
+                  ...
+                ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head headCacheNode={{rsc:{...}, ...}}>
+                    <__next_viewport_boundary__>
+                    <MetadataWrapper>
+                      <div
+                        hidden={true}
+-                       bis_skin_checked="1"
+                      >
+                    ...
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="ar" dir="rtl">
+                          <body
+                            className="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__var..."
+-                           __processed_18ce856c-37af-4960-bcc6-c82e4c57af0a__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                            <Script>
+                            <Script>
+                            <Providers>
+                            <ConsentBanner>
+                              <div
+                                className="fixed inset-x-0 bottom-0 z-[70] border-t-2 border-[#6b542e]/50 bg-[#171210]..."
+-                               bis_skin_checked="1"
+                              >
+                                <div
+                                  className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-ce..."
+-                                 bis_skin_checked="1"
+                                >
+                                  <p>
+                                  <div
+                                    className="flex shrink-0 items-center gap-2"
+-                                   bis_skin_checked="1"
+                                  >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+      <LoadingBoundary name="/" loading={null}>
+        <HTTPAccessFallbackBoundary notFound={{...}} forbidden={undefined} unauthorized={undefined}>
+          <HTTPAccessFallbackErrorBoundary pathname="/" notFound={{...}} forbidden={undefined} unauthorized={undefined} ...>
+            <RedirectBoundary>
+              <RedirectErrorBoundary router={{...}}>
+                <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} segmentPath={[...]} ...>
+                  <SegmentViewNode type="page" pagePath="page.tsx">
+                    <SegmentTrieNode>
+                    <ClientPageRoot Component={function LobbyPage} serverProvidedParams={{...}}>
+                      <LobbyPage params={Promise} searchParams={Promise}>
+                        <Suspense fallback={null}>
+                          <LobbyContent>
+                            <div
+                              className="relative flex min-h-dvh flex-col items-center justify-center gap-6 bg-[#03081..."
+-                             bis_skin_checked="1"
+                            >
+                              <div
+                                className="pointer-events-none fixed inset-0 overflow-hidden"
+-                               bis_skin_checked="1"
+                              >
+                                <LoadableComponent>
+                                <LoadableComponent>
+                                <div
+                                  className="absolute inset-0 bg-[radial-gradient(ellipse_85%_75%_at_50%_50%,transpare..."
+-                                 bis_skin_checked="1"
+                                >
+                              <div
+                                className="relative z-10 flex flex-col items-center gap-4"
+-                               bis_skin_checked="1"
+                              >
+                                <StarMark size={60}>
+                                  <div
+                                    className={"pointer-events-none relative inline-grid place-items-center "}
+                                    style={{width:60,height:60}}
+                                    aria-hidden={true}
+-                                   bis_skin_checked="1"
+                                  >
+                                <div
+                                  className="pulse-glow-ring h-12 w-12 rounded-full border-2 border-cyan-400/40 grid p..."
+-                                 bis_skin_checked="1"
+                                >
+                                ...
+                  ...
+                ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head headCacheNode={{rsc:{...}, ...}}>
+                    <__next_viewport_boundary__>
+                    <MetadataWrapper>
+                      <div
+                        hidden={true}
+-                       bis_skin_checked="1"
+                      >
+                    ...
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="ar" dir="rtl">
+                          <body
+                            className="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__var..."
+-                           __processed_a119c9d1-2e99-4a28-bf3f-06145c226d65__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                            <Script>
+                            <Script>
+                            <Providers>
+                            <ConsentBanner>
+                              <div
+                                className="fixed inset-x-0 bottom-0 z-[70] border-t-2 border-[#6b542e]/50 bg-[#171210]..."
+-                               bis_skin_checked="1"
+                              >
+                                <div
+                                  className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3.5 sm:flex-row sm:items-ce..."
+-                                 bis_skin_checked="1"
+                                >
+                                  <p>
+                                  <div
+                                    className="flex shrink-0 items-center gap-2"
+-                                   bis_skin_checked="1"
+                                  >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+      <LoadingBoundary name="/" loading={null}>
+        <HTTPAccessFallbackBoundary notFound={{...}} forbidden={undefined} unauthorized={undefined}>
+          <HTTPAccessFallbackErrorBoundary pathname="/" notFound={{...}} forbidden={undefined} unauthorized={undefined} ...>
+            <RedirectBoundary>
+              <RedirectErrorBoundary router={{...}}>
+                <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} segmentPath={[...]} ...>
+                  <SegmentViewNode type="page" pagePath="page.tsx">
+                    <SegmentTrieNode>
+                    <ClientPageRoot Component={function LobbyPage} serverProvidedParams={{...}}>
+                      <LobbyPage params={Promise} searchParams={Promise}>
+                        <Suspense fallback={null}>
+                          <LobbyContent>
+                            <div
+                              className="relative flex min-h-dvh flex-col items-center justify-center gap-6 bg-[#03081..."
+-                             bis_skin_checked="1"
+                            >
+                              <div
+                                className="pointer-events-none fixed inset-0 overflow-hidden"
+-                               bis_skin_checked="1"
+                              >
+                                <LoadableComponent>
+                                <LoadableComponent>
+                                <div
+                                  className="absolute inset-0 bg-[radial-gradient(ellipse_85%_75%_at_50%_50%,transpare..."
+-                                 bis_skin_checked="1"
+                                >
+                              <div
+                                className="relative z-10 flex flex-col items-center gap-4"
+-                               bis_skin_checked="1"
+                              >
+                                <StarMark size={60}>
+                                  <div
+                                    className={"pointer-events-none relative inline-grid place-items-center "}
+                                    style={{width:60,height:60}}
+                                    aria-hidden={true}
+-                                   bis_skin_checked="1"
+                                  >
+                                <div
+                                  className="pulse-glow-ring h-12 w-12 rounded-full border-2 border-cyan-400/40 grid p..."
+-                                 bis_skin_checked="1"
+                                >
+                                ...
+                  ...
+                ...
+ 
