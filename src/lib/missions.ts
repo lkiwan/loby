@@ -6,10 +6,8 @@ import type { MissionKind, Prisma } from '@prisma/client';
 
 const DEFAULT_TEMPLATES = [
   { key: 'play_n_games_daily',    kind: 'PLAY_N_GAMES'    as const, titleAr: 'إلعب 3 لعبات اليوم',             target: 3, rewardCoins: 20,  rewardXp: 10, cadence: 'DAILY'  as const, weight: 100 },
-  { key: 'watch_n_ads_daily',     kind: 'WATCH_N_ADS'     as const, titleAr: 'تفرج ف جوج إشهارات اليوم',      target: 2, rewardCoins: 20,  rewardXp: 10, cadence: 'DAILY'  as const, weight: 90  },
-  { key: 'play_specific_daily',   kind: 'PLAY_SPECIFIC_GAME' as const, titleAr: 'جرب لعبة جديدة اليوم',       target: 1, rewardCoins: 30,  rewardXp: 15, cadence: 'DAILY'  as const, weight: 80  },
-  { key: 'play_n_games_weekly',   kind: 'PLAY_N_GAMES'    as const, titleAr: 'إلعب 10 لعبات فالأسبوع',         target: 10, rewardCoins: 150, rewardXp: 50, cadence: 'WEEKLY' as const, weight: 100 },
-  { key: 'watch_n_ads_weekly',    kind: 'WATCH_N_ADS'     as const, titleAr: 'تفرج ف 5 إشهارات هاد الأسبوع', target: 5, rewardCoins: 80,  rewardXp: 30, cadence: 'WEEKLY' as const, weight: 80  },
+  { key: 'play_specific_daily',   kind: 'PLAY_SPECIFIC_GAME' as const, titleAr: 'جرب لعبة جديدة اليوم',       target: 1, rewardCoins: 10,  rewardXp: 15, cadence: 'DAILY'  as const, weight: 100 },
+  { key: 'play_n_games_weekly',   kind: 'PLAY_N_GAMES'    as const, titleAr: 'إلعب 10 لعبات فالأسبوع',         target: 10, rewardCoins: 100, rewardXp: 50, cadence: 'WEEKLY' as const, weight: 100 },
 ];
 
 async function ensureDefaultTemplates(): Promise<void> {

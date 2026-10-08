@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { creditBalance, addXp } from '@/lib/ledger';
 import { checkRate } from '@/lib/rateLimit';
 import { bumpMission } from '@/lib/missions';
+import { casablancaDay, casablancaDateAt } from '@/lib/time';
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
@@ -19,6 +20,45 @@ export async function POST(req: Request) {
   const { assignmentId, adWatched } = await req.json();
   if (!assignmentId) {
     return NextResponse.json({ error: 'Missing assignmentId' }, { status: 400 });
+  }
+
+  if (assignmentId === 'infinite-ad') {
+    if (!adWatched) {
+      return NextResponse.json({ error: 'Mission not complete' }, { status: 400 });
+    }
+    
+    const startOfDay = casablancaDateAt(casablancaDay(), 0, 0, 0);
+    const adEvents = await prisma.event.findMany({
+      where: {
+        userId: session.user.id,
+        name: 'mission_claim',
+        createdAt: { gte: startOfDay },
+      },
+      select: { props: true }
+    });
+    
+    const adCount = adEvents.filter(e => (e.props as any)?.templateId === 'infinite-ad').length;
+    if (adCount >= 10) {
+      return NextResponse.json({ error: 'Daily ad limit reached' }, { status: 400 });
+    }
+
+    await creditBalance({
+      userId: session.user.id,
+      amount: 5,
+      reason: 'AD_REWARD',
+      idempotencyKey: `infinite-ad:${session.user.id}:${Date.now()}`,
+      refType: 'AdImpression',
+      refId: `infinite-${Date.now()}`,
+    });
+    
+    await prisma.event.create({
+      data: {
+        name: 'mission_claim',
+        userId: session.user.id,
+        props: { templateId: 'infinite-ad', kind: 'WATCH_N_ADS' },
+      },
+    });
+    return NextResponse.json({ success: true, rewardCoins: 5 });
   }
 
   const assignment = await prisma.missionAssignment.findUnique({
