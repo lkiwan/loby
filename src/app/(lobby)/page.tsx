@@ -1096,47 +1096,146 @@ function LobbyContent() {
       </div>
 
       {/* ══════════════════════════════════════════
-          STATS — 3 community numbers
+          AMBIANCE MAROCAINE — 3 cartes culturelles
       ══════════════════════════════════════════ */}
       <div
-        className="grid grid-cols-3"
+        className="relative overflow-hidden px-3 py-3"
         style={{
-          background: "rgba(6,8,16,0.98)",
-          borderBottom: "1px solid rgba(255,255,255,0.05)",
+          background: "#060810",
+          borderBottom: "1px solid rgba(232,180,48,0.14)",
         }}
       >
-        {[
-          { emoji: "🎮", num: "+50", label: "لعبة مختلفة", color: "#E8B430" },
-          { emoji: "🏆", num: "+100K", label: "لاعب نشيط", color: "#10A07A" },
-          {
-            emoji: "⭐",
-            num: "4.8",
-            label: "تقييم المستخدمين",
-            color: "#F5CC6B",
-          },
-        ].map((s, i) => (
-          <div
-            key={i}
-            className="flex flex-col items-center justify-center gap-1 py-4"
-            style={{
-              borderRight: i < 2 ? "1px solid rgba(255,255,255,0.05)" : "none",
-            }}
-          >
-            <span className="text-[18px]">{s.emoji}</span>
-            <p
-              className="font-lalezar text-[16px] leading-none"
-              style={{ color: s.color }}
+        {/* Zellige tile pattern */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M20 3L37 20L20 37L3 20Z' fill='none' stroke='rgba(232,180,48,0.06)' stroke-width='1'/%3E%3Cpath d='M20 10L30 20L20 30L10 20Z' fill='none' stroke='rgba(232,180,48,0.04)' stroke-width='0.8'/%3E%3C/svg%3E")`,
+            backgroundRepeat: "repeat",
+          }}
+        />
+
+        <div className="relative grid grid-cols-3 gap-2">
+          {[
+            {
+              iconBig: "🤪",
+              iconSmall: "🎮",
+              rotBig: "-12deg",
+              rotSmall: "15deg",
+              title: "لعب بالدارجة",
+              sub: "كلشي مفهوم",
+              color: "#E8B430",
+              gradFrom: "rgba(232,180,48,0.13)",
+            },
+            {
+              iconBig: "😤",
+              iconSmall: "👊",
+              rotBig: "8deg",
+              rotSmall: "-14deg",
+              title: "مع صحابك",
+              sub: "فتيليفون واحد",
+              color: "#10A07A",
+              gradFrom: "rgba(16,160,122,0.13)",
+            },
+            {
+              iconBig: "🦁",
+              iconSmall: "🇲🇦",
+              rotBig: "-10deg",
+              rotSmall: "12deg",
+              title: "100% مغربي",
+              sub: "من القلب",
+              color: "#C2341A",
+              gradFrom: "rgba(194,52,26,0.13)",
+            },
+          ].map((card, i) => (
+            <div
+              key={i}
+              className="relative flex flex-col items-center gap-2.5 rounded-[18px] py-5 overflow-hidden"
+              style={{
+                background: `linear-gradient(150deg, ${card.gradFrom} 0%, rgba(6,8,16,0.85) 100%)`,
+                border: `1px solid ${card.color}28`,
+                boxShadow: `0 4px 24px ${card.color}12, inset 0 1px 0 ${card.color}18`,
+              }}
             >
-              {s.num}
-            </p>
-            <p
-              className="font-cairo text-[8.5px] font-semibold text-center px-2 leading-tight"
-              style={{ color: "rgba(255,255,255,0.28)" }}
-            >
-              {s.label}
-            </p>
-          </div>
-        ))}
+              {/* Top luminous bar */}
+              <div
+                className="absolute top-0 inset-x-0 h-[2.5px] rounded-t-[18px]"
+                style={{
+                  background: `linear-gradient(90deg, transparent, ${card.color}, transparent)`,
+                  boxShadow: `0 0 10px ${card.color}`,
+                }}
+              />
+
+              {/* Bottom-right zellige diamond */}
+              <div
+                className="absolute bottom-2.5 end-2.5 w-2 h-2 rotate-45 opacity-25"
+                style={{ background: card.color }}
+              />
+              {/* Top-left zellige diamond */}
+              <div
+                className="absolute top-3 start-2.5 w-1.5 h-1.5 rotate-45 opacity-20"
+                style={{ background: card.color }}
+              />
+
+              {/* Icons — crazy duo */}
+              <div className="relative flex items-center justify-center" style={{ width: 62, height: 58 }}>
+                {/* Outer pulse ring */}
+                <div
+                  className="absolute inset-0 rounded-full animate-pulse"
+                  style={{
+                    border: `1px solid ${card.color}35`,
+                    boxShadow: `0 0 16px ${card.color}25`,
+                  }}
+                />
+                {/* Inner glow */}
+                <div
+                  className="absolute inset-[7px] rounded-full"
+                  style={{
+                    background: `radial-gradient(circle, ${card.color}20 0%, transparent 80%)`,
+                  }}
+                />
+                {/* Big emoji — offset left + rotated */}
+                <span
+                  className="absolute text-[30px] leading-none select-none"
+                  style={{
+                    transform: `rotate(${card.rotBig}) translate(-8px, -2px)`,
+                    filter: `drop-shadow(0 2px 6px ${card.color}50)`,
+                  }}
+                >
+                  {card.iconBig}
+                </span>
+                {/* Small emoji — offset right bottom + counter-rotated */}
+                <span
+                  className="absolute text-[18px] leading-none select-none"
+                  style={{
+                    transform: `rotate(${card.rotSmall}) translate(14px, 10px)`,
+                    filter: `drop-shadow(0 1px 4px rgba(0,0,0,0.8))`,
+                  }}
+                >
+                  {card.iconSmall}
+                </span>
+              </div>
+
+              {/* Title */}
+              <p
+                className="font-lalezar text-[13px] leading-none text-center"
+                style={{
+                  color: card.color,
+                  textShadow: `0 0 12px ${card.color}60`,
+                }}
+              >
+                {card.title}
+              </p>
+
+              {/* Subtitle */}
+              <p
+                className="font-cairo text-[8.5px] font-bold text-center px-2 leading-tight"
+                style={{ color: "rgba(255,255,255,0.32)" }}
+              >
+                {card.sub}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* ══════════════════════════════════════════
