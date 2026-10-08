@@ -127,5 +127,19 @@ td{border-bottom-color:rgba(255,255,255,.1)!important;}
         inner.appendChild(s);
       })();
     </script>
-  <script src="/game-files/_roster.v1.js" data-game="hazr"></script></body>
+  <script src="/game-files/_roster.v1.js" data-game="hazr"></script>
+  <script>
+    (function(){
+      var fired=false;
+      var obs=new MutationObserver(function(){
+        if(fired) return;
+        if(document.querySelector('.result-banner')){
+          fired=true;
+          obs.disconnect();
+          window.parent?.postMessage({type:'game-over'},'*');
+        }
+      });
+      obs.observe(document.getElementById('root'),{childList:true,subtree:true});
+    })();
+  </script></body>
 </html>
