@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { generateGameToken, redis } from '@/lib/redis';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { authOptions } from '../../auth/[...nextauth]/options';
 import { prisma } from '@/lib/prisma';
 import { spendBalance, InsufficientCoinsError } from '@/lib/ledger';
 import { checkRate } from '@/lib/rateLimit';

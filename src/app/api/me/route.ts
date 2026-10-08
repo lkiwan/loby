@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { authOptions } from '../auth/[...nextauth]/options';
 import { prisma } from '@/lib/prisma';
 
 const NAME_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;

@@ -1624,7 +1624,7 @@ function LobbyContent() {
             setOptimisticCoins((prev) => (prev ?? coins) + reward);
             void update();
             setMissionsOpen(false);
-            showToast("success", `مبروك! ربحتي +${reward} 🪙 على المهمة 🎯`);
+            showToast("ok", `مبروك! ربحتي +${reward} 🪙 على المهمة 🎯`);
           }}
         />
       )}
@@ -1640,7 +1640,7 @@ function LobbyContent() {
             void update();
             setCoinPop(true);
             setTimeout(() => setCoinPop(false), 600);
-            showToast("success", `مبروك! ربحتي +${reward} 🪙 على المهمة 🎯`);
+            showToast("ok", `مبروك! ربحتي +${reward} 🪙 على المهمة 🎯`);
           }}
         />
       )}
@@ -1707,7 +1707,7 @@ function LobbyContent() {
                 </p>
                 <button
                   type="button"
-                  onClick={startRewardedAd}
+                  onClick={() => startRewardedAd()}
                   className="bg-[#E8B430] text-[#060810] font-bold rounded-xl flex items-center justify-center gap-2 mt-6 w-full py-4 text-[15px]"
                 >
                   <Play className="h-5 w-5" /> تفرج على الإشهار — وعيني عينك
