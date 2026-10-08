@@ -958,6 +958,20 @@ function startRoulette(){
   let delay = 65;
   let count = 0;
   const MAX = 22;
+  const TYPES = [
+    {label:'🔮 سول', bg:'rgba(139,92,246,0.35)', color:'#c4b5fd'},
+    {label:'💪 دير', bg:'rgba(236,72,153,0.35)',  color:'#f9a8d4'},
+  ];
+
+  function spinType(el){
+    const t = TYPES[Math.floor(Math.random()*2)];
+    el.textContent = t.label;
+    el.style.background = 'rgba(255,255,255,0.08)';
+    el.style.color = '#fff';
+    el.classList.remove('tick');
+    void el.offsetWidth;
+    el.classList.add('tick');
+  }
 
   function tick(){
     const el = document.getElementById('roul-name');
@@ -967,24 +981,42 @@ function startRoulette(){
     el.classList.remove('tick');
     void el.offsetWidth;
     el.classList.add('tick');
+
+    const typeEl = document.getElementById('roul-type');
+    if(typeEl) spinType(typeEl);
+
     count++;
     if(count < MAX){
       delay = Math.round(delay * 1.13);
       roulTimer = setTimeout(tick, Math.min(delay, 700));
     } else {
       const winner = selectRandomPlayer();
+      const type   = Math.random() < 0.5 ? 'question' : 'action';
+      const isQ    = type === 'question';
+      const tStyle = isQ ? TYPES[0] : TYPES[1];
+
       el.textContent = winner.name;
       el.classList.remove('tick');
       void el.offsetWidth;
       el.classList.add('tick');
+
+      const typeEl = document.getElementById('roul-type');
+      if(typeEl){
+        typeEl.textContent = tStyle.label;
+        typeEl.style.background = tStyle.bg;
+        typeEl.style.color = tStyle.color;
+        typeEl.classList.remove('tick');
+        void typeEl.offsetWidth;
+        typeEl.classList.add('tick');
+      }
+
       roulTimer = setTimeout(()=>{
         S.currentPlayer = winner;
         S.prevPlayerId  = winner.id;
-        const type = Math.random() < 0.5 ? 'question' : 'action';
         S.challengeType = type;
         S.currentChallenge = getChallenge(type);
         go('challenge');
-      }, 750);
+      }, 1300);
     }
   }
   roulTimer = setTimeout(tick, delay);
@@ -1174,6 +1206,9 @@ selecting: ()=>`
       <div class="roul-ring-pulse"></div>
       <div class="roul-ring-pulse roul-ring-pulse-2"></div>
       <span id="roul-name" class="roul-name">؟</span>
+    </div>
+    <div style="margin-top:18px;display:flex;justify-content:center">
+      <span id="roul-type" style="font-size:19px;font-weight:900;padding:9px 28px;border-radius:999px;background:rgba(255,255,255,0.08);color:#fff;transition:background .2s,color .2s">⚡</span>
     </div>
     <p class="roul-label">الرولي كيدور…</p>
     <div class="roul-dots">
