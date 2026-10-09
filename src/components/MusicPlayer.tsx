@@ -377,7 +377,7 @@ export default function MusicPlayer() {
           onClick={toggle}
           aria-label={playing ? 'إيقاف الموسيقى' : 'تشغيل الموسيقى'}
           style={{
-            position:'fixed', bottom:'80px', left:'16px', zIndex:9999,
+            position:'fixed', top:'10px', right:'58px', zIndex:40,
             display:'flex', alignItems:'center', gap:'6px',
             padding:'8px 14px', borderRadius:'999px',
             border: playing ? '1px solid rgba(232,180,48,0.55)' : '1px solid rgba(232,180,48,0.22)',

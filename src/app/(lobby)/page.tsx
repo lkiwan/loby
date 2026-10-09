@@ -972,19 +972,6 @@ function LobbyContent() {
         {/* CONTENU — superposé en bas de l'image */}
         <div className="absolute inset-x-0 bottom-0 px-5 pb-5 flex flex-col gap-3">
           {/* LIVE badge */}
-          <div
-            className="flex items-center gap-1.5 w-fit px-2.5 py-1 rounded-full font-cairo text-[10px] font-black"
-            style={{
-              background: "rgba(194,52,26,0.25)",
-              border: "1px solid rgba(194,52,26,0.5)",
-              color: "#FF7A5E",
-              backdropFilter: "blur(4px)",
-            }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse flex-shrink-0" />
-            LIVE GAMING
-          </div>
-
           <h1
             className="font-lalezar leading-[1.08]"
             style={{
@@ -1099,7 +1086,7 @@ function LobbyContent() {
           AMBIANCE MAROCAINE — 3 cartes culturelles
       ══════════════════════════════════════════ */}
       <div
-        className="relative overflow-hidden px-3 py-3"
+        className="relative overflow-hidden px-3 py-2.5"
         style={{
           background: "#060810",
           borderBottom: "1px solid rgba(232,180,48,0.14)",
@@ -1149,7 +1136,7 @@ function LobbyContent() {
           ].map((card, i) => (
             <div
               key={i}
-              className="relative flex flex-col items-center gap-2.5 rounded-[18px] py-5 overflow-hidden"
+              className="relative flex flex-col items-center gap-1.5 rounded-[18px] py-3 overflow-hidden"
               style={{
                 background: `linear-gradient(150deg, ${card.gradFrom} 0%, rgba(6,8,16,0.85) 100%)`,
                 border: `1px solid ${card.color}28`,
@@ -1177,7 +1164,7 @@ function LobbyContent() {
               />
 
               {/* Icons — crazy duo */}
-              <div className="relative flex items-center justify-center" style={{ width: 62, height: 58 }}>
+              <div className="relative flex items-center justify-center" style={{ width: 54, height: 50 }}>
                 {/* Outer pulse ring */}
                 <div
                   className="absolute inset-0 rounded-full animate-pulse"
