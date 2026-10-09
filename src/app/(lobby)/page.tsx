@@ -815,10 +815,39 @@ function LobbyContent() {
     }
   }, [sessionCoins]);
 
+  const [initError, setInitError] = useState(false);
+  useEffect(() => {
+    if (status === "loading") {
+      const timer = setTimeout(() => setInitError(true), 15000);
+      return () => clearTimeout(timer);
+    }
+  }, [status]);
+
   if (status === "loading") {
+    if (initError) {
+      return (
+        <div className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-[#060810] text-white">
+          <AlertTriangle className="h-10 w-10 text-red-500" />
+          <p className="font-cairo text-lg">وقع مشكل فالاتصال</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="rounded-xl bg-[#E8B430] px-6 py-2.5 font-cairo font-black text-[#060810] transition hover:brightness-110 active:scale-95"
+          >
+            عاود جرب
+          </button>
+        </div>
+      );
+    }
+
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-[#060810]">
-        <Loader2 className="h-8 w-8 animate-spin text-[#E8B430]" />
+      <div id="game-loading" className="game-loading" role="status" aria-live="polite">
+        <img className="game-loading__logo" src="/icons/image.png" alt="PlayM3ana logo" />
+        <div className="pencil-loader" aria-hidden="true">
+          <div className="pencil-loader__pencil"></div>
+          <div className="pencil-loader__stroke"></div>
+        </div>
+        <div className="game-loading__name">PLAYM3ANA</div>
+        <div className="game-loading__message">جاري التحميل...</div>
       </div>
     );
   }

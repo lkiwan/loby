@@ -1338,3 +1338,114 @@ body.ad-playing { pointer-events: none; }
   }
 }
 
+
+.game-loading {
+  --game-primary: #E8B430;
+  --game-accent: #2DD4BF;
+  --game-background: #060810;
+  --game-text: #FFF7E8;
+
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  background: var(--game-background);
+  color: var(--game-text);
+  font-family: inherit;
+}
+
+.game-loading__logo {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+}
+
+.game-loading__name {
+  font-family: var(--font-grit), sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 16px rgba(232, 180, 48, 0.4);
+}
+
+.game-loading__message {
+  color: var(--game-accent);
+  font-family: var(--font-cairo), sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.pencil-loader {
+  position: relative;
+  width: 120px;
+  height: 42px;
+  overflow: hidden;
+}
+
+.pencil-loader__pencil {
+  position: absolute;
+  top: 11px;
+  left: 8px;
+  width: 76px;
+  height: 14px;
+  border-radius: 3px;
+  background: var(--game-primary);
+  transform: rotate(-25deg);
+  transform-origin: center;
+  animation: pencil-write 1.2s ease-in-out infinite;
+}
+
+.pencil-loader__pencil::before {
+  content: "";
+  position: absolute;
+  left: -12px;
+  top: 0;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-right: 14px solid var(--game-accent);
+}
+
+.pencil-loader__pencil::after {
+  content: "";
+  position: absolute;
+  right: 8px;
+  top: 0;
+  width: 8px;
+  height: 14px;
+  background: var(--game-accent);
+}
+
+.pencil-loader__stroke {
+  position: absolute;
+  left: 14px;
+  bottom: 5px;
+  width: 0;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--game-accent);
+  animation: pencil-stroke 1.2s ease-in-out infinite;
+}
+
+@keyframes pencil-write {
+  0%, 100% { transform: translateX(0) rotate(-25deg); }
+  50% { transform: translateX(24px) rotate(-25deg); }
+}
+
+@keyframes pencil-stroke {
+  0%, 100% { width: 12px; }
+  50% { width: 82px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pencil-loader__pencil,
+  .pencil-loader__stroke {
+    animation: none;
+  }
+}
+
