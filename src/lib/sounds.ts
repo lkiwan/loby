@@ -236,31 +236,33 @@ export function setMusicMuted(v: boolean) {
   try { localStorage.setItem('music_muted', v ? '1' : '0'); } catch {}
 }
 
-/* ── Background music sequencer (D Bayati maqam, 116 BPM) ──────────────────
-   D Bayati scale (equal-tempered approximation): D · Eb · F · G · A · Bb · C · D
-   Moroccan / North African game-lobby sound palette:
-     doum  — deep resonant kick  (guembri / bendir bass hit)
-     tak   — sharp bright snap   (darbuka tak)
-     sagat — metallic ring       (finger cymbal, zagat)
-     oud   — plucked string bass (sawtooth + triangle blend, pluck envelope)
-     kanun — plucked melody      (triangle + bandpass, bright attack)
-     pad   — Dm7 drone           (D F A C, warm sine / triangle blend)
+/* ── Background music sequencer (D Bayati maqam, 110 BPM) ──────────────────
+   Style: Gaming × Darbouka × Kamanja
+   D Bayati scale: D · Eb · F · G · A · Bb · C · D
+     doum    — deep darbouka boom       (sine sweep + sub-bass)
+     tek     — bright darbouka click    (noise burst + tone)
+     ka      — dry darbouka snap        (highpass noise)
+     sagat   — metallic finger cymbal   (inharmonic sine cluster)
+     oud     — plucked string bass      (sawtooth + triangle)
+     kamanja — bowed string melody      (sawtooth + LFO vibrato)
+     pad     — Dm7 drone               (sine/triangle blend)
 ──────────────────────────────────────────────────────────────────────────── */
-const _MBPM  = 116;
-const _MSTEP = 60 / _MBPM / 4;  // 16th-note ≈ 0.129 s
+const _MBPM  = 110;
+const _MSTEP = 60 / _MBPM / 4;  // 16th-note ≈ 0.136 s
 
-// D Bayati: D    Eb     F      G      A      Bb     C      D(oct)
+// D Bayati: D      Eb     F      G      A      Bb     C      D(oct)
 const _BASS_FREQS = [146.83, 155.56, 174.61, 196.00, 220.00, 233.08, 261.63, 293.66]; // D3–D4
-const _LEAD_FREQS = [293.66, 311.13, 349.23, 392.00, 440.00, 466.16, 523.25, 587.33]; // D4–D5
+const _KAM_FREQS  = [293.66, 311.13, 349.23, 392.00, 440.00, 466.16, 523.25, 587.33]; // D4–D5
 
-// 32-step patterns (2 bars, 16th-note grid)
-const _MKICK  = [1,0,0,0, 0,0,0,0, 1,0,1,0, 0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,1,0, 1,0,0,1];
-const _MSNARE = [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,1, 1,0,0,0];
-const _MSAGAT = [0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,1,1, 0,1,0,1, 0,1,0,1, 0,1,1,1, 0,1,0,1];
-// Bass: D..F G..F | A..G F..D (root motion in D Bayati)
+// 32-step darbouka "karachi" pattern (2 bars, 16th-note grid)
+const _MDOUM  = [1,0,0,0, 0,0,1,0, 1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,1,0, 1,0,0,0, 0,1,0,0];
+const _MTEK   = [0,0,0,1, 0,0,0,1, 0,0,0,1, 0,1,1,0, 0,0,0,1, 0,0,0,1, 0,0,0,1, 0,0,1,1];
+const _MKA    = [0,1,0,0, 1,0,0,0, 0,1,0,0, 1,0,0,1, 0,1,0,0, 1,0,0,0, 0,1,0,0, 0,0,0,1];
+const _MSAGAT = [0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,0,1];
+// Oud bass root motion in D Bayati
 const _MBASS  = [0,-1,-1,-1, -1,2,-1,-1, 3,-1,-1,-1, 2,-1,-1,-1, 4,-1,-1,-1, -1,3,-1,-1, 2,-1,-1,-1, 0,-1,-1,-1];
-// Melody: silence | A→G→F→Eb→D (classic Bayati descending phrase)
-const _MLEAD  = [-1,-1,-1,-1, 4,-1,-1,-1, 3,-1,-1,-1, 2,-1,-1,-1, 1,-1,-1,-1, 0,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1];
+// Kamanja: D4→F4→A4→G4 | F4→Eb4→D4→rest  (classic Bayati descending arc)
+const _MKAM   = [0,-1,-1,-1, 2,-1,-1,-1, 4,-1,-1,-1, 3,-1,-1,-1, 2,-1,-1,-1, 1,-1,-1,-1, 0,-1,-1,-1, -1,-1,-1,-1];
 
 class MusicPlayer {
   private _ctx: AudioContext | null = null;
@@ -283,31 +285,60 @@ class MusicPlayer {
     return ac;
   }
 
-  // Doum — deep resonant kick (guembri / bendir bass drum)
-  private _kick(t: number) {
-    const ac = this._ctx!, g = ac.createGain(), osc = ac.createOscillator();
-    osc.frequency.setValueAtTime(220, t);
-    osc.frequency.exponentialRampToValueAtTime(0.01, t + 0.32);
-    g.gain.setValueAtTime(1.6, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.32);
+  // Doum — deep darbouka boom + sub-bass gaming punch
+  private _doum(t: number) {
+    const ac = this._ctx!;
+    // Main doum body
+    const osc = ac.createOscillator(), g = ac.createGain();
+    osc.frequency.setValueAtTime(195, t);
+    osc.frequency.exponentialRampToValueAtTime(42, t + 0.22);
+    g.gain.setValueAtTime(1.7, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.24);
     osc.connect(g); g.connect(this._master!);
-    osc.start(t); osc.stop(t + 0.35);
+    osc.start(t); osc.stop(t + 0.26);
+    // Sub-bass gaming punch
+    const sub = ac.createOscillator(), sg = ac.createGain();
+    sub.frequency.setValueAtTime(55, t);
+    sub.frequency.exponentialRampToValueAtTime(28, t + 0.18);
+    sg.gain.setValueAtTime(0.85, t);
+    sg.gain.exponentialRampToValueAtTime(0.001, t + 0.20);
+    sub.connect(sg); sg.connect(this._master!);
+    sub.start(t); sub.stop(t + 0.22);
   }
 
-  // Tak — sharp darbuka snap
-  private _snare(t: number) {
+  // Tek — bright darbouka click (noise + tone)
+  private _tek(t: number) {
     const ac = this._ctx!;
-    const buf = ac.createBuffer(1, Math.ceil(ac.sampleRate * 0.10), ac.sampleRate);
+    const buf = ac.createBuffer(1, Math.ceil(ac.sampleRate * 0.045), ac.sampleRate);
     const d = buf.getChannelData(0);
     for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
     const src = ac.createBufferSource(), flt = ac.createBiquadFilter(), g = ac.createGain();
-    src.buffer = buf; flt.type = 'bandpass'; flt.frequency.value = 3800; flt.Q.value = 1.2;
-    g.gain.setValueAtTime(0.70, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.10);
+    src.buffer = buf; flt.type = 'bandpass'; flt.frequency.value = 4800; flt.Q.value = 1.8;
+    g.gain.setValueAtTime(0.88, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.042);
     src.connect(flt); flt.connect(g); g.connect(this._master!);
-    src.start(t); src.stop(t + 0.11);
+    src.start(t); src.stop(t + 0.05);
+    // Tone component for the "tik" pitch
+    const osc = ac.createOscillator(), og = ac.createGain();
+    osc.frequency.value = 900;
+    og.gain.setValueAtTime(0.30, t); og.gain.exponentialRampToValueAtTime(0.001, t + 0.022);
+    osc.connect(og); og.connect(this._master!);
+    osc.start(t); osc.stop(t + 0.025);
   }
 
-  // Sagat — metallic finger-cymbal ring (inharmonic sine cluster)
+  // Ka — dry darbouka snap
+  private _ka(t: number) {
+    const ac = this._ctx!;
+    const buf = ac.createBuffer(1, Math.ceil(ac.sampleRate * 0.028), ac.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    const src = ac.createBufferSource(), flt = ac.createBiquadFilter(), g = ac.createGain();
+    src.buffer = buf; flt.type = 'highpass'; flt.frequency.value = 3500;
+    g.gain.setValueAtTime(0.42, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.025);
+    src.connect(flt); flt.connect(g); g.connect(this._master!);
+    src.start(t); src.stop(t + 0.03);
+  }
+
+  // Sagat — metallic finger-cymbal ring
   private _sagat(t: number) {
     const ac = this._ctx!;
     [1760, 2640, 3520].forEach((freq, i) => {
@@ -315,14 +346,14 @@ class MusicPlayer {
       osc.type = 'sine';
       osc.frequency.value = freq * (1 + i * 0.008);
       g.gain.setValueAtTime(0, t);
-      g.gain.linearRampToValueAtTime(0.065 - i * 0.018, t + 0.002);
+      g.gain.linearRampToValueAtTime(0.060 - i * 0.016, t + 0.002);
       g.gain.exponentialRampToValueAtTime(0.001, t + 0.05 + i * 0.015);
       osc.connect(g); g.connect(this._master!);
       osc.start(t); osc.stop(t + 0.09);
     });
   }
 
-  // Oud bass — plucked string, sawtooth + triangle blend with filter sweep
+  // Oud bass — plucked string (sawtooth + triangle, filter sweep)
   private _bass(freq: number, t: number) {
     const ac = this._ctx!;
     (['sawtooth', 'triangle'] as OscillatorType[]).forEach((type, i) => {
@@ -340,17 +371,30 @@ class MusicPlayer {
     });
   }
 
-  // Kanun melody — bright plucked string, bandpass resonance
-  private _lead(freq: number, t: number) {
-    const ac = this._ctx!, osc = ac.createOscillator(), flt = ac.createBiquadFilter(), g = ac.createGain();
-    osc.type = 'triangle'; osc.frequency.value = freq;
-    flt.type = 'bandpass';
-    flt.frequency.value = freq * 3.2; flt.Q.value = 3.5;
+  // Kamanja — bowed string with LFO vibrato (sawtooth + lowpass + vibrato)
+  private _kamanja(freq: number, t: number) {
+    const ac = this._ctx!;
+    const dur = _MSTEP * 3.6;
+    const osc = ac.createOscillator();
+    const flt = ac.createBiquadFilter();
+    const g   = ac.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.value = freq;
+    // LFO vibrato at 5.5 Hz, depth ~1.2% of fundamental
+    const lfo = ac.createOscillator(), lfoG = ac.createGain();
+    lfo.type = 'sine'; lfo.frequency.value = 5.5;
+    lfoG.gain.value = freq * 0.012;
+    lfo.connect(lfoG); lfoG.connect(osc.frequency);
+    // Warm lowpass
+    flt.type = 'lowpass'; flt.frequency.value = freq * 3.5; flt.Q.value = 1.2;
+    // Bow envelope: slow attack → sustain → release
     g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(0.24, t + 0.007);
-    g.gain.exponentialRampToValueAtTime(0.001, t + _MSTEP * 2.6);
+    g.gain.linearRampToValueAtTime(0.21, t + 0.11);
+    g.gain.setValueAtTime(0.21, t + dur - 0.09);
+    g.gain.linearRampToValueAtTime(0, t + dur);
     osc.connect(flt); flt.connect(g); g.connect(this._master!);
-    osc.start(t); osc.stop(t + _MSTEP * 3);
+    lfo.start(t); osc.start(t);
+    lfo.stop(t + dur + 0.05); osc.stop(t + dur + 0.05);
   }
 
   // Dm7 atmospheric pad: D3 F3 A3 C4
@@ -362,7 +406,7 @@ class MusicPlayer {
       osc.frequency.value = freq;
       flt.type = 'lowpass'; flt.frequency.value = 420; flt.Q.value = 0.5;
       g.gain.setValueAtTime(0, ac.currentTime);
-      g.gain.linearRampToValueAtTime(0.048 - i * 0.009, ac.currentTime + 5);
+      g.gain.linearRampToValueAtTime(0.044 - i * 0.008, ac.currentTime + 5);
       osc.connect(flt); flt.connect(g); g.connect(this._master!);
       osc.start();
       this._pads.push(osc);
@@ -377,11 +421,12 @@ class MusicPlayer {
   }
 
   private _scheduleStep(s: number, t: number) {
-    if (_MKICK[s])              this._kick(t);
-    if (_MSNARE[s])             this._snare(t);
-    if (_MSAGAT[s])             this._sagat(t);
+    if (_MDOUM[s])  this._doum(t);
+    if (_MTEK[s])   this._tek(t);
+    if (_MKA[s])    this._ka(t);
+    if (_MSAGAT[s]) this._sagat(t);
     const bi = _MBASS[s]; if (bi >= 0) this._bass(_BASS_FREQS[bi], t);
-    const li = _MLEAD[s]; if (li >= 0) this._lead(_LEAD_FREQS[li], t);
+    const ki = _MKAM[s];  if (ki >= 0) this._kamanja(_KAM_FREQS[ki], t);
   }
 
   private _tick() {
