@@ -5,6 +5,8 @@ import { prisma } from '@/lib/prisma';
 import { redis } from '@/lib/redis';
 import { gamesLevelForPlays } from '@/lib/ledger';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {

@@ -33,6 +33,7 @@ import {
   Zap,
   Home,
   User,
+  Music,
 } from "lucide-react";
 import { StarMark } from "@/components/Star";
 import GameCard from "@/components/GameCard";
@@ -162,6 +163,14 @@ function LobbyContent() {
   const [referralCopied, setReferralCopied] = useState(false);
   const [authSheetOpen, setAuthSheetOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [musicPlaying, setMusicPlaying] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: any) => setMusicPlaying(e.detail);
+    window.addEventListener('pm3_music_state', handler);
+    window.dispatchEvent(new CustomEvent('pm3_music_req'));
+    return () => window.removeEventListener('pm3_music_state', handler);
+  }, []);
 
   /* ── Settings: name + password ── */
   const [me, setMe] = useState<{
@@ -584,6 +593,7 @@ function LobbyContent() {
           streak?: number;
         };
         if (data.claimed && typeof data.reward === "number") {
+          setOptimisticCoins((prev) => (prev ?? coins) + data.reward!);
           await update();
           setCoinPop(true);
           setTimeout(() => setCoinPop(false), 600);
@@ -609,6 +619,7 @@ function LobbyContent() {
         if (!res.ok) return;
         const data = (await res.json()) as { coins?: number };
         if (typeof data.coins === "number") {
+          setOptimisticCoins(data.coins);
           await update({ coins: data.coins });
           setCoinPop(true);
           setTimeout(() => setCoinPop(false), 600);
@@ -666,8 +677,10 @@ function LobbyContent() {
       });
       if (res.ok) {
         const { redirectUrl, remainingCoins } = await res.json();
-        if (typeof remainingCoins === "number")
+        if (typeof remainingCoins === "number") {
+          setOptimisticCoins(remainingCoins);
           await update({ coins: remainingCoins });
+        }
         Sounds.launch();
         router.replace(redirectUrl);
       } else {
@@ -754,8 +767,10 @@ function LobbyContent() {
               router.replace(payload.redirectUrl);
               return;
             }
-            if (typeof payload.newBalance === "number")
+            if (typeof payload.newBalance === "number") {
+              setOptimisticCoins(payload.newBalance);
               await update({ coins: payload.newBalance });
+            }
             showToast("ok", `+${payload.awarded ?? 0} كوينز كادو! 🎁`);
             setAdModalOpen(false);
           } catch {
@@ -1892,6 +1907,28 @@ function LobbyContent() {
                 >
                   <span
                     className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${muted ? "start-0.5" : "start-[1.375rem]"}`}
+                  />
+                </span>
+              </button>
+
+              {/* Music toggle */}
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('pm3_music_toggle'))}
+                className="flex w-full items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5"
+              >
+                <span className="flex items-center gap-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8]">
+                  {!musicPlaying ? (
+                    <VolumeX className="h-4 w-4 text-[#B8C4D8]" />
+                  ) : (
+                    <Music className="h-4 w-4 text-[#2DD4BF]" />
+                  )}
+                  الموسيقى
+                </span>
+                <span
+                  className={`relative h-6 w-11 rounded-full transition-colors ${!musicPlaying ? "bg-white/10" : "bg-[#2DD4BF]/40"}`}
+                >
+                  <span
+                    className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${!musicPlaying ? "start-0.5" : "start-[1.375rem]"}`}
                   />
                 </span>
               </button>

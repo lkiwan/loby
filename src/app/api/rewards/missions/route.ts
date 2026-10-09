@@ -5,6 +5,8 @@ import { prisma } from '@/lib/prisma';
 import { ensureAssignments } from '@/lib/missions';
 import { casablancaDay, casablancaDateAt } from '@/lib/time';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {

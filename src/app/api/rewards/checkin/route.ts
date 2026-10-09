@@ -8,6 +8,8 @@ import { checkRate } from '@/lib/rateLimit';
 import { casablancaDay, casablancaDateAt, yesterdayCasablanca, shiftCasablanca } from '@/lib/time';
 import { redis } from '@/lib/redis';
 
+export const dynamic = 'force-dynamic';
+
 function dayDiffDays(fromDay: string, toDay: string): number {
   const [y1, m1, d1] = fromDay.split('-').map(Number);
   const [y2, m2, d2] = toDay.split('-').map(Number);

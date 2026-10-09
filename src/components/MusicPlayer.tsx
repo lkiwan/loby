@@ -187,6 +187,23 @@ export default function MusicPlayer() {
     }
   }
 
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('pm3_music_state', { detail: playing }));
+  }, [playing]);
+
+  useEffect(() => {
+    const handleToggle = () => toggle();
+    const handleReq = () => {
+      window.dispatchEvent(new CustomEvent('pm3_music_state', { detail: playing }));
+    };
+    window.addEventListener('pm3_music_toggle', handleToggle);
+    window.addEventListener('pm3_music_req', handleReq);
+    return () => {
+      window.removeEventListener('pm3_music_toggle', handleToggle);
+      window.removeEventListener('pm3_music_req', handleReq);
+    };
+  }, [playing]);
+
   const splashOpacity = splashOut ? 0 : splashIn ? 1 : 0;
   const splashScale   = splashOut ? 1.04 : splashIn ? 1 : 0.97;
 

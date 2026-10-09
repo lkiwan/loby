@@ -9,15 +9,14 @@ export default function GameAdOverlay() {
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
-    if (!isVisible) return;
-    
-    // Refresh the ad every 15 seconds
+    // Refresh the ad every 15 seconds and make it visible again
     const intervalId = setInterval(() => {
       setRefreshKey(prev => prev + 1);
+      setIsVisible(true);
     }, 15000);
     
     return () => clearInterval(intervalId);
-  }, [isVisible]);
+  }, []);
 
   if (!isVisible) return null;
 
