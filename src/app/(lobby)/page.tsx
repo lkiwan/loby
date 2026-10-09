@@ -1245,12 +1245,7 @@ function LobbyContent() {
           أبواب المدينة — GAME DOORS (mobile carousel)
       ══════════════════════════════════════════ */}
       <section id="most-played" className="pt-5 pb-4 sm:hidden">
-        <div className="flex items-center justify-between px-4 mb-4">
-          <a
-            href="#most-played"
-            className="font-cairo text-[11px] font-bold"
-            style={{ color: "rgba(255,255,255,0.3)" }}
-          ></a>
+        <div className="flex items-center justify-start px-4 mb-4">
           <div className="flex items-center gap-2">
             <div
               className="w-2 h-2 rotate-45 flex-shrink-0"
