@@ -841,6 +841,7 @@ function LobbyContent() {
               <Volume2 className="h-3.5 w-3.5 text-white/42" />
             )}
           </button>
+          <div id="music-portal"></div>
         </div>
 
         {/* LAST → visual LEFT: Logo + hamburger */}
