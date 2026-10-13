@@ -30,7 +30,7 @@
   --shadow-sm:0 3px 0 rgba(0,0,0,.55);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow-x:hidden}
+html,body{min-height:100%;overflow-x:hidden;overflow-y:auto}
 body{
   background:#030812;
   background-image:
@@ -61,10 +61,11 @@ body::after{
 #app{
   width:100%;max-width:460px;min-height:100dvh;
   display:flex;flex-direction:column;
-  padding:20px 18px calc(74px + env(safe-area-inset-bottom));
+  padding:20px 18px calc(125px + env(safe-area-inset-bottom));
   position:relative;z-index:1;
 }
 .screen{flex:1;display:flex;flex-direction:column;gap:16px;animation:screenIn .5s cubic-bezier(.22,1,.36,1) both}
+.screen::after{content:'';display:block;height:120px;min-height:120px;flex-shrink:0;pointer-events:none}
 .screen.same{animation:softIn .22s ease both}
 .screen.same .anim-fadeup,
 .screen.same .anim-pop,
@@ -1615,7 +1616,7 @@ result: ()=>{
   </table>
   <div id="ad-slot"></div>
   <div class="spacer"></div>
-  <button class="btn-cta anim-fadeup d3" onclick="act.board()">شوف النقاط الكاملة 📊</button>`;
+  <button class="btn-cta anim-fadeup d3" onclick="act.board()" style="margin-bottom:18px">شوف النقاط الكاملة 📊</button>`;
 },
 
 /* ── SCOREBOARD ────────────────────────────────────────────── */
