@@ -206,7 +206,7 @@ export default function PassPlayScreen() {
                 onClick={onHide}
                 className="btn-gold w-full text-lg"
               >
-                <EyeOff className="mr-2 inline h-5 w-5" /> خوبي سيرّك
+                <EyeOff className="mr-2 inline h-5 w-5" /> خبي سرّك
               </motion.button>
             ) : (
               <motion.p
@@ -217,7 +217,7 @@ export default function PassPlayScreen() {
                 className="mt-1 flex items-center justify-center gap-2 text-center font-darija text-sm font-semibold text-zinc-400"
               >
                 <Hand className="h-4 w-4 text-gold" />
-                ديز على الكرطة باش تشوف راك نتا
+                برك على الكرطة باش تشوف الدور ديالك
               </motion.p>
             )}
           </AnimatePresence>

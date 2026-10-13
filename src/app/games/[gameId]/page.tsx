@@ -299,20 +299,8 @@ export default function GamePage({
       )}
 
       {/* top HUD bar */}
-      <div className="absolute inset-x-0 top-0 z-50 flex items-center justify-between gap-2 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-2">
-        <span className="pointer-events-none flex min-w-0 items-center gap-2 rounded-full border border-cyan-400/12 bg-[#030812]/70 px-3 py-1.5 backdrop-blur-md">
-          <Image
-            src="/icons/image.png"
-            alt="PlayM3ana"
-            width={24}
-            height={24}
-            className="h-6 w-6 shrink-0 object-contain"
-          />
-          <span className="truncate font-grit text-[11px] uppercase tracking-wide text-neutral-300">
-            {game?.latinTitle ?? gameId}
-          </span>
-        </span>
-        <div className="flex shrink-0 items-center gap-2">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-50 flex items-center justify-end px-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-2">
+        <div className="pointer-events-auto flex shrink-0 items-center gap-2">
           <button
             onClick={() => setExitConfirm(true)}
             className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-[#030812]/70 text-white shadow-lg backdrop-blur-md transition hover:border-red-500/40 hover:text-red-400 active:scale-90"

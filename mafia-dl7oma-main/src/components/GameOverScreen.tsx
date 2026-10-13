@@ -94,10 +94,12 @@ export default function GameOverScreen() {
 
       <motion.button
         whileTap={{ scale: 0.97 }}
-        onClick={() => window.parent.postMessage({ type: "replay-requested" }, "*")}
+        onClick={() =>
+          window.parent.postMessage({ type: "replay-requested" }, "*")
+        }
         className="btn-gold font-darija relative z-10 mt-5 w-full !py-5 text-lg"
       >
-        <RotateCcw className="mr-2 inline h-5 w-5" /> العب عوض
+        <RotateCcw className="mr-2 inline h-5 w-5" /> عاود لعب
       </motion.button>
       <p className="relative z-10 mt-2 pb-4 font-darija text-xs font-bold text-zinc-600">
         سيفد الكوين باش تبدّى جمعية جديدة.

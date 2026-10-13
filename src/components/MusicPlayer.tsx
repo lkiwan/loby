@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-
+import { usePathname } from 'next/navigation';
 import { createPortal } from 'react-dom';
 
 /* ── D Bayati maqam · 110 BPM · Gaming × Darbouka × Kamanja ── */
@@ -19,8 +19,15 @@ const P_KAM =[0,-1,-1,-1,2,-1,-1,-1,4,-1,-1,-1,3,-1,-1,-1,2,-1,-1,-1,1,-1,-1,-1,
 const LS_MUTED  = 'pm3_muted';
 
 export default function MusicPlayer() {
+  const pathname = usePathname();
   const [playing, setPlaying] = useState(false);
   const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (pathname?.startsWith('/games')) {
+      stopMusic();
+    }
+  }, [pathname]);
 
   useEffect(() => {
     const check = () => {
@@ -165,42 +172,7 @@ export default function MusicPlayer() {
           <style>{`@keyframes mBounce{from{transform:scale(1) rotate(-4deg)}to{transform:scale(1.18) rotate(4deg)}}`}</style>
         </button>,
         portalTarget
-      ) : (
-        <button
-          onClick={toggle}
-          aria-label={playing ? 'إيقاف الموسيقى' : 'تشغيل الموسيقى'}
-          style={{
-            position:'fixed', top:'10px', right:'58px', zIndex:40,
-            display:'flex', alignItems:'center', gap:'6px',
-            padding:'8px 14px', borderRadius:'999px',
-            border: playing ? '1px solid rgba(232,180,48,0.55)' : '1px solid rgba(232,180,48,0.22)',
-            background: playing
-              ? 'linear-gradient(135deg,rgba(232,180,48,0.20),rgba(194,52,26,0.16))'
-              : 'rgba(6,8,16,0.88)',
-            backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)',
-            color: playing ? '#E8B430' : 'rgba(245,231,206,0.60)',
-            fontSize:'13px', fontFamily:'var(--font-cairo),sans-serif', fontWeight:600,
-            cursor:'pointer',
-            boxShadow: playing
-              ? '0 0 16px rgba(232,180,48,0.28),0 3px 10px rgba(0,0,0,0.55)'
-              : '0 3px 8px rgba(0,0,0,0.45)',
-            transition:'background 0.3s,color 0.3s,border-color 0.3s,box-shadow 0.3s',
-            userSelect:'none', WebkitTapHighlightColor:'transparent',
-          }}
-        >
-          <span style={{ fontSize:'16px', display:'inline-block', animation: playing ? 'mBounce 0.7s ease-in-out infinite alternate' : 'none' }}>
-            {playing ? '🎵' : '🔇'}
-          </span>
-          <span style={{ fontSize:'12px' }}>{playing ? 'موسيقى' : 'صامت'}</span>
-          <span style={{
-            width:'7px', height:'7px', borderRadius:'50%',
-            background: playing ? '#E8B430' : 'rgba(245,231,206,0.28)',
-            boxShadow: playing ? '0 0 7px #E8B430' : 'none',
-            flexShrink:0, transition:'background 0.3s,box-shadow 0.3s',
-          }} />
-          <style>{`@keyframes mBounce{from{transform:scale(1) rotate(-4deg)}to{transform:scale(1.18) rotate(4deg)}}`}</style>
-        </button>
-      )}
+      ) : null}
     </>
   );
 }
