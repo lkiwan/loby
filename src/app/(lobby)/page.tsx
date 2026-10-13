@@ -1893,11 +1893,20 @@ function LobbyContent() {
             >
               <X className="h-4 w-4" />
             </button>
-            <div className="flex items-center gap-2">
-              <Settings className="h-5 w-5 text-[#2DD4BF]" />
-              <p className="font-cairo text-[14px] font-black text-[#FFF7E8]">
-                الإعدادات
-              </p>
+            <div className="flex items-center justify-between pe-12">
+              <div className="flex items-center gap-2">
+                <Settings className="h-5 w-5 text-[#2DD4BF]" />
+                <p className="font-cairo text-[14px] font-black text-[#FFF7E8]">
+                  الإعدادات
+                </p>
+              </div>
+              <Link
+                href={session?.user?.username ? `/profile/${session.user.username}` : "/profile/walidomar"}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-cairo text-[12px] font-black transition-all hover:scale-105 active:scale-95 shadow-[0_0_14px_rgba(216,166,42,0.25)] border border-[#D8A62A]/50 bg-gradient-to-r from-[#D8A62A]/20 via-[#F5B942]/15 to-[#D8A62A]/20 text-[#F5B942] hover:text-white hover:border-[#D8A62A] hover:shadow-[0_0_20px_rgba(216,166,42,0.45)]"
+              >
+                <User className="h-3.5 w-3.5 text-[#F5B942]" />
+                <span>الپروفيل</span>
+              </Link>
             </div>
 
             <div className="mt-5 flex flex-col gap-2.5">
