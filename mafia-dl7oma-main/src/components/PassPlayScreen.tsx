@@ -37,36 +37,14 @@ export default function PassPlayScreen() {
     <motion.div
       initial={{ opacity: 0, scale: 0.94 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="absolute inset-0 z-40 flex h-full flex-col items-center justify-center gap-5 overflow-hidden px-8"
+      className="absolute inset-0 z-40 flex h-full flex-col items-center justify-center gap-5 overflow-hidden bg-[#07070D] px-8"
     >
-      {/* table picture background */}
-      <img
-        src={`${import.meta.env.BASE_URL}img/table-bg.avif`}
-        alt=""
-        aria-hidden
-        draggable={false}
-        className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-night/55"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(circle at 50% 40%, rgba(234,179,8,.10), rgba(0,0,0,0) 55%), radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,.8))",
-        }}
-      />
-
       <motion.div
-        className="relative z-10 flex h-24 w-24 items-center justify-center rounded-3xl bg-gold/10 ring-2 ring-gold/60 shadow-glowGold"
+        className="relative z-10 flex h-24 w-24 items-center justify-center rounded-3xl bg-[#12121C] ring-1 ring-white/10"
         animate={{ scale: [1, 1.05, 1] }}
         transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
       >
-        <Lock className="h-12 w-12 text-gold" />
-        <span className="absolute inset-0 animate-pulseRing rounded-3xl ring-2 ring-gold/40" />
+        <Lock className="h-12 w-12 text-[#FFC93C]" />
       </motion.div>
 
       <div className="relative z-10 text-center">
@@ -78,7 +56,7 @@ export default function PassPlayScreen() {
         </p>
       </div>
 
-      <p className="relative z-10 font-darija text-2xl font-black text-gold">
+      <p className="relative z-10 font-darija text-2xl font-black text-[#FFC93C]">
         {teller?.name ?? "الحاكم"}
       </p>
 
@@ -88,19 +66,9 @@ export default function PassPlayScreen() {
           buzz([40, 40, 60]);
           unlockDashboard();
         }}
-        className="relative z-10 btn-horror group w-full max-w-[280px] overflow-hidden px-5 py-3 text-center"
+        className="relative z-10 w-full max-w-[280px] rounded-full bg-[#C6F542] px-5 py-3.5 text-center font-darija text-xl font-black text-[#131803] transition-transform active:scale-95"
       >
-        <span
-          aria-hidden
-          className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        />
-        <span className="text-horror horror-flicker relative block font-darija text-xl font-black tracking-[0.18em]">
-          فتّح لابو
-        </span>
-        <span
-          aria-hidden
-          className="absolute bottom-1.5 left-1/2 h-px w-12 -translate-x-1/2 bg-gradient-to-r from-transparent via-blood/50 to-transparent"
-        />
+        فتّح لابو
       </button>
       <p className="relative z-10 text-center font-darija text-xs font-semibold text-zinc-600">
         بيتا ف الكوين، تيلي ليّا. ما تيشريش.
@@ -109,17 +77,7 @@ export default function PassPlayScreen() {
   );
 
   return (
-    <div className="relative flex h-full flex-col overflow-hidden bg-night px-5">
-      {/* lantern ambience */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(circle at 50% 30%, rgba(234,179,8,.10), transparent 48%), radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,.7) 100%)",
-        }}
-      />
-
+    <div dir="rtl" className="relative flex h-full flex-col overflow-hidden bg-[#07070D] px-5">
       {/* banner */}
       <div className="relative z-10 pt-5">
         <AnimatePresence mode="popLayout">
@@ -129,16 +87,16 @@ export default function PassPlayScreen() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 26, opacity: 0 }}
             transition={{ duration: 0.32 }}
-            className="w-full rounded-2xl border border-gold/25 bg-night-panel/90 px-4 py-3 text-center shadow-card"
+            className="w-full rounded-3xl bg-[#12121C] px-4 py-4 text-center ring-1 ring-white/[0.07]"
           >
-            <p className="font-darija text-xs font-bold tracking-[0.35em] text-yellow-500 uppercase">
+            <p className="font-darija text-sm font-extrabold tracking-[0.2em] text-[#FFC93C]">
               عطيو تيلي لـ
             </p>
             <motion.p
               key={"name" + revealIndex}
               initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="font-grit text-3xl text-zinc-50"
+              className="mt-1 font-darija text-5xl font-black text-white"
             >
               {current?.name}
             </motion.p>
@@ -149,19 +107,6 @@ export default function PassPlayScreen() {
       {/* big card stage — always big */}
       <div className="relative z-10 flex min-h-0 flex-1 flex-col items-center justify-center">
         <div className="relative w-[min(62vw,250px)] aspect-[3/4.4]">
-          {/* pulsing tap ring while face-down */}
-          {!cardFaceUp && (
-            <motion.span
-              className="pointer-events-none absolute -inset-3 rounded-3xl border-2 border-gold/60"
-              animate={{ opacity: [0.9, 0.15, 0.9], scale: [1, 1.05, 1] }}
-              transition={{
-                duration: 1.7,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-          )}
-
           <motion.div
             key={revealIndex}
             initial={{ opacity: 0, scale: 0.88, rotate: -2 }}
@@ -195,7 +140,7 @@ export default function PassPlayScreen() {
         </div>
 
         {/* hint / action area */}
-        <div className="mt-6 h-16 w-full">
+        <div className="mt-6 flex h-16 w-full justify-center">
           <AnimatePresence mode="wait">
             {cardFaceUp ? (
               <motion.button
@@ -204,9 +149,9 @@ export default function PassPlayScreen() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 onClick={onHide}
-                className="btn-gold w-full text-lg"
+                className="flex h-fit items-center gap-2 rounded-full bg-[#C6F542] px-10 py-3 font-darija text-lg font-black text-[#131803] transition-transform active:scale-95"
               >
-                <EyeOff className="mr-2 inline h-5 w-5" /> خبي سرّك
+                <EyeOff className="h-5 w-5" /> خبي سرّك
               </motion.button>
             ) : (
               <motion.p
@@ -214,9 +159,9 @@ export default function PassPlayScreen() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="mt-1 flex items-center justify-center gap-2 text-center font-darija text-sm font-semibold text-zinc-400"
+                className="mt-1 flex items-center justify-center gap-2 text-center font-darija text-[15px] font-semibold text-zinc-400"
               >
-                <Hand className="h-4 w-4 text-gold" />
+                <Hand className="h-4 w-4 text-zinc-500" />
                 برك على الكرطة باش تشوف الدور ديالك
               </motion.p>
             )}
@@ -233,11 +178,7 @@ export default function PassPlayScreen() {
             <span
               key={p.id}
               className={`h-2 w-2 rounded-full transition-all duration-300 ${
-                now
-                  ? "w-6 bg-gold shadow-glowGold"
-                  : done
-                    ? "bg-heal/70"
-                    : "bg-white/15"
+                now ? "bg-[#C6F542]" : done ? "bg-white/35" : "bg-white/[0.12]"
               }`}
             />
           );
