@@ -100,17 +100,16 @@ export default function MissionsPanel({
     <div className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center p-0 sm:p-4">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
       <div
-        className="bounce-in relative w-full max-w-md rounded-t-3xl sm:rounded-2xl overflow-hidden shadow-2xl"
-        style={{ background: '#09101F', border: '1px solid rgba(232,180,48,0.22)' }}
+        className="bounce-in relative w-full max-w-md rounded-t-[26px] sm:rounded-[24px] overflow-hidden shadow-2xl"
+        style={{ background: 'var(--panel2)', border: '1px solid var(--line)' }}
       >
-        {/* Gold top accent */}
-        <div className="h-[3px]" style={{ background: 'linear-gradient(90deg,transparent,#E8B430,transparent)' }} />
+        <div className="sheet-grab sm:hidden" />
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 pt-4 pb-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
           <div className="flex items-center gap-3">
-            <div className="grid h-9 w-9 place-items-center rounded-xl" style={{ background: 'rgba(232,180,48,0.12)', border: '1px solid rgba(232,180,48,0.22)' }}>
-              <Target className="h-4.5 w-4.5" style={{ color: '#E8B430' }} />
+            <div className="grid h-9 w-9 place-items-center rounded-xl" style={{ background: 'rgba(198,245,66,0.12)', border: '1px solid rgba(198,245,66,0.25)' }}>
+              <Target className="h-4.5 w-4.5" style={{ color: 'var(--lime)' }} />
             </div>
             <div>
               <h2 className="font-lalezar text-[18px] text-white leading-none">المهام اليومية</h2>
@@ -134,7 +133,7 @@ export default function MissionsPanel({
           <div className="px-5 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
             <div className="flex items-center justify-between mb-1.5">
               <span className="font-cairo text-[10px] font-bold" style={{ color: 'rgba(255,255,255,0.28)' }}>التقدم اليومي</span>
-              <span className="font-grit text-[11px]" style={{ color: '#E8B430' }}>{totalPct}%</span>
+              <span className="font-grit text-[11px]" style={{ color: 'var(--lime)' }}>{totalPct}%</span>
             </div>
             <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
               <div
@@ -143,8 +142,8 @@ export default function MissionsPanel({
                   width: `${totalPct}%`,
                   background: totalPct === 100
                     ? 'linear-gradient(90deg,#22c55e,#4ade80)'
-                    : 'linear-gradient(90deg,#E8B430,#F5CC6B)',
-                  boxShadow: totalPct > 0 ? '0 0 8px rgba(232,180,48,0.4)' : undefined,
+                    : 'linear-gradient(90deg,#A8D62E,#C6F542)',
+                  boxShadow: totalPct > 0 ? '0 0 8px rgba(198,245,66,0.4)' : undefined,
                 }}
               />
             </div>
@@ -167,10 +166,10 @@ export default function MissionsPanel({
               {/* Mission summary */}
               <div
                 className="flex items-start gap-3 rounded-xl p-3.5 mb-4"
-                style={{ background: 'rgba(232,180,48,0.06)', border: '1px solid rgba(232,180,48,0.16)' }}
+                style={{ background: 'rgba(255,201,60,0.06)', border: '1px solid rgba(255,201,60,0.16)' }}
               >
-                <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl" style={{ background: 'rgba(232,180,48,0.12)' }}>
-                  <Target className="h-4 w-4" style={{ color: '#E8B430' }} />
+                <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl" style={{ background: 'rgba(255,201,60,0.12)' }}>
+                  <Target className="h-4 w-4" style={{ color: '#FFC93C' }} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-lalezar text-[16px] text-white leading-none mb-1">{adTarget.titleAr}</p>
@@ -193,10 +192,10 @@ export default function MissionsPanel({
 
               {/* Countdown / claim */}
               {adCountdown > 0 ? (
-                <div className="mt-4 flex items-center justify-center gap-3 rounded-xl py-4" style={{ background: 'rgba(232,180,48,0.05)', border: '1px solid rgba(232,180,48,0.14)' }}>
-                  <span className="font-grit text-[30px] leading-none" style={{ color: '#E8B430' }}>{adCountdown}</span>
+                <div className="mt-4 flex items-center justify-center gap-3 rounded-xl py-4" style={{ background: 'rgba(198,245,66,0.05)', border: '1px solid rgba(198,245,66,0.14)' }}>
+                  <span className="font-grit text-[30px] leading-none" style={{ color: 'var(--lime)' }}>{adCountdown}</span>
                   <div>
-                    <p className="font-cairo text-[12px] font-black" style={{ color: '#E8B430' }}>صبر على الإشهار</p>
+                    <p className="font-cairo text-[12px] font-black" style={{ color: 'var(--lime)' }}>صبر على الإشهار</p>
                     <p className="font-cairo text-[10px] text-white/28">المكافأة كتجي من بعد</p>
                   </div>
                 </div>
@@ -204,8 +203,7 @@ export default function MissionsPanel({
                 <button
                   onClick={confirmClaim}
                   disabled={adClaiming}
-                  className="mt-4 w-full py-3.5 rounded-xl font-cairo font-black text-[14px] flex items-center justify-center gap-2 transition active:scale-[0.98]"
-                  style={{ background: 'linear-gradient(135deg,#F5CC6B,#E8B430)', color: '#060810' }}
+                  className="btn-lime mt-4 w-full py-3.5 font-cairo text-[14px]"
                 >
                   {adClaiming
                     ? <Loader2 className="h-4 w-4 animate-spin" />
@@ -217,7 +215,7 @@ export default function MissionsPanel({
 
           ) : loading ? (
             <div className="flex justify-center py-12">
-              <Loader2 className="h-6 w-6 animate-spin" style={{ color: '#E8B430' }} />
+              <Loader2 className="h-6 w-6 animate-spin" style={{ color: 'var(--lime)' }} />
             </div>
 
           ) : missions.length === 0 ? (
@@ -239,19 +237,19 @@ export default function MissionsPanel({
                       background: m.claimed
                         ? 'rgba(34,197,94,0.04)'
                         : m.canClaim
-                        ? 'rgba(232,180,48,0.06)'
+                        ? 'rgba(198,245,66,0.06)'
                         : 'rgba(255,255,255,0.02)',
                       border: m.claimed
                         ? '1px solid rgba(34,197,94,0.14)'
                         : m.canClaim
-                        ? '1px solid rgba(232,180,48,0.25)'
+                        ? '1px solid rgba(198,245,66,0.25)'
                         : '1px solid rgba(255,255,255,0.06)',
                       opacity: m.claimed ? 0.55 : 1,
                     }}
                   >
                     {/* Card top accent for claimable */}
                     {m.canClaim && !m.claimed && (
-                      <div className="h-[2px]" style={{ background: 'linear-gradient(90deg,transparent,#E8B430,transparent)' }} />
+                      <div className="h-[2px]" style={{ background: 'linear-gradient(90deg,transparent,#C6F542,transparent)' }} />
                     )}
 
                     <div className="p-3.5">
@@ -280,9 +278,9 @@ export default function MissionsPanel({
                             background: m.claimed
                               ? '#22c55e'
                               : m.canClaim
-                              ? '#E8B430'
-                              : 'linear-gradient(90deg,rgba(0,217,255,0.6),rgba(168,85,247,0.6))',
-                            boxShadow: m.canClaim && !m.claimed ? '0 0 6px rgba(232,180,48,0.45)' : undefined,
+                              ? 'var(--lime)'
+                              : 'linear-gradient(90deg,rgba(198,245,66,0.45),rgba(198,245,66,0.75))',
+                            boxShadow: m.canClaim && !m.claimed ? '0 0 6px rgba(198,245,66,0.45)' : undefined,
                           }}
                         />
                       </div>
@@ -317,9 +315,9 @@ export default function MissionsPanel({
                             onClick={() => openAdClaim(m)}
                             className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 font-cairo text-[11px] font-black transition hover:brightness-110 active:scale-95"
                             style={{
-                              background: m.canClaim ? 'rgba(232,180,48,0.15)' : 'rgba(255,255,255,0.05)',
-                              border: m.canClaim ? '1px solid rgba(232,180,48,0.38)' : '1px solid rgba(255,255,255,0.1)',
-                              color: m.canClaim ? '#E8B430' : 'rgba(255,255,255,0.45)',
+                              background: m.canClaim ? 'rgba(198,245,66,0.15)' : 'rgba(255,255,255,0.05)',
+                              border: m.canClaim ? '1px solid rgba(198,245,66,0.38)' : '1px solid rgba(255,255,255,0.1)',
+                              color: m.canClaim ? 'var(--lime)' : 'rgba(255,255,255,0.45)',
                             }}
                           >
                             <Play className="h-3 w-3 fill-current" />

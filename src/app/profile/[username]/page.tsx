@@ -1,17 +1,16 @@
 'use client';
 import { use, useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowRight, Loader2, Copy, Check, Zap, Coins } from 'lucide-react';
+import { ArrowRight, Copy, Check, Zap } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import LobbyFooter from '@/components/landing/LobbyFooter';
-import { StarMark } from '@/components/Star';
 import GameIcon from '@/components/GameIcon';
 import { GAMES } from '@/lib/games';
 
 function xpForLvl(n: number) {
   return Math.floor(100 * Math.pow(n, 1.4));
 }
+void xpForLvl;
 
 type ProfileData = {
   username: string;
@@ -62,137 +61,121 @@ export default function ProfilePage({
 
   if (notFound) {
     return (
-      <div className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-[#07111F] zellige-bg px-6 text-center">
-        <StarMark size={48} />
-        <h1 className="font-lalezar text-3xl text-white">مالقيناش هاد اللعّاب 🥲</h1>
-        <p className="font-cairo text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.45)' }}>
-          يمكن بدل السمية ولا مسح الكونط.
-        </p>
-        <Link href="/" className="mt-2 px-6 py-3 rounded-[14px] font-cairo font-black text-[14px]"
-          style={{ background: 'linear-gradient(135deg,#F5C842,#D8A62A)', color: '#07111F' }}>
-          رجع للساحة
-        </Link>
+      <div className="relative flex min-h-dvh flex-col items-center justify-center px-6 text-center text-white" style={{ background: 'var(--bg)' }}>
+        <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_45%_at_85%_0%,rgba(124,58,237,0.16),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_10%_100%,rgba(225,29,72,0.1),transparent_55%)]" />
+        </div>
+        <div className="anim-pop relative z-10 flex flex-col items-center">
+          <div className="grid h-[72px] w-[72px] place-items-center rounded-full border-2 border-[#F43F5E]/60 bg-[#F43F5E]/10 font-cairo text-[30px] font-black text-[#FF8FA3]" style={{ boxShadow: '0 0 32px rgba(244,63,94,0.25)' }}>
+            !
+          </div>
+          <h1 className="mt-5 font-lalezar text-3xl text-white">مالقيناش هاد اللعّاب 🥲</h1>
+          <p className="mt-2 font-cairo text-sm font-semibold" style={{ color: 'var(--dim)' }}>
+            يمكن بدل السمية ولا مسح الكونط.
+          </p>
+          <Link href="/" className="btn-lime mt-5 px-6 py-3 font-cairo text-[14px]">
+            رجع للساحة
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="relative min-h-dvh bg-[#07111F] text-white" style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom))' }}>
+    <div className="relative min-h-dvh text-white" style={{ background: 'var(--bg)', paddingBottom: 'max(2rem, env(safe-area-inset-bottom))' }}>
       {/* Background glows */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[360px] w-[360px] rounded-full opacity-[0.07] blur-3xl"
-          style={{ background: '#D8A62A' }} />
-        <div className="absolute top-1/3 right-0 h-[280px] w-[280px] rounded-full opacity-[0.05] blur-3xl"
-          style={{ background: '#6D3CCF' }} />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_45%_at_85%_0%,rgba(124,58,237,0.13),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_10%_100%,rgba(225,29,72,0.08),transparent_55%)]" />
       </div>
 
-      {/* Header */}
-      <header className="sticky top-0 z-30 px-4 pt-3 pb-2">
-        <div className="mx-auto flex h-14 max-w-2xl items-center justify-between rounded-full px-4"
-          style={{ background: 'rgba(7,17,31,0.94)', backdropFilter: 'blur(24px)', border: '1px solid rgba(216,166,42,0.14)', boxShadow: '0 4px 24px rgba(0,0,0,0.5)' }}>
-          <Link href="/"
-            className="flex items-center gap-2 font-cairo text-sm font-bold transition"
-            style={{ color: 'rgba(255,255,255,0.55)' }}>
-            <ArrowRight className="h-4 w-4" />
-            رجع
-          </Link>
-          <span className="font-lalezar text-[17px] text-white">{username}</span>
-          <div className="flex items-center">
-            <Image
-              alt="PlayM3ana"
-              loading="lazy"
-              width={44}
-              height={44}
-              className="h-11 w-11 object-contain"
-              src="/icons/image.png"
-            />
-          </div>
-        </div>
+      {/* Topbar (profile-store): back btn · username · wordmark */}
+      <header className="relative z-10 mx-auto flex w-full max-w-2xl items-center justify-between px-4 pt-5 sm:px-6">
+        <Link
+          href="/"
+          aria-label="رجع"
+          className="grid h-10 w-10 place-items-center rounded-full border transition active:scale-95"
+          style={{ background: 'var(--panel2)', borderColor: 'var(--line)', color: '#EDEDF2' }}
+        >
+          <ArrowRight className="h-4.5 w-4.5" />
+        </Link>
+        <span className="font-cairo text-[16px] font-black text-white">{username}</span>
+        <span className="font-cairo text-[13px] font-black tracking-[1.5px]" dir="ltr" style={{ color: 'var(--dim)' }}>
+          PLAY<span style={{ color: 'var(--lime)' }}>M3ANA</span>
+        </span>
       </header>
 
       {profile ? (
         <main className="relative z-10 mx-auto max-w-2xl px-4 pb-8 pt-6 sm:px-6">
 
-          {/* ── Profile card ── */}
-          <div className="mb-4 overflow-hidden rounded-[22px]"
-            style={{ background: 'rgba(9,22,40,0.95)', border: '1px solid rgba(216,166,42,0.2)', boxShadow: '0 8px 40px rgba(0,0,0,0.6)' }}>
-            {/* Top arch bar */}
-            <div className="h-[3px]"
-              style={{ background: 'linear-gradient(90deg,transparent,#6D3CCF,#D8A62A,#C75B39,#D8A62A,#6D3CCF,transparent)', boxShadow: '0 0 16px rgba(216,166,42,0.5)' }} />
+          {/* ── ID card (profile-store): letter avatar, LEVEL + XP bar ── */}
+          <div className="cut-corner relative mb-4 p-6 text-center" style={{ background: 'var(--panel)', border: '1px solid var(--line)' }}>
+            <div
+              className="mx-auto grid h-24 w-24 place-items-center rounded-full font-lalezar text-[40px]"
+              style={{ background: 'rgba(198,245,66,0.08)', border: '3px solid var(--lime)', color: 'var(--lime)', boxShadow: '0 0 28px rgba(198,245,66,0.3)' }}
+            >
+              {(profile.username?.[0] ?? '?').toUpperCase()}
+            </div>
+            <h1 className="mt-4 font-cairo text-[24px] font-black leading-tight text-white">{profile.username}</h1>
 
-            <div className="p-5">
-              {/* Avatar + name row */}
-              <div className="mb-5 flex items-center gap-4">
-                <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full font-lalezar text-3xl"
-                  style={{ background: 'rgba(216,166,42,0.1)', border: '2px solid rgba(216,166,42,0.45)', color: '#D8A62A', boxShadow: '0 0 20px rgba(216,166,42,0.2)' }}>
-                  {(profile.username?.[0] ?? '?').toUpperCase()}
-                </div>
-                <div>
-                  <h1 className="font-lalezar text-[22px] text-white">{profile.username}</h1>
-                  <div className="mt-0.5 flex items-center gap-2">
-                    <span className="font-grit text-[11px] uppercase tracking-wide" style={{ color: '#D8A62A' }}>
-                      LEVEL {profile.level}
-                    </span>
-                    <span style={{ color: 'rgba(255,255,255,0.2)' }}>·</span>
-                    <span className="font-cairo text-[11px]" style={{ color: 'rgba(255,255,255,0.35)' }}>{profile.xp.toLocaleString()} XP</span>
-                  </div>
-                </div>
-              </div>
+            <div className="mt-2.5 flex items-center justify-center gap-2">
+              <span className="rounded-full px-2.5 py-1 font-grit text-[11px] font-black tracking-wide" dir="ltr" style={{ background: 'var(--lime)', color: '#131803' }}>
+                LEVEL {profile.level}
+              </span>
+              <span style={{ color: 'rgba(255,255,255,0.25)' }}>·</span>
+              <span className="font-cairo text-[12px] font-bold" style={{ color: 'var(--dim)' }}>{profile.xp.toLocaleString()} XP</span>
+            </div>
 
-              {/* XP progress bar */}
-              <div className="mb-1 flex justify-between">
-                <span className="font-grit text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>LV.{profile.level}</span>
-                <span className="font-grit text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>LV.{profile.level + 1}</span>
-              </div>
-              <div className="h-2 overflow-hidden rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                <div className="h-full rounded-full transition-all duration-1000"
-                  style={{ width: `${profile.levelProgress}%`, background: 'linear-gradient(90deg,#C75B39,#D8A62A,#F5C842)', boxShadow: '0 0 10px rgba(216,166,42,0.5)' }} />
-              </div>
-              <p className="mt-1 font-cairo text-[10px] text-left" dir="ltr" style={{ color: 'rgba(255,255,255,0.2)' }}>
-                {profile.levelProgress}% to next level
-              </p>
+            {/* XP progress bar */}
+            <div className="mt-5 h-[11px] overflow-hidden rounded-full" style={{ background: 'rgba(255,255,255,0.08)' }}>
+              <div className="h-full rounded-full transition-all duration-1000"
+                style={{ width: `${profile.levelProgress}%`, background: 'linear-gradient(90deg,#8FD41F,#C6F542,#E4FF8F)', boxShadow: '0 0 10px rgba(198,245,66,0.5)' }} />
+            </div>
+            <div className="mt-1.5 flex items-center justify-between" dir="ltr">
+              <span className="font-grit text-[10px]" style={{ color: 'var(--dim)' }}>LV.{profile.level}</span>
+              <span className="font-cairo text-[10.5px] font-bold text-white/70">{profile.levelProgress}% to next level</span>
+              <span className="font-grit text-[10px]" style={{ color: 'var(--dim)' }}>LV.{profile.level + 1}</span>
             </div>
           </div>
 
-          {/* ── Stats grid ── */}
+          {/* ── Stats grid (4 real stats) ── */}
           <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
-              { label: 'كوينز',              val: profile.coins.toLocaleString(), color: '#D8A62A',  bg: 'rgba(216,166,42,0.08)',  border: 'rgba(216,166,42,0.22)' },
-              { label: 'ڭلسات',              val: profile.gamesPlayed,            color: '#1aad84',  bg: 'rgba(26,173,132,0.07)',  border: 'rgba(26,173,132,0.22)' },
-              { label: 'الستريك ديال دابا', val: `${profile.streakCount} 🔥`,     color: '#EF4444',  bg: 'rgba(239,68,68,0.07)',   border: 'rgba(239,68,68,0.22)'  },
-              { label: 'أطول ستريك',         val: `${profile.longestStreak} يوم`, color: '#F97316',  bg: 'rgba(249,115,22,0.07)',  border: 'rgba(249,115,22,0.22)' },
+              { label: 'كوينز',              val: profile.coins.toLocaleString(), color: 'var(--gold)' },
+              { label: 'ڭلسات',              val: profile.gamesPlayed,            color: '#6EE7B7' },
+              { label: 'الستريك ديال دابا', val: `${profile.streakCount} 🔥`,     color: '#FDA4AF' },
+              { label: 'أطول ستريك',         val: `${profile.longestStreak} يوم`, color: '#FDBA74' },
             ].map((s) => (
-              <div key={s.label} className="rounded-[16px] p-4 text-center"
-                style={{ background: s.bg, border: `1px solid ${s.border}` }}>
-                <div className="font-lalezar text-2xl leading-none" style={{ color: s.color }}>{s.val}</div>
-                <div className="mt-1 font-cairo text-[10px]" style={{ color: 'rgba(255,255,255,0.4)' }}>{s.label}</div>
+              <div key={s.label} className="rounded-[18px] p-4 text-center" style={{ background: 'var(--panel)', border: '1px solid var(--line)' }}>
+                <div className="font-cairo text-[23px] font-black leading-none" style={{ color: s.color }}>{s.val}</div>
+                <div className="mt-1.5 font-cairo text-[10.5px] font-black" style={{ color: 'var(--dim)' }}>{s.label}</div>
               </div>
             ))}
           </div>
 
-          {/* ── Referral code ── */}
+          {/* ── Referral code (profile-store refcard) ── */}
           {profile.referralCode && (
-            <div className="mb-4 rounded-[18px] p-5"
-              style={{ background: 'rgba(216,166,42,0.06)', border: '1px solid rgba(216,166,42,0.2)' }}>
-              <div className="mb-3 flex items-center gap-2">
-                <Zap className="h-4 w-4" style={{ color: '#D8A62A' }} />
-                <span className="font-cairo text-[13px] font-black" style={{ color: '#D8A62A' }}>الكود د الدعوة ديالك</span>
+            <div
+              className="cut-corner-sm relative mb-4 rounded-[18px] p-5"
+              style={{ background: 'linear-gradient(92deg,rgba(198,245,66,0.12),rgba(198,245,66,0.03))', border: '1px solid rgba(198,245,66,0.24)' }}
+            >
+              <div className="mb-1.5 flex items-center gap-2">
+                <Zap className="h-4 w-4" style={{ color: 'var(--lime)' }} />
+                <span className="font-cairo text-[13px] font-black text-white">الكود د الدعوة ديالك</span>
               </div>
-              <div className="flex items-center gap-2">
-                <code className="flex-1 overflow-hidden rounded-xl px-4 py-2.5 font-mono text-[15px] tracking-widest text-white"
-                  style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(216,166,42,0.18)' }}>
-                  {profile.referralCode}
-                </code>
-                <button onClick={copyReferral}
-                  className="flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2.5 font-cairo text-[12px] font-black transition active:scale-95"
-                  style={{ background: 'rgba(216,166,42,0.12)', border: '1px solid rgba(216,166,42,0.3)', color: '#D8A62A' }}>
-                  {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-                  {copied ? 'تم!' : 'كوپي'}
-                </button>
-              </div>
-              <p className="mt-2 font-cairo text-[11px]" style={{ color: 'rgba(255,255,255,0.35)' }}>
+              <p className="mb-3.5 font-cairo text-[11.5px] font-semibold leading-relaxed" style={{ color: 'var(--dim)' }}>
                 بارطاجي الكود مع صاحبك — بجوج غاتربحو كوينز 🎁
               </p>
+              <button
+                onClick={copyReferral}
+                className="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 font-mono text-[15px] font-bold tracking-widest transition active:scale-[0.98]"
+                style={{ background: 'rgba(0,0,0,0.35)', border: '1.5px dashed rgba(255,201,60,0.55)', color: 'var(--gold)' }}
+              >
+                <span dir="ltr">{profile.referralCode}</span>
+                {copied ? <Check className="h-4 w-4 shrink-0" /> : <Copy className="h-4 w-4 shrink-0" />}
+                <span className="font-cairo text-[12px] font-black tracking-normal">{copied ? 'تم!' : 'كوپي'}</span>
+              </button>
             </div>
           )}
 
@@ -204,25 +187,24 @@ export default function ProfilePage({
                 {profile.recentSessions.map((s, i) => {
                   const game = GAMES.find((g) => g.id === s.gameId);
                   return (
-                    <div key={i} className="flex items-center gap-3 rounded-[14px] p-3"
-                      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                      <GameIcon game={game} size={36} />
+                    <div key={i} className="flex items-center gap-3 rounded-[16px] p-3" style={{ background: 'var(--panel)', border: '1px solid var(--line)' }}>
+                      <GameIcon game={game} size={42} />
                       <div className="min-w-0 flex-1">
-                        <p className="truncate font-cairo text-[13px] font-bold" style={{ color: 'rgba(255,255,255,0.75)' }}>
+                        <p className="truncate font-cairo text-[13.5px] font-bold text-white/85">
                           {game?.darijaTitle ?? s.gameId}
                         </p>
-                        <p className="font-cairo text-[11px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                        <p className="font-cairo text-[11px] font-semibold" style={{ color: 'var(--dim)' }}>
                           {new Date(s.startedAt).toLocaleDateString('ar-MA')}
                         </p>
                       </div>
                       <div className="flex shrink-0 flex-col items-end gap-0.5">
                         {s.xpAwarded > 0 && (
-                          <span className="font-cairo text-[12px] font-black" style={{ color: '#D8A62A' }}>
+                          <span className="font-cairo text-[12.5px] font-black" style={{ color: 'var(--lime)' }}>
                             +{s.xpAwarded} XP
                           </span>
                         )}
                         {s.score !== null && (
-                          <span className="font-cairo text-[11px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                          <span className="font-cairo text-[11px] font-semibold" style={{ color: 'var(--dim)' }}>
                             {s.score.toLocaleString()} نقطة
                           </span>
                         )}
@@ -235,7 +217,7 @@ export default function ProfilePage({
           )}
 
           {/* Member since */}
-          <p className="mt-8 text-center font-cairo text-[11px]" style={{ color: 'rgba(255,255,255,0.2)' }}>
+          <p className="mt-8 text-center font-cairo text-[11.5px] font-semibold" style={{ color: 'var(--dim)' }}>
             مقيد معانا من {new Date(profile.createdAt).toLocaleDateString('ar-MA')} 🇲🇦
           </p>
 
@@ -245,10 +227,10 @@ export default function ProfilePage({
         </main>
       ) : (
         <div className="flex justify-center pt-32">
-          <div className="pulse-glow-ring grid h-12 w-12 place-items-center rounded-full border-2"
-            style={{ borderColor: 'rgba(216,166,42,0.4)' }}>
-            <Loader2 className="h-5 w-5 animate-spin" style={{ color: '#D8A62A' }} />
-          </div>
+          <div
+            className="h-12 w-12 animate-spin rounded-full border-[3px]"
+            style={{ borderColor: 'rgba(198,245,66,0.25)', borderTopColor: 'var(--lime)' }}
+          />
         </div>
       )}
     </div>

@@ -14,7 +14,7 @@ export default function LoadingPage({
   description = "",
   status = "",
   fullScreen = true,
-  titleClassName = "font-lalezar text-2xl text-[#F5E7CE] text-glow-gold",
+  titleClassName = "font-lalezar text-2xl text-white",
 }: LoadingPageProps) {
   return (
     <main className={"loading-page " + (fullScreen ? "loading-page--fullscreen" : "")}>

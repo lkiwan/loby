@@ -2,58 +2,67 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { StarMark } from '@/components/Star';
+import { ArrowRight } from 'lucide-react';
 
+/* Store shell (redesign port): near-black bg + purple/red glows, phone
+   column, square back button, PLAYM3ANA wordmark. Replaces the old navy
+   shell + logo image. */
 export default function AuthShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative min-h-dvh bg-[#07111F] text-white">
+    <div className="relative min-h-dvh text-white" style={{ background: 'var(--bg)' }}>
       {/* Background glows */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(216,166,42,0.09),transparent_60%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_90%_20%,rgba(109,60,207,0.07),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_10%_80%,rgba(199,91,57,0.05),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_45%_at_85%_0%,rgba(124,58,237,0.16),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_10%_100%,rgba(225,29,72,0.1),transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_0%,rgba(198,245,66,0.05),transparent_60%)]" />
       </div>
 
-      <div className="relative z-10 flex min-h-dvh flex-col items-center justify-center px-4 py-10">
-        {/* Logo */}
-        <Link href="/" className="anim-fadeup mb-6 flex items-center">
-          <Image src="/icons/image.png" alt="PlayM3ana" width={96} height={96} className="h-24 w-24 object-contain" />
-        </Link>
-        {children}
+      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-[430px] flex-col px-5 py-6">
+        {/* Top row: back button + wordmark */}
+        <div className="anim-fadeup flex items-center justify-between">
+          <Link
+            href="/"
+            aria-label="رجع للساحة"
+            className="grid h-[42px] w-[42px] place-items-center rounded-[13px] border transition active:scale-95"
+            style={{ background: 'var(--panel2)', borderColor: 'var(--line)', color: '#EDEDF2' }}
+          >
+            <ArrowRight className="h-5 w-5" />
+          </Link>
+          <span className="font-cairo text-[15px] font-black tracking-[2px]" dir="ltr">
+            PLAY<span style={{ color: 'var(--lime)' }}>M3ANA</span>
+          </span>
+        </div>
+
+        <div className="flex flex-1 flex-col justify-center py-8">
+          {children}
+        </div>
       </div>
     </div>
   );
 }
 
+/* Store card: panel bg, hairline border, radius 22, diagonal cut corner
+   (clip-path via .cut-corner + a bg triangle notch on top). The `accent`
+   prop is kept for call-site compatibility — both auth pages now use the
+   single lime Store system. */
 export function AuthCardShell({
   children,
-  accent = 'amber',
 }: {
   children: React.ReactNode;
   accent?: 'amber' | 'teal';
 }) {
-  const accentColor = accent === 'teal' ? '#1aad84' : '#D8A62A';
-  const accentRgb   = accent === 'teal' ? '26,173,132' : '216,166,42';
-
   return (
-    <div
-      className="anim-fadeup d1 relative w-full max-w-sm overflow-hidden rounded-[22px] p-6 sm:p-7"
-      style={{
-        background: 'rgba(9,22,40,0.97)',
-        border: `1px solid rgba(${accentRgb},0.22)`,
-        boxShadow: `0 0 0 1px rgba(${accentRgb},0.08), 0 30px 80px -20px rgba(0,0,0,0.9), 0 0 60px rgba(${accentRgb},0.06)`,
-      }}
-    >
-      {/* Top arch bar */}
-      <div className="absolute inset-x-0 top-0 h-[3px] rounded-t-[22px]"
-        style={{ background: `linear-gradient(90deg,transparent,rgba(${accentRgb},0.7),${accentColor},rgba(${accentRgb},0.7),transparent)`, boxShadow: `0 0 16px rgba(${accentRgb},0.5)` }} />
-      {/* Corner glow */}
-      <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full opacity-25 blur-3xl"
-        style={{ background: accentColor }} />
-      <div className="pointer-events-none absolute -left-12 -bottom-12 h-32 w-32 rounded-full opacity-15 blur-3xl"
-        style={{ background: '#6D3CCF' }} />
-      {children}
+    <div className="anim-fadeup d1 relative w-full">
+      <div
+        className="cut-corner relative w-full p-5 pt-6"
+        style={{
+          background: 'var(--panel)',
+          border: '1px solid var(--line)',
+          boxShadow: '0 30px 80px -20px rgba(0,0,0,0.9)',
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 }

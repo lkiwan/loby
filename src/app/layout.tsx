@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Lalezar, Cairo, Archivo_Black } from "next/font/google";
+import { Geist, Geist_Mono, Lalezar, Cairo, Archivo_Black, Nunito } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import ConsentBanner from "@/components/ConsentBanner";
@@ -34,6 +34,16 @@ const archivoBlack = Archivo_Black({
   weight: "400",
 });
 
+/* Store Posters Latin/digits face (redesign port) — Cairo stays the
+   Arabic workhorse; Nunito has no Arabic glyphs and must never be the
+   Arabic font. */
+const nunito = Nunito({
+  variable: "--font-nunito",
+  subsets: ["latin"],
+  weight: ["600", "700", "800", "900"],
+  preload: false,
+});
+
 export const metadata: Metadata = {
   title: "PLAYM3ANA — بلاصة اللعب",
   description: "ألعاب د القصارة بالدارجة فتيليفون واحد. لعب مع صحابك!",
@@ -52,7 +62,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0B1F3A",
+  themeColor: "#07070D",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -67,7 +77,7 @@ export default function RootLayout({
     <html lang="ar" dir="rtl">
       <body
         suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.variable} ${lalezar.variable} ${cairo.variable} ${archivoBlack.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${lalezar.variable} ${cairo.variable} ${archivoBlack.variable} ${nunito.variable} antialiased`}
       >
         <Providers>{children}</Providers>
         <ConsentBanner />

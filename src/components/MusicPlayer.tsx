@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { createPortal } from 'react-dom';
+import { SolarMusicNotes } from '@/components/SolarIcon';
 
 /* ── D Bayati maqam · 110 BPM · Gaming × Darbouka × Kamanja ── */
 const BPM  = 110;
@@ -140,36 +141,27 @@ export default function MusicPlayer() {
         <button
           onClick={toggle}
           aria-label={playing ? 'إيقاف الموسيقى' : 'تشغيل الموسيقى'}
+          title={playing ? 'موسيقى' : 'صامت'}
           style={{
             position:'relative', zIndex:40,
-            display:'flex', alignItems:'center', gap:'6px',
-            padding:'6px 12px', borderRadius:'999px',
-            border: playing ? '1px solid rgba(232,180,48,0.55)' : '1px solid rgba(232,180,48,0.22)',
-            background: playing
-              ? 'linear-gradient(135deg,rgba(232,180,48,0.20),rgba(194,52,26,0.16))'
-              : 'rgba(6,8,16,0.88)',
-            backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)',
-            color: playing ? '#E8B430' : 'rgba(245,231,206,0.60)',
-            fontSize:'12px', fontFamily:'var(--font-cairo),sans-serif', fontWeight:600,
+            display:'grid', placeItems:'center',
+            width:'32px', height:'32px', borderRadius:'999px',
+            border: playing ? '1px solid rgba(198,245,66,0.45)' : '1px solid var(--line)',
+            background: 'var(--panel)',
+            color: playing ? '#C6F542' : 'rgba(255,255,255,0.5)',
             cursor:'pointer',
-            boxShadow: playing
-              ? '0 0 16px rgba(232,180,48,0.28),0 3px 10px rgba(0,0,0,0.55)'
-              : '0 3px 8px rgba(0,0,0,0.45)',
-            transition:'background 0.3s,color 0.3s,border-color 0.3s,box-shadow 0.3s',
+            transition:'background 0.3s,color 0.3s,border-color 0.3s',
             userSelect:'none', WebkitTapHighlightColor:'transparent',
           }}
         >
-          <span style={{ fontSize:'14px', display:'inline-block', animation: playing ? 'mBounce 0.7s ease-in-out infinite alternate' : 'none' }}>
-            {playing ? '🎵' : '🔇'}
-          </span>
-          <span style={{ fontSize:'11px' }}>{playing ? 'موسيقى' : 'صامت'}</span>
+          <SolarMusicNotes style={{ width:'16px', height:'16px' }} />
           <span style={{
-            width:'6px', height:'6px', borderRadius:'50%',
-            background: playing ? '#E8B430' : 'rgba(245,231,206,0.28)',
-            boxShadow: playing ? '0 0 7px #E8B430' : 'none',
-            flexShrink:0, transition:'background 0.3s,box-shadow 0.3s',
+            position:'absolute', top:'3px', insetInlineEnd:'3px',
+            width:'5px', height:'5px', borderRadius:'50%',
+            background: playing ? '#C6F542' : 'rgba(255,255,255,0.25)',
+            boxShadow: playing ? '0 0 6px #C6F542' : 'none',
+            transition:'background 0.3s,box-shadow 0.3s',
           }} />
-          <style>{`@keyframes mBounce{from{transform:scale(1) rotate(-4deg)}to{transform:scale(1.18) rotate(4deg)}}`}</style>
         </button>,
         portalTarget
       ) : null}

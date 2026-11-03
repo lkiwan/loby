@@ -8,6 +8,9 @@ export type Game = {
   isMafia: boolean;
   keyArt?: string;
   logo?: string;
+  /** Store Posters clean (text-free) poster art — game name is always
+      rendered as HTML text over it, never baked into the image. */
+  poster?: string;
   players: string;
   duration: string;
   difficulty: 'سهل' | 'متوسط' | 'صعب';
@@ -28,6 +31,7 @@ export const GAMES: Game[] = [
     glowAccent: '#DC2626',
     isMafia: true,
     logo: '/images/image.png',
+    poster: '/images/posters/mafia-clean.webp',
     players: '6+',
     duration: '25 دقيقة',
     difficulty: 'متوسط',
@@ -47,6 +51,7 @@ export const GAMES: Game[] = [
     isMafia: false,
     keyArt: '/images/bara-salfa.jpeg',
     logo: '/images/logo-bara-salfa.png',
+    poster: '/images/posters/bara-salfa-clean.webp',
     players: '3–15',
     duration: '15 دقيقة',
     difficulty: 'متوسط',
@@ -66,6 +71,7 @@ export const GAMES: Game[] = [
     isMafia: false,
     keyArt: '/images/7azr-fazr.jpeg',
     logo: '/images/logo-7azr-fazr.png',
+    poster: '/images/posters/7azr-fazr-clean.webp',
     players: '3–15',
     duration: '15 دقيقة',
     difficulty: 'متوسط',
@@ -85,6 +91,7 @@ export const GAMES: Game[] = [
     isMafia: false,
     keyArt: '/images/paint-followers-2.jpeg',
     logo: '/images/logo-rasm.png',
+    poster: '/images/posters/paint-followers-clean.webp',
     players: '3–15',
     duration: '15 دقيقة',
     difficulty: 'سهل',
@@ -104,6 +111,7 @@ export const GAMES: Game[] = [
     isMafia: false,
     keyArt: '/images/sowl-wla-dir.png',
     logo: '/images/logo-sowl.png',
+    poster: '/images/posters/sowl-wla-dir-clean.webp',
     players: '3–8',
     duration: '10 دقايق',
     difficulty: 'متوسط',
@@ -124,6 +132,8 @@ export type ComingSoonGame = {
   emoji: string;
   tag: string;
   desc: string;
+  /** Store Posters clean (text-free) poster art. */
+  poster?: string;
 };
 
 export const COMING_SOON: ComingSoonGame[] = [
@@ -134,6 +144,7 @@ export const COMING_SOON: ComingSoonGame[] = [
     emoji: '🧠',
     tag: 'معلومات + شوهة',
     desc: 'أسئلة على المغرب، الحومة، وداكشي لي كنعرفو كاملين — بلا كدوب 😂',
+    poster: '/images/posters/trivia-clean.webp',
   },
   {
     id: 'karaoke',
@@ -142,5 +153,6 @@ export const COMING_SOON: ComingSoonGame[] = [
     emoji: '🎤',
     tag: 'غنا + خسارة',
     desc: 'غنا بالدارجة — حتى واحد فيكم ما صوتو زوين، والجيران شاهدين 🎵',
+    poster: '/images/posters/karaoke-clean.webp',
   },
 ];
