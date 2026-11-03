@@ -100,11 +100,10 @@ export default function MissionsPanel({
     <div className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center p-0 sm:p-4">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
       <div
-        className="bounce-in relative w-full max-w-md rounded-t-3xl sm:rounded-2xl overflow-hidden shadow-2xl"
+        className="bounce-in relative w-full max-w-md rounded-t-[26px] sm:rounded-[24px] overflow-hidden shadow-2xl"
         style={{ background: 'var(--panel2)', border: '1px solid var(--line)' }}
       >
-        {/* Gold top accent */}
-        <div className="h-[3px]" style={{ background: 'linear-gradient(90deg,transparent,#C6F542,transparent)' }} />
+        <div className="sheet-grab sm:hidden" />
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 pt-4 pb-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
@@ -204,8 +203,7 @@ export default function MissionsPanel({
                 <button
                   onClick={confirmClaim}
                   disabled={adClaiming}
-                  className="mt-4 w-full py-3.5 rounded-xl font-cairo font-black text-[14px] flex items-center justify-center gap-2 transition active:scale-[0.98]"
-                  style={{ background: 'var(--lime)', color: '#131803' }}
+                  className="btn-lime mt-4 w-full py-3.5 font-cairo text-[14px]"
                 >
                   {adClaiming
                     ? <Loader2 className="h-4 w-4 animate-spin" />

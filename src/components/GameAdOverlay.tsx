@@ -22,14 +22,14 @@ export default function GameAdOverlay() {
 
   return (
     <div className="absolute bottom-4 left-1/2 z-50 -translate-x-1/2 flex flex-col items-end">
-      <button 
+      <button
         onClick={() => setIsVisible(false)}
-        className="mb-1 rounded-full bg-black/60 p-1 text-white hover:bg-red-500/80 transition"
+        className="mb-1 rounded-full border border-[#23232F] bg-[#101019]/85 p-1 text-white backdrop-blur-sm transition hover:bg-[#FF4D5E]/80"
         aria-label="Close ad"
       >
         <X className="h-4 w-4" />
       </button>
-      <div key={refreshKey} className="overflow-hidden rounded-md shadow-lg border border-white/10 bg-black/50">
+      <div key={refreshKey} className="overflow-hidden rounded-xl shadow-lg border border-[#23232F] bg-[#101019]/80 backdrop-blur-sm">
         <AdBanner className="flex justify-center overflow-hidden" />
       </div>
     </div>

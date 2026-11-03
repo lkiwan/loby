@@ -339,10 +339,9 @@ export default function DailyMissionButtons({
             className="bounce-in relative w-full max-w-sm rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden"
             style={{ background: 'var(--panel2)', border: '1px solid var(--line)' }}
           >
-            {/* Ad modal header strip */}
-            <div className="h-[3px]" style={{ background: 'linear-gradient(90deg,transparent,#C6F542,transparent)' }} />
+            <div className="sheet-grab sm:hidden" />
 
-            <div className="p-5">
+            <div className="p-5 pt-3">
               <button
                 onClick={cancelAd}
                 className="absolute start-4 top-4 grid h-8 w-8 place-items-center rounded-full border border-white/10 text-white/40 transition hover:text-white/70"
@@ -381,8 +380,7 @@ export default function DailyMissionButtons({
                 <button
                   onClick={claimAfterAd}
                   disabled={adClaiming}
-                  className="mt-4 w-full py-3.5 rounded-xl font-cairo font-black text-[14px] flex items-center justify-center gap-2 transition active:scale-[0.98]"
-                  style={{ background: 'var(--lime)', color: '#131803' }}
+                  className="btn-lime mt-4 w-full py-3.5 font-cairo text-[14px]"
                 >
                   {adClaiming
                     ? <Loader2 className="h-4 w-4 animate-spin" />

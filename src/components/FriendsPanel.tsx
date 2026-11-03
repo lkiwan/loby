@@ -111,7 +111,8 @@ export default function FriendsPanel({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center p-0 sm:p-4">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
-      <div className="bounce-in relative w-full max-w-md rounded-t-3xl sm:rounded-2xl border border-[var(--line)] bg-[var(--panel2)] shadow-2xl overflow-hidden">
+      <div className="bounce-in relative w-full max-w-md rounded-t-[26px] sm:rounded-[24px] border border-[var(--line)] bg-[var(--panel2)] shadow-2xl overflow-hidden">
+        <div className="sheet-grab sm:hidden" />
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-white/[0.06]">
           <div className="flex items-center gap-2.5">
@@ -135,7 +136,7 @@ export default function FriendsPanel({ onClose }: { onClose: () => void }) {
 
         {/* Body */}
         <div className="max-h-[60dvh] overflow-y-auto p-5">
-          {/* Add form */}
+          {/* Add form — preview .addrow: store field + lime Add button */}
           <div className="flex items-center gap-2">
             <div className="relative flex-1 min-w-0">
               <UserPlus className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[rgba(198,245,66,0.6)]" />
@@ -146,18 +147,25 @@ export default function FriendsPanel({ onClose }: { onClose: () => void }) {
                 maxLength={14}
                 disabled={full}
                 placeholder={full ? 'وصلتي للحد ديال الصحاب' : 'زيد سمية الصاحبي…'}
-                className="w-full rounded-xl border border-[var(--line)] bg-[var(--panel)] ps-9 pe-3 py-3 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/30 outline-none transition focus:border-[rgba(198,245,66,0.6)] disabled:opacity-40"
+                className="store-field ps-9 pe-3 py-3 font-cairo text-[13px]"
               />
             </div>
             <button
               onClick={() => void addFriend()}
               disabled={!name.trim() || saving || full}
-              className="grid h-[46px] w-[46px] shrink-0 place-items-center rounded-xl bg-[var(--gold)] text-[#3A2A00] transition active:scale-95 disabled:opacity-40"
+              className="btn-lime h-[46px] shrink-0 px-4 font-cairo text-[13px]"
               title="زيد"
             >
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
+              زيد
             </button>
           </div>
+
+          {full && (
+            <p className="mt-2 font-cairo text-[11.5px] font-bold" style={{ color: 'var(--gold)' }}>
+              وصلتي للحد ديال الصحاب
+            </p>
+          )}
 
           {error && (
             <p className="mt-2 font-cairo text-[11px] font-bold text-[#F97066]">{error}</p>

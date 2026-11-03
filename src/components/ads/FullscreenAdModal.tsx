@@ -176,7 +176,7 @@ export default function FullscreenAdModal({
   const progressPercent = Math.min(100, Math.max(0, ((5 - countdown) / 5) * 100));
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col justify-between overflow-hidden bg-[#030713] text-white">
+    <div className="fixed inset-0 z-[100] flex flex-col justify-between overflow-hidden bg-[#07070D] text-white">
       {/* ── Ambient Radial Glow matching game accent ── */}
       <div
         className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[500px] w-[500px] rounded-full opacity-20 blur-[120px]"
@@ -184,17 +184,17 @@ export default function FullscreenAdModal({
       />
       <div
         className="pointer-events-none absolute -bottom-40 left-1/2 -translate-x-1/2 h-[400px] w-[400px] rounded-full opacity-15 blur-[100px]"
-        style={{ background: '#2DD4BF' }}
+        style={{ background: '#C6F542' }}
       />
 
       {/* ══════════════════════════════════════════
           TOP BAR: Sponsored Badge + X Button
       ══════════════════════════════════════════ */}
-      <header className="relative z-10 flex items-center justify-between px-4 pt-[max(0.85rem,env(safe-area-inset-top))] pb-3 border-b border-white/5 bg-black/40 backdrop-blur-md">
+      <header className="relative z-10 flex items-center justify-between px-4 pt-[max(0.85rem,env(safe-area-inset-top))] pb-3 border-b border-[#23232F] bg-[#07070D]/85 backdrop-blur-md">
         {/* Sponsored Badge */}
-        <div className="flex items-center gap-2 rounded-full border border-amber-400/25 bg-amber-400/10 px-3 py-1.5 backdrop-blur-md">
-          <span className="flex h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
-          <span className="font-cairo text-[11px] font-black tracking-wider text-amber-300">
+        <div className="flex items-center gap-2 rounded-full border border-[rgba(255,201,60,0.3)] bg-[rgba(255,201,60,0.10)] px-3 py-1.5 backdrop-blur-md">
+          <span className="flex h-2 w-2 rounded-full bg-[#FFC93C] animate-pulse" />
+          <span className="text-[11px] font-black tracking-wider text-[#FFC93C]">
             إعلان ممول • AD
           </span>
         </div>
@@ -202,11 +202,11 @@ export default function FullscreenAdModal({
         {/* Action Button: Countdown vs. Active Skip/Close */}
         <div className="flex items-center gap-2">
           {!canSkip ? (
-            <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/60 px-3.5 py-1.5 shadow-inner backdrop-blur-md">
-              <span className="font-cairo text-[12px] font-bold text-neutral-300">
+            <div className="flex items-center gap-2 rounded-full border border-[#23232F] bg-[#101019] px-3.5 py-1.5 shadow-inner backdrop-blur-md">
+              <span className="text-[12px] font-bold text-[#9C9CAE]">
                 تخطي بعد
               </span>
-              <span className="grid h-6 w-6 place-items-center rounded-full bg-amber-400/20 font-lalezar text-[15px] text-amber-300 border border-amber-400/30">
+              <span className="grid h-6 w-6 place-items-center rounded-full bg-[rgba(255,201,60,0.15)] font-nunito font-black text-[15px] text-[#FFC93C] border border-[rgba(255,201,60,0.35)]">
                 {countdown}
               </span>
             </div>
@@ -214,22 +214,22 @@ export default function FullscreenAdModal({
             <button
               onClick={handleClaimAndEnter}
               disabled={isVerifying}
-              className="group flex items-center gap-2 rounded-full border border-emerald-400/50 bg-gradient-to-r from-emerald-500/30 to-emerald-400/20 px-4 py-2 text-white shadow-[0_0_24px_rgba(52,211,153,0.35)] backdrop-blur-md transition-all hover:scale-105 active:scale-95"
+              className="btn-lime group rounded-full px-4 py-2 text-[13px] shadow-[0_0_24px_rgba(198,245,66,0.3)]"
               aria-label="تخطي ودخول اللعبة"
             >
               {isVerifying ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin text-emerald-300" />
-                  <span className="font-cairo text-[12.5px] font-black text-emerald-200">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span className="text-[12.5px] font-black">
                     جاري التفعيل...
                   </span>
                 </>
               ) : (
                 <>
-                  <span className="font-cairo text-[13px] font-black text-emerald-300">
+                  <span className="text-[13px] font-black">
                     تخطي ودخول اللعبة
                   </span>
-                  <span className="grid h-6 w-6 place-items-center rounded-full bg-emerald-400 text-black font-black text-xs group-hover:rotate-90 transition-transform">
+                  <span className="grid h-6 w-6 place-items-center rounded-full bg-[#131803]/15 font-black text-xs group-hover:rotate-90 transition-transform">
                     ✕
                   </span>
                 </>
@@ -243,7 +243,7 @@ export default function FullscreenAdModal({
               cleanup();
               onClose();
             }}
-            className="grid h-8 w-8 place-items-center rounded-full border border-white/10 text-neutral-400 hover:text-white hover:bg-white/10 transition"
+            className="grid h-8 w-8 place-items-center rounded-full border border-[#23232F] bg-white/5 text-[#9C9CAE] hover:text-white hover:bg-white/10 transition"
             title="خروج"
             aria-label="خروج"
           >
@@ -260,30 +260,30 @@ export default function FullscreenAdModal({
           {/* Header text */}
           <div className="text-center">
             <span
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-cairo text-[11px] font-bold"
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold"
               style={{ background: `${accent}15`, color: accent, border: `1px solid ${accent}30` }}
             >
               <Sparkles className="h-3 w-3" />
               هدية اللعب بالمجان
             </span>
-            <h2 className="mt-1.5 font-lalezar text-xl sm:text-2xl text-white">
+            <h2 className="mt-1.5 text-xl sm:text-2xl font-black text-white">
               ثواني قليلة وندخلو للطاولة! 🎮
             </h2>
           </div>
 
           {/* Adsterra Native Responsive Frame (260px) */}
-          <div className="w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-[#060B18]">
+          <div className="w-full rounded-2xl overflow-hidden shadow-2xl border border-[#23232F] bg-[#101019]">
             <AdNativeBanner height={260} />
           </div>
 
           {/* Bottom 320x50 Banner for double monetization */}
-          <div className="w-full flex justify-center overflow-hidden rounded-xl border border-white/5 bg-black/40 py-1">
+          <div className="w-full flex justify-center overflow-hidden rounded-xl border border-[#23232F] bg-[#0B0B13] py-1">
             <AdBanner className="flex justify-center overflow-hidden" />
           </div>
 
           {/* Error notice if occurred */}
           {errorMessage && (
-            <p className="font-cairo text-xs font-semibold text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-lg border border-rose-500/20">
+            <p className="text-xs font-semibold text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-lg border border-rose-500/20">
               {errorMessage}
             </p>
           )}
@@ -293,13 +293,13 @@ export default function FullscreenAdModal({
       {/* ══════════════════════════════════════════
           BOTTOM BAR: Game Info + Progress Bar + CTA
       ══════════════════════════════════════════ */}
-      <footer className="relative z-10 px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-white/5 bg-[#040815]/90 backdrop-blur-md">
+      <footer className="relative z-10 px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-[#23232F] bg-[#0B0B13]/95 backdrop-blur-md">
         <div className="max-w-md mx-auto flex flex-col gap-2.5">
           {/* Game summary */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-xl font-lalezar text-xl shadow-md border"
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-xl shadow-md border"
                 style={{
                   background: `${accent}18`,
                   borderColor: `${accent}40`,
@@ -308,10 +308,10 @@ export default function FullscreenAdModal({
                 {game?.emoji || '🎲'}
               </div>
               <div>
-                <p className="font-lalezar text-[17px] text-white leading-tight">
+                <p className="text-[17px] font-black text-white leading-tight">
                   {game?.darijaTitle || 'اللعبة'}
                 </p>
-                <p className="font-cairo text-[11px] font-semibold text-neutral-400">
+                <p className="text-[11px] font-semibold text-[#9C9CAE]">
                   {canSkip
                     ? '🎉 تم فتح اللعبة! اضغط على الزر للدخول'
                     : `صبر على الإشهار... باقا ${countdown} ثواني ⏳`}
@@ -324,7 +324,7 @@ export default function FullscreenAdModal({
               <button
                 onClick={handleClaimAndEnter}
                 disabled={isVerifying}
-                className="btn-chunk btn-amber px-4 py-2 text-[12.5px] rounded-xl flex items-center gap-1.5 shadow-[0_0_16px_rgba(232,180,48,0.35)]"
+                className="btn-lime px-4 py-2.5 text-[13px] rounded-xl shadow-[0_0_16px_rgba(198,245,66,0.3)]"
               >
                 لعب دابا
                 <ArrowRight className="h-4 w-4 rtl:rotate-180" />
@@ -335,8 +335,8 @@ export default function FullscreenAdModal({
           {/* Progress Bar (5s filling smoothly) */}
           <div className="relative h-2 w-full overflow-hidden rounded-full bg-white/10">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-amber-400 via-orange-400 to-emerald-400 transition-all duration-1000 ease-linear shadow-[0_0_12px_rgba(234,179,8,0.6)]"
-              style={{ width: `${progressPercent}%` }}
+              className="h-full rounded-full transition-all duration-1000 ease-linear"
+              style={{ width: `${progressPercent}%`, background: "linear-gradient(90deg,#8FD41F,var(--lime))", boxShadow: "0 0 12px rgba(198,245,66,0.45)" }}
             />
           </div>
         </div>

@@ -195,6 +195,50 @@ body.ad-playing { pointer-events: none; }
 .field:focus { border-color: rgba(216, 166, 42, 0.75); background: rgba(255, 255, 255, 0.07); box-shadow: 0 0 0 4px rgba(216, 166, 42, 0.14), inset 0 0 0 1px rgba(216, 166, 42, 0.3); }
 .field-teal:focus { border-color: rgba(15, 123, 90, 0.8); box-shadow: 0 0 0 4px rgba(15, 123, 90, 0.14); }
 
+/* ═══════════════════════════════════════════════════════════════
+   STORE DESIGN SYSTEM (redesign port — auth / legal / sheets)
+   Flat lime primary + panel ghost + white Google pill, preview fields.
+   Legacy .btn-amber/.btn-teal/.field stay for admin + game screens.
+   Wrapped in @layer components so Tailwind utilities (padding etc.)
+   override these base styles per call site. */
+@layer components {
+.btn-lime { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 0.875rem; font-weight: 900; background: var(--lime); color: #131803; cursor: pointer; border: none; transition: transform 0.12s ease, filter 0.15s ease, opacity 0.15s ease; user-select: none; -webkit-tap-highlight-color: transparent; }
+.btn-lime:hover { filter: brightness(1.06); }
+.btn-lime:active { transform: scale(0.98); }
+.btn-lime:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+.btn-store-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 0.875rem; font-weight: 800; background: rgba(255, 255, 255, 0.06); color: #EDEDF2; border: 1px solid var(--line); cursor: pointer; transition: transform 0.12s ease, background 0.15s ease; user-select: none; -webkit-tap-highlight-color: transparent; }
+.btn-store-ghost:hover { background: rgba(255, 255, 255, 0.1); }
+.btn-store-ghost:active { transform: scale(0.98); }
+.btn-store-ghost:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+.btn-store-blood { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 0.875rem; font-weight: 800; background: rgba(255, 77, 94, 0.11); color: #FF8A94; border: 1px solid rgba(255, 77, 94, 0.33); cursor: pointer; transition: transform 0.12s ease, background 0.15s ease; user-select: none; -webkit-tap-highlight-color: transparent; }
+.btn-store-blood:hover { background: rgba(255, 77, 94, 0.18); }
+.btn-store-blood:active { transform: scale(0.98); }
+.btn-store-blood:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+.btn-google { display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; border-radius: 999px; font-weight: 800; background: #fff; color: #1f1f1f; cursor: pointer; border: none; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35); transition: transform 0.12s ease, filter 0.15s ease; user-select: none; -webkit-tap-highlight-color: transparent; }
+.btn-google:hover { filter: brightness(0.96); }
+.btn-google:active { transform: scale(0.98); }
+.btn-google:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+.store-field { width: 100%; border-radius: 15px; background: #0B0B13; border: 1.5px solid var(--line); color: #fff; padding: 0.85rem 1rem; font-weight: 700; font-size: 1rem; outline: none; transition: border-color 0.15s, box-shadow 0.15s; }
+.store-field::placeholder { color: #62627A; font-weight: 600; }
+.store-field:focus { border-color: var(--lime); box-shadow: 0 0 0 3px rgba(198, 245, 66, 0.17); }
+.store-field:disabled { opacity: 0.5; }
+.store-label { display: block; margin-bottom: 0.45rem; font-size: 12px; font-weight: 900; color: var(--dim); }
+.store-hint { margin-top: 0.4rem; font-size: 11px; font-weight: 600; line-height: 1.5; color: rgba(255, 255, 255, 0.35); }
+.store-msg { display: flex; align-items: center; gap: 0.6rem; border-radius: 12px; padding: 0.75rem 0.9rem; font-size: 13px; font-weight: 700; line-height: 1.55; }
+.store-msg-err { background: rgba(244, 63, 94, 0.13); border: 1px solid rgba(244, 63, 94, 0.47); color: #FFD9DE; }
+
+.sheet-grab { width: 42px; height: 4.5px; border-radius: 99px; background: rgba(255, 255, 255, 0.19); margin: 8px auto 2px; }
+.ssec { font-size: 11px; font-weight: 900; color: var(--dim); margin: 20px 0 4px; }
+
+.legal-card { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 16px; }
+.legal-h2 { color: var(--lime); font-weight: 900; font-size: 16.5px; line-height: 1.4; }
+.legal-list { list-style: none; }
+.legal-list li { position: relative; padding-inline-start: 18px; }
+.legal-list li::before { content: "•"; position: absolute; inset-inline-start: 2px; color: var(--gold); font-weight: 900; }
+.legal-body > p:first-child { color: var(--dim); font-size: 14.5px; line-height: 1.75; }
+}
+
 /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    MAFIA DRIP EFFECTS
    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */

@@ -116,14 +116,14 @@ export default function RegisterPage() {
 
   return (
     <AuthShell>
-      <AuthCardShell accent="teal">
-        {success ? (
+      {success ? (
+        <AuthCardShell>
           <div className="flex flex-col items-center py-6 text-center">
-            <div className="anim-pop grid h-16 w-16 place-items-center rounded-full border-2 border-emerald-400/40 bg-emerald-400/10">
+            <div className="anim-pop grid h-[72px] w-[72px] place-items-center rounded-full border-2 border-emerald-400/50 bg-emerald-400/10" style={{ boxShadow: '0 0 32px rgba(52,211,153,0.25)' }}>
               <CheckCircle2 className="h-9 w-9 text-emerald-400" />
             </div>
-            <h1 className="mt-5 font-lalezar text-3xl text-neutral-50">تقيدتي بنجاح! 🎉</h1>
-            <p className="mt-2 max-w-[16rem] font-cairo text-[13px] font-semibold leading-relaxed text-neutral-400">
+            <h1 className="mt-5 font-lalezar text-[26px] text-white">تقيدتي بنجاح! 🎉</h1>
+            <p className="mt-2 max-w-[16rem] font-cairo text-[13px] font-semibold leading-relaxed" style={{ color: 'var(--dim)' }}>
               كندخلوك... غادي نحولوك للصفحة الرئيسية.
             </p>
             <div className="mt-5 h-1.5 w-full overflow-hidden rounded-full bg-white/5">
@@ -133,137 +133,168 @@ export default function RegisterPage() {
               />
             </div>
           </div>
-        ) : (
-          <>
-            <div className="text-center">
-              <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1 font-cairo text-[11px] font-black text-emerald-300">
-                <Sparkles className="h-3.5 w-3.5" />
-                + كوينز كادو مع التسجيل
-              </span>
-              <h1 className="font-lalezar text-3xl text-neutral-50">صاوب كونط</h1>
-              <p className="mt-1.5 font-cairo text-[13px] font-semibold text-neutral-400">
-                ثانية وحدة... وغنبداو الحومة.
-              </p>
-            </div>
+        </AuthCardShell>
+      ) : (
+        <>
+          {/* Head */}
+          <div className="anim-fadeup mb-6 text-center">
+            <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1 font-cairo text-[11px] font-black text-emerald-300">
+              <Sparkles className="h-3.5 w-3.5" />
+              + كوينز كادو مع التسجيل
+            </span>
+            <h1 className="font-lalezar text-[26px] leading-snug text-white">صاوب كونط</h1>
+            <p className="mt-1.5 font-cairo text-[13px] font-semibold" style={{ color: 'var(--dim)' }}>
+              ثانية وحدة... وغنبداو الحومة.
+            </p>
+          </div>
 
-            {error && (
-              <div className="anim-shake mt-5 flex items-center gap-2.5 rounded-xl border border-red-500/30 bg-red-950/60 px-3.5 py-3 font-cairo text-[13px] font-bold text-red-200">
-                <AlertTriangle className="h-4 w-4 shrink-0 text-red-400" />
-                {error}
-              </div>
-            )}
-
-            <form className="mt-6 flex flex-col gap-4" onSubmit={handleRegister}>
-              <div className="relative">
-                <User className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-neutral-500" />
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value.toLowerCase())}
-                  className="field field-teal pl-11"
-                  placeholder="السمية ديالك (3-20 حرف)"
-                  autoComplete="username"
-                  minLength={3}
-                  maxLength={20}
-                  required
-                />
-              </div>
-
-              <div className="relative">
-                <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-neutral-500" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value.toLowerCase())}
-                  className="field field-teal pl-11"
-                  placeholder="الإيميل ديالك (ضروري)"
-                  autoComplete="email"
-                  required
-                />
-              </div>
-
-              <div className="relative">
-                <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-neutral-500" />
-                <input
-                  type={showPw ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="field field-teal pl-11 pr-12"
-                  placeholder="المودپاس (6+ حروف)"
-                  autoComplete="new-password"
-                  minLength={6}
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPw((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 transition hover:text-neutral-200"
-                  aria-label={showPw ? 'خبي المودپاس' : 'بيّن المودپاس'}
-                >
-                  {showPw ? <EyeOff className="h-[18px] w-[18px]" /> : <Eye className="h-[18px] w-[18px]" />}
-                </button>
-              </div>
-
-              <div className="relative">
-                <Check className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-neutral-500" />
-                <input
-                  type={showPw ? 'text' : 'password'}
-                  value={confirm}
-                  onChange={(e) => setConfirm(e.target.value)}
-                  className="field field-teal pl-11"
-                  placeholder="عاود المودپاس"
-                  autoComplete="new-password"
-                  minLength={6}
-                  required
-                />
-              </div>
-
-              <div className="relative">
-                <Gift className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-neutral-500" />
-                <input
-                  type="text"
-                  value={referralCode}
-                  onChange={(e) => setReferralCode(e.target.value)}
-                  className="field field-teal pl-11"
-                  placeholder="كود الدعوة (إيلا عندك)"
-                  autoComplete="off"
-                  maxLength={32}
-                />
-              </div>
-
-              <button type="submit" disabled={loading} className="btn-chunk btn-teal mt-1 w-full py-3.5 text-[15px]">
-                {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <UserPlus className="h-5 w-5" />}
-تقيد
-              </button>
-            </form>
-
-            <div className="mt-5 flex items-center gap-3">
-              <span className="h-px flex-1 bg-white/10" />
-              <span className="font-cairo text-[11px] font-black text-neutral-600">
-                ولا
-              </span>
-              <span className="h-px flex-1 bg-white/10" />
-            </div>
-
+          <AuthCardShell>
+            {/* Google first (preview order) — Gmail only */}
             <button
               type="button"
               onClick={handleGoogleRegister}
               disabled={loading}
-              className="btn-chunk btn-ghost-hollow mt-1 w-full py-3.5 text-[15px] flex items-center justify-center gap-2.5"
+              className="btn-google w-full py-3.5 text-[15px]"
             >
               {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <GoogleIcon />}
               <span className="font-cairo font-semibold">تقيد بـ Google (غير Gmail)</span>
             </button>
+            <p className="mt-2.5 text-center font-cairo text-[11.5px] font-semibold" style={{ color: 'var(--dim)' }}>
+              غير Gmail لي خدام باش تتقيد بـ Google
+            </p>
 
-            <p className="mt-5 text-center font-cairo text-[12.5px] font-semibold text-neutral-500">
+            <div className="my-5 flex items-center gap-3">
+              <span className="h-px flex-1" style={{ background: 'var(--line)' }} />
+              <span className="font-cairo text-[11px] font-black" style={{ color: 'var(--dim)' }}>
+                ولا
+              </span>
+              <span className="h-px flex-1" style={{ background: 'var(--line)' }} />
+            </div>
+
+            {error && (
+              <div className="store-msg store-msg-err anim-shake mb-5">
+                <AlertTriangle className="h-4 w-4 shrink-0 text-[#FF8FA3]" />
+                {error}
+              </div>
+            )}
+
+            <form className="flex flex-col gap-4" onSubmit={handleRegister}>
+              <div>
+                <label className="store-label" htmlFor="reg-username">السمية ديالك</label>
+                <div className="relative">
+                  <User className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2" style={{ color: '#62627A' }} />
+                  <input
+                    id="reg-username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value.toLowerCase())}
+                    className="store-field pl-11"
+                    placeholder="السمية ديالك (3-20 حرف)"
+                    autoComplete="username"
+                    minLength={3}
+                    maxLength={20}
+                    required
+                  />
+                </div>
+                <p className="store-hint">السمية خاص يكون فيها بين 3 و 20 حرف: غير حروف صغيرة، أرقام ولا _.</p>
+              </div>
+
+              <div>
+                <label className="store-label" htmlFor="reg-email">الإيميل ديالك</label>
+                <div className="relative">
+                  <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2" style={{ color: '#62627A' }} />
+                  <input
+                    id="reg-email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value.toLowerCase())}
+                    className="store-field pl-11"
+                    placeholder="الإيميل ديالك (ضروري)"
+                    autoComplete="email"
+                    required
+                  />
+                </div>
+                <p className="store-hint">الإيميلات المؤقتة ماخداماش. دير إيميل حقيقي.</p>
+              </div>
+
+              <div>
+                <label className="store-label" htmlFor="reg-password">المودپاس</label>
+                <div className="relative">
+                  <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2" style={{ color: '#62627A' }} />
+                  <input
+                    id="reg-password"
+                    type={showPw ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="store-field pl-11 pr-14"
+                    placeholder="المودپاس (6+ حروف)"
+                    autoComplete="new-password"
+                    minLength={6}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPw((v) => !v)}
+                    className="absolute right-2 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-[11px] transition"
+                    style={{ background: 'rgba(255,255,255,0.07)', color: 'var(--dim)' }}
+                    aria-label={showPw ? 'خبي المودپاس' : 'بيّن المودپاس'}
+                  >
+                    {showPw ? <EyeOff className="h-[18px] w-[18px]" /> : <Eye className="h-[18px] w-[18px]" />}
+                  </button>
+                </div>
+                <p className="store-hint">المودپاس خاص يكون فيه 6 حروف على الأقل.</p>
+              </div>
+
+              <div>
+                <label className="store-label" htmlFor="reg-confirm">عاود المودپاس</label>
+                <div className="relative">
+                  <Check className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2" style={{ color: '#62627A' }} />
+                  <input
+                    id="reg-confirm"
+                    type={showPw ? 'text' : 'password'}
+                    value={confirm}
+                    onChange={(e) => setConfirm(e.target.value)}
+                    className="store-field pl-11"
+                    placeholder="عاود المودپاس"
+                    autoComplete="new-password"
+                    minLength={6}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="store-label" htmlFor="reg-referral">كود الدعوة (إيلا عندك)</label>
+                <div className="relative">
+                  <Gift className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2" style={{ color: '#62627A' }} />
+                  <input
+                    id="reg-referral"
+                    type="text"
+                    value={referralCode}
+                    onChange={(e) => setReferralCode(e.target.value)}
+                    className="store-field pl-11"
+                    placeholder="كود الدعوة (إيلا عندك)"
+                    autoComplete="off"
+                    maxLength={32}
+                  />
+                </div>
+              </div>
+
+              <button type="submit" disabled={loading} className="btn-lime mt-1 w-full py-[15px] font-cairo text-[15px]">
+                {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <UserPlus className="h-5 w-5" />}
+                تقيد
+              </button>
+            </form>
+
+            <p className="mt-6 text-center font-cairo text-[12.5px] font-semibold" style={{ color: 'var(--dim)' }}>
               ديجا عندك كونط؟{' '}
-              <Link href="/login" className="text-emerald-300 hover:underline">
+              <Link href="/login" className="font-black hover:underline" style={{ color: 'var(--lime)' }}>
                 دخل من هنا
               </Link>
             </p>
-          </>
-        )}
-      </AuthCardShell>
+          </AuthCardShell>
+        </>
+      )}
     </AuthShell>
   );
 }

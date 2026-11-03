@@ -10,9 +10,9 @@ export default function PrivacyPage() {
         المعلومات وعلاش باش نخدمو اللعبة ف أمان.
       </p>
 
-      <div>
-        <h2 className="font-lalezar text-xl text-[#f5eddc]">1. المعلومات لي كنجمعو</h2>
-        <ul className="mt-2 list-disc space-y-1.5 ps-5">
+      <div className="legal-card">
+        <h2 className="legal-h2">1. المعلومات لي كنجمعو</h2>
+        <ul className="legal-list mt-2 space-y-1.5">
           <li>معلومات الكونط: السمية، النمرة د التيليفون (إيلا بغيتي)، والمودپاس مخزن مشفر.</li>
           <li>
             معلومات اللعب: اللعبات لي لعبتي، النقط، الكوينز، والنيڤو ديالك — هادشي ضروري باش يخدم الاقتصاد
@@ -23,8 +23,8 @@ export default function PrivacyPage() {
         </ul>
       </div>
 
-      <div>
-        <h2 className="font-lalezar text-xl text-[#f5eddc]">2. الإشهارات</h2>
+      <div className="legal-card">
+        <h2 className="legal-h2">2. الإشهارات</h2>
         <p className="mt-2">
           كنخدمو بـ Google AdSense باش نبيّنو إشهارات ڤيديو بالمكافآت. الإشهارات كيبانو غير إيلا كليكتي عليها
           لراسك، وماكنديروهاش تبان أوتوماتيك. Google تقدر تستعمل المعرفات ديالها باش تبين ليك إشهارات
@@ -32,26 +32,26 @@ export default function PrivacyPage() {
         </p>
       </div>
 
-      <div>
-        <h2 className="font-lalezar text-xl text-[#f5eddc]">3. فين كنخزنو المعلومات</h2>
+      <div className="legal-card">
+        <h2 className="legal-h2">3. فين كنخزنو المعلومات</h2>
         <p className="mt-2">
           المعلومات مخزنة ف سيرفورات آمنة (قواعد بيانات و Redis). ماكنبيعوها لتا شي حد، وما
           كنشاركوها مع تا واحد من غير إيلا فرضها القانون.
         </p>
       </div>
 
-      <div>
-        <h2 className="font-lalezar text-xl text-[#f5eddc]">4. الحقوق ديالك</h2>
+      <div className="legal-card">
+        <h2 className="legal-h2">4. الحقوق ديالك</h2>
         <p className="mt-2">
           تقدر تطلب تشوف معلوماتك، تصححها، ولا تمسحها. ف حالة المسح، كنخليو السجل المالي
           (Ledger) للمدة لي كيفرضها القانون، وكنمسحو كاع داكشي لاخور. تواصل معانا ف صفحة
-          <a href="/contact" className="text-amber-300 underline-offset-2 hover:underline"> تواصل معانا </a>
-          ولا على <a href="mailto:support@playm3ana.ma" className="text-amber-300 underline-offset-2 hover:underline">support@playm3ana.ma</a>.
+          <a href="/contact" className="font-extrabold text-[var(--lime)] underline-offset-2 hover:underline"> تواصل معانا </a>
+          ولا على <a href="mailto:support@playm3ana.ma" className="font-extrabold text-[var(--lime)] underline-offset-2 hover:underline">support@playm3ana.ma</a>.
         </p>
       </div>
 
-      <div>
-        <h2 className="font-lalezar text-xl text-[#f5eddc]">5. الدراري الصغار</h2>
+      <div className="legal-card">
+        <h2 className="legal-h2">5. الدراري الصغار</h2>
         <p className="mt-2">
           الخدمة للكبار والصغار لي معاهم شي حد كبير. ماكنجمعو تا معلومات شخصية د شي حد قل من 13 عام من غير
           إذن ديال والديه.

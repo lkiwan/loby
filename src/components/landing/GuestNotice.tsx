@@ -16,8 +16,8 @@ export default function GuestNotice() {
           </p>
         </div>
         <div className="flex shrink-0 gap-2">
-          <Link href="/login" className="btn-chunk btn-ghost-hollow px-4 py-2 text-[12px]">دخول</Link>
-          <Link href="/register" className="btn-chunk btn-amber px-4 py-2 text-[12px]">تقيد دابا</Link>
+          <Link href="/login" className="btn-store-ghost px-4 py-2 font-cairo text-[12px]">دخول</Link>
+          <Link href="/register" className="btn-lime px-4 py-2 font-cairo text-[12px]">تقيد دابا</Link>
         </div>
       </div>
     </div>

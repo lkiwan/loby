@@ -48,7 +48,7 @@ export default function ConsentBanner() {
         <div className="flex shrink-0 items-center gap-2">
           <button
             onClick={accept}
-            className="btn-chunk btn-amber flex items-center gap-1.5 px-4 py-2 text-[12px]"
+            className="btn-lime flex items-center gap-1.5 px-4 py-2 font-cairo text-[12.5px]"
           >
             <Check className="h-4 w-4" />
             موافق
