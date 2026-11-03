@@ -43,11 +43,11 @@ export function RoleArt({ role, className = '' }: { role: Role; className?: stri
   }
 }
 
-/* Card back — uses the supplied artwork image. */
+/* Card back — golden-skull artwork (Omar's accepted design, 2026-11-03). */
 export function CardBackArt({ className = '' }: { className?: string }) {
   return (
     <img
-      src={`${import.meta.env.BASE_URL}img/card-back.png`}
+      src={`${import.meta.env.BASE_URL}img/card-back-skull.png`}
       alt="L'Mafia d'L'Houma"
       draggable={false}
       className={`select-none object-cover ${className}`}
