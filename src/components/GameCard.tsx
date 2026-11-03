@@ -13,6 +13,10 @@ export type GameCardProps = {
   loadingAction: "coins" | "ad" | null;
   isBusy: boolean;
   onPlay: (e: React.MouseEvent) => void;
+  /* State-aware primary label from the lobby (P1): «العب فابور» while the
+     daily free play is unspent, «العب بإشهار — فابور» when it routes to the
+     ad flow, "Play" for the coins unlock. */
+  primaryLabel?: string;
   onWatchAd: () => void;
   onDirectAd?: () => void;
 };
@@ -34,20 +38,20 @@ function useRipple() {
    STORE POSTERS game card (redesign port)
    Clean text-free poster fills the card; the game name is HTML text
    (Nunito 900) over a bottom fade, ONE meta line, a gold-coin price
-   pill, and exactly two buttons — "Play" (coins flow) and "Free"
-   (rewarded-ad flow). All handlers/disabled logic are the original
-   ones; only the presentation changed.
+   pill, and exactly two buttons — the state-aware primary (label and
+   handler supplied by the lobby: free daily play / coins / ad route)
+   and "Free" (rewarded-ad flow). The primary never disables for
+   balance (P1/P8); it disables only while its own unlock runs.
    ══════════════════════════════════════════════ */
 export default function GameCard({
   game,
-  coins,
   loadingAction,
   isBusy,
   onPlay,
+  primaryLabel,
   onWatchAd,
   onDirectAd,
 }: GameCardProps) {
-  const canAfford = coins >= game.cost;
   const ripple = useRipple();
   const poster = game.poster || game.keyArt || game.logo;
 
@@ -170,14 +174,18 @@ export default function GameCard({
               ripple(e);
               onPlay(e);
             }}
-            disabled={isBusy || !canAfford}
-            className="relative flex h-[38px] flex-1 items-center justify-center gap-[5px] overflow-hidden whitespace-nowrap rounded-[11px] font-nunito text-[13px] font-black transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-55"
+            disabled={isBusy}
+            className={`relative flex h-[38px] flex-1 items-center justify-center gap-[5px] overflow-hidden whitespace-nowrap rounded-[11px] font-nunito font-black transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-55 ${
+              primaryLabel && primaryLabel.length > 6
+                ? "text-[11px]"
+                : "text-[13px]"
+            }`}
             style={{ background: "var(--lime)", color: "#131803" }}
           >
             {isBusy && loadingAction === "coins" ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              "Play"
+              (primaryLabel ?? "Play")
             )}
           </button>
           <button

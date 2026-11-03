@@ -96,6 +96,13 @@ const TITLE_WORDS_2 = ["قبل", "ما", "يفضحك"];
    the streak itself comes from /api/economy/balance. */
 const CHECKIN_LADDER = [25, 35, 50, 75, 100, 150, 250];
 
+/* Casablanca calendar day (YYYY-MM-DD) — mirrors the server's day boundary
+   in src/lib/time.ts; used to remember the daily-free-play state per day. */
+const casablancaToday = () =>
+  new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Africa/Casablanca",
+  }).format(new Date());
+
 const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -127,6 +134,31 @@ function LobbyContent() {
 
   const [busyId, setBusyId] = useState<string | null>(null);
   const [busyAction, setBusyAction] = useState<"coins" | "ad" | null>(null);
+  /* Daily free play (P1): no endpoint reports whether today's FREE_DAILY
+     play is spent — the unlock API is the source of truth. The client
+     remembers the server's answer per account + Casablanca day and
+     re-learns it from the free attempt itself (see playWithFree). */
+  const [freePlayUsed, setFreePlayUsed] = useState(false);
+  const freePlayKey = `pm3_free_daily:${session?.user?.username ?? ""}`;
+  const markFreePlayUsed = () => {
+    setFreePlayUsed(true);
+    try {
+      localStorage.setItem(freePlayKey, casablancaToday());
+    } catch {
+      /* storage disabled — the server still enforces the rule */
+    }
+  };
+  useEffect(() => {
+    if (status !== "authenticated") return;
+    try {
+      setFreePlayUsed(
+        localStorage.getItem(freePlayKey) === casablancaToday(),
+      );
+    } catch {
+      /* storage disabled */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, session?.user?.username]);
   const [adModalOpen, setAdModalOpen] = useState(false);
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
   const [adStatus, setAdStatus] = useState<"idle" | "watching" | "verifying">(
@@ -567,6 +599,58 @@ function LobbyContent() {
     }
   };
 
+  /* P1 — the day's free play: POST the unlock API's 'free' branch. If the
+     server says it is already spent, learn it (the cards flip to their
+     truthful coins/ad state) and say so — never charge on a "free" tap. */
+  const playWithFree = async (gameId: string) => {
+    if (!requireAuth(gameId, "coins")) return;
+    /* Replay memory only knows 'coins' | 'ad': after a free entry the daily
+       free play is spent, so host Play Again correctly replays as coins. */
+    rememberPayMethod("coins");
+    const game = GAMES.find((g) => g.id === gameId);
+    if (!game) return;
+
+    setBusyId(gameId);
+    setBusyAction("coins");
+
+    try {
+      const res = await fetch("/api/games/unlock", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Idempotency-Key": crypto.randomUUID(),
+        },
+        body: JSON.stringify({ gameId, paymentMethod: "free" }),
+      });
+      if (res.ok) {
+        const { redirectUrl } = await res.json();
+        markFreePlayUsed();
+        Sounds.launch();
+        router.replace(redirectUrl);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        if (
+          res.status === 400 &&
+          typeof err.error === "string" &&
+          err.error.includes("Free play already used")
+        ) {
+          markFreePlayUsed();
+          showToast(
+            "error",
+            "اللعب الفابور ديال اليوم تسالات — تقدر تلعب بالكوينز ولا تفرج فإشهار",
+          );
+        } else {
+          showToast("error", err.error ?? "اللعبة ماخدماتش، عاود جرب");
+        }
+      }
+    } catch {
+      showToast("error", "مشكل فالكونيكسيون — عاود جرب");
+    } finally {
+      setBusyId(null);
+      setBusyAction(null);
+    }
+  };
+
   const watchAdToPlay = (gameId: string) => {
     setSelectedGame(gameId);
     setAdStatus("idle");
@@ -686,6 +770,33 @@ function LobbyContent() {
       setOptimisticCoins(sessionCoins);
     }
   }, [sessionCoins]);
+
+  /* P1/P8 — state-aware card primary (audit §3, games section). The label is
+     the truth about the tap, and the button never disables for balance:
+       guest                → ad route (guests play via the ad flow)
+       free play unspent    → «العب فابور», the unlock API's 'free' branch
+       free spent, solvent  → «Play», the coins unlock (as before)
+       free spent, broke    → «العب بإشهار — فابور», the ad flow, watching */
+  type PrimaryMode = "free" | "coins" | "ad";
+  const primaryModeFor = (game: Game): PrimaryMode => {
+    if (!isAuthed) return "ad";
+    if (!freePlayUsed) return "free";
+    return coins >= game.cost ? "coins" : "ad";
+  };
+  const primaryLabelFor = (game: Game, short = false): string => {
+    const mode = primaryModeFor(game);
+    if (mode === "free") return "العب فابور";
+    // the narrow grid button cannot fit the full ad label — short form there;
+    // the wide featured button carries the full «العب بإشهار — فابور»
+    if (mode === "ad") return short ? "العب بإشهار" : "العب بإشهار — فابور";
+    return "Play";
+  };
+  const playPrimary = (game: Game, e?: React.MouseEvent) => {
+    const mode = primaryModeFor(game);
+    if (mode === "free") void playWithFree(game.id);
+    else if (mode === "coins") void playWithCoins(game.id, e);
+    else playAdDirectly(game.id);
+  };
 
   const [initError, setInitError] = useState(false);
   useEffect(() => {
@@ -1183,7 +1294,6 @@ function LobbyContent() {
           (() => {
             const mafia = GAMES.find((g) => g.isMafia) ?? GAMES[0];
             const busy = busyId === mafia.id;
-            const canAfford = coins >= mafia.cost;
             return (
               <article
                 className="relative mt-4 overflow-hidden rounded-[22px] border"
@@ -1293,15 +1403,15 @@ function LobbyContent() {
                   <div className="mt-3 flex gap-2">
                     <button
                       type="button"
-                      onClick={(e) => playWithCoins(mafia.id, e)}
-                      disabled={busy || !canAfford}
+                      onClick={(e) => playPrimary(mafia, e)}
+                      disabled={busy}
                       className="flex h-[42px] flex-1 items-center justify-center gap-[5px] whitespace-nowrap rounded-[12px] font-nunito text-[14px] font-black transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-55"
                       style={{ background: "var(--lime)", color: "#131803" }}
                     >
                       {busy && busyAction === "coins" ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
                       ) : (
-                        "Play"
+                        primaryLabelFor(mafia)
                       )}
                     </button>
                     <button
@@ -1341,7 +1451,8 @@ function LobbyContent() {
                 coins={coins}
                 isBusy={busyId === game.id}
                 loadingAction={busyAction}
-                onPlay={(e) => playWithCoins(game.id, e)}
+                onPlay={(e) => playPrimary(game, e)}
+                primaryLabel={primaryLabelFor(game, true)}
                 onWatchAd={() => watchAdToPlay(game.id)}
                 onDirectAd={() => playAdDirectly(game.id)}
               />
