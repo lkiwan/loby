@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Trophy, Skull, PartyPopper, RotateCcw } from "lucide-react";
+import { Trophy, Skull, RotateCcw } from "lucide-react";
 import { useMafiaGame } from "../game/useMafiaGame";
 import { ROLE_META } from "../game/types";
 
@@ -11,37 +11,26 @@ export default function GameOverScreen() {
   const deck = players.filter((p) => !p.isTeller);
 
   return (
-    <div className="relative flex h-full flex-col items-center justify-center overflow-hidden bg-night px-6">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background: mafiaWon
-            ? "radial-gradient(circle at 50% 30%, rgba(220,38,38,.28), rgba(0,0,0,0) 60%), radial-gradient(circle at 50% 110%, rgba(220,38,38,.12), rgba(0,0,0,0) 55%)"
-            : "radial-gradient(circle at 50% 30%, rgba(234,179,8,.25), rgba(0,0,0,0) 60%), radial-gradient(circle at 50% 110%, rgba(16,185,129,.16), rgba(0,0,0,0) 55%)",
-        }}
-      />
-
+    <div dir="rtl" className="relative flex h-full flex-col overflow-hidden bg-[#07070D] px-5">
+      {/* winner header */}
       <motion.div
-        initial={{ scale: 0.6, opacity: 0, rotate: -4 }}
-        animate={{ scale: 1, opacity: 1, rotate: 0 }}
-        transition={{ type: "spring", stiffness: 160, damping: 13 }}
-        className="relative z-10 flex flex-col items-center text-center"
+        initial={{ scale: 0.85, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 200, damping: 16 }}
+        className="flex flex-col items-center pt-12 text-center"
       >
-        <motion.div
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-          className="mb-4"
-        >
+        <span className="flex h-24 w-24 items-center justify-center rounded-3xl bg-[#12121C] ring-1 ring-white/[0.07]">
           {mafiaWon ? (
-            <Skull className="h-20 w-20 text-blood drop-shadow-[0_0_24px_rgba(220,38,38,.7)]" />
+            <Skull className="h-12 w-12 text-[#FF4D5E]" />
           ) : (
-            <PartyPopper className="h-20 w-20 text-gold drop-shadow-[0_0_24px_rgba(234,179,8,.7)]" />
+            <Trophy className="h-12 w-12 text-[#FFC93C]" />
           )}
-        </motion.div>
+        </span>
 
         <h1
-          className={`font-darija font-black text-4xl leading-tight tracking-wide ${mafiaWon ? "text-blood" : "text-gold"}`}
+          className={`mt-5 font-darija text-4xl leading-tight font-black ${
+            mafiaWon ? "text-[#FF4D5E]" : "text-zinc-50"
+          }`}
         >
           {mafiaWon ? "العصابة ربحات!" : "ولاد الحومة ربحو!"}
         </h1>
@@ -52,9 +41,10 @@ export default function GameOverScreen() {
         </p>
       </motion.div>
 
-      <div className="scrollbar-hide relative z-10 mt-6 w-full max-w-md flex-1 overflow-y-auto rounded-2xl bg-white/5 p-3 ring-1 ring-white/10">
-        <p className="mb-2 flex items-center gap-2 font-darija text-xs font-bold tracking-widest text-zinc-400 uppercase">
-          <Trophy className="h-4 w-4 text-gold" /> قائمة اللاعبين
+      {/* full roster reveal — the mafia show up here, by name */}
+      <div className="scrollbar-hide mt-6 min-h-0 w-full flex-1 overflow-y-auto rounded-[28px] bg-[#12121C] p-4 ring-1 ring-white/[0.06]">
+        <p className="mb-3 flex items-center gap-2 font-darija text-xs font-bold tracking-widest text-zinc-400 uppercase">
+          <Trophy className="h-4 w-4 text-[#FFC93C]" /> قائمة اللاعبين
         </p>
         <div className="grid grid-cols-2 gap-2">
           {deck.map((p, i) => {
@@ -65,15 +55,19 @@ export default function GameOverScreen() {
                 initial={{ opacity: 0, x: -14 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.15 + i * 0.05 }}
-                className={`flex items-center gap-2 rounded-xl px-2.5 py-2 ring-1 ${
+                className={`flex items-center gap-2 rounded-2xl px-3 py-2.5 ring-1 ${
                   p.isDead
-                    ? "bg-zinc-950/60 ring-white/5"
-                    : "bg-white/5 ring-white/10"
+                    ? "bg-white/[0.02] ring-white/[0.05]"
+                    : "bg-white/[0.04] ring-white/[0.07]"
                 }`}
               >
-                <span
-                  className={`h-2 w-2 shrink-0 rounded-full ${p.isDead ? "bg-blood" : p.role === "EISSABA" ? "bg-blood" : p.role === "BOULIS" ? "bg-gold" : p.role === "TBIB" ? "bg-heal" : "bg-zinc-500"}`}
-                />
+                {p.role === "EISSABA" ? (
+                  <Skull className="h-4 w-4 shrink-0 text-[#FF4D5E]" />
+                ) : (
+                  <span
+                    className={`h-2 w-2 shrink-0 rounded-full ${p.isDead ? "bg-[#FF4D5E]" : p.role === "BOULIS" ? "bg-[#FFC93C]" : p.role === "TBIB" ? "bg-[#3DDC84]" : "bg-zinc-500"}`}
+                  />
+                )}
                 <span
                   className={`min-w-0 flex-1 truncate font-darija text-sm font-bold ${
                     p.isDead ? "text-zinc-600 line-through" : "text-zinc-100"
@@ -92,18 +86,24 @@ export default function GameOverScreen() {
         </div>
       </div>
 
-      <motion.button
-        whileTap={{ scale: 0.97 }}
-        onClick={() =>
-          window.parent.postMessage({ type: "replay-requested" }, "*")
-        }
-        className="btn-gold font-darija relative z-10 mt-5 w-full !py-5 text-lg"
-      >
-        <RotateCcw className="mr-2 inline h-5 w-5" /> عاود لعب
-      </motion.button>
-      <p className="relative z-10 mt-2 pb-4 font-darija text-xs font-bold text-zinc-600">
-        سيفد الكوين باش تبدّى جمعية جديدة.
-      </p>
+      {/* replay */}
+      <div className="flex flex-col items-center pb-9">
+        <motion.button
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          whileTap={{ scale: 0.96 }}
+          onClick={() =>
+            window.parent.postMessage({ type: "replay-requested" }, "*")
+          }
+          className="mt-6 rounded-full bg-[#C6F542] px-12 py-3.5 font-darija text-xl font-black text-[#131803]"
+        >
+          <RotateCcw className="mr-2 inline h-5 w-5" /> عاود لعب
+        </motion.button>
+        <p className="mt-3 font-darija text-xs font-bold text-zinc-600">
+          سيفد الكوين باش تبدّى جمعية جديدة.
+        </p>
+      </div>
     </div>
   );
 }
