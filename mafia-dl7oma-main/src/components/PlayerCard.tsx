@@ -183,6 +183,15 @@ export function TableCard({
 }
 
 /* ---------------- big interactive flip card ---------------- */
+
+/* Role label colors on the revealed card (flat Store Posters palette). */
+const ROLE_HEX: Record<Role, string> = {
+  EISSABA: '#FF4D5E',
+  BOULIS: '#FFC93C',
+  TBIB: '#3DDC84',
+  WLAD_LHOUMA: '#FFFFFF',
+}
+
 export function FlipCardView({
   role,
   playerName,
@@ -199,14 +208,15 @@ export function FlipCardView({
   pulse: 'red' | 'green' | 'gold' | 'none'
 }) {
   const meta = role ? ROLE_META[role] : null
-  const pulseGlow =
+  /* flat design: the old colored glow becomes a thin role-colored ring */
+  const pulseRing =
     pulse === 'red'
-      ? { boxShadow: '0 0 60px 12px rgba(220,38,38,.55)' }
+      ? { boxShadow: '0 0 0 1px rgba(255,77,94,.55)' }
       : pulse === 'green'
-        ? { boxShadow: '0 0 60px 12px rgba(16,185,129,.5)' }
+        ? { boxShadow: '0 0 0 1px rgba(61,220,132,.55)' }
         : pulse === 'gold'
-          ? { boxShadow: '0 0 60px 12px rgba(234,179,8,.45)' }
-          : {}
+          ? { boxShadow: '0 0 0 1px rgba(255,201,60,.55)' }
+          : { boxShadow: '0 0 0 1px rgba(255,255,255,.10)' }
 
   return (
     <motion.div
@@ -222,31 +232,30 @@ export function FlipCardView({
         role="button"
         tabIndex={0}
       >
-        {/* back */}
-        <div className="backface-hidden absolute inset-0 rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,.7)]">
+        {/* back — face-down skull card */}
+        <div className="backface-hidden absolute inset-0 overflow-hidden rounded-[22px] ring-1 ring-white/10">
           <CardBackArt className="h-full w-full" />
-          <CardFaceTexture />
         </div>
-        {/* front */}
+        {/* front — portrait role art fills the card, name overlaid at the bottom */}
         <div
-          className="backface-hidden absolute inset-0 rounded-2xl overflow-hidden"
-          style={{ transform: 'rotateY(180deg)', ...pulseGlow }}
+          className="backface-hidden absolute inset-0 overflow-hidden rounded-[22px]"
+          style={{ transform: 'rotateY(180deg)', ...pulseRing }}
         >
-          <div
-            className="relative flex h-full w-full flex-col items-center justify-center gap-2 p-4"
-            style={{ background: 'linear-gradient(165deg, #27272a 0%, #18181b 55%, #09090b 100%)' }}
-          >
-            <CardFaceTexture />
-            <div className={`relative w-full max-w-[160px] ${meta?.color ?? 'text-zinc-300'}`}>
-              {role ? <RoleArt role={role} className="mx-auto h-32 w-32" /> : null}
+          <div className="relative h-full w-full bg-[#12121C]">
+            {role ? <RoleArt role={role} fit="cover" className="absolute inset-0 h-full w-full" /> : null}
+            <span className="sr-only">{playerName}</span>
+            <div
+              dir="rtl"
+              className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-0.5 bg-gradient-to-t from-black/90 via-black/40 to-transparent px-4 pb-4 pt-16"
+            >
+              <span
+                className="font-darija text-4xl font-black leading-none"
+                style={{ color: role ? ROLE_HEX[role] : '#D4D4D8' }}
+              >
+                {meta?.label ?? '...'}
+              </span>
+              <span className="font-darija text-base font-bold text-white/90">{meta?.sub ?? ''}</span>
             </div>
-            <span className="relative z-10 font-darija text-xl font-black text-zinc-100">{playerName}</span>
-            <span className={`relative z-10 font-darija font-black text-3xl tracking-widest ${meta?.color ?? 'text-zinc-300'}`}>
-              {meta?.label ?? '...'}
-            </span>
-            <span className="relative z-10 font-darija text-sm font-bold tracking-widest text-zinc-400 uppercase">
-              {meta?.sub ?? ''}
-            </span>
           </div>
         </div>
       </motion.div>
