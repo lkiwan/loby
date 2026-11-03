@@ -46,7 +46,6 @@ import {
   SolarGamepad,
   SolarGear,
   SolarLock,
-  SolarPlay,
   SolarStar,
   SolarTv,
   SolarUsersGroup,
@@ -77,19 +76,6 @@ const DailyMissionButtons = dynamic(
   () => import("@/components/DailyMissionButtons"),
   { ssr: false },
 );
-
-const TICKER_ITEMS = [
-  "🔥 الصداع د الحومة كاين من بكري",
-  "🇲🇦 تحداو بعضياتكم بالدارجة",
-  "🕹️ كلشي بالدارجة — حتى الكدوب والمعاودة",
-  "🎲 تيليفون واحد = بزاف د الشوهة",
-  "🤫 واحد فيكم كيكدب — مرحبا بيك فالحومة",
-  "💰 تفرج فإشهار — ماشي خسارة، هادا تكتيك",
-  "💔 الليلة تولي جريمة فالطبلة، والجيران شاهدين",
-];
-
-const TITLE_WORDS_1 = ["فضح", "صاحبك"];
-const TITLE_WORDS_2 = ["قبل", "ما", "يفضحك"];
 
 /* ── Daily check-in ladder (Store Posters check-in card) ──
    Mirrors the server defaults in src/lib/config.ts (checkinLadder);
@@ -943,128 +929,6 @@ function LobbyContent() {
           </div>
         </div>
       </header>
-
-      {/* ══════════════════════════════════════════
-          HERO — image complète + contenu superposé
-      ══════════════════════════════════════════ */}
-      <section className="mx-auto w-full max-w-6xl px-3 pt-3 sm:px-6">
-        <div
-          className="relative overflow-hidden"
-          style={{
-            borderRadius: 22,
-            padding: "18px 16px 16px",
-            background:
-              "linear-gradient(120deg,#1D1440,#3B1470 55%,#6D28D9)",
-            border: "1px solid rgba(255,255,255,0.14)",
-          }}
-        >
-          {/* Lime glow blob (preview hero decoration) */}
-          <div
-            aria-hidden="true"
-            className="absolute rounded-full"
-            style={{
-              insetInlineEnd: -30,
-              top: -30,
-              width: 130,
-              height: 130,
-              background: "rgba(198,245,66,0.15)",
-              filter: "blur(6px)",
-            }}
-          />
-          <h1
-            className="relative z-[1] font-lalezar leading-[1.25] text-white"
-            style={{ fontSize: "clamp(1.55rem,6.4vw,2.1rem)" }}
-          >
-            اللعب كيزيد{" "}
-            <span style={{ color: "var(--lime)" }}>يحلا مع صحابك</span>
-          </h1>
-          <p
-            className="relative z-[1] mt-1 font-cairo text-[14px] font-bold"
-            style={{ color: "#E9E2FF" }}
-          >
-            فضح صاحبك قبل ما يفضحك 💀
-          </p>
-          <div className="relative z-[1] mt-3.5 flex items-center gap-2.5">
-            <a
-              href="#most-played"
-              className="inline-flex items-center gap-2 rounded-full px-5 py-[11px] font-cairo text-[14px] font-black"
-              style={{ background: "var(--lime)", color: "#131803" }}
-            >
-              <SolarPlay className="h-4 w-4" />
-              لعب دابا
-            </a>
-            {!isAuthed && (
-              <Link
-                href="/register"
-                className="inline-flex items-center gap-2 rounded-full px-4 py-[11px] font-cairo text-[12.5px] font-black"
-                style={{
-                  background: "rgba(255,255,255,0.10)",
-                  border: "1px solid rgba(255,255,255,0.20)",
-                  color: "#fff",
-                }}
-              >
-                صاوب كونط
-              </Link>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════
-          LIVE TICKER — activity strip
-      ══════════════════════════════════════════ */}
-      <div
-        className="relative overflow-hidden py-2.5"
-        style={{
-          background: "rgba(255,255,255,0.04)",
-          borderTop: "1px solid var(--line)",
-          borderBottom: "1px solid var(--line)",
-        }}
-      >
-        <div
-          className="pointer-events-none absolute inset-y-0 right-0 w-14 z-10"
-          style={{
-            background: "linear-gradient(to left, #07070D, transparent)",
-          }}
-        />
-        <div
-          className="pointer-events-none absolute inset-y-0 left-0 w-14 z-10"
-          style={{
-            background: "linear-gradient(to right, #07070D, transparent)",
-          }}
-        />
-        <div
-          className="ticker-marquee flex w-max whitespace-nowrap"
-          style={{
-            animation: "marqueeRtl 28s linear infinite",
-            willChange: "transform",
-          }}
-        >
-          {[0, 1].map((g) => (
-            <div
-              key={g}
-              className="flex shrink-0 gap-8 pe-8"
-              aria-hidden={g === 1 ? true : undefined}
-            >
-              {TICKER_ITEMS.map((item, i) => (
-                <span
-                  key={`${g}-${i}`}
-                  className="font-cairo text-[11px] font-bold shrink-0"
-                  style={{ color: "rgba(255,255,255,0.52)" }}
-                >
-                  {item}
-                  <span
-                    className="mx-4"
-                    style={{ color: "rgba(198,245,66,0.5)" }}
-                  >
-                    ◆
-                  </span>
-                </span>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* ══════════════════════════════════════════
           DAILY CHECK-IN — automatic on load; this card only
