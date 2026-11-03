@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react'
 import type { Player, Role } from '../game/types'
 import { ROLE_META } from '../game/types'
 import { CardBackArt, RoleArt } from './CardArt'
-import { Shield, Crosshair } from 'lucide-react'
+import { Shield, Crosshair, X } from 'lucide-react'
 
 export interface PlayerCardProps {
   player?: Player
@@ -21,6 +21,14 @@ export interface PlayerCardProps {
   onTap?: () => void
   interactive?: boolean
   className?: string
+}
+
+/* Role label colors (flat Store Posters palette). */
+const ROLE_HEX: Record<Role, string> = {
+  EISSABA: '#FF4D5E',
+  BOULIS: '#FFC93C',
+  TBIB: '#3DDC84',
+  WLAD_LHOUMA: '#FFFFFF',
 }
 
 /* dark, worn card shell (paper over wood) */
@@ -66,131 +74,107 @@ export function CardFaceTexture() {
   )
 }
 
-const MAFIA_BORDER = { boxShadow: '0 0 0 2px #dc2626, 0 0 18px 2px rgba(220,38,38,.45)' }
-
-/* ---------------- static table card ---------------- */
+/* ---------------- table chip (Teller god view) ----------------
+   Flat chip per the accepted Dashboard designs: portrait role-art
+   thumbnail + name + role label. State tints: mafia target = red,
+   doctor save = green, vote selection = solid red, dead = greyed ✕. */
 export function TableCard({
   player,
   role,
   facing = 'front',
-  glow = false,
   dead = false,
   selected = false,
   crosshair = false,
   shield = false,
-  tilt = 0,
-  number,
   onTap,
   interactive = false,
   className = '',
 }: PlayerCardProps) {
   const r = role ?? player?.role ?? null
   const meta = r ? ROLE_META[r] : null
-  const isMafia = r === 'EISSABA'
-  const aura =
-    r === 'EISSABA' ? 'bg-blood/20 ring-blood/40' : r === 'BOULIS' ? 'bg-gold/15 ring-gold/40' : r === 'TBIB' ? 'bg-heal/15 ring-heal/40' : 'bg-zinc-400/10 ring-zinc-400/25'
+
+  if (facing === 'back') {
+    return (
+      <div className={`relative overflow-hidden rounded-2xl ring-1 ring-white/10 ${className}`}>
+        <CardBackArt className="h-full w-full" />
+      </div>
+    )
+  }
+
+  const bg = selected
+    ? 'bg-[#FF4D5E]'
+    : crosshair
+      ? 'bg-[#FF4D5E]/[0.13]'
+      : shield
+        ? 'bg-[#3DDC84]/[0.10]'
+        : dead
+          ? 'bg-white/[0.03]'
+          : 'bg-[#1C1C29]'
+  const ring = selected
+    ? 'ring-white/25'
+    : shield
+      ? 'ring-[#3DDC84]/50'
+      : crosshair
+        ? 'ring-[#FF4D5E]/50'
+        : 'ring-white/[0.08]'
 
   return (
-    <CardShell
-      tilt={tilt}
-      glow={glow}
-      className={`${className} ${interactive ? 'cursor-pointer active:scale-95 transition-transform' : ''}`}
+    <button
+      type="button"
+      disabled={!interactive}
+      onClick={onTap}
+      className={`relative flex w-full items-center gap-2.5 rounded-2xl px-2.5 py-2.5 text-right ring-1 transition-transform ${bg} ${ring} ${
+        interactive ? 'cursor-pointer active:scale-[0.97]' : 'disabled:cursor-default'
+      } ${className}`}
     >
-      <button
-        type="button"
-        disabled={!interactive}
-        onClick={onTap}
-        className="relative block h-full w-full rounded-[10px] overflow-hidden disabled:cursor-default"
-        style={dead ? undefined : isMafia && meta ? MAFIA_BORDER : undefined}
+      {/* portrait role art thumbnail */}
+      <span
+        className={`relative h-10 w-10 shrink-0 overflow-hidden rounded-xl ring-1 ${
+          selected ? 'ring-white/40' : 'ring-white/10'
+        } ${dead ? 'opacity-50 grayscale' : ''}`}
       >
-        {facing === 'back' ? (
-          <div className="relative h-full w-full">
-            <CardBackArt className="h-full w-full" />
-            <CardFaceTexture />
-          </div>
-        ) : (
-          <div
-            className={`relative flex h-full w-full flex-col px-1 pt-1 pb-0.5 ${
-              dead ? 'grayscale' : ''
-            }`}
-            style={{ background: 'linear-gradient(160deg, #2c2a2e 0%, #19181c 55%, #0b0a0d 100%)' }}
-          >
-            <CardFaceTexture />
+        {r ? <RoleArt role={r} fit="cover" className="h-full w-full" /> : null}
+      </span>
 
-            {/* seat number badge */}
-            {number != null && (
-              <span className="absolute left-1 top-1 z-20 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold px-1 font-grit text-[9px] leading-none text-night shadow-glowGold">
-                {number}
-              </span>
-            )}
+      {/* name + role label */}
+      <span className="min-w-0 flex-1">
+        <span
+          className={`block truncate font-darija text-[15px] font-black leading-tight ${
+            dead ? 'text-zinc-500 line-through' : 'text-zinc-50'
+          }`}
+        >
+          {player?.name}
+        </span>
+        <span
+          className={`block truncate font-darija text-[11px] font-bold leading-tight ${
+            selected ? 'text-white/75' : dead ? 'text-zinc-600' : ''
+          }`}
+          style={!selected && !dead && r ? { color: ROLE_HEX[r] } : undefined}
+        >
+          {meta?.label ?? ''}
+        </span>
+      </span>
 
-            {/* role art in a tinted aura */}
-            <div className="relative z-10 flex min-h-0 flex-1 items-center justify-center pb-0.5">
-              <div
-                className={`flex items-center justify-center rounded-full p-1.5 ring-1 ${aura}`}
-                style={dead ? { opacity: 0.5 } : undefined}
-              >
-                {r ? <RoleArt role={r} className="h-8 w-8" /> : null}
-              </div>
-            </div>
-
-            {/* name — readable */}
-            <span
-              className={`relative z-10 line-clamp-2 px-0.5 text-center font-darija text-[11px] font-black leading-[1.15] tracking-tight ${
-                dead ? 'text-zinc-500 line-through' : 'text-zinc-50'
-              }`}
-            >
-              {player?.name}
+      {/* state markers */}
+      {dead ? (
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/[0.06]">
+          <X className="h-3.5 w-3.5 text-zinc-500" />
+        </span>
+      ) : crosshair || shield ? (
+        <span className="flex shrink-0 items-center gap-1.5">
+          {crosshair && <Crosshair className="h-5 w-5 text-[#FF4D5E]" />}
+          {shield && (
+            <span className="flex items-center justify-center rounded-full bg-[#3DDC84] p-1">
+              <Shield className="h-3.5 w-3.5 text-[#131803]" />
             </span>
-
-            {/* role label */}
-            <span
-              className={`relative z-10 truncate text-center text-[8px] font-black tracking-widest ${
-                meta?.color ?? 'text-zinc-400'
-              }`}
-            >
-              {meta?.label ?? ''}
-            </span>
-
-            {dead && (
-              <div className="absolute inset-0 z-20 flex items-center justify-center">
-                <div className="absolute inset-0 bg-zinc-950/70" />
-                <span className="relative z-10 font-grit text-base text-blood line-through drop-shadow-[0_0_8px_rgba(220,38,38,.8)]">
-                  MAT
-                </span>
-              </div>
-            )}
-
-            {/* role overlays for night actions */}
-            {crosshair && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Crosshair className="h-7 w-7 text-blood animate-pulse drop-shadow-[0_0_8px_rgba(220,38,38,.9)]" />
-              </div>
-            )}
-            {shield && (
-              <div className="absolute -right-1 -bottom-1 z-20 flex items-center justify-center rounded-full bg-heal/90 p-1">
-                <Shield className="h-4 w-4 text-night" />
-              </div>
-            )}
-            {selected && (
-              <div className="absolute inset-0 rounded-[10px] ring-[3px] ring-blood shadow-glowRed" />
-            )}
-          </div>
-        )}
-      </button>
-    </CardShell>
+          )}
+        </span>
+      ) : null}
+    </button>
   )
 }
 
 /* ---------------- big interactive flip card ---------------- */
-
-/* Role label colors on the revealed card (flat Store Posters palette). */
-const ROLE_HEX: Record<Role, string> = {
-  EISSABA: '#FF4D5E',
-  BOULIS: '#FFC93C',
-  TBIB: '#3DDC84',
-  WLAD_LHOUMA: '#FFFFFF',
-}
 
 export function FlipCardView({
   role,
