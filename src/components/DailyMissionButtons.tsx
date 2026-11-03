@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Play, Check, Loader2, Coins, X, Target, ChevronDown } from 'lucide-react';
 import AdNativeBanner from '@/components/AdNativeBanner';
+import { SolarClipboardCheck } from '@/components/SolarIcon';
 
 type Mission = {
   id: string;
@@ -13,7 +14,15 @@ type Mission = {
   canClaim: boolean;
 };
 
-export default function DailyMissionButtons({ onClaim }: { onClaim?: (coins: number) => void }) {
+export default function DailyMissionButtons({
+  onClaim,
+  onOpenAll,
+}: {
+  onClaim?: (coins: number) => void;
+  /* Opens the full MissionsPanel (the preview widget panel's
+     "Open all missions" entry). Optional — panel still works without it. */
+  onOpenAll?: () => void;
+}) {
   const [missions, setMissions] = useState<Mission[]>([]);
   const [expanded, setExpanded] = useState(false);
   const [adTarget, setAdTarget] = useState<Mission | null>(null);
@@ -21,6 +30,38 @@ export default function DailyMissionButtons({ onClaim }: { onClaim?: (coins: num
   const [adClaiming, setAdClaiming] = useState(false);
   const [justClaimed, setJustClaimed] = useState<Set<string>>(new Set());
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  /* Preview behaviour: the wide pill DOCKS to a 52px round button once
+     the user scrolls down (>200px, or as the games section approaches);
+     it restores the wide pill back near the top. rAF-throttled scroll
+     listener, same rule as the preview's syncDock. */
+  const [docked, setDocked] = useState(false);
+  useEffect(() => {
+    let tick = false;
+    const sync = () => {
+      const g = document.getElementById('most-played');
+      const gamesTop = g
+        ? g.getBoundingClientRect().top + window.scrollY
+        : Infinity;
+      const deep = window.scrollY > gamesTop - window.innerHeight * 0.55;
+      setDocked(window.scrollY > 200 || deep);
+    };
+    const onScroll = () => {
+      if (tick) return;
+      tick = true;
+      requestAnimationFrame(() => {
+        tick = false;
+        sync();
+      });
+    };
+    sync();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, []);
 
   const fetchMissions = useCallback(async () => {
     try {
@@ -207,7 +248,23 @@ export default function DailyMissionButtons({ onClaim }: { onClaim?: (coins: num
               );
             })}
 
-            {/* Panel footer */}
+            {/* Panel footer — open the full missions panel (preview entry) */}
+            {onOpenAll && (
+              <button
+                onClick={() => {
+                  setExpanded(false);
+                  onOpenAll();
+                }}
+                className="w-full px-3 py-2.5 text-center font-cairo text-[11px] font-black transition active:scale-[0.99]"
+                style={{
+                  borderTop: '1px solid rgba(255,255,255,0.04)',
+                  background: 'rgba(198,245,66,0.10)',
+                  color: 'var(--lime)',
+                }}
+              >
+                كل المهام
+              </button>
+            )}
             <div
               className="px-3 py-2 text-center"
               style={{ borderTop: '1px solid rgba(255,255,255,0.04)', background: 'rgba(255,255,255,0.01)' }}
@@ -219,31 +276,58 @@ export default function DailyMissionButtons({ onClaim }: { onClaim?: (coins: num
           </div>
         )}
 
-        {/* Toggle pill */}
+        {/* Toggle pill — preview style: solid lime wide pill that DOCKS
+            to a 52px round button on scroll (label hidden, badge pinned
+            to the corner). Same expand/collapse behaviour as before. */}
         <button
           onClick={() => setExpanded(v => !v)}
-          className="flex items-center gap-1.5 rounded-full px-3 py-1.5 font-cairo text-[11px] font-black transition-all active:scale-95 backdrop-blur-sm"
+          aria-label="مهام اليوم"
+          className={
+            docked
+              ? 'relative flex h-[52px] w-[52px] items-center justify-center rounded-full font-cairo font-black transition-all active:scale-95'
+              : 'relative flex items-center gap-2 rounded-full px-[15px] py-[11px] font-cairo text-[13px] font-black transition-all active:scale-95'
+          }
           style={{
-            background: pendingCount > 0 ? 'rgba(198,245,66,0.18)' : 'rgba(7,7,13,0.88)',
-            border: pendingCount > 0 ? '1px solid rgba(198,245,66,0.45)' : '1px solid rgba(255,255,255,0.12)',
-            color: pendingCount > 0 ? 'var(--lime)' : 'rgba(255,255,255,0.45)',
-            boxShadow: pendingCount > 0 ? '0 2px 10px rgba(198,245,66,0.2)' : undefined,
+            background: 'var(--lime)',
+            border: 'none',
+            color: '#131803',
+            boxShadow: '0 10px 26px rgba(0,0,0,0.55)',
           }}
         >
-          <Target className="h-3 w-3" />
-          مهام اليوم
+          <SolarClipboardCheck
+            className={docked ? 'h-[22px] w-[22px] shrink-0' : 'h-[18px] w-[18px] shrink-0'}
+          />
+          {!docked && (
+            <>
+              <span>مهام اليوم</span>
+              <ChevronDown
+                className="h-3 w-3 transition-transform"
+                style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
+              />
+            </>
+          )}
           {pendingCount > 0 && (
             <span
-              className="grid place-items-center rounded-full font-black text-[8px]"
-              style={{ background: 'var(--lime)', color: '#131803', width: 14, height: 14 }}
+              className={
+                docked
+                  ? 'absolute -top-[5px] grid place-items-center rounded-full font-nunito font-black'
+                  : 'grid place-items-center rounded-full font-nunito font-black'
+              }
+              style={{
+                background: '#131803',
+                color: 'var(--lime)',
+                minWidth: docked ? 20 : 20,
+                height: 20,
+                fontSize: 11.5,
+                padding: '0 5px',
+                insetInlineEnd: docked ? -5 : undefined,
+                border: docked ? '2px solid var(--bg)' : undefined,
+                boxShadow: docked ? '0 3px 9px rgba(0,0,0,0.6)' : undefined,
+              }}
             >
               {pendingCount}
             </span>
           )}
-          <ChevronDown
-            className="h-3 w-3 transition-transform"
-            style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
-          />
         </button>
       </div>
 

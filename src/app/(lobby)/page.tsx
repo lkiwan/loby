@@ -41,15 +41,20 @@ import GameIcon from "@/components/GameIcon";
 import {
   SolarCalendarCheck,
   SolarClipboardCheck,
+  SolarClock,
   SolarCompass,
   SolarGamepad,
   SolarGear,
+  SolarLock,
+  SolarPlay,
+  SolarStar,
+  SolarTv,
   SolarUsersGroup,
 } from "@/components/SolarIcon";
 import GuestNotice from "@/components/landing/GuestNotice";
 import ComingSoon from "@/components/landing/ComingSoon";
 import LobbyFooter from "@/components/landing/LobbyFooter";
-import { GAMES, type Game } from "@/lib/games";
+import { GAMES, COMING_SOON, type Game } from "@/lib/games";
 import AdBanner from "@/components/AdBanner";
 import AdNativeBanner from "@/components/AdNativeBanner";
 import { rememberPayMethod } from "@/lib/payMethod";
@@ -145,6 +150,12 @@ function LobbyContent() {
     referralCode?: string;
   } | null>(null);
   const [missionsOpen, setMissionsOpen] = useState(false);
+  /* Games-section category tabs (preview behaviour): filter the
+     already-loaded GAMES / COMING_SOON lists client-side. */
+  const [gameFilter, setGameFilter] = useState<"all" | "play" | "soon">("all");
+  /* Claimable-mission count for the missions-teaser pill — same
+     /api/rewards/missions payload MissionsPanel already reads. */
+  const [missionsReady, setMissionsReady] = useState(0);
   const [friendsOpen, setFriendsOpen] = useState(false);
   const [referralCopied, setReferralCopied] = useState(false);
   const [authSheetOpen, setAuthSheetOpen] = useState(false);
@@ -414,6 +425,22 @@ function LobbyContent() {
       .then((data) => {
         if (data) setXpData(data);
       });
+  }, [status]);
+
+  useEffect(() => {
+    if (status !== "authenticated") return;
+    fetch("/api/rewards/missions")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        const list = (data?.missions ?? []) as {
+          canClaim?: boolean;
+          claimed?: boolean;
+        }[];
+        setMissionsReady(
+          list.filter((m) => m.canClaim && !m.claimed).length,
+        );
+      })
+      .catch(() => {});
   }, [status]);
 
   const showToast = (kind: "error" | "ok", text: string) => {
@@ -715,37 +742,16 @@ function LobbyContent() {
         }}
       >
         <div className="flex items-center justify-between gap-2 px-3 py-2">
-          {/* FIRST → visual RIGHT: wordmark + sound controls */}
+          {/* FIRST → visual RIGHT: PLAYM3ANA wordmark (preview header).
+              Sound + music controls live in the settings sheet below —
+              the header keeps only the preview's elements. */}
           <div className="flex min-w-0 items-center gap-1.5">
             <Link href="/" className="flex shrink-0 items-center gap-1.5">
-              <Image
-                src="/icons/image.png"
-                alt="PlayM3ana"
-                width={34}
-                height={34}
-                className="h-[34px] w-[34px] object-contain max-[380px]:hidden"
-              />
-              <span className="whitespace-nowrap font-nunito text-[15px] font-black tracking-[0.3px]">
+              <span className="whitespace-nowrap font-nunito text-[17px] font-black tracking-[0.3px]">
                 <span className="text-white">PLAY</span>
                 <span style={{ color: "var(--lime)" }}>M3ANA</span>
               </span>
             </Link>
-            <button
-              onClick={toggleMute}
-              aria-label="الصوت"
-              className="grid h-8 w-8 shrink-0 place-items-center rounded-full"
-              style={{
-                background: "var(--panel)",
-                border: "1px solid var(--line)",
-              }}
-            >
-              {muted ? (
-                <VolumeX className="h-3.5 w-3.5 text-white/50" />
-              ) : (
-                <Volume2 className="h-3.5 w-3.5 text-white/50" />
-              )}
-            </button>
-            <div id="music-portal" className="shrink-0"></div>
           </div>
 
           {/* LAST → visual LEFT: LV pill · coins pill · settings · avatar */}
@@ -830,77 +836,60 @@ function LobbyContent() {
       {/* ══════════════════════════════════════════
           HERO — image complète + contenu superposé
       ══════════════════════════════════════════ */}
-      <section className="relative w-full" style={{ background: "#060810" }}>
-        {/* IMAGE — aspect ratio exact 1672/941, object-contain = photo complète visible */}
-        <div className="relative w-full" style={{ aspectRatio: "1672 / 941" }}>
-          <Image
-            src="/images/moroccan-hero-full.png"
-            alt="PLAYM3ANA — ساحة الألعاب المغربية"
-            fill
-            className="object-contain object-center"
-            priority
-            sizes="100vw"
-          />
-        </div>
-
-        {/* GRADIENT OVERLAY — fondu du bas vers le haut, couvre ~55% inférieur */}
+      <section className="mx-auto w-full max-w-6xl px-3 pt-3 sm:px-6">
         <div
-          className="absolute inset-x-0 bottom-0 pointer-events-none"
+          className="relative overflow-hidden"
           style={{
-            height: "62%",
+            borderRadius: 22,
+            padding: "18px 16px 16px",
             background:
-              "linear-gradient(to top, #07070D 0%, #07070D 28%, rgba(7,7,13,0.85) 55%, rgba(7,7,13,0.3) 80%, transparent 100%)",
+              "linear-gradient(120deg,#1D1440,#3B1470 55%,#6D28D9)",
+            border: "1px solid rgba(255,255,255,0.14)",
           }}
-        />
-
-        {/* CONTENU — superposé en bas de l'image */}
-        <div className="absolute inset-x-0 bottom-0 px-5 pb-5 flex flex-col gap-3">
-          {/* LIVE badge */}
-          <h1
-            className="font-lalezar leading-[1.08]"
+        >
+          {/* Lime glow blob (preview hero decoration) */}
+          <div
+            aria-hidden="true"
+            className="absolute rounded-full"
             style={{
-              fontSize: "clamp(1.75rem,7.5vw,2.4rem)",
-              textShadow: "0 2px 16px rgba(0,0,0,0.9)",
+              insetInlineEnd: -30,
+              top: -30,
+              width: 130,
+              height: 130,
+              background: "rgba(198,245,66,0.15)",
+              filter: "blur(6px)",
             }}
+          />
+          <h1
+            className="relative z-[1] font-lalezar leading-[1.25] text-white"
+            style={{ fontSize: "clamp(1.55rem,6.4vw,2.1rem)" }}
           >
-            <span className="text-white">اللعب كيزيد</span>
-            <br />
-            <span
-              style={{
-                background:
-                  "linear-gradient(135deg,#FFC93C 0%,#C6F542 100%)",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                color: "transparent",
-              }}
-            >
-              يحلا مع صحابك
-            </span>
+            اللعب كيزيد{" "}
+            <span style={{ color: "var(--lime)" }}>يحلا مع صحابك</span>
           </h1>
-
-          <div className="flex items-center gap-2.5">
+          <p
+            className="relative z-[1] mt-1 font-cairo text-[14px] font-bold"
+            style={{ color: "#E9E2FF" }}
+          >
+            فضح صاحبك قبل ما يفضحك 💀
+          </p>
+          <div className="relative z-[1] mt-3.5 flex items-center gap-2.5">
             <a
               href="#most-played"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-[14px] font-cairo font-black text-[14px]"
-              style={{
-                background: "var(--lime)",
-                border: "1px solid transparent",
-                color: "#131803",
-                boxShadow: "0 4px 20px rgba(198,245,66,0.35)",
-              }}
+              className="inline-flex items-center gap-2 rounded-full px-5 py-[11px] font-cairo text-[14px] font-black"
+              style={{ background: "var(--lime)", color: "#131803" }}
             >
-              <SolarGamepad className="h-4 w-4" />
+              <SolarPlay className="h-4 w-4" />
               لعب دابا
             </a>
             {!isAuthed && (
               <Link
                 href="/register"
-                className="inline-flex items-center gap-2 px-4 py-3 rounded-[14px] font-cairo font-black text-[12px]"
+                className="inline-flex items-center gap-2 rounded-full px-4 py-[11px] font-cairo text-[12.5px] font-black"
                 style={{
-                  background: "rgba(255,255,255,0.08)",
-                  border: "1px solid rgba(255,255,255,0.16)",
-                  color: "rgba(255,255,255,0.8)",
-                  backdropFilter: "blur(4px)",
+                  background: "rgba(255,255,255,0.10)",
+                  border: "1px solid rgba(255,255,255,0.20)",
+                  color: "#fff",
                 }}
               >
                 صاوب كونط
@@ -973,7 +962,7 @@ function LobbyContent() {
           MISSIONS TEASER — opens the real MissionsPanel.
       ══════════════════════════════════════════ */}
       {isAuthed && xpData && (
-        <section className="px-4 pt-4">
+        <section className="mx-auto w-full max-w-6xl px-4 pt-4 sm:px-6">
           <div
             className="rounded-[18px] p-[13px_14px]"
             style={{
@@ -1053,7 +1042,7 @@ function LobbyContent() {
             }}
           >
             <SolarClipboardCheck className="h-6 w-6 shrink-0" style={{ color: "var(--lime)" }} />
-            <span className="min-w-0">
+            <span className="min-w-0 flex-1">
               <b className="block font-cairo text-[13.5px] font-black leading-snug text-white">
                 المهام اليومية
               </b>
@@ -1064,305 +1053,25 @@ function LobbyContent() {
                 تتجدد كل يوم بالفجر 🌙
               </span>
             </span>
+            {missionsReady > 0 && (
+              <span
+                className="shrink-0 rounded-full px-2.5 py-[5px] font-cairo text-[11px] font-black"
+                style={{
+                  background: "rgba(198,245,66,0.14)",
+                  border: "1px solid rgba(198,245,66,0.4)",
+                  color: "var(--lime)",
+                }}
+              >
+                {missionsReady} مكافآت
+              </span>
+            )}
           </button>
         </section>
       )}
 
-      {/* ══════════════════════════════════════════
-          AMBIANCE MAROCAINE — 3 cartes culturelles
-      ══════════════════════════════════════════ */}
-      <div
-        className="relative overflow-hidden px-3 py-2.5"
-        style={{
-          background: "var(--bg)",
-          borderBottom: "1px solid var(--line)",
-        }}
-      >
-        {/* Zellige tile pattern */}
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M20 3L37 20L20 37L3 20Z' fill='none' stroke='rgba(232,180,48,0.06)' stroke-width='1'/%3E%3Cpath d='M20 10L30 20L20 30L10 20Z' fill='none' stroke='rgba(232,180,48,0.04)' stroke-width='0.8'/%3E%3C/svg%3E")`,
-            backgroundRepeat: "repeat",
-          }}
-        />
-
-        <div className="relative grid grid-cols-3 gap-2">
-          {[
-            {
-              iconBig: "🤪",
-              iconSmall: "🎮",
-              rotBig: "-12deg",
-              rotSmall: "15deg",
-              title: "لعب بالدارجة",
-              sub: "كلشي مفهوم",
-              color: "#E8B430",
-              gradFrom: "rgba(232,180,48,0.13)",
-            },
-            {
-              iconBig: "😤",
-              iconSmall: "👊",
-              rotBig: "8deg",
-              rotSmall: "-14deg",
-              title: "مع صحابك",
-              sub: "فتيليفون واحد",
-              color: "#10A07A",
-              gradFrom: "rgba(16,160,122,0.13)",
-            },
-            {
-              iconBig: "🦁",
-              iconSmall: "🇲🇦",
-              rotBig: "-10deg",
-              rotSmall: "12deg",
-              title: "100% مغربي",
-              sub: "من القلب",
-              color: "#C2341A",
-              gradFrom: "rgba(194,52,26,0.13)",
-            },
-          ].map((card, i) => (
-            <div
-              key={i}
-              className="relative flex flex-col items-center gap-1.5 rounded-[18px] py-3 overflow-hidden"
-              style={{
-                background: `linear-gradient(150deg, ${card.gradFrom} 0%, rgba(6,8,16,0.85) 100%)`,
-                border: `1px solid ${card.color}28`,
-                boxShadow: `0 4px 24px ${card.color}12, inset 0 1px 0 ${card.color}18`,
-              }}
-            >
-              {/* Top luminous bar */}
-              <div
-                className="absolute top-0 inset-x-0 h-[2.5px] rounded-t-[18px]"
-                style={{
-                  background: `linear-gradient(90deg, transparent, ${card.color}, transparent)`,
-                  boxShadow: `0 0 10px ${card.color}`,
-                }}
-              />
-
-              {/* Bottom-right zellige diamond */}
-              <div
-                className="absolute bottom-2.5 end-2.5 w-2 h-2 rotate-45 opacity-25"
-                style={{ background: card.color }}
-              />
-              {/* Top-left zellige diamond */}
-              <div
-                className="absolute top-3 start-2.5 w-1.5 h-1.5 rotate-45 opacity-20"
-                style={{ background: card.color }}
-              />
-
-              {/* Icons — crazy duo */}
-              <div className="relative flex items-center justify-center" style={{ width: 54, height: 50 }}>
-                {/* Outer pulse ring */}
-                <div
-                  className="absolute inset-0 rounded-full animate-pulse"
-                  style={{
-                    border: `1px solid ${card.color}35`,
-                    boxShadow: `0 0 16px ${card.color}25`,
-                  }}
-                />
-                {/* Inner glow */}
-                <div
-                  className="absolute inset-[7px] rounded-full"
-                  style={{
-                    background: `radial-gradient(circle, ${card.color}20 0%, transparent 80%)`,
-                  }}
-                />
-                {/* Big emoji — offset left + rotated */}
-                <span
-                  className="absolute text-[30px] leading-none select-none"
-                  style={{
-                    transform: `rotate(${card.rotBig}) translate(-8px, -2px)`,
-                    filter: `drop-shadow(0 2px 6px ${card.color}50)`,
-                  }}
-                >
-                  {card.iconBig}
-                </span>
-                {/* Small emoji — offset right bottom + counter-rotated */}
-                <span
-                  className="absolute text-[18px] leading-none select-none"
-                  style={{
-                    transform: `rotate(${card.rotSmall}) translate(14px, 10px)`,
-                    filter: `drop-shadow(0 1px 4px rgba(0,0,0,0.8))`,
-                  }}
-                >
-                  {card.iconSmall}
-                </span>
-              </div>
-
-              {/* Title */}
-              <p
-                className="font-lalezar text-[13px] leading-none text-center"
-                style={{
-                  color: card.color,
-                  textShadow: `0 0 12px ${card.color}60`,
-                }}
-              >
-                {card.title}
-              </p>
-
-              {/* Subtitle */}
-              <p
-                className="font-cairo text-[8.5px] font-bold text-center px-2 leading-tight"
-                style={{ color: "rgba(255,255,255,0.32)" }}
-              >
-                {card.sub}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ══════════════════════════════════════════
-          أبواب المدينة — GAME DOORS (mobile carousel)
-      ══════════════════════════════════════════ */}
-      <section id="most-played" className="pt-5 pb-4 sm:hidden">
-        <div className="flex items-center justify-start px-4 mb-4">
-          <div className="flex items-center gap-2">
-            <div
-              className="w-2 h-2 rotate-45 flex-shrink-0"
-              style={{ background: "var(--lime)", opacity: 0.65 }}
-            />
-            <h2 className="font-lalezar text-[19px] text-white">
-              أبواب المدينة
-            </h2>
-            <div
-              className="w-2 h-2 rotate-45 flex-shrink-0"
-              style={{ background: "var(--lime)", opacity: 0.65 }}
-            />
-          </div>
-        </div>
-
-        <div className="flex overflow-x-auto gap-3 pb-3 -mx-4 px-4 scrollbar-hide snap-x snap-mandatory">
-          {GAMES.map((game) => {
-            return (
-              /* Wrapper ~1.3 cartes visibles par écran :
-                 76.92% (= 100 / 1.3) de la largeur utile du strip − le gap (gap-3 = 12px)
-                 → visible / (carte + gap) ≈ 1.3 sur mobile ; le strip est masqué dès sm: */
-              <div
-                key={game.id}
-                className="snap-center shrink-0 relative w-[calc(76.92%_-_12px)]"
-              >
-                <GameCard
-                  game={game}
-                  coins={coins}
-                  isBusy={busyId === game.id}
-                  loadingAction={busyAction}
-                  onPlay={(e) => playWithCoins(game.id, e)}
-                  onWatchAd={() => watchAdToPlay(game.id)}
-                  onDirectAd={() => playAdDirectly(game.id)}
-                />
-                
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Desktop: full game cards grid */}
-      <section
-        id="games-section"
-        className="hidden sm:block px-6 pb-8 max-w-6xl mx-auto"
-      >
-        <div className="flex items-center gap-3 mb-4">
-          <div
-            className="w-2.5 h-2.5 rotate-45 flex-shrink-0"
-            style={{ background: "var(--lime)", opacity: 0.7 }}
-          />
-          <h2 className="font-lalezar text-[22px] text-white">أبواب المدينة</h2>
-          <div
-            className="flex-1 h-px"
-            style={{
-              background:
-                "linear-gradient(90deg,rgba(198,245,66,0.3),transparent)",
-            }}
-          />
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-          {GAMES.map((game) => (
-            <GameCard
-              key={game.id}
-              game={game}
-              coins={coins}
-              isBusy={busyId === game.id}
-              loadingAction={busyAction}
-              onPlay={(e) => playWithCoins(game.id, e)}
-              onWatchAd={() => watchAdToPlay(game.id)}
-              onDirectAd={() => playAdDirectly(game.id)}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════
-          CATEGORIES — filter by type
-      ══════════════════════════════════════════ */}
-      <div className="px-4 pt-2 pb-3">
-        <div className="flex overflow-x-auto gap-2 pb-1 scrollbar-hide">
-          {(
-            [
-              {
-                id: "g",
-                icon: "👥",
-                label: "الألعاب الجماعية",
-                bg: "rgba(72,42,155,0.85)",
-                border: "rgba(105,65,210,0.55)",
-                color: "#C4A8FF",
-              },
-              {
-                id: "d",
-                icon: "🎨",
-                label: "الكتف مع الرسم",
-                bg: "rgba(12,75,95,0.85)",
-                border: "rgba(40,175,200,0.55)",
-                color: "#6DE6F5",
-              },
-              {
-                id: "m",
-                icon: "🧠",
-                label: "ألعاب ذكاء",
-                bg: "rgba(8,68,42,0.85)",
-                border: "rgba(22,165,95,0.55)",
-                color: "#4DDD9A",
-              },
-              {
-                id: "s",
-                icon: "⚡",
-                label: "ألعاب سريعة",
-                bg: "rgba(80,52,4,0.85)",
-                border: "rgba(235,175,35,0.55)",
-                color: "#F5D060",
-              },
-              {
-                id: "f",
-                icon: "⚽",
-                label: "كرة القدم",
-                bg: "rgba(6,58,28,0.85)",
-                border: "rgba(30,190,88,0.55)",
-                color: "#86EFAC",
-              },
-            ] as const
-          ).map((cat) => (
-            <button
-              key={cat.id}
-              className="shrink-0 flex flex-col items-center gap-1 px-3 py-2.5 rounded-[14px] min-w-[68px] transition-transform hover:scale-105 active:scale-95"
-              style={{ background: "var(--panel)", border: "1px solid var(--line)" }}
-            >
-              <span className="text-[22px] leading-none">{cat.icon}</span>
-              <span
-                className="font-cairo text-[8.5px] font-black text-center"
-                style={{ color: "rgba(255,255,255,0.75)", whiteSpace: "nowrap" }}
-              >
-                {cat.label}
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* ══════ MISSIONS — floating buttons (DailyMissionButtons, bottom-left) ══════ */}
-
       {/* ══════ GUEST CTA ══════ */}
       {!isAuthed && (
-        <section className="px-4 pb-4">
+        <section className="mx-auto w-full max-w-6xl px-4 pt-4 sm:px-6">
           <div
             className="rounded-[20px] p-5 relative overflow-hidden"
             style={{
@@ -1410,9 +1119,322 @@ function LobbyContent() {
         </section>
       )}
 
+      {/* ══════════════════════════════════════════
+          GAMES — Store Posters section: category tabs filter the
+          already-loaded lists client-side; FEATURED Mafia wide card;
+          2-column poster grid; Coming Soon poster cards in the grid.
+          All play/ad handlers are the original ones.
+      ══════════════════════════════════════════ */}
+      <section
+        id="most-played"
+        className="mx-auto w-full max-w-6xl scroll-mt-16 px-4 pt-5 sm:px-6"
+      >
+        {/* Section head — the game's real games heading + counts */}
+        <div className="flex items-end justify-between gap-3">
+          <h2 className="font-lalezar text-[21px] leading-none text-white">
+            أبواب المدينة
+          </h2>
+          <span
+            className="font-cairo text-[11.5px] font-bold"
+            style={{ color: "var(--dim)" }}
+          >
+            {GAMES.length} ألعاب · {COMING_SOON.length} قريبا
+          </span>
+        </div>
+
+        {/* Category tabs — All / Playable / Coming soon */}
+        <div
+          className="mt-2 flex gap-5"
+          style={{ borderBottom: "1px solid var(--line)" }}
+          role="tablist"
+          aria-label="تصنيفات الألعاب"
+        >
+          {(
+            [
+              { id: "all", label: "الكل" },
+              { id: "play", label: "متوفرة" },
+              { id: "soon", label: "قريبا" },
+            ] as const
+          ).map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={gameFilter === tab.id}
+              onClick={() => setGameFilter(tab.id)}
+              className="relative pb-2 pt-1 font-cairo text-[13.5px] font-black transition"
+              style={{
+                color: gameFilter === tab.id ? "#fff" : "var(--dim)",
+              }}
+            >
+              {tab.label}
+              {gameFilter === tab.id && (
+                <span
+                  className="absolute inset-x-0 -bottom-px h-[3px] rounded-full"
+                  style={{ background: "var(--lime)" }}
+                />
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* FEATURED — Mafia wide card (hidden by the "soon" filter) */}
+        {gameFilter !== "soon" &&
+          (() => {
+            const mafia = GAMES.find((g) => g.isMafia) ?? GAMES[0];
+            const busy = busyId === mafia.id;
+            const canAfford = coins >= mafia.cost;
+            return (
+              <article
+                className="relative mt-4 overflow-hidden rounded-[22px] border"
+                style={{
+                  background: "var(--panel)",
+                  borderColor: "var(--line)",
+                }}
+              >
+                {/* Art — poster click runs the same direct-ad flow as the grid cards */}
+                <div
+                  className="relative h-[250px] cursor-pointer min-[420px]:h-[296px] lg:h-[340px]"
+                  onClick={() => playAdDirectly(mafia.id)}
+                >
+                  {mafia.poster || mafia.keyArt || mafia.logo ? (
+                    <Image
+                      src={mafia.poster || mafia.keyArt || mafia.logo!}
+                      alt={mafia.darijaTitle}
+                      fill
+                      priority
+                      sizes="(max-width: 1152px) 100vw, 1152px"
+                      className="object-cover"
+                      style={{ objectPosition: "50% 22%" }}
+                    />
+                  ) : (
+                    <div
+                      className="grid h-full w-full place-items-center text-6xl"
+                      style={{ background: "var(--panel2)" }}
+                    >
+                      {mafia.emoji}
+                    </div>
+                  )}
+                  {/* Diagonal-cut corner (44px, preview featured) */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute right-0 top-0"
+                    style={{
+                      width: 44,
+                      height: 44,
+                      background: "var(--bg)",
+                      clipPath: "polygon(0 0, 100% 0, 100% 100%)",
+                    }}
+                  />
+                  {/* Top-left stack: price pill + FEATURED tag (as on GameCard) */}
+                  <div className="absolute left-3 top-3 z-[3] flex flex-col items-start gap-1.5">
+                    <span
+                      className="inline-flex items-center gap-[5px] rounded-full py-1 pe-2.5 ps-1 font-nunito text-[12.5px] font-black"
+                      style={{
+                        background: "rgba(0,0,0,0.7)",
+                        border: "1px solid rgba(255,255,255,0.15)",
+                        color: "var(--lime)",
+                      }}
+                    >
+                      <span
+                        className="grid h-4 w-4 shrink-0 place-items-center rounded-full text-[9px]"
+                        style={{
+                          background:
+                            "radial-gradient(circle at 35% 30%, #FFF3C4, #FFC53D 60%, #E8A00C)",
+                          color: "#7A5200",
+                        }}
+                        aria-hidden="true"
+                      >
+                        ★
+                      </span>
+                      {mafia.cost}
+                    </span>
+                    <span
+                      className="inline-flex items-center gap-[5px] rounded-full px-2.5 py-1 font-nunito text-[10px] font-black uppercase tracking-[0.6px] text-white"
+                      style={{
+                        background: "rgba(0,0,0,0.65)",
+                        border: "1px solid rgba(255,255,255,0.18)",
+                      }}
+                    >
+                      <SolarStar
+                        className="h-[11px] w-[11px] shrink-0"
+                        style={{ color: "var(--gold)" }}
+                      />
+                      Featured
+                    </span>
+                  </div>
+                </div>
+
+                {/* Info — title, ONE meta line (the game's own data), Play / Free */}
+                <div style={{ padding: "14px 16px 16px" }}>
+                  <h3 className="font-nunito text-[20px] font-black uppercase leading-[1.1] tracking-[0.3px] text-white">
+                    {mafia.latinTitle}
+                  </h3>
+                  <div
+                    className="mt-1.5 flex flex-wrap items-center gap-x-[6px] gap-y-1 font-cairo text-[12.5px] font-bold"
+                    style={{ color: "var(--dim)" }}
+                  >
+                    <span>
+                      {mafia.emoji} {mafia.tag}
+                    </span>
+                    <span aria-hidden="true">·</span>
+                    <span className="inline-flex items-center gap-1">
+                      <SolarUsersGroup className="h-[13px] w-[13px] shrink-0" />
+                      {mafia.players} لاعبين
+                    </span>
+                    <span aria-hidden="true">·</span>
+                    <span className="inline-flex items-center gap-1">
+                      <SolarClock className="h-[13px] w-[13px] shrink-0" />
+                      {mafia.duration}
+                    </span>
+                    <span aria-hidden="true">·</span>
+                    <span>{mafia.tagline}</span>
+                  </div>
+                  <div className="mt-3 flex gap-2">
+                    <button
+                      type="button"
+                      onClick={(e) => playWithCoins(mafia.id, e)}
+                      disabled={busy || !canAfford}
+                      className="flex h-[42px] flex-1 items-center justify-center gap-[5px] whitespace-nowrap rounded-[12px] font-nunito text-[14px] font-black transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-55"
+                      style={{ background: "var(--lime)", color: "#131803" }}
+                    >
+                      {busy && busyAction === "coins" ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        "Play"
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => watchAdToPlay(mafia.id)}
+                      disabled={busy}
+                      className="flex h-[42px] flex-1 items-center justify-center gap-[5px] whitespace-nowrap rounded-[12px] font-nunito text-[14px] font-black transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-55"
+                      style={{
+                        background: "rgba(255,255,255,0.05)",
+                        border: "1px solid rgba(255,255,255,0.25)",
+                        color: "#fff",
+                      }}
+                    >
+                      {busy && busyAction === "ad" ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <>
+                          <SolarTv className="h-[15px] w-[15px] shrink-0" />
+                          Free
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </article>
+            );
+          })()}
+
+        {/* Grid — playable GameCards (Mafia lives in the featured card)
+            + Coming Soon poster cards, filtered by the tabs */}
+        <div className="mt-4 grid grid-cols-2 gap-3 pb-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+          {gameFilter !== "soon" &&
+            GAMES.filter((g) => !g.isMafia).map((game) => (
+              <GameCard
+                key={game.id}
+                game={game}
+                coins={coins}
+                isBusy={busyId === game.id}
+                loadingAction={busyAction}
+                onPlay={(e) => playWithCoins(game.id, e)}
+                onWatchAd={() => watchAdToPlay(game.id)}
+                onDirectAd={() => playAdDirectly(game.id)}
+              />
+            ))}
+          {gameFilter !== "play" &&
+            COMING_SOON.map((g) => (
+              <article
+                key={g.id}
+                className="relative aspect-[3/4.05] overflow-hidden rounded-[20px] border"
+                style={{
+                  background: "var(--panel)",
+                  borderColor: "var(--line)",
+                }}
+              >
+                {g.poster ? (
+                  <Image
+                    src={g.poster}
+                    alt={g.darijaTitle}
+                    fill
+                    sizes="(max-width:640px) 50vw, 25vw"
+                    className="object-cover"
+                    style={{ objectPosition: "50% 30%" }}
+                  />
+                ) : (
+                  <div
+                    className="grid h-full w-full place-items-center text-5xl"
+                    style={{ background: "var(--panel2)" }}
+                  >
+                    {g.emoji}
+                  </div>
+                )}
+                <div className="cut-notch z-[2]" aria-hidden="true" />
+                {/* SOON tag */}
+                <span
+                  className="absolute left-2.5 top-2.5 z-[3] inline-flex items-center gap-[5px] rounded-full px-2.5 py-1 font-cairo text-[10.5px] font-black"
+                  style={{
+                    background: "rgba(7,7,13,0.72)",
+                    border: "1px solid rgba(198,245,66,0.45)",
+                    color: "var(--lime)",
+                  }}
+                >
+                  <SolarLock className="h-3 w-3 shrink-0" />
+                  قريبا
+                </span>
+                {/* Centred lock (preview soon-card treatment) */}
+                <div className="absolute inset-0 z-[1] grid place-items-center">
+                  <span
+                    className="grid h-[46px] w-[46px] place-items-center rounded-full"
+                    style={{
+                      background: "rgba(7,7,13,0.55)",
+                      border: "1px solid var(--line)",
+                    }}
+                  >
+                    <SolarLock className="h-5 w-5 text-white" />
+                  </span>
+                </div>
+                {/* Bottom fade + titles */}
+                <div
+                  className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[66%]"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, transparent, rgba(0,0,0,0.35) 30%, rgba(0,0,0,0.85) 62%, rgba(0,0,0,0.95))",
+                  }}
+                  aria-hidden="true"
+                />
+                <div className="absolute inset-x-0 bottom-0 z-[2] p-[11px]">
+                  <h3
+                    className="font-nunito text-[17.5px] font-black uppercase leading-[1.08] tracking-[0.3px] text-white"
+                    style={{
+                      textShadow:
+                        "0 2px 10px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.9)",
+                    }}
+                  >
+                    {g.latinTitle}
+                  </h3>
+                  <p
+                    className="mt-1 font-cairo text-[11.5px] font-bold"
+                    style={{ color: "var(--dim)" }}
+                  >
+                    {g.tag}
+                  </p>
+                </div>
+              </article>
+            ))}
+        </div>
+      </section>
+
+      {/* ══════ MISSIONS — floating buttons (DailyMissionButtons, bottom-left) ══════ */}
+
+
       {/* ══════ REFERRAL ══════ */}
       {isAuthed && xpData?.referralCode && (
-        <section className="px-4 pb-4">
+        <section className="mx-auto w-full max-w-6xl px-4 pb-4 pt-2 sm:px-6">
           <div
             className="rounded-[18px] p-4"
             style={{
@@ -1470,10 +1492,10 @@ function LobbyContent() {
       )}
 
       {/* Ad + Footer */}
-      <div className="px-4 pb-4">
+      <div className="mx-auto w-full max-w-6xl px-4 pb-4 sm:px-6">
         <AdBanner />
       </div>
-      <div className="px-4">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <LobbyFooter isAuthed={isAuthed} username={session?.user?.username} />
       </div>
 
@@ -1575,6 +1597,7 @@ function LobbyContent() {
       {/* ═══════════════ DAILY MISSION FLOATING BUTTONS ═══════════════ */}
       {isAuthed && (
         <DailyMissionButtons
+          onOpenAll={() => setMissionsOpen(true)}
           onClaim={(reward) => {
             setOptimisticCoins((prev) => (prev ?? coins) + reward);
             void update();
