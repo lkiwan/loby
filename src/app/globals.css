@@ -41,6 +41,24 @@
   --arch-gold:     rgba(232, 180, 48, 0.9);
   --arch-gold-dim: rgba(232, 180, 48, 0.35);
   --arch-glow:     0 0 16px rgba(232, 180, 48, 0.5);
+
+  /* ── STORE POSTERS design tokens (redesign port, phase 1) ──
+     Source of truth: BD-CHY/game/redesign previews + PORT-PLAN §3.
+     Solar icons are CC BY 4.0 (480 Design) — attribution kept with the
+     SolarIcon component. New surfaces use these; legacy vars above stay
+     for not-yet-ported pages. */
+  --bg: #07070D;            /* app background, near-black */
+  --panel: #101019;         /* card surface */
+  --panel2: #15151F;        /* raised surface / sheets / inputs */
+  --line: #23232F;          /* hairline borders */
+  --txt: #FFFFFF;
+  --dim: #9C9CAE;
+  --lime: #C6F542;          /* primary accent: active states, CTAs */
+  --gold: #FFC93C;          /* coins, rewards */
+  --red: #E5484D;           /* errors */
+  --radius: 20px;           /* cards; sheets 26px top corners */
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
 }
 
 @theme inline {
@@ -51,12 +69,13 @@
   --font-lalezar: var(--font-lalezar);
   --font-cairo: var(--font-cairo);
   --font-grit: var(--font-grit);
+  --font-nunito: var(--font-nunito);
 }
 
 html { color-scheme: dark; }
 
 body {
-  background: var(--dp-navy);
+  background: var(--bg);
   color: var(--dp-cream);
   font-family: var(--font-cairo), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -68,6 +87,15 @@ body {
 
 :lang(ar), .font-cairo, .font-lalezar { letter-spacing: 0; word-spacing: 0.05em; }
 .font-lalezar { line-height: 1.15; }
+
+/* ── STORE POSTERS utilities ── */
+/* Diagonal-cut corner (top-right), as on the preview poster cards.
+   Tailwind has no clip-path utility, so this is a plain class. */
+.cut-corner { clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%); }
+.cut-corner-sm { clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%); }
+/* The previews fake the cut with a bg-coloured triangle over the card's
+   top-right corner (keeps the card border intact) — same trick as a class. */
+.cut-notch { position: absolute; top: 0; right: 0; width: 36px; height: 36px; background: var(--bg); clip-path: polygon(0 0, 100% 0, 100% 100%); pointer-events: none; }
 ::selection { background: rgba(216, 166, 42, 0.28); color: #fff; }
 body.ad-playing { pointer-events: none; }
 
@@ -835,7 +863,7 @@ body.ad-playing { pointer-events: none; }
 .riad-footer {
   position: relative;
   overflow: hidden;
-  border-top: 1px solid rgba(216, 166, 42, 0.1);
+  border-top: 1px solid var(--line);
   padding-top: 2rem;
   margin-top: 3rem;
 }
@@ -846,8 +874,8 @@ body.ad-playing { pointer-events: none; }
   transform: translateX(-50%);
   width: 80%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(216, 166, 42, 0.5), transparent);
-  box-shadow: 0 0 10px rgba(216, 166, 42, 0.3);
+  background: linear-gradient(90deg, transparent, rgba(198, 245, 66, 0.5), transparent);
+  box-shadow: 0 0 10px rgba(198, 245, 66, 0.3);
 }
 
 /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -1142,7 +1170,7 @@ body.ad-playing { pointer-events: none; }
   display: grid;
   place-items: center;
   padding: 24px;
-  background: var(--dp-navy, #060810);
+  background: var(--bg);
   color: var(--dp-cream, #f9fafb);
 }
 
@@ -1150,7 +1178,7 @@ body.ad-playing { pointer-events: none; }
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(6, 8, 16, 0.95);
+  background: rgba(7, 7, 13, 0.95);
   backdrop-filter: blur(8px);
 }
 
@@ -1162,10 +1190,10 @@ body.ad-playing { pointer-events: none; }
   justify-content: center;
   padding: 48px 28px;
   text-align: center;
-  background: var(--dp-navy-2, #0d1222);
-  border: 1px solid rgba(232, 180, 48, 0.15);
+  background: var(--panel);
+  border: 1px solid var(--line);
   border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(232, 180, 48, 0.05);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .loading-card h1 {
@@ -1186,7 +1214,7 @@ body.ad-playing { pointer-events: none; }
 
 .loading-status {
   margin-top: 16px;
-  color: var(--dp-gold, #E8B430);
+  color: var(--lime);
   font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -1201,7 +1229,7 @@ body.ad-playing { pointer-events: none; }
   --offset: 30px;
   --duration: 2.4s;
   --delay: 0.2s;
-  --loader-color: var(--dp-gold, #E8B430);
+  --loader-color: var(--lime);
 
   position: relative;
   width: calc(3 * var(--offset) + var(--square));
@@ -1215,7 +1243,7 @@ body.ad-playing { pointer-events: none; }
   height: var(--square);
   border-radius: 4px;
   background: var(--loader-color);
-  box-shadow: 0 2px 8px rgba(232, 180, 48, 0.3);
+  box-shadow: 0 2px 8px rgba(198, 245, 66, 0.3);
   animation-fill-mode: both;
 }
 

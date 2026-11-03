@@ -111,12 +111,12 @@ export default function FriendsPanel({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center p-0 sm:p-4">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
-      <div className="bounce-in relative w-full max-w-md rounded-t-3xl sm:rounded-2xl border border-[#2DD4BF]/25 bg-[#12294D] shadow-2xl overflow-hidden">
+      <div className="bounce-in relative w-full max-w-md rounded-t-3xl sm:rounded-2xl border border-[var(--line)] bg-[var(--panel2)] shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-white/[0.06]">
           <div className="flex items-center gap-2.5">
-            <div className="grid h-8 w-8 place-items-center rounded-full border border-[#2DD4BF]/30 bg-[#2DD4BF]/10">
-              <Users className="h-4 w-4 text-[#2DD4BF]" />
+            <div className="grid h-8 w-8 place-items-center rounded-full border border-[rgba(198,245,66,0.3)] bg-[rgba(198,245,66,0.1)]">
+              <Users className="h-4 w-4 text-[var(--lime)]" />
             </div>
             <div>
               <h2 className="font-lalezar text-lg text-[#FFF7E8] leading-none">الصاحبين ديالك</h2>
@@ -138,7 +138,7 @@ export default function FriendsPanel({ onClose }: { onClose: () => void }) {
           {/* Add form */}
           <div className="flex items-center gap-2">
             <div className="relative flex-1 min-w-0">
-              <UserPlus className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#2DD4BF]/60" />
+              <UserPlus className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[rgba(198,245,66,0.6)]" />
               <input
                 value={name}
                 onChange={(e) => { setName(e.target.value); setError(null); }}
@@ -146,13 +146,13 @@ export default function FriendsPanel({ onClose }: { onClose: () => void }) {
                 maxLength={14}
                 disabled={full}
                 placeholder={full ? 'وصلتي للحد ديال الصحاب' : 'زيد سمية الصاحبي…'}
-                className="w-full rounded-xl border border-[#2DD4BF]/25 bg-[#0B1F3A] ps-9 pe-3 py-3 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/30 outline-none transition focus:border-[#2DD4BF]/60 disabled:opacity-40"
+                className="w-full rounded-xl border border-[var(--line)] bg-[var(--panel)] ps-9 pe-3 py-3 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/30 outline-none transition focus:border-[rgba(198,245,66,0.6)] disabled:opacity-40"
               />
             </div>
             <button
               onClick={() => void addFriend()}
               disabled={!name.trim() || saving || full}
-              className="grid h-[46px] w-[46px] shrink-0 place-items-center rounded-xl bg-[#F5B942] text-[#0B1F3A] transition active:scale-95 disabled:opacity-40"
+              className="grid h-[46px] w-[46px] shrink-0 place-items-center rounded-xl bg-[var(--gold)] text-[#3A2A00] transition active:scale-95 disabled:opacity-40"
               title="زيد"
             >
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
@@ -167,7 +167,7 @@ export default function FriendsPanel({ onClose }: { onClose: () => void }) {
           <div className="mt-4">
             {loading ? (
               <div className="flex justify-center py-10">
-                <Loader2 className="h-6 w-6 animate-spin text-[#2DD4BF]" />
+                <Loader2 className="h-6 w-6 animate-spin text-[var(--lime)]" />
               </div>
             ) : loadError ? (
               <div className="py-10 text-center">
@@ -175,7 +175,7 @@ export default function FriendsPanel({ onClose }: { onClose: () => void }) {
                 <p className="font-cairo text-sm font-bold text-[#F97066]">{loadError}</p>
                 <button
                   onClick={retry}
-                  className="mt-4 inline-flex items-center gap-1.5 rounded-xl border border-[#2DD4BF]/30 bg-[#2DD4BF]/10 px-4 py-2 font-cairo text-[12px] font-bold text-[#2DD4BF] transition hover:bg-[#2DD4BF]/20 active:scale-95"
+                  className="mt-4 inline-flex items-center gap-1.5 rounded-xl border border-[rgba(198,245,66,0.3)] bg-[rgba(198,245,66,0.1)] px-4 py-2 font-cairo text-[12px] font-bold text-[var(--lime)] transition hover:bg-[rgba(198,245,66,0.2)] active:scale-95"
                 >
                   <RefreshCw className="h-3.5 w-3.5" />
                   عاود جرب
@@ -197,7 +197,7 @@ export default function FriendsPanel({ onClose }: { onClose: () => void }) {
                     className="flex items-center gap-3 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2.5"
                   >
                     <div
-                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full font-cairo text-[13px] font-black text-[#0B1F3A]"
+                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full font-cairo text-[13px] font-black text-[#131803]"
                       style={{ background: AVATAR_COLORS[i % AVATAR_COLORS.length] }}
                     >
                       {f.name.trim()[0]?.toUpperCase() ?? '؟'}
@@ -233,7 +233,7 @@ export default function FriendsPanel({ onClose }: { onClose: () => void }) {
 
         <div className="border-t border-white/[0.06] px-5 py-3">
           <p className="flex items-center justify-center gap-1.5 text-center font-cairo text-[11px] text-[#B8C4D8]">
-            <Gamepad2 className="h-3 w-3 text-[#F5B942]" />
+            <Gamepad2 className="h-3 w-3 text-[#FFC93C]" />
             السميات ديالك كتبان فكل لعبة تلقائياً
           </p>
         </div>

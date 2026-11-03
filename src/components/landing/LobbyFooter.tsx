@@ -31,13 +31,13 @@ export default function LobbyFooter({
 
       {/* Zellige diamond divider */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(216,166,42,0.25))' }} />
+        <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(198,245,66,0.25))' }} />
         <div className="flex gap-2 items-center">
-          <div className="w-1.5 h-1.5 rotate-45" style={{ background: 'rgba(216,166,42,0.5)' }} />
+          <div className="w-1.5 h-1.5 rotate-45" style={{ background: 'rgba(198,245,66,0.5)' }} />
           <StarMark size={16} />
-          <div className="w-1.5 h-1.5 rotate-45" style={{ background: 'rgba(216,166,42,0.5)' }} />
+          <div className="w-1.5 h-1.5 rotate-45" style={{ background: 'rgba(198,245,66,0.5)' }} />
         </div>
-        <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(216,166,42,0.25), transparent)' }} />
+        <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(198,245,66,0.25), transparent)' }} />
       </div>
 
       {/* Navigation links */}
@@ -45,26 +45,26 @@ export default function LobbyFooter({
         {isAuthed && username && (
           <Link
             href={`/profile/${username}`}
-            className="font-cairo text-[12px] font-bold text-white/40 transition hover:text-[#D8A62A]"
+            className="font-cairo text-[12px] font-bold text-white/40 transition hover:text-[var(--lime)]"
           >
             الپروفيل
           </Link>
         )}
         <Link
           href="/privacy"
-          className="font-cairo text-[12px] font-bold text-white/40 transition hover:text-[#D8A62A]"
+          className="font-cairo text-[12px] font-bold text-white/40 transition hover:text-[var(--lime)]"
         >
           الخصوصية
         </Link>
         <Link
           href="/terms"
-          className="font-cairo text-[12px] font-bold text-white/40 transition hover:text-[#D8A62A]"
+          className="font-cairo text-[12px] font-bold text-white/40 transition hover:text-[var(--lime)]"
         >
           الشروط
         </Link>
         <Link
           href="/contact"
-          className="font-cairo text-[12px] font-bold text-white/40 transition hover:text-[#D8A62A]"
+          className="font-cairo text-[12px] font-bold text-white/40 transition hover:text-[var(--lime)]"
         >
           تواصل معانا
         </Link>

@@ -38,6 +38,14 @@ import {
 import { StarMark } from "@/components/Star";
 import GameCard from "@/components/GameCard";
 import GameIcon from "@/components/GameIcon";
+import {
+  SolarCalendarCheck,
+  SolarClipboardCheck,
+  SolarCompass,
+  SolarGamepad,
+  SolarGear,
+  SolarUsersGroup,
+} from "@/components/SolarIcon";
 import GuestNotice from "@/components/landing/GuestNotice";
 import ComingSoon from "@/components/landing/ComingSoon";
 import LobbyFooter from "@/components/landing/LobbyFooter";
@@ -78,32 +86,10 @@ const TICKER_ITEMS = [
 const TITLE_WORDS_1 = ["فضح", "صاحبك"];
 const TITLE_WORDS_2 = ["قبل", "ما", "يفضحك"];
 
-/* ── Bottom tab bar item styles ── */
-/* `relative` keeps the buttons painted above the absolutely-positioned liquid pill.
-   الرئيسية ↔ الألعاب share ONE fixed box (same padding + label weight in both
-   states — only colors swap), so the pill lerps between two static boxes and
-   cannot jump when the active label flips at the scroll midpoint. */
-const NAV_TAB_PRIMARY =
-  "relative flex flex-col items-center gap-0.5 px-5 py-1.5 rounded-full transition active:scale-95";
-const NAV_TAB_IDLE =
-  "relative flex flex-col items-center gap-0.5 px-3 py-1 rounded-full transition hover:bg-white/[0.06] active:scale-95";
-const NAV_TAB_ACTIVE_STYLE: React.CSSProperties = {
-  background: "rgba(194,52,26,0.9)",
-  boxShadow: "0 2px 14px rgba(194,52,26,0.5)",
-};
-
-/* ── Liquid indicator (shared pill for الرئيسية ↔ الألعاب) ──
-   The pill's POSITION has no transition at all: it is re-lerped from scroll
-   progress on every scroll frame, so it flows in real time with the finger.
-   These constants only tune the decorative squash/stretch morph on the inner
-   blob while the pill travels. */
-const LIQUID_SCROLL_MS = 520; /* scroll flip: slow, visibly flowing */
-const LIQUID_CLICK_MS = 210; /* tap: quick hop */
-const LIQUID_SCROLL_EASE =
-  "cubic-bezier(0.65, 0, 0.35, 1)"; /* fluid ease-in-out */
-const LIQUID_CLICK_EASE =
-  "cubic-bezier(0.22, 0.61, 0.36, 1)"; /* snappy ease-out */
-const LIQUID_ARM_MS = 800; /* no morph while the page load / scroll restore settles */
+/* ── Daily check-in ladder (Store Posters check-in card) ──
+   Mirrors the server defaults in src/lib/config.ts (checkinLadder);
+   the streak itself comes from /api/economy/balance. */
+const CHECKIN_LADDER = [25, 35, 50, 75, 100, 150, 250];
 
 const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
@@ -237,13 +223,14 @@ function LobbyContent() {
     setFriendsOpen(true);
   };
 
-  /* ── Bottom tab bar: scroll targets + active tab tracking ── */
-  /* The pill position never waits for this state: it follows scroll progress
-     continuously. `activeTab` only drives aria-current / the active label,
-     which flips at the midpoint (progress 0.5) of the scroll range. */
+  /* ── Bottom tab bar: scroll targets + active tab tracking ──
+     Store Posters nav: Explore / Games / Friends / Profile. Only
+     Explore ↔ Games have an active state; it flips at the midpoint of
+     the scroll range to the games section (same rule the old liquid
+     pill used — the pill itself is dropped with the new bar). */
   const [activeTab, setActiveTab] = useState<"home" | "games">("home");
 
-  /* Reduced motion: snap the page instantly, so the pill snaps with it. */
+  /* Reduced motion: snap the page instantly. */
   const scrollToTop = () =>
     window.scrollTo({
       top: 0,
@@ -256,201 +243,59 @@ function LobbyContent() {
       block: "start",
     });
 
-  /* ── Liquid indicator: ONE shared pill that flows between الرئيسية ↔ الألعاب ──
-     Source of truth = scroll progress p ∈ [0,1]: 0 = page top, 1 = the games
-     section snapped to the viewport top (exactly where a tab click lands).
-     Every scroll frame re-lerps the pill's box between the two button boxes,
-     so the liquid physically flows toward الألعاب while the user scrolls and
-     arrives exactly when the section does — zero perceived delay. */
-  const navRef = useRef<HTMLElement>(null);
-  const homeTabRef = useRef<HTMLButtonElement>(null);
-  const gamesTabRef = useRef<HTMLButtonElement>(null);
-  const liquidRef = useRef<HTMLDivElement>(null);
-  const liquidBlobRef = useRef<HTMLDivElement>(null);
-  const activeTabRef = useRef<"home" | "games">("home");
-  const liquidTrigger = useRef<"scroll" | "click">("scroll");
-  const liquidClickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const morphArmed = useRef(false);
+  const goHome = () => scrollToTop();
+  const goGames = () => scrollToGames();
 
-  const cachedLayoutRef = useRef<{
-    end: number;
-    home: { w: number; h: number; t: number; l: number };
-    games: { w: number; h: number; t: number; l: number };
-  } | null>(null);
-
-  const updateCachedLayout = useCallback(() => {
-    const mobile = document.getElementById("most-played");
-    const desktop = document.getElementById("games-section");
-    const target = mobile?.offsetHeight
-      ? mobile
-      : desktop?.offsetHeight
-        ? desktop
-        : null;
-    const maxScroll = Math.max(
-      0,
-      document.documentElement.scrollHeight - window.innerHeight,
-    );
-    const end = target
-      ? Math.min(target.getBoundingClientRect().top + window.scrollY, maxScroll)
-      : maxScroll;
-
-    const home = homeTabRef.current;
-    const games = gamesTabRef.current;
-    if (home && games) {
-      cachedLayoutRef.current = {
-        end,
-        home: {
-          w: home.offsetWidth,
-          h: home.offsetHeight,
-          t: home.offsetTop,
-          l: home.offsetLeft,
-        },
-        games: {
-          w: games.offsetWidth,
-          h: games.offsetHeight,
-          t: games.offsetTop,
-          l: games.offsetLeft,
-        },
-      };
-    }
-  }, []);
-
-  const readProgress = useCallback(() => {
-    if (!cachedLayoutRef.current) updateCachedLayout();
-    const end = cachedLayoutRef.current?.end ?? 1;
-    if (end <= 1) return window.scrollY > 0 ? 1 : 0;
-    return Math.min(1, Math.max(0, window.scrollY / end));
-  }, [updateCachedLayout]);
-
-  /* Writes the pill's box for a progress value. Deliberately NO CSS transition:
-     the scroll itself is the animation, so there is nothing to catch up with.
-     offset* are layout boxes (immune to the buttons' active:scale-95 mid-press)
-     and translateX takes physical px, so RTL needs no sign flip. */
-  const placeLiquid = useCallback((progress: number) => {
-    const liquid = liquidRef.current;
-    const layout = cachedLayoutRef.current;
-    if (!liquid || !layout) return;
-    const { home, games } = layout;
-    if (home.w === 0 || games.w === 0) return; /* bar is hidden at sm+ */
-    const lerp = (a: number, b: number) => a + (b - a) * progress;
-    /* Same-value writes are skipped: the fallback tick below re-runs this while
-       idle, and there is no reason to dirty the style with identical strings. */
-    const write = (
-      prop: "width" | "height" | "top" | "transform",
-      value: string,
-    ) => {
-      if (liquid.style[prop] !== value) liquid.style[prop] = value;
-    };
-    write("width", `${lerp(home.w, games.w)}px`);
-    write("height", `${lerp(home.h, games.h)}px`);
-    write("top", `${lerp(home.t, games.t)}px`);
-    write("transform", `translateX(${lerp(home.l, games.l)}px)`);
-  }, []);
-
-  /* rAF-throttled sync: one pill write + the label flip per scroll frame. */
-  const syncLiquid = useCallback(() => {
-    const progress = readProgress();
-    placeLiquid(progress);
-    const next = progress >= 0.5 ? "games" : "home";
-    if (next !== activeTabRef.current) {
-      activeTabRef.current = next;
-      setActiveTab(next);
-    }
-  }, [readProgress, placeLiquid]);
-
-  /* Mount: seat the pill BEFORE the browser paints — a fresh top load shows it
-     on الرئيسية with no animation and no flash, while a restored mid-page
-     scroll resolves instantly (0ms) to the position/tab it belongs to.
-     Listeners + one early rAF reconcile the label and catch any scroll the
-     browser restores after this effect, plus resizes and webfont swaps. */
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (status === "loading") return;
-    updateCachedLayout();
     let rafId = 0;
+    const sync = () => {
+      const mobile = document.getElementById("most-played");
+      const desktop = document.getElementById("games-section");
+      const target = mobile?.offsetHeight
+        ? mobile
+        : desktop?.offsetHeight
+          ? desktop
+          : null;
+      const end = target
+        ? target.getBoundingClientRect().top + window.scrollY
+        : 0;
+      setActiveTab(end > 0 && window.scrollY >= end / 2 ? "games" : "home");
+    };
     const schedule = () => {
       if (rafId) return;
       rafId = requestAnimationFrame(() => {
         rafId = 0;
-        syncLiquid();
+        sync();
       });
     };
-
-    placeLiquid(readProgress());
-    morphArmed.current = false;
-    const armTimer = window.setTimeout(() => {
-      morphArmed.current = true;
-    }, LIQUID_ARM_MS);
-    schedule();
-
-    const handleResize = () => {
-      updateCachedLayout();
-      schedule();
-    };
-
+    sync();
     window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", handleResize);
-    /* Fallback tick: scroll events are coalesced (and rAF stalls) whenever the
-       renderer suspends frames — background/occluded/headless tabs — which can
-       leave the pill behind an already-moved scroll position. A cheap synchronous
-       sync keeps the DOM correct even with nothing painting; on an active tab the
-       scroll path above still delivers the same-frame, zero-delay updates. */
-    const fallbackId = window.setInterval(() => syncLiquid(), 33);
-    const handleFontsReady = () => {
-      updateCachedLayout();
-      schedule();
-    };
-    document.fonts.ready.then(handleFontsReady).catch(() => {});
+    window.addEventListener("resize", schedule);
     return () => {
       window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", handleResize);
-      window.clearInterval(fallbackId);
+      window.removeEventListener("resize", schedule);
       if (rafId) cancelAnimationFrame(rafId);
-      window.clearTimeout(armTimer);
-      if (liquidClickTimer.current) {
-        clearTimeout(liquidClickTimer.current);
-        liquidClickTimer.current = null;
-      }
     };
-  }, [status, placeLiquid, readProgress, syncLiquid, updateCachedLayout]);
+  }, [status]);
 
-  /* Midpoint flip: the active/idle classes just swapped the two buttons'
-     boxes, so re-seat the pill on the new geometry (continuous position stays
-     the source of truth) and play the squash/stretch morph — decoration only.
-     The morph is suppressed during the load/restore window so a refresh never
-     animates the first paint, and under prefers-reduced-motion it never runs. */
-  useEffect(() => {
-    if (status === "loading") return;
-    activeTabRef.current = activeTab;
-    placeLiquid(readProgress());
-    const clicked = liquidTrigger.current === "click";
-    liquidTrigger.current = "scroll";
-    if (!morphArmed.current) return;
-    const blob = liquidBlobRef.current;
-    if (!blob || prefersReducedMotion()) return;
-    const duration = clicked ? LIQUID_CLICK_MS : LIQUID_SCROLL_MS;
-    const ease = clicked ? LIQUID_CLICK_EASE : LIQUID_SCROLL_EASE;
-    blob.style.animation = "none";
-    void blob.offsetWidth; /* restart the keyframes */
-    blob.style.animation = `navLiquidMorph ${duration}ms ${ease}`;
-  }, [activeTab, status, placeLiquid, readProgress]);
-
-  /* A tap on the already-active tab never flips activeTab — drop the fast
-     timing shortly after so a later scroll still flows at the slow pace. */
-  const markLiquidClick = () => {
-    liquidTrigger.current = "click";
-    if (liquidClickTimer.current) clearTimeout(liquidClickTimer.current);
-    liquidClickTimer.current = setTimeout(() => {
-      liquidTrigger.current = "scroll";
-    }, LIQUID_CLICK_MS + 700);
-  };
-
-  const goHome = () => {
-    markLiquidClick();
-    scrollToTop();
-  };
-  const goGames = () => {
-    markLiquidClick();
-    scrollToGames();
+  /* Profile tab: real profile route when authed; guests get the same
+     treatment as the Friends tab (auth sheet on mobile, /login on
+     desktop). */
+  const openProfile = () => {
+    const username = session?.user?.username;
+    if (!isAuthed || !username) {
+      if (
+        typeof window !== "undefined" &&
+        window.matchMedia("(min-width: 640px)").matches
+      ) {
+        router.push("/login");
+      } else {
+        setAuthSheetOpen(true);
+      }
+      return;
+    }
+    router.push(`/profile/${username}`);
   };
 
   const saveName = async () => {
@@ -826,12 +671,12 @@ function LobbyContent() {
   if (status === "loading") {
     if (initError) {
       return (
-        <div className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-[#060810] text-white">
+        <div className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-[var(--bg)] text-white">
           <AlertTriangle className="h-10 w-10 text-red-500" />
           <p className="font-cairo text-lg">وقع مشكل فالاتصال</p>
           <button 
             onClick={() => window.location.reload()} 
-            className="rounded-xl bg-[#E8B430] px-6 py-2.5 font-cairo font-black text-[#060810] transition hover:brightness-110 active:scale-95"
+            className="rounded-xl px-6 py-2.5 font-cairo font-black transition hover:brightness-110 active:scale-95" style={{ background: "var(--lime)", color: "#131803" }}
           >
             عاود جرب
           </button>
@@ -854,7 +699,7 @@ function LobbyContent() {
 
   return (
     <div
-      className="relative min-h-dvh overflow-x-hidden bg-[#060810] text-white"
+      className="relative min-h-dvh overflow-x-hidden bg-[var(--bg)] text-white"
       style={{ paddingBottom: "max(5rem, env(safe-area-inset-bottom))" }}
     >
       {/* ══════════════════════════════════════════
@@ -862,131 +707,125 @@ function LobbyContent() {
       ══════════════════════════════════════════ */}
       {/* RTL: first child → visual RIGHT, last child → visual LEFT */}
       <header
-        className="sticky top-0 z-30 flex items-center justify-between px-4 h-[54px]"
+        className="sticky top-0 z-30"
         style={{
-          background: "rgba(6,8,16,0.55)",
+          background: "rgba(7,7,13,0.78)",
           backdropFilter: "blur(16px) saturate(160%)",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          borderBottom: "1px solid var(--line)",
         }}
       >
-        {/* FIRST → visual RIGHT */}
-        <div className="flex items-center gap-1.5">
-          <button
-            onClick={toggleMute}
-            className="h-8 w-8 grid place-items-center rounded-full"
-            style={{
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.08)",
-            }}
-          >
-            {muted ? (
-              <VolumeX className="h-3.5 w-3.5 text-white/42" />
-            ) : (
-              <Volume2 className="h-3.5 w-3.5 text-white/42" />
-            )}
-          </button>
-          <div id="music-portal"></div>
-        </div>
-
-        {/* LAST → visual LEFT: Logo + hamburger */}
-        <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/icons/image.png"
-              alt="PlayM3ana"
-              width={44}
-              height={44}
-              className="h-11 w-11 object-contain"
-            />
-            <span className="font-cairo font-black text-[15px] tracking-tight">
-              <span className="text-white">PLAY</span>
-              <span style={{ color: "rgb(232, 180, 48)" }}>M3ANA</span>
-            </span>
-          </Link>
-
-          <button
-            onClick={openSettings}
-            className="h-9 w-9 grid place-items-center rounded-xl transition hover:bg-white/10"
-            style={{
-              border: "1px solid rgba(255,255,255,0.1)",
-              background: "rgba(255,255,255,0.04)",
-            }}
-          >
-            <svg
-              width="17"
-              height="13"
-              viewBox="0 0 17 13"
-              fill="none"
-              aria-hidden="true"
-            >
-              <rect
-                width="17"
-                height="2.2"
-                rx="1.1"
-                fill="rgba(255,255,255,0.8)"
+        <div className="flex items-center justify-between gap-2 px-3 py-2">
+          {/* FIRST → visual RIGHT: wordmark + sound controls */}
+          <div className="flex min-w-0 items-center gap-1.5">
+            <Link href="/" className="flex shrink-0 items-center gap-1.5">
+              <Image
+                src="/icons/image.png"
+                alt="PlayM3ana"
+                width={34}
+                height={34}
+                className="h-[34px] w-[34px] object-contain max-[380px]:hidden"
               />
-              <rect
-                y="5.4"
-                width="11"
-                height="2.2"
-                rx="1.1"
-                fill="rgba(255,255,255,0.8)"
-              />
-              <rect
-                y="10.8"
-                width="17"
-                height="2.2"
-                rx="1.1"
-                fill="rgba(255,255,255,0.8)"
-              />
-            </svg>
-          </button>
-        </div>
-      </header>
-
-      {/* Coins pill */}
-      {isAuthed && (
-        <div
-          className={`fixed end-4 top-[62px] z-[55] flex select-none items-center gap-1.5 rounded-full border px-3 py-1 font-cairo text-[13px] font-black tabular-nums pointer-events-none backdrop-blur-sm ${coinPop ? "coin-pop" : ""}`}
-          style={{
-            borderColor: "rgba(232,180,48,0.35)",
-            background: "rgba(6,8,16,0.95)",
-            color: "#E8B430",
-            boxShadow: "0 0 14px rgba(232,180,48,0.25)",
-          }}
-        >
-          <Coins className="h-3.5 w-3.5" />
-          {coins}
-        </div>
-      )}
-
-      {/* Level pill — mirrored on start side (visual right in RTL) */}
-      {isAuthed && xpData && (
-        <div
-          className="fixed start-4 top-[62px] z-[55] flex select-none items-center gap-1.5 rounded-full border px-3 py-1 pointer-events-none backdrop-blur-sm"
-          style={{
-            borderColor: "rgba(232,180,48,0.25)",
-            background: "rgba(6,8,16,0.95)",
-            boxShadow: "0 0 10px rgba(232,180,48,0.15)",
-          }}
-        >
-          <span className="font-grit text-[12px]" style={{ color: "#E8B430" }}>
-            LV.{xpData.level}
-          </span>
-          <div
-            className="w-16 h-1.5 rounded-full overflow-hidden"
-            style={{ background: "rgba(255,255,255,0.10)" }}
-          >
-            <div
-              className="h-full rounded-full"
+              <span className="whitespace-nowrap font-nunito text-[15px] font-black tracking-[0.3px]">
+                <span className="text-white">PLAY</span>
+                <span style={{ color: "var(--lime)" }}>M3ANA</span>
+              </span>
+            </Link>
+            <button
+              onClick={toggleMute}
+              aria-label="الصوت"
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-full"
               style={{
-                width: `${Math.min(100, ((xpData.xp % Math.floor(100 * Math.pow(xpData.level, 1.4))) / Math.max(1, Math.floor(100 * Math.pow(xpData.level, 1.4)))) * 100)}%`,
-                background: "linear-gradient(90deg,#E8B430,#F5CC6B)",
+                background: "var(--panel)",
+                border: "1px solid var(--line)",
               }}
-            />
+            >
+              {muted ? (
+                <VolumeX className="h-3.5 w-3.5 text-white/50" />
+              ) : (
+                <Volume2 className="h-3.5 w-3.5 text-white/50" />
+              )}
+            </button>
+            <div id="music-portal" className="shrink-0"></div>
+          </div>
+
+          {/* LAST → visual LEFT: LV pill · coins pill · settings · avatar */}
+          <div className="flex items-center gap-1.5">
+            {isAuthed && xpData && (
+              <div
+                className="flex min-w-[50px] flex-col gap-[3px] rounded-full px-2 py-[5px] max-[380px]:min-w-[44px]"
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid var(--line)",
+                }}
+              >
+                <span className="font-nunito text-[10.5px] font-black leading-none tracking-[0.5px] text-white">
+                  LV {xpData.level}
+                </span>
+                <div
+                  className="h-1 overflow-hidden rounded-full"
+                  style={{ background: "rgba(255,255,255,0.13)" }}
+                >
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${Math.min(100, ((xpData.xp % Math.floor(100 * Math.pow(xpData.level, 1.4))) / Math.max(1, Math.floor(100 * Math.pow(xpData.level, 1.4)))) * 100)}%`,
+                      background: "var(--lime)",
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+            {isAuthed && (
+              <div
+                className={`flex select-none items-center gap-1.5 rounded-full px-2.5 py-[5px] font-nunito text-[13.5px] font-black tabular-nums ${coinPop ? "coin-pop" : ""}`}
+                style={{
+                  background: "rgba(255,201,60,0.10)",
+                  border: "1px solid rgba(255,201,60,0.27)",
+                  color: "var(--gold)",
+                }}
+              >
+                <span
+                  className="grid h-[19px] w-[19px] shrink-0 place-items-center rounded-full text-[10.5px]"
+                  style={{
+                    background:
+                      "radial-gradient(circle at 35% 30%, #FFF3C4, #FFC53D 60%, #E8A00C)",
+                    color: "#7A5200",
+                  }}
+                  aria-hidden="true"
+                >
+                  ★
+                </span>
+                {coins}
+              </div>
+            )}
+            <button
+              onClick={openSettings}
+              aria-label="الإعدادات"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-full transition hover:bg-white/10"
+              style={{
+                background: "var(--panel)",
+                border: "1px solid var(--line)",
+                color: "#fff",
+              }}
+            >
+              <SolarGear className="h-[19px] w-[19px]" />
+            </button>
+            {isAuthed && session?.user?.username && (
+              <Link
+                href={`/profile/${session.user.username}`}
+                aria-label="الپروفيل"
+                className="grid h-[38px] w-[38px] shrink-0 place-items-center rounded-full font-cairo text-[15px] font-black text-white"
+                style={{
+                  background: "var(--panel2)",
+                  border: "2px solid var(--lime)",
+                }}
+              >
+                {session.user.username.trim()[0]?.toUpperCase() ?? "؟"}
+              </Link>
+            )}
           </div>
         </div>
-      )}
+      </header>
 
       {/* ══════════════════════════════════════════
           HERO — image complète + contenu superposé
@@ -1010,7 +849,7 @@ function LobbyContent() {
           style={{
             height: "62%",
             background:
-              "linear-gradient(to top, #060810 0%, #060810 28%, rgba(6,8,16,0.85) 55%, rgba(6,8,16,0.3) 80%, transparent 100%)",
+              "linear-gradient(to top, #07070D 0%, #07070D 28%, rgba(7,7,13,0.85) 55%, rgba(7,7,13,0.3) 80%, transparent 100%)",
           }}
         />
 
@@ -1029,7 +868,7 @@ function LobbyContent() {
             <span
               style={{
                 background:
-                  "linear-gradient(135deg,#F5CC6B 0%,#E8B430 45%,#C2341A 100%)",
+                  "linear-gradient(135deg,#FFC93C 0%,#C6F542 100%)",
                 WebkitBackgroundClip: "text",
                 backgroundClip: "text",
                 color: "transparent",
@@ -1044,13 +883,13 @@ function LobbyContent() {
               href="#most-played"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-[14px] font-cairo font-black text-[14px]"
               style={{
-                background: "rgba(194,52,26,0.95)",
-                border: "1px solid rgba(220,80,40,0.55)",
-                color: "white",
-                boxShadow: "0 4px 20px rgba(194,52,26,0.6)",
+                background: "var(--lime)",
+                border: "1px solid transparent",
+                color: "#131803",
+                boxShadow: "0 4px 20px rgba(198,245,66,0.35)",
               }}
             >
-              <Gamepad2 className="h-4 w-4" />
+              <SolarGamepad className="h-4 w-4" />
               لعب دابا
             </a>
             {!isAuthed && (
@@ -1077,21 +916,21 @@ function LobbyContent() {
       <div
         className="relative overflow-hidden py-2.5"
         style={{
-          background: "rgba(194,52,26,0.1)",
-          borderTop: "1px solid rgba(194,52,26,0.22)",
-          borderBottom: "1px solid rgba(194,52,26,0.12)",
+          background: "rgba(255,255,255,0.04)",
+          borderTop: "1px solid var(--line)",
+          borderBottom: "1px solid var(--line)",
         }}
       >
         <div
           className="pointer-events-none absolute inset-y-0 right-0 w-14 z-10"
           style={{
-            background: "linear-gradient(to left, #060810, transparent)",
+            background: "linear-gradient(to left, #07070D, transparent)",
           }}
         />
         <div
           className="pointer-events-none absolute inset-y-0 left-0 w-14 z-10"
           style={{
-            background: "linear-gradient(to right, #060810, transparent)",
+            background: "linear-gradient(to right, #07070D, transparent)",
           }}
         />
         <div
@@ -1116,7 +955,7 @@ function LobbyContent() {
                   {item}
                   <span
                     className="mx-4"
-                    style={{ color: "rgba(232,180,48,0.45)" }}
+                    style={{ color: "rgba(198,245,66,0.5)" }}
                   >
                     ◆
                   </span>
@@ -1128,13 +967,115 @@ function LobbyContent() {
       </div>
 
       {/* ══════════════════════════════════════════
+          DAILY CHECK-IN — automatic on load; this card only
+          presents the ladder + current streak (claim logic and the
+          "+N coins" toast stay exactly as they were).
+          MISSIONS TEASER — opens the real MissionsPanel.
+      ══════════════════════════════════════════ */}
+      {isAuthed && xpData && (
+        <section className="px-4 pt-4">
+          <div
+            className="rounded-[18px] p-[13px_14px]"
+            style={{
+              background:
+                "linear-gradient(92deg, rgba(198,245,66,0.10), rgba(198,245,66,0.02))",
+              border: "1px solid rgba(198,245,66,0.24)",
+            }}
+          >
+            <div className="flex items-center gap-[9px]">
+              <SolarCalendarCheck
+                className="h-5 w-5 shrink-0"
+                style={{ color: "var(--lime)" }}
+              />
+              <b className="font-cairo text-[14.5px] font-black text-white">
+                كادو د اليوم
+              </b>
+              {xpData.streak > 0 && (
+                <span
+                  className="ms-auto font-cairo text-[11.5px] font-extrabold"
+                  style={{ color: "var(--gold)" }}
+                >
+                  🔥 {xpData.streak}
+                </span>
+              )}
+            </div>
+            <div className="mt-[11px] flex gap-[5px]">
+              {CHECKIN_LADDER.map((reward, idx) => {
+                const dayNum = idx + 1;
+                const todayPos =
+                  xpData.streak > 0 ? ((xpData.streak - 1) % 7) + 1 : 1;
+                const done = xpData.streak > 0 && dayNum < todayPos;
+                const today = dayNum === todayPos;
+                return (
+                  <div
+                    key={dayNum}
+                    className="flex-1 rounded-[11px] px-0.5 py-[7px] text-center"
+                    style={{
+                      background: done
+                        ? "rgba(198,245,66,0.14)"
+                        : today
+                          ? "rgba(255,201,60,0.10)"
+                          : "rgba(255,255,255,0.04)",
+                      border: today
+                        ? "1.5px solid var(--gold)"
+                        : done
+                          ? "1px solid rgba(198,245,66,0.35)"
+                          : "1px solid var(--line)",
+                    }}
+                  >
+                    <span
+                      className="block font-cairo text-[9px] font-bold"
+                      style={{ color: "var(--dim)" }}
+                    >
+                      نهار {dayNum}
+                    </span>
+                    <span
+                      className="mt-0.5 block font-nunito text-[12.5px] font-black tabular-nums"
+                      style={{
+                        color: done || today ? "var(--lime)" : "#fff",
+                      }}
+                    >
+                      {done ? "✓" : `+${reward}`}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setMissionsOpen(true)}
+            className="mt-3 flex w-full items-center gap-3 rounded-[16px] px-[13px] py-[11px] text-start transition active:scale-[0.99]"
+            style={{
+              background: "var(--panel)",
+              border: "1px solid var(--line)",
+            }}
+          >
+            <SolarClipboardCheck className="h-6 w-6 shrink-0" style={{ color: "var(--lime)" }} />
+            <span className="min-w-0">
+              <b className="block font-cairo text-[13.5px] font-black leading-snug text-white">
+                المهام اليومية
+              </b>
+              <span
+                className="block font-cairo text-[11px] font-bold leading-snug"
+                style={{ color: "var(--dim)" }}
+              >
+                تتجدد كل يوم بالفجر 🌙
+              </span>
+            </span>
+          </button>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════════
           AMBIANCE MAROCAINE — 3 cartes culturelles
       ══════════════════════════════════════════ */}
       <div
         className="relative overflow-hidden px-3 py-2.5"
         style={{
-          background: "#060810",
-          borderBottom: "1px solid rgba(232,180,48,0.14)",
+          background: "var(--bg)",
+          borderBottom: "1px solid var(--line)",
         }}
       >
         {/* Zellige tile pattern */}
@@ -1278,28 +1219,20 @@ function LobbyContent() {
           <div className="flex items-center gap-2">
             <div
               className="w-2 h-2 rotate-45 flex-shrink-0"
-              style={{ background: "#E8B430", opacity: 0.65 }}
+              style={{ background: "var(--lime)", opacity: 0.65 }}
             />
             <h2 className="font-lalezar text-[19px] text-white">
               أبواب المدينة
             </h2>
             <div
               className="w-2 h-2 rotate-45 flex-shrink-0"
-              style={{ background: "#E8B430", opacity: 0.65 }}
+              style={{ background: "var(--lime)", opacity: 0.65 }}
             />
           </div>
         </div>
 
         <div className="flex overflow-x-auto gap-3 pb-3 -mx-4 px-4 scrollbar-hide snap-x snap-mandatory">
-          {GAMES.map((game, i) => {
-            const rankBg = [
-              "#E8B430",
-              "#A855F7",
-              "#C2341A",
-              "#EF4444",
-              "#10A07A",
-            ][i];
-            const rankClr = i === 0 ? "#060810" : "#fff";
+          {GAMES.map((game) => {
             return (
               /* Wrapper ~1.3 cartes visibles par écran :
                  76.92% (= 100 / 1.3) de la largeur utile du strip − le gap (gap-3 = 12px)
@@ -1317,17 +1250,7 @@ function LobbyContent() {
                   onWatchAd={() => watchAdToPlay(game.id)}
                   onDirectAd={() => playAdDirectly(game.id)}
                 />
-                {/* Rank badge superposé sur la card */}
-                <div
-                  className="absolute top-3 end-3 z-20 h-6 w-6 rounded-full grid place-items-center font-cairo text-[10px] font-black pointer-events-none"
-                  style={{
-                    background: rankBg,
-                    color: rankClr,
-                    boxShadow: `0 2px 8px ${rankBg}70`,
-                  }}
-                >
-                  {i + 1}
-                </div>
+                
               </div>
             );
           })}
@@ -1342,14 +1265,14 @@ function LobbyContent() {
         <div className="flex items-center gap-3 mb-4">
           <div
             className="w-2.5 h-2.5 rotate-45 flex-shrink-0"
-            style={{ background: "#E8B430", opacity: 0.7 }}
+            style={{ background: "var(--lime)", opacity: 0.7 }}
           />
           <h2 className="font-lalezar text-[22px] text-white">أبواب المدينة</h2>
           <div
             className="flex-1 h-px"
             style={{
               background:
-                "linear-gradient(90deg,rgba(232,180,48,0.3),transparent)",
+                "linear-gradient(90deg,rgba(198,245,66,0.3),transparent)",
             }}
           />
         </div>
@@ -1421,12 +1344,12 @@ function LobbyContent() {
             <button
               key={cat.id}
               className="shrink-0 flex flex-col items-center gap-1 px-3 py-2.5 rounded-[14px] min-w-[68px] transition-transform hover:scale-105 active:scale-95"
-              style={{ background: cat.bg, border: `1px solid ${cat.border}` }}
+              style={{ background: "var(--panel)", border: "1px solid var(--line)" }}
             >
               <span className="text-[22px] leading-none">{cat.icon}</span>
               <span
                 className="font-cairo text-[8.5px] font-black text-center"
-                style={{ color: cat.color, whiteSpace: "nowrap" }}
+                style={{ color: "rgba(255,255,255,0.75)", whiteSpace: "nowrap" }}
               >
                 {cat.label}
               </span>
@@ -1443,16 +1366,15 @@ function LobbyContent() {
           <div
             className="rounded-[20px] p-5 relative overflow-hidden"
             style={{
-              background:
-                "linear-gradient(135deg,rgba(232,180,48,0.1) 0%,rgba(6,8,16,0.95) 100%)",
-              border: "1px solid rgba(232,180,48,0.22)",
+              background: "var(--panel)",
+              border: "1px solid var(--line)",
             }}
           >
             <div
               className="absolute top-0 inset-x-0 h-[3px] rounded-t-[20px]"
               style={{
                 background:
-                  "linear-gradient(90deg,transparent,rgba(232,180,48,0.7),#E8B430,rgba(232,180,48,0.7),transparent)",
+                  "linear-gradient(90deg,transparent,rgba(198,245,66,0.7),#C6F542,rgba(198,245,66,0.7),transparent)",
               }}
             />
             <p className="font-lalezar text-[19px] text-white mb-1">
@@ -1466,8 +1388,8 @@ function LobbyContent() {
                 href="/register"
                 className="flex-1 py-3 rounded-[14px] font-cairo font-black text-[14px] text-center"
                 style={{
-                  background: "linear-gradient(135deg,#F5CC6B,#E8B430)",
-                  color: "#060810",
+                  background: "var(--lime)",
+                  color: "#131803",
                 }}
               >
                 صاوب كونط
@@ -1494,15 +1416,16 @@ function LobbyContent() {
           <div
             className="rounded-[18px] p-4"
             style={{
-              background: "rgba(232,180,48,0.06)",
-              border: "1px solid rgba(232,180,48,0.18)",
+              background:
+                "linear-gradient(92deg, rgba(255,201,60,0.11), rgba(255,201,60,0.02))",
+              border: "1px solid rgba(255,201,60,0.24)",
             }}
           >
             <div className="flex items-center gap-2 mb-2">
-              <Zap className="h-4 w-4" style={{ color: "#E8B430" }} />
+              <Zap className="h-4 w-4" style={{ color: "#FFC93C" }} />
               <span
                 className="font-lalezar text-[17px]"
-                style={{ color: "#E8B430" }}
+                style={{ color: "#FFC93C" }}
               >
                 عرض على صاحبك
               </span>
@@ -1515,7 +1438,8 @@ function LobbyContent() {
                 className="flex-1 rounded-xl px-3 py-2.5 font-mono text-[13px] tracking-widest text-white"
                 style={{
                   background: "rgba(0,0,0,0.35)",
-                  border: "1px solid rgba(232,180,48,0.18)",
+                  border: "1.5px dashed rgba(255,201,60,0.4)",
+                  color: "var(--gold)",
                 }}
               >
                 {xpData.referralCode}
@@ -1528,9 +1452,9 @@ function LobbyContent() {
                 }}
                 className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-cairo text-[12px] font-black"
                 style={{
-                  background: "rgba(232,180,48,0.12)",
-                  border: "1px solid rgba(232,180,48,0.28)",
-                  color: "#E8B430",
+                  background: "var(--gold)",
+                  border: "1px solid transparent",
+                  color: "#3A2A00",
                 }}
               >
                 {referralCopied ? (
@@ -1554,126 +1478,82 @@ function LobbyContent() {
       </div>
 
       {/* ══════════════════════════════════════════
-          BOTTOM NAV — 4 tabs, mobile only
+          BOTTOM NAV — Store Posters: Explore / Games / Friends / Profile
       ══════════════════════════════════════════ */}
       {/* RTL: first DOM child → visual RIGHT */}
       <nav
-        ref={navRef}
         aria-label="التنقل الرئيسي"
-        className="fixed bottom-0 inset-x-0 z-50 flex items-center justify-around pt-1.5 pb-[max(0.6rem,env(safe-area-inset-bottom))] sm:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 sm:hidden"
         style={{
-          background: "#060810",
-          borderTop: "1px solid rgba(232,180,48,0.1)",
+          background: "rgba(12,12,20,0.95)",
+          borderTop: "1px solid var(--line)",
+          backdropFilter: "blur(12px)",
+          padding: "8px 10px calc(9px + env(safe-area-inset-bottom))",
         }}
       >
-        {/* Liquid pill — the single active highlight shared by الرئيسية ↔ الألعاب.
-            Sits behind the buttons; position/size are written from JS on every
-            scroll frame with NO transition (scroll = animation), and the inner
-            blob carries the color + the squash/stretch morph while travelling. */}
-        <div
-          ref={liquidRef}
-          data-nav-liquid
-          aria-hidden="true"
-          className="pointer-events-none absolute left-0 top-0"
-          style={{ willChange: "transform, width, height" }}
-        >
-          <div
-            ref={liquidBlobRef}
-            className="nav-liquid-blob absolute inset-0 rounded-full"
-            style={NAV_TAB_ACTIVE_STYLE}
-          />
+        <div className="flex">
+          {/* الرئيسية — Explore */}
+          <button
+            onClick={goHome}
+            aria-label="الرئيسية"
+            aria-current={activeTab === "home" ? "page" : undefined}
+            className="flex-1 py-[5px] text-center transition active:scale-95"
+            style={{ color: activeTab === "home" ? "var(--lime)" : "var(--dim)" }}
+          >
+            <SolarCompass className="mx-auto mb-0.5 block h-[22px] w-[22px]" />
+            <span className="font-cairo text-[10.5px] font-extrabold">الرئيسية</span>
+          </button>
+          {/* الألعاب — Games */}
+          <button
+            onClick={goGames}
+            aria-label="الألعاب"
+            aria-current={activeTab === "games" ? "page" : undefined}
+            className="flex-1 py-[5px] text-center transition active:scale-95"
+            style={{ color: activeTab === "games" ? "var(--lime)" : "var(--dim)" }}
+          >
+            <SolarGamepad className="mx-auto mb-0.5 block h-[22px] w-[22px]" />
+            <span className="font-cairo text-[10.5px] font-extrabold">الألعاب</span>
+          </button>
+          {/* الصحاب — Friends (opens the real FriendsPanel) */}
+          <button
+            onClick={openFriends}
+            aria-label="الصحاب"
+            className="flex-1 py-[5px] text-center transition active:scale-95"
+            style={{ color: "var(--dim)" }}
+          >
+            <SolarUsersGroup className="mx-auto mb-0.5 block h-[22px] w-[22px]" />
+            <span className="font-cairo text-[10.5px] font-extrabold">الصحاب</span>
+          </button>
+          {/* الپروفيل — Profile (real profile route) */}
+          <button
+            onClick={openProfile}
+            aria-label="الپروفيل"
+            className="flex-1 py-[5px] text-center transition active:scale-95"
+            style={{ color: "var(--dim)" }}
+          >
+            <span
+              className="mx-auto mb-0.5 grid h-6 w-6 place-items-center rounded-full font-cairo text-[11px] font-black"
+              style={
+                isAuthed && session?.user?.username
+                  ? {
+                      background: "var(--panel2)",
+                      border: "1.5px solid var(--lime)",
+                      color: "#fff",
+                    }
+                  : {
+                      background: "var(--panel2)",
+                      border: "1.5px solid var(--line)",
+                      color: "var(--dim)",
+                    }
+              }
+            >
+              {isAuthed && session?.user?.username
+                ? (session.user.username.trim()[0]?.toUpperCase() ?? "؟")
+                : "؟"}
+            </span>
+            <span className="font-cairo text-[10.5px] font-extrabold">الپروفيل</span>
+          </button>
         </div>
-        {/* الرئيسية — visual RIGHT (DOM first in RTL) */}
-        <button
-          ref={homeTabRef}
-          onClick={goHome}
-          aria-label="الرئيسية"
-          aria-current={activeTab === "home" ? "page" : undefined}
-          className={`${NAV_TAB_PRIMARY}${activeTab === "home" ? "" : " hover:bg-white/[0.06]"}`}
-        >
-          <Home
-            className={`h-[22px] w-[22px] ${activeTab === "home" ? "text-white" : "text-white/35"}`}
-          />
-          <span
-            className={`font-cairo text-[10px] font-black ${activeTab === "home" ? "text-white" : "text-white/35"}`}
-          >
-            الرئيسية
-          </span>
-        </button>
-        {/* الألعاب — يهبط لقسم #most-played */}
-        <button
-          ref={gamesTabRef}
-          onClick={goGames}
-          aria-label="الألعاب"
-          aria-current={activeTab === "games" ? "page" : undefined}
-          className={`${NAV_TAB_PRIMARY}${activeTab === "games" ? "" : " hover:bg-white/[0.06]"}`}
-        >
-          <Gamepad2
-            className={`h-[22px] w-[22px] ${activeTab === "games" ? "text-white" : "text-white/35"}`}
-          />
-          <span
-            className={`font-cairo text-[10px] font-black ${activeTab === "games" ? "text-white" : "text-white/35"}`}
-          >
-            الألعاب
-          </span>
-        </button>
-        {/* الصحاب — يفتح لوحة الصحاب (أو ورقة الدخول للضيوف) */}
-        <button
-          onClick={openFriends}
-          aria-label="الصحاب"
-          className={NAV_TAB_IDLE}
-        >
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 22 22"
-            fill="none"
-            aria-hidden="true"
-          >
-            <rect
-              x="3"
-              y="4"
-              width="6"
-              height="6"
-              rx="1.5"
-              fill="rgba(255,255,255,0.33)"
-            />
-            <rect
-              x="13"
-              y="4"
-              width="6"
-              height="6"
-              rx="1.5"
-              fill="rgba(255,255,255,0.33)"
-            />
-            <rect
-              x="3"
-              y="13"
-              width="6"
-              height="6"
-              rx="1.5"
-              fill="rgba(255,255,255,0.33)"
-            />
-            <rect
-              x="13"
-              y="13"
-              width="6"
-              height="6"
-              rx="1.5"
-              fill="rgba(255,255,255,0.33)"
-            />
-          </svg>
-          <span className="font-cairo text-[10px] text-white/35">الصحاب</span>
-        </button>
-        {/* حسابي — visual LEFT (DOM last in RTL) */}
-        <button
-          onClick={openSettings}
-          aria-label="حسابي"
-          className={NAV_TAB_IDLE}
-        >
-          <User className="h-[22px] w-[22px] text-white/35" />
-          <span className="font-cairo text-[10px] text-white/35">حسابي</span>
-        </button>
       </nav>
 
       {/* Missions Panel */}
@@ -1716,8 +1596,8 @@ function LobbyContent() {
           <div
             className="bounce-in relative z-10 w-full max-w-md overflow-hidden rounded-2xl p-6 shadow-xl"
             style={{
-              background: "#0D1828",
-              border: "1px solid rgba(232,180,48,0.2)",
+              background: "var(--panel2)",
+              border: "1px solid var(--line)",
             }}
           >
             <button
@@ -1747,7 +1627,7 @@ function LobbyContent() {
                 <button
                   type="button"
                   onClick={() => startRewardedAd()}
-                  className="bg-[#E8B430] text-[#060810] font-bold rounded-xl flex items-center justify-center gap-2 mt-6 w-full py-4 text-[15px]"
+                  className="font-bold rounded-xl flex items-center justify-center gap-2 mt-6 w-full py-4 text-[15px]" style={{ background: "var(--lime)", color: "#131803" }}
                 >
                   <Play className="h-5 w-5" /> تفرج فالإشهار — وعيني عينك
                 </button>
@@ -1779,15 +1659,15 @@ function LobbyContent() {
             {adStatus === "watching" && (
               <div className="mt-4 flex flex-col gap-3">
                 <AdNativeBanner />
-                <div className="flex items-center gap-3 rounded-2xl border border-[#2DD4BF]/20 bg-[#2DD4BF]/5 px-4 py-4">
+                <div className="flex items-center gap-3 rounded-2xl border border-[rgba(198,245,66,0.2)] bg-[rgba(198,245,66,0.05)] px-4 py-4">
                   <div className="relative grid h-12 w-12 shrink-0 place-items-center">
-                    <span className="glow-pulse absolute inset-0 rounded-full bg-[#2DD4BF]/25 blur-xl" />
-                    <span className="relative font-lalezar text-2xl text-[#2DD4BF]">
+                    <span className="glow-pulse absolute inset-0 rounded-full bg-[rgba(198,245,66,0.25)] blur-xl" />
+                    <span className="relative font-lalezar text-2xl text-[var(--lime)]">
                       {countdown}
                     </span>
                   </div>
                   <div>
-                    <p className="font-cairo text-[13px] font-black text-[#2DD4BF]">
+                    <p className="font-cairo text-[13px] font-black text-[var(--lime)]">
                       صبر على الإشهار…
                     </p>
                     <p className="font-cairo text-[11px] font-semibold text-[#B8C4D8]">
@@ -1825,8 +1705,8 @@ function LobbyContent() {
           <div
             className="bounce-in absolute inset-x-0 bottom-0 rounded-t-3xl p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:relative sm:inset-auto sm:rounded-2xl sm:pb-6 sm:w-full sm:max-w-[440px] shadow-[0_-20px_80px_rgba(0,0,0,.9)]"
             style={{
-              background: "#0D1828",
-              border: "1px solid rgba(232,180,48,0.2)",
+              background: "var(--panel2)",
+              border: "1px solid var(--line)",
             }}
           >
             <button
@@ -1851,7 +1731,7 @@ function LobbyContent() {
             <div className="mt-6 flex flex-col gap-2.5">
               <Link
                 href="/login"
-                className="bg-[#E8B430] text-[#060810] font-bold rounded-xl flex items-center justify-center gap-2 w-full py-3.5 text-[15px]"
+                className="font-bold rounded-xl flex items-center justify-center gap-2 w-full py-3.5 text-[15px]" style={{ background: "var(--lime)", color: "#131803" }}
               >
                 <LogIn className="h-5 w-5" /> دخول
               </Link>
@@ -1882,8 +1762,8 @@ function LobbyContent() {
           <div
             className="bounce-in absolute inset-x-0 bottom-0 max-h-[88dvh] overflow-y-auto rounded-t-3xl p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:relative sm:inset-auto sm:rounded-2xl sm:pb-6 sm:w-full sm:max-w-[500px] sm:max-h-[85dvh] shadow-[0_-20px_80px_rgba(0,0,0,.9)]"
             style={{
-              background: "#0D1828",
-              border: "1px solid rgba(232,180,48,0.2)",
+              background: "var(--panel2)",
+              border: "1px solid var(--line)",
             }}
           >
             <button
@@ -1895,16 +1775,16 @@ function LobbyContent() {
             </button>
             <div className="flex items-center justify-between pe-12">
               <div className="flex items-center gap-2">
-                <Settings className="h-5 w-5 text-[#2DD4BF]" />
+                <SolarGear className="h-5 w-5" style={{ color: "var(--lime)" }} />
                 <p className="font-cairo text-[14px] font-black text-[#FFF7E8]">
                   الإعدادات
                 </p>
               </div>
               <Link
                 href={session?.user?.username ? `/profile/${session.user.username}` : "/profile/walidomar"}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-cairo text-[12px] font-black transition-all hover:scale-105 active:scale-95 shadow-[0_0_14px_rgba(216,166,42,0.25)] border border-[#D8A62A]/50 bg-gradient-to-r from-[#D8A62A]/20 via-[#F5B942]/15 to-[#D8A62A]/20 text-[#F5B942] hover:text-white hover:border-[#D8A62A] hover:shadow-[0_0_20px_rgba(216,166,42,0.45)]"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-cairo text-[12px] font-black transition-all hover:scale-105 active:scale-95" style={{ background: "var(--panel)", border: "1px solid rgba(198,245,66,0.4)", color: "var(--lime)", boxShadow: "0 0 14px rgba(198,245,66,0.18)" }}
               >
-                <User className="h-3.5 w-3.5 text-[#F5B942]" />
+                <User className="h-3.5 w-3.5" style={{ color: "var(--lime)" }} />
                 <span>الپروفيل</span>
               </Link>
             </div>
@@ -1912,11 +1792,11 @@ function LobbyContent() {
             <div className="mt-5 flex flex-col gap-2.5">
               {/* Coins */}
               {isAuthed && (
-                <div className="flex items-center justify-between rounded-2xl border border-[#F5B942]/20 bg-[#F5B942]/10 px-4 py-3">
+                <div className="flex items-center justify-between rounded-2xl border border-[rgba(255,201,60,0.2)] bg-[rgba(255,201,60,0.08)] px-4 py-3">
                   <span className="font-cairo text-[13px] font-bold text-[#FFF7E8]">
                     الكوينز ديالك
                   </span>
-                  <span className="flex items-center gap-1.5 font-cairo text-[15px] font-black tabular-nums text-[#F5B942]">
+                  <span className="flex items-center gap-1.5 font-cairo text-[15px] font-black tabular-nums text-[#FFC93C]">
                     <Coins className="h-4 w-4" /> {coins}
                   </span>
                 </div>
@@ -1931,12 +1811,12 @@ function LobbyContent() {
                   {muted ? (
                     <VolumeX className="h-4 w-4 text-[#B8C4D8]" />
                   ) : (
-                    <Volume2 className="h-4 w-4 text-[#2DD4BF]" />
+                    <Volume2 className="h-4 w-4" style={{ color: "var(--lime)" }} />
                   )}
                   الصوت
                 </span>
                 <span
-                  className={`relative h-6 w-11 rounded-full transition-colors ${muted ? "bg-white/10" : "bg-[#2DD4BF]/40"}`}
+                  className={`relative h-6 w-11 rounded-full transition-colors ${muted ? "bg-white/10" : "bg-[rgba(198,245,66,0.45)]"}`}
                 >
                   <span
                     className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${muted ? "start-0.5" : "start-[1.375rem]"}`}
@@ -1953,12 +1833,12 @@ function LobbyContent() {
                   {!musicPlaying ? (
                     <VolumeX className="h-4 w-4 text-[#B8C4D8]" />
                   ) : (
-                    <Music className="h-4 w-4 text-[#2DD4BF]" />
+                    <Music className="h-4 w-4" style={{ color: "var(--lime)" }} />
                   )}
                   الموسيقى
                 </span>
                 <span
-                  className={`relative h-6 w-11 rounded-full transition-colors ${!musicPlaying ? "bg-white/10" : "bg-[#2DD4BF]/40"}`}
+                  className={`relative h-6 w-11 rounded-full transition-colors ${!musicPlaying ? "bg-white/10" : "bg-[rgba(198,245,66,0.45)]"}`}
                 >
                   <span
                     className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${!musicPlaying ? "start-0.5" : "start-[1.375rem]"}`}
@@ -1969,9 +1849,9 @@ function LobbyContent() {
 
               {/* Change name */}
               {isAuthed && (
-                <div className="rounded-2xl border border-[#2DD4BF]/20 bg-[#2DD4BF]/10 px-4 py-3.5">
+                <div className="rounded-2xl border border-[rgba(198,245,66,0.2)] bg-[rgba(198,245,66,0.06)] px-4 py-3.5">
                   <div className="flex items-center gap-2.5">
-                    <UserPlus className="h-4 w-4 shrink-0 text-[#2DD4BF]" />
+                    <UserPlus className="h-4 w-4 shrink-0" style={{ color: "var(--lime)" }} />
                     <span className="font-cairo text-[13px] font-bold text-[#FFF7E8]">
                       تبديل السمية
                     </span>
@@ -1995,18 +1875,18 @@ function LobbyContent() {
                       maxLength={30}
                       disabled={nameBusy || me?.canChangeName === false}
                       placeholder="السمية الجديدة…"
-                      className="w-full min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-[#2DD4BF]/50 disabled:opacity-40"
+                      className="w-full min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-[rgba(198,245,66,0.5)] disabled:opacity-40"
                     />
                     <button
                       onClick={() => void saveName()}
                       disabled={nameBusy || me?.canChangeName === false}
-                      className="bg-[#E8B430] text-[#060810] font-bold rounded-xl shrink-0 px-4 py-2.5 text-[12px] disabled:opacity-40"
+                      className="font-bold rounded-xl shrink-0 px-4 py-2.5 text-[12px] disabled:opacity-40" style={{ background: "var(--lime)", color: "#131803" }}
                     >
                       {nameBusy ? "…" : "حفظ"}
                     </button>
                   </div>
                   {me?.canChangeName === false && me?.nextNameChangeAt && (
-                    <p className="mt-2 flex items-center gap-1.5 font-cairo text-[11px] font-bold text-[#2DD4BF]/80">
+                    <p className="mt-2 flex items-center gap-1.5 font-cairo text-[11px] font-bold text-[rgba(198,245,66,0.8)]">
                       <Clock className="h-3.5 w-3.5" />
                       تقدر تبدل من بعد{" "}
                       {new Date(me.nextNameChangeAt).toLocaleDateString(
@@ -2026,7 +1906,7 @@ function LobbyContent() {
 
               {/* Change password */}
               {isAuthed && (
-                <div className="rounded-2xl border border-emerald-400/15 bg-emerald-950/10 px-4 py-3.5">
+                <div className="rounded-2xl border border-[rgba(198,245,66,0.15)] bg-[rgba(198,245,66,0.04)] px-4 py-3.5">
                   <div className="flex items-center gap-2.5">
                     <ShieldCheck className="h-4 w-4 shrink-0 text-emerald-300" />
                     <span className="font-cairo text-[13px] font-bold text-[#FFF7E8]">
@@ -2048,7 +1928,7 @@ function LobbyContent() {
                       }}
                       disabled={pwBusy || me?.hasPassword === false}
                       placeholder="الباسورد الحالي"
-                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-emerald-400/50 disabled:opacity-40"
+                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-[rgba(198,245,66,0.5)] disabled:opacity-40"
                     />
                     <input
                       type="password"
@@ -2059,7 +1939,7 @@ function LobbyContent() {
                       }}
                       disabled={pwBusy || me?.hasPassword === false}
                       placeholder="الباسورد الجديد"
-                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-emerald-400/50 disabled:opacity-40"
+                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-[rgba(198,245,66,0.5)] disabled:opacity-40"
                     />
                     <input
                       type="password"
@@ -2070,12 +1950,12 @@ function LobbyContent() {
                       }}
                       disabled={pwBusy || me?.hasPassword === false}
                       placeholder="عاود اكتب الباسورد الجديد"
-                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-emerald-400/50 disabled:opacity-40"
+                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-[rgba(198,245,66,0.5)] disabled:opacity-40"
                     />
                     <button
                       onClick={() => void savePassword()}
                       disabled={pwBusy || me?.hasPassword === false}
-                      className="bg-[#E8B430] text-[#060810] font-bold rounded-xl py-2.5 text-[12px] disabled:opacity-40"
+                      className="font-bold rounded-xl py-2.5 text-[12px] disabled:opacity-40" style={{ background: "var(--lime)", color: "#131803" }}
                     >
                       {pwBusy ? "…" : "بدل الباسورد"}
                     </button>
@@ -2095,7 +1975,7 @@ function LobbyContent() {
                 <>
                   <Link
                     href="/login"
-                    className="bg-[#E8B430] text-[#060810] font-bold rounded-xl flex items-center justify-center gap-2 mt-1 w-full py-3.5 text-[15px]"
+                    className="font-bold rounded-xl flex items-center justify-center gap-2 mt-1 w-full py-3.5 text-[15px]" style={{ background: "var(--lime)", color: "#131803" }}
                   >
                     <LogIn className="h-5 w-5" /> دخول
                   </Link>
