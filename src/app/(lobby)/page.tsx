@@ -1617,7 +1617,7 @@ function LobbyContent() {
             onClick={() => setAdModalOpen(false)}
           />
           <div
-            className="bounce-in relative z-10 w-full max-w-md overflow-hidden rounded-2xl p-6 shadow-xl"
+            className="bounce-in relative z-10 w-full max-w-[380px] overflow-hidden rounded-[24px] p-6 text-center shadow-xl"
             style={{
               background: "var(--panel2)",
               border: "1px solid var(--line)",
@@ -1631,15 +1631,15 @@ function LobbyContent() {
             >
               <X className="h-4 w-4" />
             </button>
-            <div className="flex items-center gap-2">
-              <StarMark size={26} />
-              <p className="font-cairo text-[13px] font-black text-[#FFF7E8]">
+            <div className="flex items-center justify-center gap-2">
+              <StarMark size={22} />
+              <p className="font-cairo text-[12px] font-black" style={{ color: "var(--dim)" }}>
                 إشهار باش تلعب
               </p>
             </div>
             {adStatus === "idle" && (
               <>
-                <h3 className="mt-5 font-lalezar text-2xl text-[#FFF7E8]">
+                <h3 className="mt-4 font-lalezar text-[22px] text-[#FFF7E8]">
                   ثواني من وقتك مقابل الليلة كاملة
                 </h3>
                 <p className="mt-1.5 font-cairo text-[13px] font-semibold leading-relaxed text-[#B8C4D8]">
@@ -1650,7 +1650,7 @@ function LobbyContent() {
                 <button
                   type="button"
                   onClick={() => startRewardedAd()}
-                  className="font-bold rounded-xl flex items-center justify-center gap-2 mt-6 w-full py-4 text-[15px]" style={{ background: "var(--lime)", color: "#131803" }}
+                  className="btn-lime mt-6 w-full py-4 font-cairo text-[15px]"
                 >
                   <Play className="h-5 w-5" /> تفرج فالإشهار — وعيني عينك
                 </button>
@@ -1702,14 +1702,15 @@ function LobbyContent() {
               </div>
             )}
             {adStatus === "verifying" && (
-              <div className="mt-6 flex flex-col items-center gap-4 rounded-2xl border border-emerald-400/20 bg-emerald-400/5 px-6 py-9">
-                <div className="grid h-14 w-14 place-items-center rounded-full border-2 border-emerald-400/40 bg-emerald-400/10">
-                  <Check className="h-7 w-7 text-emerald-400" />
-                </div>
-                <p className="font-cairo text-[14px] font-black text-emerald-300">
+              <div className="mt-6 flex flex-col items-center gap-4 px-2 py-6">
+                <div
+                  className="h-12 w-12 animate-spin rounded-full border-[3px]"
+                  style={{ borderColor: 'rgba(198,245,66,0.25)', borderTopColor: 'var(--lime)' }}
+                />
+                <p className="font-cairo text-[14px] font-black text-[#FFF7E8]">
                   كنتأكدو بلي ماتفرجتيش ف الإشهار وعينيك مسدودين…
                 </p>
-                <p className="font-cairo text-[12px] font-semibold text-emerald-100/70">
+                <p className="font-cairo text-[12px] font-semibold text-[#B8C4D8]">
                   تقدر تعيط لصحابك باش توجدو 🫡
                 </p>
               </div>
@@ -1726,12 +1727,13 @@ function LobbyContent() {
             onClick={() => setAuthSheetOpen(false)}
           />
           <div
-            className="bounce-in absolute inset-x-0 bottom-0 rounded-t-3xl p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:relative sm:inset-auto sm:rounded-2xl sm:pb-6 sm:w-full sm:max-w-[440px] shadow-[0_-20px_80px_rgba(0,0,0,.9)]"
+            className="bounce-in absolute inset-x-0 bottom-0 rounded-t-[26px] px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-2 sm:relative sm:inset-auto sm:rounded-[24px] sm:pb-6 sm:pt-6 sm:w-full sm:max-w-[440px] shadow-[0_-20px_80px_rgba(0,0,0,.9)]"
             style={{
               background: "var(--panel2)",
               border: "1px solid var(--line)",
             }}
           >
+            <div className="sheet-grab sm:hidden" />
             <button
               onClick={() => setAuthSheetOpen(false)}
               className="absolute end-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/10 text-[#B8C4D8] transition hover:border-red-500/40 hover:text-red-400"
@@ -1754,13 +1756,13 @@ function LobbyContent() {
             <div className="mt-6 flex flex-col gap-2.5">
               <Link
                 href="/login"
-                className="font-bold rounded-xl flex items-center justify-center gap-2 w-full py-3.5 text-[15px]" style={{ background: "var(--lime)", color: "#131803" }}
+                className="btn-lime w-full py-3.5 font-cairo text-[15px]"
               >
                 <LogIn className="h-5 w-5" /> دخول
               </Link>
               <Link
                 href="/register"
-                className="bg-white/10 text-[#FFF7E8] font-bold rounded-xl flex items-center justify-center gap-2 border border-white/20 w-full py-3.5 text-[14px]"
+                className="btn-store-ghost w-full py-3.5 font-cairo text-[14px]"
               >
                 <UserPlus className="h-5 w-5" /> صاوب كونط — فابور
               </Link>
@@ -1783,12 +1785,13 @@ function LobbyContent() {
             onClick={() => setSettingsOpen(false)}
           />
           <div
-            className="bounce-in absolute inset-x-0 bottom-0 max-h-[88dvh] overflow-y-auto rounded-t-3xl p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:relative sm:inset-auto sm:rounded-2xl sm:pb-6 sm:w-full sm:max-w-[500px] sm:max-h-[85dvh] shadow-[0_-20px_80px_rgba(0,0,0,.9)]"
+            className="bounce-in absolute inset-x-0 bottom-0 max-h-[88dvh] overflow-y-auto rounded-t-[26px] px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-2 sm:relative sm:inset-auto sm:rounded-[24px] sm:pb-6 sm:pt-6 sm:w-full sm:max-w-[500px] sm:max-h-[85dvh] shadow-[0_-20px_80px_rgba(0,0,0,.9)]"
             style={{
               background: "var(--panel2)",
               border: "1px solid var(--line)",
             }}
           >
+            <div className="sheet-grab sm:hidden" />
             <button
               onClick={() => setSettingsOpen(false)}
               className="absolute end-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/10 text-[#B8C4D8] transition hover:border-red-500/40 hover:text-red-400"
@@ -1812,15 +1815,16 @@ function LobbyContent() {
               </Link>
             </div>
 
-            <div className="mt-5 flex flex-col gap-2.5">
-              {/* Coins */}
+            <div className="mt-2 flex flex-col">
+              {/* Coins — flat settings row (preview .srow) */}
               {isAuthed && (
-                <div className="flex items-center justify-between rounded-2xl border border-[rgba(255,201,60,0.2)] bg-[rgba(255,201,60,0.08)] px-4 py-3">
-                  <span className="font-cairo text-[13px] font-bold text-[#FFF7E8]">
+                <div className="flex items-center justify-between py-3.5">
+                  <span className="flex items-center gap-2.5 font-cairo text-[13.5px] font-bold text-[#FFF7E8]">
+                    <Coins className="h-4.5 w-4.5 text-[#FFC93C]" />
                     الكوينز ديالك
                   </span>
-                  <span className="flex items-center gap-1.5 font-cairo text-[15px] font-black tabular-nums text-[#FFC93C]">
-                    <Coins className="h-4 w-4" /> {coins}
+                  <span className="font-cairo text-[15px] font-black tabular-nums text-[#FFC93C]">
+                    {coins}
                   </span>
                 </div>
               )}
@@ -1828,7 +1832,7 @@ function LobbyContent() {
               {/* Sound toggle */}
               <button
                 onClick={toggleMute}
-                className="flex w-full items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5"
+                className="flex w-full items-center justify-between border-t border-white/[0.07] py-3.5"
               >
                 <span className="flex items-center gap-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8]">
                   {muted ? (
@@ -1850,7 +1854,7 @@ function LobbyContent() {
               {/* Music toggle */}
               <button
                 onClick={() => window.dispatchEvent(new CustomEvent('pm3_music_toggle'))}
-                className="flex w-full items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5"
+                className="flex w-full items-center justify-between border-t border-white/[0.07] py-3.5"
               >
                 <span className="flex items-center gap-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8]">
                   {!musicPlaying ? (
@@ -1870,17 +1874,12 @@ function LobbyContent() {
               </button>
 
 
-              {/* Change name */}
+              {/* Change name — preview section: label, account line, field, note, save */}
               {isAuthed && (
-                <div className="rounded-2xl border border-[rgba(198,245,66,0.2)] bg-[rgba(198,245,66,0.06)] px-4 py-3.5">
-                  <div className="flex items-center gap-2.5">
-                    <UserPlus className="h-4 w-4 shrink-0" style={{ color: "var(--lime)" }} />
-                    <span className="font-cairo text-[13px] font-bold text-[#FFF7E8]">
-                      تبديل السمية
-                    </span>
-                  </div>
+                <div>
+                  <p className="ssec font-cairo">تبديل السمية</p>
                   {me?.username && (
-                    <p className="mt-1.5 font-cairo text-[11px] text-[#B8C4D8]">
+                    <p className="mt-1 font-cairo text-[11.5px] font-semibold" style={{ color: "var(--dim)" }}>
                       اسم الكونط الأصلي:{" "}
                       <span className="font-bold text-[#FFF7E8]">
                         {me.username}
@@ -1888,28 +1887,19 @@ function LobbyContent() {
                       {me.email ? ` (${me.email})` : ""}
                     </p>
                   )}
-                  <div className="mt-2.5 flex items-center gap-2">
-                    <input
-                      value={nameDraft}
-                      onChange={(e) => {
-                        setNameDraft(e.target.value);
-                        setNameMsg(null);
-                      }}
-                      maxLength={30}
-                      disabled={nameBusy || me?.canChangeName === false}
-                      placeholder="السمية الجديدة…"
-                      className="w-full min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-[rgba(198,245,66,0.5)] disabled:opacity-40"
-                    />
-                    <button
-                      onClick={() => void saveName()}
-                      disabled={nameBusy || me?.canChangeName === false}
-                      className="font-bold rounded-xl shrink-0 px-4 py-2.5 text-[12px] disabled:opacity-40" style={{ background: "var(--lime)", color: "#131803" }}
-                    >
-                      {nameBusy ? "…" : "حفظ"}
-                    </button>
-                  </div>
+                  <input
+                    value={nameDraft}
+                    onChange={(e) => {
+                      setNameDraft(e.target.value);
+                      setNameMsg(null);
+                    }}
+                    maxLength={30}
+                    disabled={nameBusy || me?.canChangeName === false}
+                    placeholder="السمية الجديدة…"
+                    className="store-field mt-2.5 font-cairo text-[13.5px]"
+                  />
                   {me?.canChangeName === false && me?.nextNameChangeAt && (
-                    <p className="mt-2 flex items-center gap-1.5 font-cairo text-[11px] font-bold text-[rgba(198,245,66,0.8)]">
+                    <p className="mt-2 flex items-center gap-1.5 font-cairo text-[11.5px] font-bold" style={{ color: "var(--gold)" }}>
                       <Clock className="h-3.5 w-3.5" />
                       تقدر تبدل من بعد{" "}
                       {new Date(me.nextNameChangeAt).toLocaleDateString(
@@ -1924,20 +1914,22 @@ function LobbyContent() {
                       {nameMsg.text}
                     </p>
                   )}
+                  <button
+                    onClick={() => void saveName()}
+                    disabled={nameBusy || me?.canChangeName === false}
+                    className="btn-lime mt-2.5 w-full py-3 font-cairo text-[13px]"
+                  >
+                    {nameBusy ? "…" : "حفظ"}
+                  </button>
                 </div>
               )}
 
-              {/* Change password */}
+              {/* Change password — preview section: label, fields, Google note, save */}
               {isAuthed && (
-                <div className="rounded-2xl border border-[rgba(198,245,66,0.15)] bg-[rgba(198,245,66,0.04)] px-4 py-3.5">
-                  <div className="flex items-center gap-2.5">
-                    <ShieldCheck className="h-4 w-4 shrink-0 text-emerald-300" />
-                    <span className="font-cairo text-[13px] font-bold text-[#FFF7E8]">
-                      تبديل الباسورد
-                    </span>
-                  </div>
+                <div>
+                  <p className="ssec font-cairo">تبديل الباسورد</p>
                   {me?.hasPassword === false && (
-                    <p className="mt-1.5 font-cairo text-[11px] text-[#B8C4D8]">
+                    <p className="mt-1 font-cairo text-[11.5px] font-bold leading-relaxed" style={{ color: "var(--gold)" }}>
                       هاد الحساب تسجل بجوجل — الباسورد ماشي مربوط بيه.
                     </p>
                   )}
@@ -1951,7 +1943,7 @@ function LobbyContent() {
                       }}
                       disabled={pwBusy || me?.hasPassword === false}
                       placeholder="الباسورد الحالي"
-                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-[rgba(198,245,66,0.5)] disabled:opacity-40"
+                      className="store-field font-cairo text-[13.5px]"
                     />
                     <input
                       type="password"
@@ -1962,7 +1954,7 @@ function LobbyContent() {
                       }}
                       disabled={pwBusy || me?.hasPassword === false}
                       placeholder="الباسورد الجديد"
-                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-[rgba(198,245,66,0.5)] disabled:opacity-40"
+                      className="store-field font-cairo text-[13.5px]"
                     />
                     <input
                       type="password"
@@ -1973,15 +1965,8 @@ function LobbyContent() {
                       }}
                       disabled={pwBusy || me?.hasPassword === false}
                       placeholder="عاود اكتب الباسورد الجديد"
-                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 font-cairo text-[13px] font-bold text-[#FFF7E8] placeholder:text-white/40 outline-none transition focus:border-[rgba(198,245,66,0.5)] disabled:opacity-40"
+                      className="store-field font-cairo text-[13.5px]"
                     />
-                    <button
-                      onClick={() => void savePassword()}
-                      disabled={pwBusy || me?.hasPassword === false}
-                      className="font-bold rounded-xl py-2.5 text-[12px] disabled:opacity-40" style={{ background: "var(--lime)", color: "#131803" }}
-                    >
-                      {pwBusy ? "…" : "بدل الباسورد"}
-                    </button>
                   </div>
                   {pwMsg && (
                     <p
@@ -1990,34 +1975,42 @@ function LobbyContent() {
                       {pwMsg.text}
                     </p>
                   )}
+                  <button
+                    onClick={() => void savePassword()}
+                    disabled={pwBusy || me?.hasPassword === false}
+                    className="btn-lime mt-2.5 w-full py-3 font-cairo text-[13px]"
+                  >
+                    {pwBusy ? "…" : "بدل الباسورد"}
+                  </button>
                 </div>
               )}
 
               {/* Guest CTA */}
               {!isAuthed && (
-                <>
+                <div className="mt-4 flex flex-col gap-2.5">
                   <Link
                     href="/login"
-                    className="font-bold rounded-xl flex items-center justify-center gap-2 mt-1 w-full py-3.5 text-[15px]" style={{ background: "var(--lime)", color: "#131803" }}
+                    className="btn-lime w-full py-3.5 font-cairo text-[15px]"
                   >
                     <LogIn className="h-5 w-5" /> دخول
                   </Link>
                   <Link
                     href="/register"
-                    className="bg-white/10 text-[#FFF7E8] font-bold rounded-xl flex items-center justify-center gap-2 border border-white/20 w-full py-3.5 text-[14px]"
+                    className="btn-store-ghost w-full py-3.5 font-cairo text-[14px]"
                   >
                     <UserPlus className="h-5 w-5" /> صاوب كونط — فابور
                   </Link>
-                </>
+                </div>
               )}
 
-              {/* Logout */}
+              {/* Logout — preview .logout block */}
               {isAuthed && (
                 <button
                   onClick={() => {
                     void handleLogout();
                   }}
-                  className="mt-1 flex w-full items-center justify-center gap-2 rounded-2xl border border-red-500/20 bg-red-950/20 py-3.5 font-cairo text-[13px] font-black text-red-300"
+                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl py-[13px] font-cairo text-[14px] font-black"
+                  style={{ background: 'rgba(255,107,87,0.09)', border: '1px solid rgba(255,107,87,0.27)', color: '#FFA294' }}
                 >
                   <LogOut className="h-4 w-4" /> خروج
                 </button>
