@@ -962,7 +962,7 @@ const POINTS = {
    STATE
 ══════════════════════════════════════════════════════════ */
 const S = {
-  phase:'home',
+  phase:'setup',
   players:[],           /* [{id,name,color,score}] */
   nameInput:'',
   nameError:'',
@@ -1165,38 +1165,6 @@ function render(){
    VIEWS
 ══════════════════════════════════════════════════════════ */
 const VIEWS = {
-
-/* ── HOME ─────────────────────────────────────────────── */
-home: ()=>`
-  <div class="home-orb home-orb-1"></div>
-  <div class="home-orb home-orb-2"></div>
-  <div class="spacer"></div>
-  <div class="hero anim-fadeup">
-    <span class="game-emoji">❓</span>
-    <h1 class="home-title">سول ولا دير؟</h1>
-    <p class="home-sub">الحقيقة ولا التحدي — الاختيار عليك 🇲🇦</p>
-    <div class="home-badge d2">من 3 ل 8 لاعبين</div>
-  </div>
-  <div class="spacer"></div>
-  <div class="home-feats anim-fadeup d3">
-    <div class="home-feat">
-      <span class="home-feat-ico">🔮</span>
-      <span class="home-feat-lbl">100<br>سؤال</span>
-    </div>
-    <div class="home-feat">
-      <span class="home-feat-ico">💪</span>
-      <span class="home-feat-lbl">100<br>تحدي</span>
-    </div>
-    <div class="home-feat">
-      <span class="home-feat-ico">🎯</span>
-      <span class="home-feat-lbl">10<br>جولات</span>
-    </div>
-  </div>
-  <div style="height:14px"></div>
-  <button class="btn-primary anim-fadeup d4" onclick="act.goSetup()" style="font-size:20px;padding:18px">
-    بدا اللعب 🚀
-  </button>
-`,
 
 /* ── SETUP ────────────────────────────────────────────── */
 setup: ()=>`
@@ -1535,7 +1503,7 @@ act.confirmQuit = () => {
   const m = document.getElementById('quit-modal');
   if(m) m.hidden = true;
   clearTimeout(roulTimer);
-  go('home');
+  go('setup');
 };
 
 /* ══════════════════════════════════════════════════════════
