@@ -24,6 +24,7 @@ export const MAX_PLAYERS = 15
 export const CATEGORIES: Category[] = [
   {
     id: 'animals',
+    img: 'animals',
     title: 'الحيوانات',
     emoji: '🦁',
     words: [
@@ -61,6 +62,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: 'food',
+    img: 'food',
     title: 'الماكلة',
     emoji: '🍲',
     words: [
@@ -93,6 +95,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: 'home',
+    img: 'household',
     title: 'حوايج الدار',
     emoji: '🏠',
     words: [
@@ -125,6 +128,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: 'places',
+    img: 'places',
     title: 'الأماكن',
     emoji: '🏞️',
     words: [
@@ -157,6 +161,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: 'objects',
+    img: 'otherthings',
     title: 'حوايج خرى',
     emoji: '🎒',
     words: [
@@ -189,6 +194,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: 'nature',
+    img: 'nature',
     title: 'الطبيعة',
     emoji: '🌦️',
     words: [
@@ -221,6 +227,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: 'school',
+    img: 'school',
     title: 'المدرسة',
     emoji: '📚',
     words: [
@@ -248,6 +255,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: 'sports',
+    img: 'sports',
     title: 'الرياضة',
     emoji: '⚽',
     words: [

@@ -20,6 +20,8 @@ export interface Category {
   id: string
   title: string
   emoji: string
+  /** category card art in public/cats/cat-<img>.webp (icon + title baked in) */
+  img: string
   words: string[]
 }
 

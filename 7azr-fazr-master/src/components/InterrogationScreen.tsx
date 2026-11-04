@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import { useGame } from '../store'
 import { buzz, timeUp } from '../sound'
 import { formatClock } from '../game'
-import ExitConfirm from './ExitConfirm'
 
 export default function InterrogationScreen() {
   const [state, dispatch] = useGame()
@@ -49,7 +48,6 @@ export default function InterrogationScreen() {
       <div className="bar">
         <b>🎙️ استجواب: {name}</b>
         <span className="cat-pill">INT</span>
-        <ExitConfirm />
       </div>
 
       <div className="center anim-fadeup">

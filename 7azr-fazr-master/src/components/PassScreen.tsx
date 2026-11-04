@@ -2,7 +2,6 @@ import { useGame } from '../store'
 import { buzz } from '../sound'
 import { actionNumber } from '../game'
 import HoldReveal from './HoldReveal'
-import ExitConfirm from './ExitConfirm'
 
 export default function PassScreen() {
   const [state, dispatch] = useGame()
@@ -28,7 +27,6 @@ export default function PassScreen() {
           اللاعب {passIndex + 1} / {crew.length}
         </b>
         <span className="cat-pill">دوزو التاب</span>
-        <ExitConfirm />
       </div>
 
       <div className="center anim-fadeup">
