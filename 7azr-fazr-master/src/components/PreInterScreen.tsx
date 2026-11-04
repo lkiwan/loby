@@ -1,6 +1,5 @@
 import { useGame } from '../store'
 import { buzz } from '../sound'
-import ExitConfirm from './ExitConfirm'
 
 export default function PreInterScreen() {
   const [state, dispatch] = useGame()
@@ -13,7 +12,6 @@ export default function PreInterScreen() {
       <div className="bar">
         <b>الاستجواب</b>
         <span className="cat-pill">PRE-INTER</span>
-        <ExitConfirm />
       </div>
       <div className="center anim-fadeup">
         <div className="big-emoji">🎯</div>

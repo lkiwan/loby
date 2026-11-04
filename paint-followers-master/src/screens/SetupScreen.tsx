@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { useGame } from '../context/GameContext'
 import {
   CATEGORIES,
@@ -14,8 +14,6 @@ import type { Category } from '../types'
  */
 export default function SetupScreen() {
   const { state, dispatch } = useGame()
-  
-  const carouselRef = useRef<HTMLDivElement>(null)
 
   // Fast start: prefill the default player roster so a game can begin in one tap.
   useEffect(() => {
@@ -55,15 +53,110 @@ export default function SetupScreen() {
     dispatch({ type: 'SELECT_CATEGORY', category: pickRandomCategory() })
   }
 
-  const scrollLeft = () => {
-    if (carouselRef.current) carouselRef.current.scrollBy({ left: -200, behavior: 'smooth' })
-  }
-  
-  const scrollRight = () => {
-    if (carouselRef.current) carouselRef.current.scrollBy({ left: 200, behavior: 'smooth' })
+  const selected = state.category
+
+  /* ── Category carousel: GPU transform track ────────────────────
+     Slides are image cards (icon + title baked into the art, so no
+     duplicated HTML category name). The track moves ONLY via
+     translateX and the centered slide is the selection; player-list
+     re-renders never touch the track mid-glide, so swiping stays
+     smooth even with 15 players. */
+  const SLIDE_GAP = 12
+  const SLIDE_RATIO = 0.72
+  const slides = [
+    { key: '__random', img: 'random', title: 'عشوائية', count: 'جرب حظك', n: null as number | null, cat: null as Category | null },
+    ...CATEGORIES.map((c, i) => ({
+      key: c.id,
+      img: c.img,
+      title: c.title,
+      count: `${c.words.length} كلمات`,
+      n: i + 1,
+      cat: c as Category | null,
+    })),
+  ]
+  const [pos, setPos] = useState(0)
+  const [viewW, setViewW] = useState(0)
+  const viewRef = useRef<HTMLDivElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const dragRef = useRef({ down: false, moved: false, startX: 0, base: 0, id: null as number | null })
+  const suppressClickRef = useRef(false)
+
+  const txFor = (p: number) => {
+    const sw = viewW * SLIDE_RATIO
+    return viewW ? (viewW - sw) / 2 - p * (sw + SLIDE_GAP) : 0
   }
 
-  const selected = state.category
+  // Measure the viewport once + on resize (never during a glide).
+  useEffect(() => {
+    const measure = () => { if (viewRef.current) setViewW(viewRef.current.clientWidth) }
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [])
+
+  // Preload every card up front: a swipe never waits on an image decode.
+  useEffect(() => {
+    for (const s of slides) {
+      const im = new Image()
+      im.src = `${import.meta.env.BASE_URL}cats/cat-${s.img}.webp`
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Keep the picked category centered (e.g. after a random pick).
+  useEffect(() => {
+    if (!selected) return
+    const idx = slides.findIndex((s) => s.cat?.id === selected.id)
+    if (idx >= 0) setPos(idx)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected?.id])
+
+  function goTo(i: number) {
+    const t = Math.max(0, Math.min(slides.length - 1, i))
+    setPos(t)
+    const s = slides[t]
+    if (s.cat) handleCategory(s.cat)
+  }
+
+  function handleSlideClick(i: number) {
+    if (suppressClickRef.current) return
+    const s = slides[i]
+    if (!s.cat) { handleRandomCategory(); return }
+    goTo(i)
+  }
+
+  function onDragStart(e: ReactPointerEvent<HTMLDivElement>) {
+    if (e.button !== undefined && e.button > 0) return
+    dragRef.current = { down: true, moved: false, startX: e.clientX, base: txFor(pos), id: e.pointerId }
+    if (trackRef.current) trackRef.current.style.transition = 'none'
+  }
+  function onDragMove(e: ReactPointerEvent<HTMLDivElement>) {
+    const d = dragRef.current
+    if (!d.down || e.pointerId !== d.id) return
+    const dx = e.clientX - d.startX
+    if (!d.moved && Math.abs(dx) > 6) {
+      d.moved = true
+      try { e.currentTarget.setPointerCapture(e.pointerId) } catch { /* noop */ }
+    }
+    if (d.moved && trackRef.current) {
+      trackRef.current.style.transform = `translateX(${d.base + dx}px)`
+    }
+  }
+  function onDragEnd(e: ReactPointerEvent<HTMLDivElement>) {
+    const d = dragRef.current
+    if (!d.down || e.pointerId !== d.id) return
+    d.down = false
+    if (trackRef.current) trackRef.current.style.transition = ''
+    if (d.moved) {
+      const dx = e.clientX - d.startX
+      const step = viewW * SLIDE_RATIO + SLIDE_GAP
+      suppressClickRef.current = true
+      setTimeout(() => { suppressClickRef.current = false }, 350)
+      goTo(pos + Math.round(-dx / step))
+    } else if (trackRef.current) {
+      trackRef.current.style.transform = `translateX(${txFor(pos)}px)`
+    }
+  }
   const canStart = state.players.length >= MIN_PLAYERS && !!selected
   
   let hintText = ''
@@ -127,34 +220,40 @@ export default function SetupScreen() {
         <section className="setup-section" style={{ paddingRight: 0, paddingLeft: 0 }}>
           <h3 className="section-title px-3 mb-3" style={{ fontSize: '15px', color: 'var(--dim)', justifyContent: 'flex-start', fontFamily: 'Cairo, sans-serif', fontWeight: 800 }}>الفئة</h3>
           <div className="cat-carousel">
-            <button type="button" className="nav-btn nav-left d-none d-md-flex" onClick={scrollLeft}>◀</button>
-            <div className="cat-slider" ref={carouselRef}>
-              <div
-                className="cat-slide is-random"
-                onClick={handleRandomCategory}
-              >
-                <div className="cat-emoji">🎲</div>
-                <div className="cat-title">عشوائية</div>
-                <div className="cat-count">جرب حظك</div>
-              </div>
-              
-              {CATEGORIES.map((cat, i) => {
-                const isSelected = selected?.id === cat.id;
-                return (
+            <button type="button" className="nav-btn nav-left d-none d-md-flex" onClick={() => goTo(pos + 1)}>◀</button>
+            <div
+              className="cat-view"
+              ref={viewRef}
+              onPointerDown={onDragStart}
+              onPointerMove={onDragMove}
+              onPointerUp={onDragEnd}
+              onPointerCancel={onDragEnd}
+            >
+              <div className="cat-track" ref={trackRef} style={{ transform: `translateX(${txFor(pos)}px)` }}>
+                {slides.map((s, i) => (
                   <div
-                    key={cat.id}
-                    className={`cat-slide ${isSelected ? 'on' : ''}`}
-                    onClick={() => handleCategory(cat)}
+                    key={s.key}
+                    className={`cat-slide ${i === pos ? 'centered' : ''} ${s.cat && selected?.id === s.cat.id ? 'on' : ''} ${!s.cat ? 'is-random' : ''}`}
+                    onClick={() => handleSlideClick(i)}
                   >
-                    <span className="slide-n">{i + 1}</span>
-                    <div className="cat-emoji">{cat.emoji}</div>
-                    <div className="cat-title">{cat.title}</div>
-                    <div className="cat-count">{cat.words.length} كلمات</div>
+                    <img
+                      className="cat-img"
+                      src={`${import.meta.env.BASE_URL}cats/cat-${s.img}.webp`}
+                      alt={s.title}
+                      draggable={false}
+                    />
+                    {s.n !== null && <span className="slide-n">{s.n}</span>}
+                    <span className="cat-count">{s.count}</span>
                   </div>
-                )
-              })}
+                ))}
+              </div>
             </div>
-            <button type="button" className="nav-btn nav-right d-none d-md-flex" onClick={scrollRight}>▶</button>
+            <button type="button" className="nav-btn nav-right d-none d-md-flex" onClick={() => goTo(pos - 1)}>▶</button>
+            <div className="cat-dots">
+              {slides.map((s, i) => (
+                <button key={s.key} type="button" className={i === pos ? 'on' : ''} onClick={() => goTo(i)} aria-label={s.title} />
+              ))}
+            </div>
           </div>
         </section>
 
@@ -317,58 +416,85 @@ export default function SetupScreen() {
         .cat-carousel {
           position: relative;
           margin-top: 8px;
+          direction: ltr;
         }
-        .cat-slider {
+        .cat-view {
+          overflow: hidden;
+          padding: 10px 0 12px;
+          touch-action: pan-y;
+          cursor: grab;
+          user-select: none;
+          -webkit-user-select: none;
+        }
+        .cat-track {
           display: flex;
-          gap: 8px;
-          overflow-x: auto;
-          padding: 6px 2px 14px;
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-          scroll-behavior: smooth;
-          scroll-snap-type: x mandatory;
+          gap: 12px;
+          will-change: transform;
+          transition: transform 0.5s cubic-bezier(.22,.9,.26,1);
         }
-        .cat-slider::-webkit-scrollbar {
-          display: none;
-        }
-        
         .cat-slide {
-          flex: 0 0 calc((100% - 18px) / 3.5);
-          scroll-snap-align: start;
+          flex: 0 0 72%;
           position: relative;
-          min-height: 130px;
+          padding: 0;
+          line-height: 0;
           text-align: center;
           background: var(--card);
           border: 2.5px solid var(--ink);
           border-radius: 16px;
-          padding: 16px 8px 12px;
+          overflow: hidden;
           color: var(--ink);
-          font-size: 14px;
-          font-weight: 800;
           cursor: pointer;
-          transition: transform 0.12s, box-shadow 0.12s, background 0.15s;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 6px;
-          line-height: 1.3;
           box-shadow: 0 3px 0 var(--ink);
+          opacity: .5;
+          transform: scale(.93);
+          transition: transform 0.45s cubic-bezier(.22,.9,.26,1), opacity 0.45s, box-shadow 0.2s, border-color 0.2s, background 0.15s;
         }
-        .cat-slide:hover { transform: translateY(-2px); }
-        .cat-slide:active { transform: translateY(1px); box-shadow: 0 1px 0 var(--ink); }
+        .cat-slide.centered { opacity: 1; transform: scale(1); }
         .cat-slide.on {
-          background: #FFF1DC;
-          box-shadow: 3px 3px 0 var(--terra);
           border-color: var(--terra);
+          box-shadow: 4px 4px 0 var(--terra);
         }
         .cat-slide.is-random { background: var(--paper2); }
+        .cat-img {
+          display: block;
+          width: 100%;
+          height: auto;
+          aspect-ratio: 1/1;
+          pointer-events: none;
+          user-select: none;
+          -webkit-user-drag: none;
+        }
+        .cat-count {
+          position: absolute;
+          top: 7px;
+          left: 8px;
+          font-size: 10px;
+          font-weight: 900;
+          color: #fff;
+          background: rgba(10,10,18,.72);
+          border: 1.5px solid rgba(255,255,255,.25);
+          border-radius: 99px;
+          padding: 1px 7px;
+          line-height: 1.4;
+        }
+        .cat-dots {
+          display: flex;
+          justify-content: center;
+          gap: 6px;
+          padding: 0 0 4px;
+        }
+        .cat-dots button {
+          width: 8px;
+          height: 8px;
+          padding: 0;
+          border: none;
+          border-radius: 99px;
+          background: var(--ink35, rgba(42,33,24,.3));
+          cursor: pointer;
+          transition: width 0.3s, background 0.3s;
+        }
+        .cat-dots button.on { width: 22px; background: var(--terra); }
 
-        .cat-emoji { font-size: 32px; line-height: 1; margin-top: 4px; }
-        .cat-title { font-size: 13px; font-weight: 800; color: var(--ink); }
-        .cat-count { font-size: 11px; color: var(--dim); font-weight: 700; }
-        .cat-slide.on .cat-count { color: var(--ink50); }
-        
         .slide-n {
           position: absolute;
           top: 6px;

@@ -1,5 +1,4 @@
 import { useGame } from '../store'
-import ExitConfirm from './ExitConfirm'
 
 export default function RevealScreen() {
   const [state, dispatch] = useGame()
@@ -11,7 +10,6 @@ export default function RevealScreen() {
       <div className="bar">
         <b>منظرة الكل 👀</b>
         <span className="cat-pill">REVEAL NIGHT</span>
-        <ExitConfirm />
       </div>
 
       <div className="center">

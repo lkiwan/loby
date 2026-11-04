@@ -67,7 +67,6 @@ export interface GameState {
 }
 
 type Action =
-  | { type: 'HOME' }
   | { type: 'SETUP' }
   | { type: 'START'; setup: Setup }
   | { type: 'REVEAL_DONE' }
@@ -96,8 +95,6 @@ const initialState: GameState = {
 
 function reducer(state: GameState, action: Action): GameState {
   switch (action.type) {
-    case 'HOME':
-      return { ...state, phase: 'setup' }
     case 'SETUP':
       return { ...state, phase: 'setup' }
     case 'START':

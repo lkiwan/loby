@@ -315,23 +315,6 @@ button[disabled] {
   flex: 1;
 }
 
-.btn-exit {
-  width: 34px;
-  height: 34px;
-  min-width: 34px;
-  padding: 0;
-  border-radius: 50%;
-  font-size: 16px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--card);
-  color: var(--terra);
-  box-shadow: 1px 2px 0 var(--ink);
-  flex: none;
-}
-
 /* ══════════════════════════════════════════════════════════
    INPUTS
    ══════════════════════════════════════════════════════════ */

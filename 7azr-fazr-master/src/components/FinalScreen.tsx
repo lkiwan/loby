@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useGame } from '../store'
 import { actionNumber } from '../game'
 import { buzz } from '../sound'
-import ExitConfirm from './ExitConfirm'
 
 export default function FinalScreen() {
   const [state, dispatch] = useGame()
@@ -17,10 +16,6 @@ export default function FinalScreen() {
 
   return (
     <div className="screen">
-      <div className="bar">
-        <span style={{ visibility: 'hidden' }} />
-        <ExitConfirm />
-      </div>
       <div className="center anim-shake" style={{ animationIterationCount: 2 }}>
         <div className="big-emoji">{won ? '🎉' : '😵'}</div>
         <h2>{won ? 'الجاسوس ربح!' : 'الفريق ربح!'}</h2>

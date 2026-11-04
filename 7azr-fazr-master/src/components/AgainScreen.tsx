@@ -1,5 +1,4 @@
 import { useGame } from '../store'
-import ExitConfirm from './ExitConfirm'
 
 export default function AgainScreen() {
   const [state, dispatch] = useGame()
@@ -9,7 +8,6 @@ export default function AgainScreen() {
       <div className="bar">
         <b>نهاية الجولة</b>
         <span className="cat-pill">AGAIN?</span>
-        <ExitConfirm />
       </div>
       <div className="center anim-fadeup">
         <div className="big-emoji">🎭</div>
