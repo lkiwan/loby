@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowLeft, Crown, Minus, Pencil, Play, Plus, Skull, Trash2, UserRound, Users } from 'lucide-react'
+import { Crown, Minus, Pencil, Play, Plus, Skull, Trash2, UserRound, Users } from 'lucide-react'
 import { useMafiaGame } from '../game/useMafiaGame'
 import { MIN_PLAYERS } from '../game/types'
 import { buzz } from '../lib/utils'
@@ -12,7 +12,6 @@ export default function Jem3atScreen() {
   const setPlayerName = useMafiaGame((s) => s.setPlayerName)
   const setTeller = useMafiaGame((s) => s.setTeller)
   const startGame = useMafiaGame((s) => s.startGame)
-  const goHome = useMafiaGame((s) => s.goHome)
   const mafiaCount = useMafiaGame((s) => s.mafiaCount)
   const setMafiaCount = useMafiaGame((s) => s.setMafiaCount)
 
@@ -78,22 +77,6 @@ export default function Jem3atScreen() {
         transition={{ duration: 0.5 }}
         className="relative z-10 px-5 pt-5 pb-4"
       >
-        {/* back button */}
-        <div className="mb-3 flex">
-          <button
-            type="button"
-            onClick={() => {
-              buzz([20, 30])
-              goHome()
-            }}
-            aria-label="رجع لّلّول"
-            title="رجع لّلّول"
-            className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#12121C] text-[#C6F542] ring-1 ring-white/10 transition-colors hover:ring-white/25 active:scale-90"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </button>
-        </div>
-
         {/* title + poster thumbnail */}
         <div dir="ltr" className="flex items-center gap-4">
           <div className="min-w-0 flex-1">

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useGame } from './context/GameContext'
-import HomeScreen from './screens/HomeScreen'
 import SetupScreen from './screens/SetupScreen'
 import RoleRevealScreen from './screens/RoleRevealScreen'
 import DrawingScreen from './screens/DrawingScreen'
@@ -9,10 +8,9 @@ import ResolutionScreen from './screens/ResolutionScreen'
 
 export default function App() {
   const { state, dispatch } = useGame()
-  const [started, setStarted] = useState(false)
   const [showQuit, setShowQuit] = useState(false)
 
-  const isPlaying = started && state.phase !== 'setup'
+  const isPlaying = state.phase !== 'setup'
 
   return (
     <>
@@ -67,17 +65,13 @@ export default function App() {
       `}</style>
 
       {/* Main content */}
-      {!started ? (
-        <HomeScreen onStart={() => setStarted(true)} />
-      ) : (
-        <>
-          {state.phase === 'setup' && <SetupScreen />}
-          {state.phase === 'roleReveal' && <RoleRevealScreen />}
-          {state.phase === 'drawing' && <DrawingScreen />}
-          {state.phase === 'voting' && <VotingScreen />}
-          {state.phase === 'resolution' && <ResolutionScreen />}
-        </>
-      )}
+      <>
+        {state.phase === 'setup' && <SetupScreen />}
+        {state.phase === 'roleReveal' && <RoleRevealScreen />}
+        {state.phase === 'drawing' && <DrawingScreen />}
+        {state.phase === 'voting' && <VotingScreen />}
+        {state.phase === 'resolution' && <ResolutionScreen />}
+      </>
 
       {/* Global Quit Button */}
       {isPlaying && (
@@ -103,7 +97,6 @@ export default function App() {
                 className="app-quit-yes"
                 onClick={() => {
                   setShowQuit(false)
-                  setStarted(false)
                   dispatch({ type: 'RESET' })
                 }}
               >

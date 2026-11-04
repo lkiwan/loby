@@ -43,7 +43,6 @@ export function saveSetupDraft(setup: Setup) {
 }
 
 export type Phase =
-  | 'home'
   | 'setup'
   | 'reveal'
   | 'pass'
@@ -83,7 +82,7 @@ type Action =
 
 const saved = typeof window !== 'undefined' ? loadSaved() : null
 const initialState: GameState = {
-  phase: 'home',
+  phase: 'setup',
   players: saved?.players ?? ['اللاعب 1', 'اللاعب 2', 'اللاعب 3'],
   imposterCount: saved?.imposters ?? 1,
   timer: saved?.timer ?? 120,
@@ -98,7 +97,7 @@ const initialState: GameState = {
 function reducer(state: GameState, action: Action): GameState {
   switch (action.type) {
     case 'HOME':
-      return { ...state, phase: 'home' }
+      return { ...state, phase: 'setup' }
     case 'SETUP':
       return { ...state, phase: 'setup' }
     case 'START':

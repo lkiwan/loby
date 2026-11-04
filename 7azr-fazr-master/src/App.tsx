@@ -1,5 +1,4 @@
 import { useGame } from './store'
-import HomeScreen from './components/HomeScreen'
 import SetupScreen from './components/SetupScreen'
 import RevealScreen from './components/RevealScreen'
 import PassScreen from './components/PassScreen'
@@ -13,7 +12,6 @@ export default function App() {
 
   return (
     <main className="app">
-      {state.phase === 'home' && <HomeScreen />}
       {state.phase === 'setup' && <SetupScreen />}
       {state.phase === 'reveal' && <RevealScreen />}
       {state.phase === 'pass' && <PassScreen />}

@@ -159,9 +159,6 @@ export default function SetupScreen() {
       >
         🎬 ابداو اللعبة
       </button>
-      <button className="btn-ghost" onClick={() => dispatch({ type: 'HOME' })}>
-        🏠 رجع للبيت
-      </button>
     </div>
   )
 }

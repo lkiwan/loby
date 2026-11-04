@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { RotateCw } from 'lucide-react'
 import { useMafiaGame } from './game/useMafiaGame'
-import HomeScreen from './components/HomeScreen'
 import Jem3atScreen from './components/Jem3atScreen'
 import DealScreen from './components/DealScreen'
 import PassPlayScreen from './components/PassPlayScreen'
@@ -11,7 +10,6 @@ import GameOverScreen from './components/GameOverScreen'
 import AdBanner from './components/AdBanner'
 
 const SCREENS: Record<string, React.ComponentType> = {
-  HOME: HomeScreen,
   SETUP: Jem3atScreen,
   DEAL_CARDS: DealScreen,
   PASS_AND_PLAY: PassPlayScreen,

@@ -1,7 +1,6 @@
 export type Role = 'EISSABA' | 'BOULIS' | 'TBIB' | 'WLAD_LHOUMA'
 
 export type GamePhase =
-  | 'HOME'
   | 'SETUP'
   | 'DEAL_CARDS'
   | 'PASS_AND_PLAY'
