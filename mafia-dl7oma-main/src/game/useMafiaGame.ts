@@ -11,7 +11,6 @@ import type {
 import { MIN_PLAYERS } from './types'
 
 export interface GameStore extends GameState {
-  goHome: () => void
   goSetup: () => void
   addPlayer: (name: string) => void
   removePlayer: (id: string) => void
@@ -93,7 +92,7 @@ const base = (): GameState => {
   }))
   return {
     ...EMPTY_STATE,
-    phase: 'HOME',
+    phase: 'SETUP',
     players: defaults,
     nightActions: { ...EMPTY_STATE.nightActions },
   }
@@ -101,8 +100,6 @@ const base = (): GameState => {
 
 export const useMafiaGame = create<GameStore>()((set, get) => ({
   ...base(),
-
-  goHome: () => set({ phase: 'HOME' }),
 
   goSetup: () => set({ phase: 'SETUP' }),
 

@@ -104,8 +104,13 @@
   var PLAN = {};
   PLAN.mafia = async function () {
     if (phase() === null) {
-      var home = await waitFor(function () { return document.querySelector('button.btn-horror'); });
-      if (!home) return; home.click();
+      var first = await waitFor(function () {
+        var inp = document.querySelector('form input[placeholder]');
+        if (inp) return inp;
+        return document.querySelector('button.btn-horror');
+      });
+      if (!first) return;
+      if (first.matches('button.btn-horror')) first.click();
     }
     if (!(await waitFor(function () { return document.querySelector('form input[placeholder]'); }))) return;
     for (var g = 0; g < 24; g++) {
@@ -124,8 +129,12 @@
     }
   };
   PLAN.paint = async function () {
-    var cta = await waitFor(function () { return document.querySelector('button.home-cta'); });
-    if (cta) cta.click();
+    var first = await waitFor(function () {
+      var inp = document.querySelector('.player-inputs input.player-input');
+      if (inp) return inp;
+      return document.querySelector('button.home-cta');
+    });
+    if (first && first.matches('button.home-cta')) first.click();
     var ready = await waitFor(function () {
       var n = document.querySelectorAll('.player-inputs input.player-input');
       return n.length >= 3 ? n : null;
@@ -148,8 +157,12 @@
     for (var i = 0; i < want && i < all.length; i++) setVal(all[i], NAMES[i]);
   };
   PLAN.hazr = async function () {
-    var cta = await waitFor(function () { return document.querySelector('button.btn-cta'); });
-    if (cta) cta.click();
+    var first = await waitFor(function () {
+      var inp = document.querySelector('input[placeholder]:not(.count-input)');
+      if (inp) return inp;
+      return document.querySelector('button.btn-cta');
+    });
+    if (first && first.matches('button.btn-cta')) first.click();
     var names = await waitFor(function () {
       var n = document.querySelectorAll('input[placeholder]:not(.count-input)');
       return n.length ? n : null;
