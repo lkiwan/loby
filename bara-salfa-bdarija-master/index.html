@@ -471,45 +471,60 @@ tr.me td{color:var(--terra)}
 
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
-/* ─── CATEGORY SLIDER (slides) ───────────────────────────── */
-.cat-carousel{position:relative}
-.cat-slider{
-  display:flex;gap:8px;overflow-x:auto;
-  padding:6px 2px 14px;
-  scroll-snap-type:x proximity;
-  scroll-snap-stop:always;
-  scrollbar-width:none;
-  overscroll-behavior-x:contain;
+/* ─── CATEGORY SLIDER (transform track — GPU-smooth) ────── */
+.cat-carousel{position:relative;direction:ltr}
+.cat-view{
+  overflow:hidden;
+  padding:10px 0 12px;
+  touch-action:pan-y;
   cursor:grab;
   -webkit-user-select:none;user-select:none;
 }
-.cat-slider.dragging{cursor:grabbing;scroll-snap-type:none}
-.cat-slider::-webkit-scrollbar{display:none}
-.cat-slide{
-  flex:0 0 calc((100% - 18px)/3.5);
-  scroll-snap-align:start;
-  position:relative;min-height:158px;
-  text-align:center;
-  background:var(--card);border:2.5px solid var(--ink);
-  border-radius:16px;padding:20px 8px 12px;
-  color:var(--ink);font-size:14px;font-weight:800;
-  cursor:pointer;
-  transition:transform .12s,box-shadow .12s,background .15s;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
-  line-height:1.3;box-shadow:0 3px 0 var(--ink);
+.cat-view.dragging{cursor:grabbing}
+.cat-track{
+  display:flex;gap:12px;
+  will-change:transform;
 }
-.cat-slide:hover{transform:translateY(-2px)}
-.cat-slide:active{transform:translateY(1px);box-shadow:0 1px 0 var(--ink)}
-.cat-slide.on{background:#FFF1DC;box-shadow:3px 3px 0 var(--terra);border-color:var(--terra)}
-.cat-slide.football-card.on{box-shadow:3px 3px 0 var(--tea);border-color:var(--tea);background:#E2F4E8}
+.cat-track.anim{transition:transform .5s cubic-bezier(.22,.9,.26,1)}
+.cat-slide{
+  flex:0 0 72%;
+  position:relative;
+  padding:0;line-height:0;
+  background:var(--card);border:2.5px solid var(--ink);
+  border-radius:18px;overflow:hidden;
+  cursor:pointer;box-shadow:0 3px 0 var(--ink);
+  opacity:.5;transform:scale(.93);
+  transition:transform .45s cubic-bezier(.22,.9,.26,1),opacity .45s,box-shadow .2s,border-color .2s,background .15s;
+}
+.cat-slide.on{
+  opacity:1;transform:scale(1);
+  border-color:var(--terra);
+  box-shadow:4px 4px 0 var(--terra);
+}
+.cat-slide.football-card.on{border-color:var(--tea);box-shadow:4px 4px 0 var(--tea)}
+.cat-slide .cat-img{
+  display:block;width:100%;height:auto;aspect-ratio:1/1;
+  pointer-events:none;user-select:none;-webkit-user-drag:none;
+}
 .cat-slide .slide-n{
-  position:absolute;top:7px;inset-inline-start:8px;
+  position:absolute;top:7px;left:8px;
   font-size:10px;font-weight:900;color:var(--dim);
   background:var(--paper2);border:1.5px solid var(--ink35);border-radius:99px;
-  padding:1px 7px;
+  padding:1px 7px;line-height:1.4;
 }
-.cat-slide .cat-emoji{font-size:36px;line-height:1;margin-top:8px}
-.cat-slide .cat-name{font-size:14px}
+.cat-slide .cat-count{
+  position:absolute;top:7px;right:8px;
+  font-size:10px;font-weight:900;color:#fff;
+  background:rgba(10,10,18,.72);border:1.5px solid rgba(255,255,255,.25);border-radius:99px;
+  padding:1px 7px;line-height:1.4;
+}
+.cat-dots{display:flex;justify-content:center;gap:6px;padding:0 0 4px}
+.cat-dots button{
+  width:8px;height:8px;padding:0;border:none;border-radius:99px;
+  background:var(--ink35);cursor:pointer;
+  transition:width .3s,background .3s;
+}
+.cat-dots button.on{width:22px;background:var(--terra)}
 .slide-hint{
   display:flex;align-items:center;justify-content:center;gap:7px;
   font-size:12px;font-weight:800;color:var(--dim);
@@ -519,15 +534,15 @@ tr.me td{color:var(--terra)}
 .slide-hint.done{opacity:0;pointer-events:none}
 @keyframes hintWiggle{0%,100%{transform:translateX(0)}50%{transform:translateX(-6px)}}
 .slide-arrow{
-  position:absolute;top:94px;transform:translateY(-50%);
+  position:absolute;top:42%;transform:translateY(-50%);
   width:34px;height:34px;padding:0;border-radius:50%;
   background:var(--paper);color:var(--ink);
   border:2.5px solid var(--ink);box-shadow:var(--shadow-sm);
   font-size:18px;font-weight:900;display:grid;place-items:center;z-index:3;
 }
 .slide-arrow:active{transform:translateY(-50%) translateY(2px);box-shadow:0 1px 0 var(--ink)}
-.sa-prev{inset-inline-start:-4px}
-.sa-next{inset-inline-end:-4px}
+.sa-prev{right:-4px}
+.sa-next{left:-4px}
 
 /* ─── PROGRESS BAR ──────────────────────────────────────── */
 .prog-bar{
@@ -547,63 +562,12 @@ tr.me td{color:var(--terra)}
   box-shadow:var(--shadow-sm);transform:rotate(-.4deg);
 }
 
-/* ─── QUIT BUTTON ────────────────────────────────────────── */
-.quit-btn{
-  position:fixed;top:14px;left:14px;
-  width:36px;height:36px;padding:0;
-  border-radius:50%;
-  background:var(--paper);
-  border:2.5px solid var(--ink);
-  color:var(--ink);font-size:15px;
-  display:grid;place-items:center;
-  z-index:100;cursor:pointer;
-  box-shadow:var(--shadow-sm);
-  transition:transform .12s;
-  font-family:inherit;
-}
-.quit-btn:hover{transform:translateY(-2px)}
-.quit-btn:focus-visible{outline:3px solid var(--terra);outline-offset:3px}
-
-/* ─── MODAL ──────────────────────────────────────────────── */
-.modal-overlay{
-  position:fixed;inset:0;
-  background:rgba(42,33,24,.5);
-  z-index:200;
-  display:flex;align-items:center;justify-content:center;
-  padding:24px;
-  backdrop-filter:blur(2px);
-  animation:fadeIn .2s ease both;
-}
-.modal-overlay[hidden]{display:none}
-.modal-box{
-  background:var(--card);
-  border:3px solid var(--ink);
-  border-radius:18px;
-  padding:26px 22px;
-  width:100%;max-width:360px;
-  text-align:center;
-  box-shadow:6px 6px 0 rgba(42,33,24,.35);
-}
-.modal-box h2{font-size:22px;font-family:'Lalezar','Cairo',sans-serif;font-weight:400;margin-bottom:8px;color:var(--ink)}
-.modal-box p{font-size:14px;margin-bottom:20px;color:var(--dim);line-height:1.6}
 </style>
 </head>
 <body>
 <div class="home-bg" id="homeBg"></div>
 <div id="app"></div>
 
-<button id="quit-btn" class="quit-btn" onclick="act.showQuitModal()" aria-label="خروج من اللعبة" hidden>✕</button>
-
-<div id="quit-modal" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="quit-title">
-  <div class="modal-box">
-    <h2 id="quit-title">بغيتي تخرج من اللعبة؟</h2>
-    <p>غادي تضيع التقدم ديال الجولة الحالية.</p>
-    <div class="row">
-      <button class="btn-ghost" onclick="act.hideQuitModal()">لا، كمّل اللعب</button>
-      <button class="btn-primary" onclick="act.confirmQuit()">إيه، خرج</button>
-    </div>
-  </div>
-</div>
 <script>
 "use strict";
 
@@ -1085,75 +1049,56 @@ function hdr(){
   </div><div class="zig"></div>`;
 }
 
-const GAME_PHASES = new Set(['pass','reveal','chaos','chain','votepass','cast','judge','bonus','result']);
 
-/* shared category slides for setup/config */
-function catChips(){
-  const lbl=c=>c.n.replace(/^\S+\s/,'');
-  const slides=[
-    {id:null,  em:'🎲', name:'عشوائي'},
-    ...CATS.map(c=>({
-      id:c.id,
-      em:c.n.match(/\p{Emoji}/u)?.[0]||'🗂️',
-      name:lbl(c)
-    }))
+/* shared category slides for setup/config — image cards: the icon and
+   the category title are baked into the card art, so the slide renders
+   NO duplicated emoji or HTML category name */
+const CAT_IMG = { youth:'genz', hayoma:'houma', food:'food', daily_life:'dailylife',
+  school:'school', animals:'animals', football:'football', professions:'jobs' };
+/* preload every card up front: a swipe must never wait on an image decode */
+Object.values(CAT_IMG).concat('random').forEach(n=>{ const i=new Image(); i.src='cats/cat-'+n+'.webp'; });
+
+function catSlides(){
+  return [
+    {id:null, img:'random', name:'عشوائي', count:null},
+    ...CATS.map(c=>({ id:c.id, img:CAT_IMG[c.id], name:c.n.replace(/^\S+\s/,''), count:c.w.length }))
   ];
+}
+function catChips(){
+  const slides=catSlides();
+  if(S._catPos===undefined || S._catPos<0 || S._catPos>=slides.length){
+    const cur=slides.findIndex(s=>s.id===S.catId);
+    S._catPos = cur<0 ? 0 : cur;
+  }
   return slides.map((it,i)=>{
-    const arg = it.id===null ? 'null' : "'"+it.id+"'";
     const key = it.id===null ? '__all__' : it.id;
     return `
-    <button class="cat-slide ${S.catId===it.id?'on':''} ${it.id==='football'?'football-card':''}"
-      data-cat="${key}" onclick="act.cat(${arg})">
+    <button class="cat-slide ${i===S._catPos?'on':''} ${it.id==='football'?'football-card':''}"
+      data-cat="${key}" data-i="${i}" onclick="act.catSlide(${i})" aria-label="${esc(it.name)}">
+      <img class="cat-img" src="cats/cat-${it.img}.webp" alt="${esc(it.name)}" draggable="false">
       <span class="slide-n">${i+1}</span>
-      <span class="cat-emoji">${it.em}</span>
-      <span class="cat-name">${esc(it.name)}</span>
+      ${it.count?`<span class="cat-count">${it.count} كلمة</span>`:''}
     </button>`;
   }).join('');
+}
+function catDots(){
+  return catSlides().map((_,i)=>`<button class="${S._catPos===i?'on':''}" data-dot="${i}" onclick="act.catSlide(${i})" aria-label="فئة ${i+1}"></button>`).join('');
 }
 
 function render(){
   const same = S._lastPhase === S.phase;
   S._lastPhase = S.phase;
-  const catScroll = S._catScroll;
   const savedInputs = same ? Array.from(app.querySelectorAll('#names input')).map(i=>i.value) : null;
-  const oldCars = same ? Array.from(app.querySelectorAll('.cat-carousel')) : null;
   app.innerHTML = `<div class="screen${same?' same':''}">${VIEWS[S.phase]()}</div>`;
   if(same && savedInputs){
     app.querySelectorAll('#names input').forEach((n,i)=>{ if(savedInputs[i]!==undefined) n.value=savedInputs[i]; });
   }
-  let keptCar = false;
-  if(oldCars && oldCars.length){
-    Array.from(app.querySelectorAll('.cat-carousel')).forEach((neu,i)=>{
-      const old = oldCars[i];
-      if(!old) return;
-      old.querySelectorAll('.cat-slide').forEach(s=>{
-        const isOn = s.getAttribute('data-cat')===(S.catId===null?'__all__':S.catId);
-        s.classList.toggle('on',isOn);
-        s.classList.toggle('football-card', isOn && s.getAttribute('data-cat')==='football');
-      });
-      neu.replaceWith(old);
-      keptCar = true;
-    });
-  }
-  if(keptCar){
-    if(catScroll!==undefined){
-      requestAnimationFrame(()=>{
-        const sl=app.querySelector('.cat-slider');
-        if(sl && Math.abs(sl.scrollLeft-catScroll)>1) sl.scrollLeft=catScroll;
-      });
-    }
-  } else if(same && catScroll!==undefined){
-    const sl=app.querySelector('.cat-slider');
-    if(sl) sl.scrollLeft=catScroll;
-  }
-  if(catScroll!==undefined){
+  if(S._catTouched){
     const h=app.querySelector('.slide-hint');
     if(h) h.classList.add('done');
   }
   bindCarousels();
   const af = app.querySelector('[autofocus]'); if(af) af.focus();
-  const qb = document.getElementById('quit-btn');
-  if(qb) qb.hidden = !GAME_PHASES.has(S.phase);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -1212,9 +1157,10 @@ setup: ()=>{
   <div class="anim-fadeup d3">
     <h3 style="margin-bottom:8px;font-size:14px;color:var(--dim)">الفئة</h3>
     <div class="cat-carousel">
-      <div class="cat-slider" onscroll="S._catScroll=this.scrollLeft;document.querySelector('.slide-hint')?.classList.add('done')">${catChips()}</div>
+      <div class="cat-view"><div class="cat-track">${catChips()}</div></div>
       <button class="slide-arrow sa-prev" onclick="act.slideCats(-1)" aria-label="القبل">‹</button>
       <button class="slide-arrow sa-next" onclick="act.slideCats(1)" aria-label="التالي">›</button>
+      <div class="cat-dots">${catDots()}</div>
     </div>
     <p class="slide-hint"><span class="wiggle">👈</span> اسحب باش تشوف الفئات</p>
   </div>
@@ -1230,9 +1176,10 @@ config: ()=>`
   <h2 class="anim-fadeup">الفئة ديال هاد الجولة</h2>
   <p class="sm anim-fadeup" style="margin-bottom:6px">اختار ودغابا نبداو 👇</p>
   <div class="cat-carousel anim-fadeup d1">
-    <div class="cat-slider" onscroll="S._catScroll=this.scrollLeft;document.querySelector('.slide-hint')?.classList.add('done')">${catChips()}</div>
+    <div class="cat-view"><div class="cat-track">${catChips()}</div></div>
     <button class="slide-arrow sa-prev" onclick="act.slideCats(-1)" aria-label="القبل">‹</button>
     <button class="slide-arrow sa-next" onclick="act.slideCats(1)" aria-label="التالي">›</button>
+    <div class="cat-dots">${catDots()}</div>
   </div>
   <p class="slide-hint"><span class="wiggle">👈</span> اسحب باش تشوف الفئات</p>
   <div class="spacer"></div>
@@ -1520,28 +1467,9 @@ board: ()=>{
   <button class="btn-primary anim-fadeup d4" onclick="act.again()">🔄 نفس اللاعبين — عاود</button>
   `
   :`
-  <button class="btn-cta anim-fadeup d3" onclick="act.start()">الجولة اللي جاية ⚡</button>
-  <button class="btn-ghost anim-fadeup d4" onclick="act.showQuitModal()">🚪 خروج من اللعبة</button>`}`;
+  <button class="btn-cta anim-fadeup d3" onclick="act.start()">الجولة اللي جاية ⚡</button>`}`;
 },
 }; // end VIEWS
-
-/* ══════════════════════════════════════════════════════════
-   QUIT MODAL
-══════════════════════════════════════════════════════════ */
-act.showQuitModal = ()=>{
-  const m = document.getElementById('quit-modal');
-  m.hidden = false;
-  m.querySelector('button').focus();
-};
-act.hideQuitModal = ()=>{ document.getElementById('quit-modal').hidden = true; };
-act.confirmQuit = ()=>{
-  stopClock();
-  act.hideQuitModal();
-  S.phase='setup'; S.players=[]; S.mode='classic'; S.catId=null;
-  S.round=0; S.intrusHistory=[]; S.chaosHistory=[]; S.scores={};
-  S.r=null; S.idx=0; S.tieRound=false; S.clockLeft=0; S.clockDone=false;
-  render();
-};
 
 /* ══════════════════════════════════════════════════════════
    ACTIONS
@@ -1614,52 +1542,93 @@ act.names  = ()=> commitNames('config');
 act.mode = m  => { S.mode=m; render(); };
 act.cat  = c  => { S.catId=c; render(); };
 
-/* swipe the category carousel by one slide */
-act.slideCats = d=>{
-  const el=document.querySelector('.cat-slider');
-  if(!el) return;
-  const card=el.querySelector('.cat-slide');
-  const w=(card?card.getBoundingClientRect().width:120)+8;
-  el.scrollBy({left:d*w,behavior:'smooth'});
+/* ── category carousel: transform-track navigation ─────────
+   The track moves ONLY via translateX (GPU-composited) and
+   selection updates classes in place — no re-render on swipe,
+   so the player list can never block or freeze the glide. */
+function catTx(car, pos){
+  const view=car.querySelector('.cat-view');
+  const slide=car.querySelector('.cat-slide');
+  if(!view || !slide) return 0;
+  const step=slide.offsetWidth+12;
+  return (view.clientWidth-(step-12))/2 - pos*step;
+}
+function layoutCat(car, anim){
+  const track=car.querySelector('.cat-track');
+  if(!track) return;
+  if(!anim) track.classList.remove('anim');
+  track.style.transform=`translateX(${catTx(car, S._catPos||0)}px)`;
+  if(!anim){ void track.offsetWidth; track.classList.add('anim'); }
+}
+function catGo(i){
+  const slides=catSlides();
+  i=Math.max(0, Math.min(slides.length-1, i));
+  S._catPos=i;
+  S.catId=slides[i].id;
+  S._catTouched=true;
+  document.querySelectorAll('.cat-carousel').forEach(car=>{
+    layoutCat(car, true);
+    car.querySelectorAll('.cat-slide').forEach((s,j)=>s.classList.toggle('on', j===i));
+    car.querySelectorAll('.cat-dots button').forEach((d,j)=>d.classList.toggle('on', j===i));
+  });
   const h=document.querySelector('.slide-hint');
   if(h) h.classList.add('done');
-};
+}
+act.catSlide = i=>catGo(i);
+/* arrows glide the track by one slide */
+act.slideCats = d=>catGo((S._catPos||0)+d);
 
-/* drag-to-scroll the category carousel with a mouse (desktop only) */
+/* drag/swipe the track with pointer events (mouse + touch);
+   vertical page scroll stays native via touch-action:pan-y */
 function bindCarousels(){
-  if(window.matchMedia && window.matchMedia('(pointer:coarse)').matches) return;
-  app.querySelectorAll('.cat-slider').forEach(el=>{
-    if(el.dataset.dragBound) return;
-    el.dataset.dragBound='1';
-    let down=false,startX=0,startLeft=0,moved=false;
-    el.addEventListener('pointerdown',e=>{
-      if(e.pointerType==='touch' || e.button!==0) return;
-      down=true; moved=false;
-      startX=e.clientX; startLeft=el.scrollLeft;
+  if(!window._catResizeBound){
+    window._catResizeBound=true;
+    window.addEventListener('resize',()=>{
+      document.querySelectorAll('.cat-carousel').forEach(c=>layoutCat(c,false));
     });
-    el.addEventListener('pointermove',e=>{
-      if(!down) return;
+  }
+  app.querySelectorAll('.cat-carousel').forEach(car=>{
+    layoutCat(car,false);
+    const view=car.querySelector('.cat-view');
+    const track=car.querySelector('.cat-track');
+    if(!view || !track || view.dataset.dragBound) return;
+    view.dataset.dragBound='1';
+    let down=false, moved=false, startX=0, baseTx=0, pid=null;
+    view.addEventListener('pointerdown',e=>{
+      if(e.button!==undefined && e.button!==0) return;
+      down=true; moved=false; pid=e.pointerId;
+      startX=e.clientX; baseTx=catTx(car, S._catPos||0);
+      track.classList.remove('anim');
+    });
+    view.addEventListener('pointermove',e=>{
+      if(!down || e.pointerId!==pid) return;
       const dx=e.clientX-startX;
-      if(!moved && Math.abs(dx)>4){
+      if(!moved && Math.abs(dx)>6){
         moved=true;
-        el.classList.add('dragging');
-        try{ el.setPointerCapture(e.pointerId); }catch(_){}
+        view.classList.add('dragging');
+        try{ view.setPointerCapture(pid); }catch(_){}
       }
-      if(moved){ e.preventDefault(); el.scrollLeft=startLeft-dx; }
+      if(moved) track.style.transform=`translateX(${baseTx+dx}px)`;
     });
-    const end=()=>{
-      if(!down) return;
+    const end=e=>{
+      if(!down || (e.pointerId!==undefined && e.pointerId!==pid)) return;
       down=false;
-      el.classList.remove('dragging');
+      view.classList.remove('dragging');
+      track.classList.add('anim');
       if(moved){
+        const dx=(e.clientX!==undefined?e.clientX:startX)-startX;
+        const slide=track.querySelector('.cat-slide');
+        const step=(slide?slide.offsetWidth:200)+12;
         const stop=ev=>{ ev.stopPropagation(); ev.preventDefault(); };
-        el.addEventListener('click',stop,true);
-        setTimeout(()=>el.removeEventListener('click',stop,true),300);
+        view.addEventListener('click',stop,true);
+        setTimeout(()=>view.removeEventListener('click',stop,true),350);
+        catGo((S._catPos||0)+Math.round(-dx/step));
+      } else {
+        layoutCat(car,true);
       }
     };
-    el.addEventListener('pointerup',end);
-    el.addEventListener('pointercancel',end);
-    el.addEventListener('pointerleave',end);
+    view.addEventListener('pointerup',end);
+    view.addEventListener('pointercancel',end);
   });
 }
 
@@ -1730,7 +1699,7 @@ act.again = ()=>{
 };
 act.newGame = ()=>{
   stopClock();
-  S.phase='setup'; S.players=[]; S.mode='classic'; S.catId=null;
+  S.phase='setup'; S.players=[]; S.mode='classic'; S.catId=null; S._catPos=0; S._catTouched=false;
   S.round=0; S.intrusHistory=[]; S.chaosHistory=[]; S.scores={};
   S.r=null; S.idx=0; S.tieRound=false; S.clockLeft=0; S.clockDone=false;
   render();
@@ -1765,10 +1734,6 @@ function bindHold(){
   el.addEventListener('pointerleave',up);
   el.addEventListener('contextmenu',e=>e.preventDefault());
 }
-
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape' && !document.getElementById('quit-modal').hidden) act.hideQuitModal();
-});
 
 document.addEventListener('visibilitychange',()=>{
   if(document.hidden && S.phase==='reveal'){
